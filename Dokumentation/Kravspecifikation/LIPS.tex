@@ -1,0 +1,131 @@
+%% Definitioner för LIPS-dokument
+% Uppdaterad 2016-01-23 - Olle
+
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+%\usepackage{times}
+\usepackage{ifthen}
+
+\usepackage[margin=25mm]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{}
+\chead{\textbf{\LIPSprojekttitel}}
+\rhead{\textbf{\textsl{LiTH}}\\\textbf{\LIPSdatum}}
+\lfoot{\textbf{\LIPSkursnamn}\\\textbf{\LIPSdokumentansvarig}}
+\cfoot{\textbf{\LIPSprojektgrupp}\\\textbf{\LIPSgruppepost}}
+\rfoot{\textbf{\textsc{Lip}s}\\\textbf{Sida~\thepage}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+
+\newcommand{\twodigit}[1]{\ifthenelse{#1<10}{0}{}{#1}}
+\newcommand{\dagensdatum}{\number\year-\twodigit{\number\month}-\twodigit{\number\day}}
+
+%%  Redefinitions of commands containing @
+\makeatletter
+\makeatother
+
+\newcommand{\LIPStitelsida}{%
+{\ }\vspace{45mm}
+\begin{center}
+  \textbf{\Huge \LIPSdokumenttyp}
+\end{center}
+\begin{center}
+  {\Large Redaktör: \LIPSredaktor}
+\end{center}
+\begin{center}
+  {\Large \textbf{Version \LIPSversion}}
+\end{center}
+\vfill
+\begin{center}
+  {\large Status}\\[1.5ex]
+  \begin{tabular}{|*{3}{p{40mm}|}}
+    \hline
+    Granskad & \LIPSgranskare & \LIPSgranskatdatum \\
+    \hline
+    Godkänd & \LIPSgodkannare & \LIPSgodkantdatum \\
+    \hline
+  \end{tabular}
+\end{center}
+\newpage
+}
+
+
+\newenvironment{LIPSprojektidentitet}{%
+{\ }\vspace{45mm}
+\begin{center}
+  {\Large PROJEKTIDENTITET}\\[0.5ex]
+  {\small
+  \LIPSartaltermin, \LIPSprojektgrupp\\
+  Linköpings Tekniska Högskola, MAI
+  }
+\end{center}
+\begin{center}
+  {\small Gruppdeltagare}\\
+%  \begin{tabular}{|p{30mm}|p{40mm}|p{35mm}|p{45mm}|}
+  \begin{tabular}{|l|l|p{25mm}|l|}
+    \hline
+    \textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post} \\
+    \hline
+}%
+{%
+    \hline
+  \end{tabular}
+\end{center}
+\begin{center}
+  {\small
+    \textbf{E-postlista för hela gruppen}: \LIPSgruppepost\\
+    \textbf{Hemsida}: \LIPSgrupphemsida\\[1ex]
+    \textbf{Kund}: \LIPSkund\\
+    \textbf{Kontaktperson hos kund}: \LIPSkundkontakt\\
+    \textbf{Kursansvarig}: \LIPSkursansvarig\\
+    \textbf{Handledare}: \LIPShandledare\\
+  }
+\end{center}
+\newpage
+}
+\newcommand{\LIPSgruppmedlem}[4]{\hline {#1} & {#2} & {#3} & {#4} \\}
+
+
+
+\newenvironment{LIPSdokumenthistorik}{%
+\begin{center}
+  Dokumenthistorik\\[1ex]
+  \begin{small}
+    \begin{tabular}{|l|l|p{60mm}|l|l|}
+      \hline
+      \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\
+      }%
+    {%
+      \hline
+    \end{tabular}
+  \end{small}
+\end{center}
+}
+\newcommand{\LIPSversionsinfo}[5]{\hline {#1} & {#2} & {#3} & {#4} & {#5} \\}
+
+\newcounter{LIPSkravnummer}
+\newcounter{LIPSunderkravnummer}[LIPSkravnummer]
+\newenvironment{LIPSkravlista}{%
+  \begin{tabular}{|p{25mm}|p{25mm}|p{72mm}|p{18mm}|}
+    }%
+  {%
+    \hline
+  \end{tabular}
+}
+\newcommand{\LIPSkrav}[3]{\hline\stepcounter{LIPSkravnummer}\textbf{Krav nr \arabic{LIPSkravnummer}} & \textbf{{#1}} & {#2} & \textbf{{#3}} \\}
+\newcommand{\LIPSunderkrav}[3]{\hline\stepcounter{LIPSunderkravnummer}\textbf{Krav nr \arabic{LIPSkravnummer}\Alph{LIPSunderkravnummer}} & \textbf{{#1}} & {#2} & \textbf{{#3}} \\}
+
+
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "kravspec_mall"
+%%% End: 
