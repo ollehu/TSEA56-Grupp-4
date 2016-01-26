@@ -145,7 +145,7 @@ Roboten ska kunna navigera autonomt i en labyrint. &
 \end{center}
 
 \pagebreak
-\section{Delsystem 1}
+\section{Delsystem 1 - Huvudmodul}
 
 \subsection{Inledande beskrivning av delsystem 1}
 Delsystem 1 är robotens ``hjärna''. Här görs alla beräkningar kopplade till navigation i labyrinten och styrning av roboten. Denna del sköter även kommunikationen med en extern laptop genom blåtand.
@@ -194,6 +194,10 @@ Original &
 Tävlingsläge ska kunna initieras med en knapp &
 1 \\ \hline
 
+Krav nr\kravlista & 
+Original &
+Huvudmodulen ska kunna spela upp ljudsignaler &
+2 \\ \hline
 
 \end{longtable}
 \end{center}
@@ -205,13 +209,23 @@ Tävlingsläge ska kunna initieras med en knapp &
 
 Krav nr\kravlista & 
 Original &
-Huvudmodulen ska kunna genomföra beräkningar för att hitta kortaste vägen givet en karta &
+Huvudmodulen ska kunna genomföra beräkningar för att hitta kortaste vägen givet en karta i en labyrint utan rum &
 1 \\ \hline
 
 Krav nr\kravlista & 
 Original &
-Huvudmodulen ska kunna reglera styrenheten så att roboten kör rakt &
+Huvudmodulen ska kunna genomföra beräkningar för att hitta kortaste vägen givet en karta i en labyrint med rum &
+2 \\ \hline
+
+Krav nr\kravlista & 
+Original &
+Huvudmodulen ska kunna reglera styrenheten så att roboten kör rakt i en labyrint utan rum &
 1 \\ \hline
+
+Krav nr\kravlista & 
+Original &
+Huvudmodulen ska kunna reglera styrenheten så att roboten kör rakt i en labyrint med rum &
+2 \\ \hline
 
 Krav nr\kravlista & 
 Original &
@@ -298,20 +312,10 @@ Sensormodulen ska konvertera sensorers mätdata till SI-enheter. &
 
 \pagebreak
 
-\section{Delsystem 3 - asd}
+\section{Delsystem 3 - Styrmodul}
 
 \subsection{Ska beskriva styrsystemet}
-
-\begin{center}
-\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
-
-Krav nr\kravlista & 
-Original &
-text text &
-1 \\ \hline
-
-\end{longtable}
-\end{center}
+Styrmodulen ska kunna ta emot kommandon (kontinuerligt) från huvudmodulen och utifrån dessa instruktioner styra robotens elektriska motorer. Inga beräkningar ska göra av denna modul och inte heller någon reglering.
 
 \subsection{Gränssnitt}
 
@@ -320,7 +324,7 @@ text text &
 
 Krav nr\kravlista & 
 Original &
-text text &
+Styrmodulen ska kunna ta emot styrkommandon från huvudmodulen &
 1 \\ \hline
 
 \end{longtable}
@@ -353,7 +357,7 @@ text text &
 \end{center}
 
 \pagebreak
-\section{Delsystem 4 - ``programvara för laptop''}
+\section{Delsystem 4 - Programvara för extern styrning}
 
 \subsection{Inledande beskrivning av delsystem 4}
 
