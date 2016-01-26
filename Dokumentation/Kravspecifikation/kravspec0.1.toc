@@ -13,22 +13,22 @@
 \contentsline {subsection}{\numberline {2.5}Avgr\IeC {\"a}nsningar}{2}{subsection.2.5}
 \contentsline {subsection}{\numberline {2.6}Designfilosofi}{2}{subsection.2.6}
 \contentsline {subsection}{\numberline {2.7}Generella krav p\IeC {\r a} hela systemet}{2}{subsection.2.7}
-\contentsline {section}{\numberline {3}Delsystem 1}{3}{section.3}
+\contentsline {section}{\numberline {3}Delsystem 1 - ``t\IeC {\"a}nkande delen''}{3}{section.3}
 \contentsline {subsection}{\numberline {3.1}Inledande beskrivning av delsystem 1}{3}{subsection.3.1}
 \contentsline {subsection}{\numberline {3.2}Gr\IeC {\"a}nssnitt}{3}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Designkrav}{3}{subsection.3.3}
 \contentsline {subsection}{\numberline {3.4}Funktionella krav f\IeC {\"o}r delsystem 1}{3}{subsection.3.4}
-\contentsline {section}{\numberline {4}Delsystem 2}{4}{section.4}
+\contentsline {section}{\numberline {4}Delsystem 2 - Sensormodul}{4}{section.4}
 \contentsline {subsection}{\numberline {4.1}Inledande beskrivning av delsystem 2}{4}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Gr\IeC {\"a}nssnitt}{4}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Designkrav}{4}{subsection.4.3}
 \contentsline {subsection}{\numberline {4.4}Funktionella krav f\IeC {\"o}r delsystem 2}{4}{subsection.4.4}
-\contentsline {section}{\numberline {5}Delsystem 3}{5}{section.5}
-\contentsline {subsection}{\numberline {5.1}Inledande beskrivning av delsystem 3}{5}{subsection.5.1}
+\contentsline {section}{\numberline {5}Delsystem 3 - ``sensorenheten''}{5}{section.5}
+\contentsline {subsection}{\numberline {5.1}Inledande beskrivning av delsystem}{5}{subsection.5.1}
 \contentsline {subsection}{\numberline {5.2}Gr\IeC {\"a}nssnitt}{5}{subsection.5.2}
 \contentsline {subsection}{\numberline {5.3}Designkrav}{5}{subsection.5.3}
 \contentsline {subsection}{\numberline {5.4}Funktionella krav f\IeC {\"o}r delsystem 3}{5}{subsection.5.4}
-\contentsline {section}{\numberline {6}Delsystem 4}{6}{section.6}
+\contentsline {section}{\numberline {6}Delsystem 4 - ``programvara f\IeC {\"o}r laptop''}{6}{section.6}
 \contentsline {subsection}{\numberline {6.1}Inledande beskrivning av delsystem 4}{6}{subsection.6.1}
 \contentsline {subsection}{\numberline {6.2}Gr\IeC {\"a}nssnitt}{6}{subsection.6.2}
 \contentsline {subsection}{\numberline {6.3}Designkrav}{6}{subsection.6.3}
