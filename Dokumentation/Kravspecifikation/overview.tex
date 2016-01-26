@@ -12,13 +12,78 @@
 \node[draw, fill=white] (Huvudmodul)  {\textbf{Huvudmodul}};
 \node[draw,below left= of Huvudmodul] (Sensormodul) {\textbf{Sensormodul}};
 \node[draw,below right = of Huvudmodul] (Styrenhet) {\textbf{Styrenhet}};
-\node[draw, above = of Huvudmodul] (PC) {\textbf{PC}};
-\node[ellipse,draw, right = of PC] (Användare) {\textbf{Användare}};
+\node[draw, above = of Huvudmodul] (Datormodul) {\textbf{Datormodul}};
+\node[ellipse,draw, right = of Datormodul] (Användare) {\textbf{Användare}};
 
 \draw[->] (Huvudmodul) [out=300, in= 90] to (Styrenhet);
 \draw[->] (Sensormodul) [out=90, in=240] to (Huvudmodul);
-\draw[<->] (Huvudmodul) to (PC);
-\draw[<->] (PC) to (Användare);
+\draw[<->] (Huvudmodul) to (Datormodul);
+\draw[<->] (Datormodul) to (Användare);
 \end{tikzpicture}
 \end{center}
+
+\vspace{10em}
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Sensormodul) {\textbf{Sensormodul}};
+\node[above right = of Sensormodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+
+\node[below left = of Sensormodul, minimum width = 0, inner sep = 2pt] (Sensor) {Sensorer};
+
+
+\draw[->] (Sensor) [out=0,in=270] to node [sloped, midway, below] {spänningsnivåer} (Sensormodul);
+\draw[->] (Sensormodul) [out=90,in=180] to node [sloped,midway, above] {enheter}  (Huvudmodul);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{10em}
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Styrmodul) {\textbf{Styrmodul}};
+\node[above left = of Styrmodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+
+\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Styrmodul) [out=270,in=180] to node [sloped, midway, below] {spänningsnivåer} (Motorer);
+\draw[<-] (Sensormodul) [out=90,in=0] to node [sloped,midway, above] {kommandon}  (Huvudmodul);
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{10em}
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Datormodul) {\textbf{Datormodul}};
+\node[below = 10 em of Datormodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+\node[right = of Datormodul, ellipse, draw] (Användare) {Användare};
+
+%\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Datormodul) [out=30,in=150] to node [midway, above] {karta} (Användare);
+\draw[<-] (Datormodul) [out=-30,in=210] to node [midway, below] {kommandon}  (Användare);
+
+\draw[->] (Datormodul) [out=300,in=60] to node [near end, right] {kommandon} (Huvudmodul);
+\draw[<-] (Datormodul) [out=240,in=120] to node [near end, left] {sensordata} (Huvudmodul);
+
+\end{tikzpicture}
+\end{center}
+
+
 \end{document}
