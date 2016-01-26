@@ -1,6 +1,10 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
+\usepackage{tikz}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
 
 \def\arraystretch{1.5}
 \graphicspath{ {images/} }
@@ -155,6 +159,25 @@ Varje krav har ett unikt nummer och en status, till exempel original och förän
 \pagebreak
 \section{Översikt av systemet}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+\node[draw, fill=white] (Huvudmodul)  {\textbf{Huvudmodul}};
+\node[draw,below left= of Huvudmodul] (Sensormodul) {\textbf{Sensormodul}};
+\node[draw,below right = of Huvudmodul] (Styrenhet) {\textbf{Styrenhet}};
+\node[draw, above = of Huvudmodul] (Datormodul) {\textbf{Datormodul}};
+\node[ellipse,draw, right = of Datormodul] (Användare) {\textbf{Användare}};
+
+\draw[->] (Huvudmodul) [out=300, in= 90] to (Styrenhet);
+\draw[->] (Sensormodul) [out=90, in=240] to (Huvudmodul);
+\draw[<->] (Huvudmodul) to (Datormodul);
+\draw[<->] (Datormodul) to (Användare);
+\end{tikzpicture}
+\caption{Överblick av systemet}
+\end{figure}
+
 \subsection{Grov beskrivning av produkten}
 
 Roboten ska utifrån en definierad startpunkt utforska en okänd labyrint. Under den inledande rutten så skall mätdata från labyrinten samlas in och de nödställda i densamma skall identifieras. Den kortaste vägen mellan startpunkt och nödställda bestäms därefter varpå roboten återgår till sin startposition för att hämta förnödenheter. Roboten skall sedan navigera den kortaste vägen till de nödeställda för att avslutningsvis lämna förnödenheterna.
@@ -209,6 +232,31 @@ Roboten ska kunna kommunicera med en dator via blåtand&
 
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Huvudmodul) {\textbf{Huvudmodul}};
+\node[below left = of Huvudmodul,minimum width=0,inner sep=2pt] (Sensormodul) {Sensormodul};
+\node[below right = of Huvudmodul, minimum width = 0, inner sep = 2pt] (Styrmodul) {Styrmodul};
+\node[above = 5 em of Huvudmodul, minimum width = 0, inner sep = 2pt] (Datormodul) {Datormodul};
+
+%\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Huvudmodul) [out=60,in=300] to node [midway, right] {sensordata} (Datormodul);
+\draw[<-] (Huvudmodul) [out=120,in=240] to node [midway, left] {kommandon}  (Datormodul);
+
+\draw[<-] (Huvudmodul) [out=240,in=90] to node [near end, left] {enheter} (Sensormodul);
+\draw[->] (Huvudmodul) [out=300,in=90] to node [near end, right] {sensordata} (Styrmodul);
+
+\end{tikzpicture}
+\caption{Överblick av huvudmodul}
+\end{figure}
 
 \subsection{Inledande beskrivning av delsystem 1}
 Delsystem 1 är robotens ``hjärna''. Här görs alla beräkningar kopplade till navigation i labyrinten och styrning av roboten. Denna del sköter även kommunikationen med en extern laptop genom blåtand.
@@ -315,6 +363,26 @@ text text &
 
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Sensormodul) {\textbf{Sensormodul}};
+\node[above right = of Sensormodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+
+\node[below left = of Sensormodul, minimum width = 0, inner sep = 2pt] (Sensor) {Sensorer};
+
+
+\draw[->] (Sensor) [out=0,in=270] to node [sloped, midway, below] {spänningsnivåer} (Sensormodul);
+\draw[->] (Sensormodul) [out=90,in=180] to node [sloped,midway, above] {enheter}  (Huvudmodul);
+
+\end{tikzpicture}
+\caption{Överblick av sensormodul}
+\end{figure}
+
 \subsection{Inledande beskrivning av delsystem 2}
 Modulen samlar upp information från samtliga sensorer och konverterar respektive analogt mätvärde till en SI-enhet. Data skickas till huvudmodulen (delsystem 1) seriellt och ska även kunna presenteras på en display.
 
@@ -377,6 +445,26 @@ Sensormodulen ska konvertera sensorers mätdata till SI-enheter. &
 
 \section{Delsystem 3 - Styrmodul}
 
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Styrmodul) {\textbf{Styrmodul}};
+\node[above left = of Styrmodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+
+\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Styrmodul) [out=270,in=180] to node [sloped, midway, below] {spänningsnivåer} (Motorer);
+\draw[<-] (Sensormodul) [out=90,in=0] to node [sloped,midway, above] {kommandon}  (Huvudmodul);
+
+\end{tikzpicture}
+\caption{Överblick av styrmodul}
+\end{figure}
+
 \subsection{Ska beskriva styrsystemet}
 Styrmodulen ska kunna ta emot kommandon (kontinuerligt) från huvudmodulen och utifrån dessa instruktioner styra robotens elektriska motorer. Inga beräkningar ska göra av denna modul och inte heller någon reglering.
 
@@ -435,7 +523,31 @@ Styrmodulen ska kunna öppna och stänga gripklon&
 \end{center}
 
 \pagebreak
-\section{Delsystem 4 - Programvara för extern styrning}
+\section{Delsystem 4 - Datormodul}
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Datormodul) {\textbf{Datormodul}};
+\node[below = 10 em of Datormodul,minimum width=0,inner sep=2pt] (Huvudmodul) {Huvudmodul};
+\node[right = of Datormodul, ellipse, draw] (Användare) {Användare};
+
+%\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Datormodul) [out=30,in=150] to node [midway, above] {karta} (Användare);
+\draw[<-] (Datormodul) [out=-30,in=210] to node [midway, below] {kommandon}  (Användare);
+
+\draw[->] (Datormodul) [out=300,in=60] to node [near end, right] {kommandon} (Huvudmodul);
+\draw[<-] (Datormodul) [out=240,in=120] to node [near end, left] {sensordata} (Huvudmodul);
+
+\end{tikzpicture}
+\caption{Överbilck av datormodul}
+\end{figure}
 
 \subsection{Inledande beskrivning av delsystem 4}
 

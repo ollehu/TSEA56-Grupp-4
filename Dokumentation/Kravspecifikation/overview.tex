@@ -85,5 +85,29 @@
 \end{tikzpicture}
 \end{center}
 
+\vspace{10em}
+
+\begin{center}
+\begin{tikzpicture}[scale=1]
+\tikzset{every node/.style={inner sep=10pt, minimum width=3 cm}}
+%\draw[help lines,step=5mm,gray!20] (-5,-10) grid (5,0);
+
+\node[draw] (Huvudmodul) {\textbf{Huvudmodul}};
+\node[below left = of Huvudmodul,minimum width=0,inner sep=2pt] (Sensormodul) {Sensormodul};
+\node[below right = of Huvudmodul, minimum width = 0, inner sep = 2pt] (Styrmodul) {Styrmodul};
+\node[above = 5 em of Huvudmodul, minimum width = 0, inner sep = 2pt] (Datormodul) {Datormodul};
+
+%\node[below right = of Styrmodul, minimum width = 0, inner sep = 2pt] (Motorer) {Motorer};
+%\node[below left = of Styrmodul, minimum width = 0, inner sep= 2pt] (Gripklo) {Gripklo}
+
+
+\draw[->] (Huvudmodul) [out=60,in=300] to node [midway, right] {sensordata} (Datormodul);
+\draw[<-] (Huvudmodul) [out=120,in=240] to node [midway, left] {kommandon}  (Datormodul);
+
+\draw[<-] (Huvudmodul) [out=240,in=90] to node [near end, left] {enheter} (Sensormodul);
+\draw[->] (Huvudmodul) [out=300,in=90] to node [near end, right] {sensordata} (Styrmodul);
+
+\end{tikzpicture}
+\end{center}
 
 \end{document}
