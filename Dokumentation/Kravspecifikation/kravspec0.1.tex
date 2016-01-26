@@ -2,14 +2,18 @@
 
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
-
+%\usepackage{titlesec}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes}
 
 \def\arraystretch{1.5}
 \graphicspath{ {images/} }
-
+\setlength{\LTpost}{0pt}
 \pagenumbering{roman}
+\setlength{\LTpost}{0pt}%
+
+%\titlespacing*{\subsection}{0pt}{1.1\baselineskip}{\baselineskip}
+
 
 \begin{document}
 \begin{titlepage}
@@ -66,12 +70,12 @@ Linköpings tekniska högskola, ISY
 
 \begin{tabular}{|l|l|l|l|} \hline
 \textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post}  \\ \hline 
-Isak Strömberg & Projektledare & 073-980 38 50 & isast763@student.liu.se \\ \hline
-Olle Hynén Ulfsjöö & - & 070-072 91 84 & ollul666@student.liu.se \\ \hline
-Emil Wasteson & - & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
-Elena Tronje & - & 072-276 92 93 & eletr654@student.liu.se \\ \hline
-Zimon Inge & - & 070-171 35 18 & zimin415@student.liu.se \\ \hline
-Lovisa Gustafsson & - & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
+Isak Strömberg (IS) & Projektledare & 073-980 38 50 & isast763@student.liu.se \\ \hline
+Olle Hynén Ulfsjöö (OHU)& - & 070-072 91 84 & ollul666@student.liu.se \\ \hline
+Emil Wasteson (EW) & - & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
+Elena Tronje (ET) & - & 072-276 92 93 & eletr654@student.liu.se \\ \hline
+Zimon Inge (ZI)& - & 070-171 35 18 & zimin415@student.liu.se \\ \hline
+Lovisa Gustafsson (LG) & - & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
 \end{tabular}
 
 \end{center}
@@ -98,7 +102,7 @@ Handledare:
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & 2016-01-25 &  Första utkastet & Grupp 4 & Nej \\ \hline
+0.1 & 2016-01-25 &  Första utkastet & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -353,11 +357,6 @@ Original &
 Huvudmodulen ska kunna kalibrera styrenheten &
 1 \\ \hline
 
-Krav nr\kravlista & 
-Original &
-text text &
-1 \\ \hline
-
 \end{longtable}
 \end{center}
 
@@ -430,18 +429,13 @@ Sensormodulen ska presentera utgående data på en display. &
 
 \begin{center}
 \begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
-
 Krav nr\kravlista & 
 Original &
 Sensormodulen ska konvertera sensorers mätdata till SI-enheter. &
 1 \\ \hline
-
-
-
 \end{longtable}
 \end{center}
-
-\pagebreak
+%\newpage
 
 \section{Delsystem 3 - Styrmodul}
 
