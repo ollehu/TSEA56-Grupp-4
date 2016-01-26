@@ -161,7 +161,12 @@ Roboten ska utifrån en definierad startpunkt utforska en okänd labyrint. Under
 
 \subsection{Produktkomponenter}
 
-
+Roboten skall internt bestå av tre komponenter:
+\begin{itemize}
+\item{En sensorkomponent vilken ska läsa av labyrinten samt bestämma avstånd och vinklar i densamma.} 
+\item{En styrkomponent som sköter robotens drivlina och gripklo.}
+\item{En huvudkomponent som kan kommunicera en karta av labyrinten till en extern dator samt mottaga kommandon från samma dator. Huvudkomponenten skall därtill ge kommondon till styrkomponenten och kunna ta emot information från sensorkomponenten.}  
+\end{itemize}  
 
 \subsection{Beroenden till andra system}
 
