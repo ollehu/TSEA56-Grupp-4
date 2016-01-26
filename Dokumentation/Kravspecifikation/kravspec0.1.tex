@@ -105,15 +105,52 @@ Handledare:
 
 \section{Inledning}
 
+Detta projekt har i uppgift att konstruera en robot. Innehållet i detta dokument specificerar vilken uppgift den fyller samt vilka krav som ställs på den.
+
 \subsection{Parter}
+I projektet finns följande parter:
+
+\begin{itemize}
+  \item \textbf{Beställare} av roboten är Mattias Krysander.
+  \item \textbf{Handledare} från Linköpinngs universitet kommer att tilldelas vid senare tillfälle.
+  \item \textbf{Expeter} finns att tillgå inom relevanta områden.
+  \item \textbf{Projektgruppen} bestående av studenter vid I-programmet vid Linköpings universitet.
+\end{itemize}
 
 \subsection{Syfte och mål}
+Syftet med projektet är att ta fram en första prototyp av en undsättningsrobot. 
+
+Målsättningen är att roboten ska kunna genomföra sitt uppdrag.
 
 \subsection{Användning}
+Den färdiga roboten kommer att genomgå tester för att stämma av att kraven uppfyllts, samt en tävling mot robotar med samma projektdirektiv.
 
 \subsection{Bakgrundsinformation}
 
+Det finns ett intresse av att ta fram en robot som kan undersöka grottor och hjälpa nödställda. För att göra stor nytta ska den klara av okända områden och kunna beräkna kortaste vägen. 
+
 \subsection{Definitioner}
+Kraven listas enligt följade mall:
+
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+Krav nr x & 
+Status &
+Beskrivning av krav x &
+Prioritet \\ \hline
+\end{longtable}
+\end{center}
+
+Varje krav har ett unikt nummer och en status, till exempel original och förändrat 2016-xx-xx. Beskrivningen visar vad som ska uppfyllas. Prioritet kan sättas i en tregradig skala enligt följande:
+
+
+\pagebreak
+\begin{itemize}
+  \item Prioritet 1 är grundkrav, sådant som ska finnas med i den färdiga produkten.
+  \item Prioritet 2 är krav som ska uppfyllas om det finns tid kvar då krav av prioritet 1 uppfyllts.
+  \item Prioritet 3 är krav på framtida utbyggnad. Dessa uppfylls om det finns tid kvar då krav av prioritet 2 uppfyllts.
+\end{itemize}
+
 
 \pagebreak
 \section{Översikt av systemet}
@@ -124,15 +161,24 @@ Roboten ska utifrån en definierad startpunkt utforska en okänd labyrint. Under
 
 \subsection{Produktkomponenter}
 
-
-
 \subsection{Beroenden till andra system}
 
+Roboten ska med hälp av blåtand kunna kommunicera med en extern PC. Data ska kunna gå både från roboten till PC:n och vice versa.
+
 \subsection{Ingående delsystem}
+Roboten ska bestå av följande delsystem:
+\begin{itemize}
+	\item Huvudmodul som sköter alla beräkningar och all kommunikation
+	\item Styrmodul som tar emot styrkommandon och kontrollerar robotens rörelser
+	\item Sensormodul som tar emot data från robotens sensorer skickar vidare till huvudmodulen
+\end{itemize}
 
 \subsection{Avgränsningar}
 
+\textit{vad ska det stå här?}
+
 \subsection{Designfilosofi}
+\textit{vad ska stå här?}
 
 \subsection{Generella krav på hela systemet}
 Nedan listas generella krav på hela systemet
@@ -142,7 +188,12 @@ Nedan listas generella krav på hela systemet
 
 Krav nr\kravlista & 
 Original & 
-Roboten ska kunna navigera autonomt i en labyrint. & 
+Roboten ska kunna navigera autonomt i en labyrint (designad enligt en given banspecifikation). & 
+1 \\ \hline %Hur ska vi göra med dessa krav?
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna kommunicera med en dator via blåtand& 
 1 \\ \hline
 
 \end{longtable}
@@ -455,8 +506,18 @@ Original &
 \end{longtable}
 \end{center}
 
-\pagebreak
 \section{Krav på vidareutveckling}
+
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+
+Krav nr\kravlista &
+Original &
+\textit{vad ska det stå här?}&
+1 \\ \hline
+
+\end{longtable}
+\end{center}
 
 \section{Tillförlitlighet}
 
@@ -556,10 +617,42 @@ Efterstudie & SE & \textit{Reflekterar över projektet.} &Projektgrupp & .pdf \\
 
 \section{Utbildning}
 
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+
+Krav nr\kravlista &
+Original &
+\textit{vad ska det stå här?}&
+1 \\ \hline
+
+\end{longtable}
+\end{center}
+
 \section{Kvalitetskrav}
+
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+
+Krav nr\kravlista &
+Original &
+\textit{vad ska det stå här?}&
+1 \\ \hline
+
+\end{longtable}
+\end{center}
 
 \section{Underhållsbarhet}
 
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+
+Krav nr\kravlista &
+Original &
+\textit{vad ska det stå här?}&
+1 \\ \hline
+
+\end{longtable}
+\end{center}
 
 \pagebreak
 \section{Referenser}
