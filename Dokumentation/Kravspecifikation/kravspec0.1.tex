@@ -161,6 +161,7 @@ Roboten ska utifrån en definierad startpunkt utforska en okänd labyrint. Under
 
 \subsection{Produktkomponenter}
 
+<<<<<<< HEAD
 Roboten skall internt bestå av tre komponenter:
 \begin{itemize}
 \item{En sensorkomponent vilken ska läsa av labyrinten samt bestämma avstånd och vinklar i densamma.} 
@@ -168,13 +169,26 @@ Roboten skall internt bestå av tre komponenter:
 \item{En huvudkomponent som kan kommunicera en karta av labyrinten till en extern dator samt mottaga kommandon från samma dator. Huvudkomponenten skall därtill ge kommondon till styrkomponenten och kunna ta emot information från sensorkomponenten.}  
 \end{itemize}  
 
+=======
+>>>>>>> ddebd4e86abdc7f369cfcafd949fc25dbb53f3c2
 \subsection{Beroenden till andra system}
 
+Roboten ska med hälp av blåtand kunna kommunicera med en extern PC. Data ska kunna gå både från roboten till PC:n och vice versa.
+
 \subsection{Ingående delsystem}
+Roboten ska bestå av följande delsystem:
+\begin{itemize}
+	\item Huvudmodul som sköter alla beräkningar och all kommunikation
+	\item Styrmodul som tar emot styrkommandon och kontrollerar robotens rörelser
+	\item Sensormodul som tar emot data från robotens sensorer skickar vidare till huvudmodulen
+\end{itemize}
 
 \subsection{Avgränsningar}
 
+\textit{vad ska det stå här?}
+
 \subsection{Designfilosofi}
+\textit{vad ska stå här?}
 
 \subsection{Generella krav på hela systemet}
 Nedan listas generella krav på hela systemet
@@ -184,7 +198,12 @@ Nedan listas generella krav på hela systemet
 
 Krav nr\kravlista & 
 Original & 
-Roboten ska kunna navigera autonomt i en labyrint. & 
+Roboten ska kunna navigera autonomt i en labyrint (designad enligt en given banspecifikation). & 
+1 \\ \hline %Hur ska vi göra med dessa krav?
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna kommunicera med en dator via blåtand& 
 1 \\ \hline
 
 \end{longtable}
@@ -497,8 +516,18 @@ Original &
 \end{longtable}
 \end{center}
 
-\pagebreak
 \section{Krav på vidareutveckling}
+
+\begin{center}
+\begin{longtable}{|l|l|p{.65\linewidth}|l|} \hline
+
+Krav nr\kravlista &
+Original &
+\textit{vad ska det stå här?}&
+1 \\ \hline
+
+\end{longtable}
+\end{center}
 
 \section{Tillförlitlighet}
 
