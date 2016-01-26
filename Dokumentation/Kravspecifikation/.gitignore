@@ -1,6 +1,7 @@
 # Latex files
 
 *.aux
+*.pdf
 *.glo
 *.idx
 *.log
