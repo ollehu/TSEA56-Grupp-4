@@ -1,0 +1,43 @@
+% Smått o gott
+
+\usepackage[margin=3cm]{geometry}
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{ragged2e}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{pbox}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{tabu}
+\usepackage{hyperref}
+
+\newcounter{kravnummer}
+\setcounter{kravnummer}{1}
+\newcommand{\kravlista}{
+	\arabic{kravnummer}
+	\stepcounter{kravnummer}
+}
+
+\pagestyle{fancy}
+
+\chead{Undsättningsrobot}
+\rhead{\today}
+\lhead{}
+\lfoot{
+	TSEA56 
+	\\
+	LIPS Projektplan
+}
+\rfoot{
+	Projektgrupp 4
+	\\
+	e-post: isast763@student.liu.se
+}
