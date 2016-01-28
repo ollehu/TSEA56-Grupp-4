@@ -162,6 +162,7 @@ Varje krav har ett unikt nummer och en status, till exempel original och förän
 
 \pagebreak
 \section{Översikt av systemet}
+Beskrivande av produktens system, komponenter och beroende av andra system.
 
 \begin{figure}[htbp]
 \centering
@@ -188,7 +189,7 @@ Roboten ska utifrån en definierad startpunkt utforska en okänd labyrint. Under
 
 \subsection{Produktkomponenter}
 
-Roboten skall internt bestå av tre komponenter:
+I enighet med Figur 1 ska roboten internt bestå av tre komponenter:
 \begin{itemize}
 \item{En sensorkomponent vilken ska läsa av labyrinten samt bestämma avstånd och vinklar i densamma.} 
 \item{En styrkomponent som sköter robotens drivlina och gripklo.}
@@ -209,11 +210,12 @@ Roboten ska bestå av följande delsystem:
 \end{itemize}
 
 \subsection{Avgränsningar}
+	\item Det är ej av högsta prioritet att roboten ska kunna styras i realtid. Först när alla krav med högsta prioritet är uppfyllda så kommer det att beaktas.
+	\item Det är inte heller av högsta prioritet att roboten ska kunna manövrera i öppna rum, utan beaktas först när alla krav av prioritet 1 är uppfyllda.
 
-\textit{vad ska det stå här?}
 
 \subsection{Designfilosofi}
-\textit{vad ska stå här?}
+Designen ska vara utformad på ett sätt så att inte försvårar styrningen av roboten. I och med att design inte poängsätts i tävlingen så ställs inga direkta krav på designen, mer än att vara så funktionell som möjligt.
 
 \subsection{Generella krav på hela systemet}
 Nedan listas generella krav på hela systemet
