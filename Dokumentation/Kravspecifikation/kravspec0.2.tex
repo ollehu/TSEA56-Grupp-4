@@ -223,12 +223,42 @@ Nedan listas generella krav på hela systemet
 
 Krav nr\kravlista & 
 Original & 
-Roboten ska kunna navigera autonomt i en labyrint (designad enligt en given banspecifikation). & 
-1 \\ \hline %Hur ska vi göra med dessa krav?
+Roboten ska kunna navigera autonomt i en bana enligt banspecifikation med restriktioner till korridor i Appendix A & 
+1 \\ \hline 
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna navigera autonomt i en bana enligt banspecifikation med öppna rum i Appendix A & 
+2 \\ \hline
 
 Krav nr\kravlista & 
 Original & 
 Roboten ska kunna kommunicera med en dator via blåtand& 
+1 \\ \hline
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna kartlägga autonomnt & 
+1 \\ \hline
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna beräkna och köra kortaste väg till en given punkt enligt manhattanprincipen & 
+1 \\ \hline
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna beräkna kortaste väg till en given punkt enligt euklidisk norm & 
+2 \\ \hline
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna fjärrstyras &
+1 \\ \hline
+
+Krav nr\kravlista & 
+Original & 
+Roboten ska kunna köra in på banan och lämna förnödenhet till nödställd & 
 1 \\ \hline
 
 \end{longtable}
@@ -236,6 +266,8 @@ Roboten ska kunna kommunicera med en dator via blåtand&
 
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
+
+I enlighet med figur 2 ska huvudmodulen ha kommunikation med robotens övriga moduler.
 
 \begin{figure}[htbp]
 \centering
@@ -363,6 +395,8 @@ Huvudmodulen ska kunna kalibrera styrenheten &
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
 
+I enlighet med figur 3 ska sensormodulen ha kommunikation med sensorer och huvudmodulen.
+
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[scale=1]
@@ -392,8 +426,6 @@ Krav nr\kravlista &
 Original &
 Sensormodulen ska samla in data från samtliga sensorer. &
 1 \\ \hline
-
-
 
 \end{longtable}
 \end{center}
@@ -438,6 +470,8 @@ Sensormodulen ska konvertera sensorers mätdata till SI-enheter. &
 %\newpage
 
 \section{Delsystem 3 - Styrmodul}
+
+I enlighet med figur 4 ska styrmodulen ha kommunikation med hjulens motorer och huvudmodulen.
 
 \begin{figure}[htbp]
 \centering
@@ -518,6 +552,8 @@ Styrmodulen ska kunna öppna och stänga gripklon&
 
 \pagebreak
 \section{Delsystem 4 - Datormodul}
+
+I enlighet med figur 5 ska datormodulen ha kommunikation med användaren och huvudmodulen.
 
 \begin{figure}[htbp]
 \centering
