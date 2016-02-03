@@ -1,12 +1,12 @@
-\documentclass{standalone}
+\documentclass[crop,tikz]{standalone}
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
 \begin{document}
 \begin{tikzpicture}
-\footnotesize
+%\footnotesize
 
-\tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=80pt, minimum width=90pt}}
+\tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=100pt, minimum width=100pt}}
 
 \node(bestallare) {\textbf{Beställare} \\ \vspace{2mm} Mattias Krysander};
 
@@ -17,18 +17,20 @@
 
 \node[below left = 50pt and -35pt of projektgrupp] (pm3) {\textbf{Hårdvaruansvarig} \\ \vspace{2mm} Emil Wasteson};
 \node[below right = 50pt and -35pt of projektgrupp] (pm4) {\textbf{Mjukvaruansvarig} \\ \vspace{2mm} Elena Tronje};
-\node[left = 20pt of pm3] (pm2) {\textbf{Dokumentansvarig} \\ \vspace{2mm} Olle Hynén Ulfsjöö};
-\node[left = 20pt of pm2] (pm1) {\textbf{Projektledare} \\ \vspace{2mm} Isak Strömberg};
-\node[right = 20pt of pm4] (pm5) {\textbf{Testansvarig} \\ \vspace{2mm} Zimon Inge};
-\node[right = 20pt of pm5] (pm6) {\textbf{Leveransansvarig} \\ \vspace{2mm} Lovisa Gustafsson};
+\node[below = 20pt of pm3] (pm2) {\textbf{Dokumentansvarig} \\ \vspace{2mm} Olle Hynén Ulfsjöö};
+\node[below = 20pt of pm2] (pm1) {\textbf{Projektledare} \\ \vspace{2mm} Isak Strömberg};
+\node[below = 20pt of pm4] (pm5) {\textbf{Testansvarig} \\ \vspace{2mm} Zimon Inge};
+\node[below = 20pt of pm5] (pm6) {\textbf{Leveransansvarig} \\ \vspace{2mm} Lovisa Gustafsson};
 
-\coordinate (membertop) at ($(projektgrupp.south)+(0,-40pt)$);
+\coordinate (membertop1) at ($(projektgrupp.south)+(0,-70pt)$);
+\coordinate (membertop2) at ($(membertop1)+(0,-60pt)$);
+\coordinate (membertop3) at ($(membertop2)+(0,-60pt)$);
 \coordinate(helptop) at ($(projektgrupp.east)+(30pt,0)$);
 
-\draw[thick] (projektgrupp) -- (membertop)
-	(pm1.north) |- (membertop) -| (pm6.north)
-	(pm2.north) |- (membertop) -| (pm5.north)
-	(pm3.north) |- (membertop) -| (pm4.north)
+\draw[thick] (projektgrupp) -- (membertop1)
+	(pm1.east) -| (membertop2) |- (pm6.west)
+	(pm2.east) -| (membertop1) |- (pm5.west)
+	(pm3.east) -| (membertop1) |- (pm4.west)
 	
 	(projektgrupp.east) -- (helptop)
 	(handledare.west) -| (helptop) |- (experter.west)
