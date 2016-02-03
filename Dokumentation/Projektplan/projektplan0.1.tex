@@ -2,6 +2,7 @@
 
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
+\usepackage{parskip}
 %\usepackage{titlesec}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes}
@@ -46,7 +47,7 @@ Strömberg, Isak&\verb+isast763+
 \vspace{5em}
 \today
 
-\vspace{18em}
+\vspace{16em}
 Status
 \begin{longtable}{|l|l|l|} \hline
 
@@ -71,11 +72,11 @@ Linköpings tekniska högskola, ISY
 \begin{tabular}{|l|l|l|l|} \hline
 \textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post}  \\ \hline 
 Isak Strömberg (IS) & Projektledare & 073-980 38 50 & isast763@student.liu.se \\ \hline
-Olle Hynén Ulfsjöö (OHU)& - & 070-072 91 84 & ollul666@student.liu.se \\ \hline
-Emil Wasteson (EW) & - & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
-Elena Tronje (ET) & - & 072-276 92 93 & eletr654@student.liu.se \\ \hline
-Zimon Inge (ZI)& - & 070-171 35 18 & zimin415@student.liu.se \\ \hline
-Lovisa Gustafsson (LG) & - & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
+Olle Hynén Ulfsjöö (OHU)& Dokumentansvarig & 070-072 91 84 & ollul666@student.liu.se \\ \hline
+Emil Wasteson (EW) & Hårdvaruansvarig & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
+Elena Tronje (ET) & Mjukvaruansvarig & 072-276 92 93 & eletr654@student.liu.se \\ \hline
+Zimon Inge (ZI)& Testansvarig & 070-171 35 18 & zimin415@student.liu.se \\ \hline
+Lovisa Gustafsson (LG) & Leveransansvarig & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
 \end{tabular}
 
 \end{center}
@@ -83,14 +84,16 @@ Lovisa Gustafsson (LG) & - & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
 E-postlista för hela gruppen: isast763@student.liu.se
 
 \vspace{5em}
-Kund: ISY, Linköpings universitet\\
-tel: 013-28 10 00, fax: 013-13 92 82, e-post: 
-
-Kontaktperson hos kund:
+Kund: ISY, Linköpings universitet \\
+tel: 013-28 10 00, fax: 013-13 92 82 \\
+Kontaktperson hos kund: Mattias Krysander \\
+tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
 
 \vspace{5em}
-Kursansvarig:  \\
-Handledare: 
+Kursansvarig:  Tomas Svensson\\
+tel: 013-28 13 68, e-post: tomass@isy.liu.se \\
+Handledare: Peter Johansson \\
+tel: 013-28 13 45, epost: peter.a.johansson@liu.se
 \end{center}
 \pagebreak
 
@@ -112,28 +115,31 @@ Handledare:
 
 \begin{flushleft}
 \section{Beställare}
-text
+Beställare är Mattias Krysander, ISY Fordonssystem.
 
 \section{Översiktlig beskrivning av projektet}
 \subsection{Syfte och mål}
-text
+Syftet med projektet är att utveckla en undsättningsrobot som ska kunna leta upp nödställda i ett labyrintsystem för att sedan åka och hämta relevant nödutrustning. För att klara detta ska roboten kunna manövrera i små utrymmen. 
+
+Projektets mål är att maximera överlevnadschansen för de nödställda genom att på snabbast möjliga tid förse de nödställda med utrustning, alltså hitta kortast möjliga väg från ingång till nödställda.
+
 
 \subsection{Leveranser}
 text
 
 \subsection{Begränsningar}
-text
+Den totala tiden gruppen har för att slutföra projektet är 1 380 timmar. 
 
 \pagebreak
 \section{Fasplan}
 \subsection{Före projektstart}
-text
+I fasen före projektstart tas en kravspecifikation fram i samråd med beställaren. Denna specifikation har sin utgång i projektdirektivet gruppen fått ut. En utförlig tidsplan ska tas fram för att ge en översiktlig bild av vad som ska göras och hur mycket tid som ska läggas under vilka veckor. Före det praktiska arbetet inleds ska förstudier på alla delssystem göras så projektgruppen erhåller rätt kunskaper för att genomföra projektet. Även en systemskiss och projektplan ska tas fram före projektets start.
 
 \subsection{Under projektet}
-text
+Till att börja med görs en designspecifikation för att underlätta inför konstruktionsmomenten av roboten. Delsystemen konstrueras och tester sker för att kontrollera att de uppfyller kravspecifikationen. Alla tester dokumenteras. Om kravspecifikationen ej uppfylls ska möte med beställaren bokas för att se över eventuella ändringar i denna. Under projektets gång ska avstämning mot tids- och projektplan ske för att planerna efterföljs.
 
 \subsection{Efter projektet}
-text
+När roboten uppfyller alla krav i kravspecifikationen levereras den till beställaren. Därefter ska efterstudier göras för att analysera och utvärdera projektet. Efter projektet genomförs även en tävling mot grupper som har genomfört samma projekt för att se vilken grupp som har lyckats bäst. 
 
 \pagebreak
 \section{Organisationsplan för hela projektet}
@@ -144,10 +150,25 @@ text
 text
 
 \subsection{Villkor för samarbete inom projektgtuppen}
-text
+\begin{itemize}
+	\item Målsättning är att ha en fast mötestid i veckan då hela projektgruppen träffas. Vid mötet ska en veckoplan tas fram.
+	\item Gruppen eftersträvar att träffas i helgrupp ytterligare en gång i veckan för idéutbyte och gemensamt arbete.
+	\item Tekniskt arbete sker främst i grupper om två personer.
+	\item Programmering kan till stor del ske enskilt.
+\end{itemize}
 
 \subsection{Definition av arbetsinnehåll och ansvar}
-text
+\begin{itemize}
+	\item Projektledaren har ansvar att ha kontakt med beställaren samt andra grupper.
+	\item Inför gruppmötena har projektledaren ansvar att sal bokas.
+	\item I utgående mail ska projektledaren skicka kopior till övriga gruppmedlemmar.
+	\item Ingående mail som projektledaren mottager ska vidarebefodras till resten av gruppen.
+	\item Om inte gruppen eller projektledaren känner sig missnöjda ska nuvarande projektledare inneha rollen under hela projektets gång.
+	\item Utöver projektledaren tilldelas ej någon gruppmedlem en fast roll eller ett fast ansvar.
+	\item De uppgifter som bestäms på veckomötet ska ha en ytterst ansvarig person, oavsett hur många som arbetar med uppgiften.
+	\item Ansvarig gruppmedlem för en uppgift ska varken arbeta mer eller mindre än övriga i gruppen, enbart se till att uppgiften klaras av inom tidsramen.
+
+\end{itemize}
 
 \pagebreak
 \section{Dokumentplan}
