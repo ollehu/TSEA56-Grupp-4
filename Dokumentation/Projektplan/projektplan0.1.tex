@@ -14,6 +14,7 @@
 \setlength{\LTpost}{0pt}
 \pagenumbering{roman}
 \setlength{\LTpost}{0pt}%
+\usepackage{graphicx}
 %\usepackage[mode=buildnew]{standalone}
 
 %\titlespacing*{\subsection}{0pt}{1.1\baselineskip}{\baselineskip}
@@ -172,7 +173,8 @@ När roboten uppfyller alla krav i kravspecifikationen levereras den till bestä
 Projektet kommer bedrivas enligt hierarkin i figur \ref{hierarki}.
 \begin{figure}[htbp]
 \center
-\begin{tikzpicture}
+\begin{tikzpicture}[transform shape,scale=0.8]
+{
 %\footnotesize
 
 \tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=100pt, minimum width=100pt}}
@@ -205,6 +207,7 @@ Projektet kommer bedrivas enligt hierarkin i figur \ref{hierarki}.
 	(handledare.west) -| (helptop) |- (experter.west)
 	
 	(bestallare.south) -- (projektgrupp.north);
+}
 \end{tikzpicture}
 \caption{Projekthierarki} \label{hierarki}
 
@@ -288,11 +291,20 @@ Lovisa Gustafsson & Leveransansvarig & \vspace{-\baselineskip}
 
 \pagebreak
 \section{Dokumentplan}
-text
+Följande tabell presenterar de olika dokument som ingår i projektet. 
 
-\begin{longtable}{| p{.15\linewidth} | p{.12\linewidth} | p{.31\linewidth} | p{.15\linewidth} | p{.12\linewidth} |} \hline
+\begin{longtable}{| p{.17\linewidth} | p{.11\linewidth} | p{.31\linewidth} | p{.15\linewidth} | p{.11\linewidth} |} \hline
 \textbf{Dokument} & \textbf{Ansvarig} & \textbf{Syfte} & \textbf{Mottagare} & \textbf{Deadline} \\ \hline
-Krav-specifikation & någon & \textit{Definierar alla krav på systemet} & Beställare, projektgrupp & 2010-10-10 \\ \hline
+Krav-specifikation & Alla & \textit{Definierar alla krav på systemet.} & Beställare och projektgrupp & 2 feb \\ \hline
+Projektplan & Alla & \textit{Specificerar projektets upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
+Tidplan & Alla & \textit{Planerar arbetsinsatsen.} & Beställare och projektgrupp & 19 feb \\ \hline
+Systemskiss & Alla & \textit{Beskriver produktens upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
+Förstudie & Alla & \textit{Utforskar de tekniska alternativ som finns tillgängliga.} & Beställare, projektgrupp & 8 apr \\ \hline
+Design-specifikation & Alla & \textit{Ger en mer detaljerad beskrivning av produkten.} & Beställare, projektgrupp och hand-ledare & 5 apr \\ \hline
+Kappa & Alla & \textit{Sammanfattar projektet.} & Beställare & 19 maj \\ \hline
+Teknisk \mbox{dokumentation} & Alla & \textit{Beskriver tekniken bakom produkten.} & Beställare & 26 maj\\ \hline
+Användar-handledning & Alla & \textit{Beskriver hur produkten används.} & Beställare & 26 maj \\ \hline
+Efterstudie & Alla & \textit{Reflekterar över projektet.} & Projektgrupp & 3 jun \\ \hline
 
 \end{longtable}
 
