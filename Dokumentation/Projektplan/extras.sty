@@ -26,6 +26,13 @@
 	\stepcounter{kravnummer}
 }
 
+\newcounter{milstolpenummer}
+\setcounter{milstolpenummer}{1}
+\newcommand{\milstolpe}{
+	\arabic{milstolpenummer}
+	\stepcounter{milstolpenummer}
+}
+
 \pagestyle{fancy}
 
 \chead{Undsättningsrobot}
