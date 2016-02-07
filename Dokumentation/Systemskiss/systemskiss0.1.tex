@@ -18,6 +18,11 @@
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes.arrows}
 \usepackage{amsfonts}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{amssymb}
+\usetikzlibrary{shapes,arrows}
 
 %\usepackage[mode=buildnew]{standalone}
 
@@ -133,37 +138,8 @@ Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Robo
 Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt på roboten. Banan är uppbyggd enligt banspecifikationen \cite{banspec} och uppdraget utförs enligt tävlingsreglerna \cite{tavling}.
 \begin{figure}[htbp]
 \centering
-\begin{tikzpicture}[scale=1.2]
-		
-		\draw[thick] 	(0,0) -- (0,3);
-		\draw[thick] 	(1,7) -- (6,7) -- (6,2);
-					
-		\draw[thick,pattern=north west lines, pattern color=black]	 	(4,0) -- (4,2) -- (6,2) -- (6,0) -- (4,0);
-		
-		\draw[thick,pattern=north west lines, pattern color=black]
-						(0,3) -- (3,3) -- (3,4) -- (1,4)
-					--	(1,7) -- (0,7) -- (0,3);
-		
-		\draw[thick,pattern=north west lines, pattern color=black]
-						(2,5) -- (3,5) -- (3,6) -- (2,6)
-					--	(2,5);
-					
-		\draw[thick,pattern=north west lines, pattern color=black]		(4,3) -- (5,3) -- (5,6) -- (4,6)
-					--	(4,3);
-					
-		\draw[thick,pattern=north west lines, pattern color=black]
-				(4,0) -- (1,0) -- (1,2) -- (3,2) -- (3,0);
-				
-		\draw[thick,->] (0.5,0) -- (0.5,0.5);
-		
-		\draw[thick] (4.2,2.2) rectangle (5,2.8) node[pos=.5] {\tiny Robot};
-		\draw[thick] (1.2,6.2) rectangle (1.8,6.8);
-		\draw[thick,<-] (1.8,6.5) -- (2.3,6.5) node[right] {\tiny Nödställd};
-		\draw[thick, <-,overlay] (5.1,2.5) [out=0,in=-45] to (7,4) node [right=.5em] {\tiny Bluetooth\textsuperscript{\circledR}};
-		\draw[thick,->,overlay] (7,4) [out=125,in=180] to (9,5) ;
-		\node[]  at (10,5) {\includegraphics[scale=0.8]{laptop}};
-		\node[overlay] at (10,4) {Datormodul};
-	\end{tikzpicture}
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/overview}}
 	\caption{Översikt av systemet \label{system}}	
 \end{figure}
 
@@ -192,7 +168,13 @@ Delsystemen och dess ingående komponenter finns beskrivna nedan.
 
 Ovanstående mikroprocessorer är av typ \verb+ATmega**+ där versionen bestäms i ett senare skede. Sensorerna består av avståndsmätare, vinkelhastighets-sensorer och identifierare av nödställd. 
 \subsection{Kommunikation mellan delsystem}
-Kommunikationen mellan modulerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{i2c}.
+Kommunikationen mellan modulerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{communication}.
+
+\begin{figure}[htbp]
+\noindent\resizebox{.97\textwidth}{!}{
+	\input{images/communication}	}
+	\caption{Intermodulär kommunikation \label{communication}}
+\end{figure}
 
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
