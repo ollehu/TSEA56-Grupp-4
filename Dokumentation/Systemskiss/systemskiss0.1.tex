@@ -152,6 +152,7 @@ Delsystemen och dess ingående komponenter finns beskrivna nedan.
 \begin{description}
 	\item[Delsystem 1 - Huvudmodul] \hfill \\
 	Mikroprocessor \\
+	Brytare för autonomt/manuellt-läge \\
 	Bluetooth\textsuperscript{\circledR} sändare/mottagare
 	\item[Delsystem 2 - Sensormodul] \hfill \\
 	Mikroprocessor \\
@@ -168,7 +169,7 @@ Delsystemen och dess ingående komponenter finns beskrivna nedan.
 
 Ovanstående mikroprocessorer är av typ \verb+ATmega**+ där versionen bestäms i ett senare skede. Sensorerna består av avståndsmätare, vinkelhastighets-sensorer och identifierare av nödställd. 
 \subsection{Kommunikation mellan delsystem}
-Kommunikationen mellan modulerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{communication}.
+Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{communication}. Mellan huvudmodulen och datormodulen sker kommunikationen via Bluetooth\textsuperscript{\circledR}.
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
