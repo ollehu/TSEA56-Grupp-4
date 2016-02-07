@@ -17,6 +17,7 @@
 \usepackage{graphicx}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes.arrows}
+\usepackage{amsfonts}
 
 %\usepackage[mode=buildnew]{standalone}
 
@@ -129,7 +130,7 @@ Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Robo
 
 \pagebreak
 \section{Översikt av systemet}
-
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt på roboten. Banan är uppbyggd enligt banspecifikationen \cite{banspec} och uppdraget utförs enligt tävlingsreglerna \cite{tavling}.
 \begin{figure}[htbp]
 \centering
 \begin{tikzpicture}[scale=1.2]
@@ -158,7 +159,7 @@ Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Robo
 		\draw[thick] (4.2,2.2) rectangle (5,2.8) node[pos=.5] {\tiny Robot};
 		\draw[thick] (1.2,6.2) rectangle (1.8,6.8);
 		\draw[thick,<-] (1.8,6.5) -- (2.3,6.5) node[right] {\tiny Nödställd};
-		\draw[thick, <-,overlay] (5.1,2.5) [out=0,in=-45] to (7,4) node [right=.5em] {\tiny Bluetooth};
+		\draw[thick, <-,overlay] (5.1,2.5) [out=0,in=-45] to (7,4) node [right=.5em] {\tiny Bluetooth\textsuperscript{\circledR}};
 		\draw[thick,->,overlay] (7,4) [out=125,in=180] to (9,5) ;
 		\node[]  at (10,5) {\includegraphics[scale=0.8]{laptop}};
 		\node[overlay] at (10,4) {Datormodul};
@@ -168,14 +169,34 @@ Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Robo
 
 
 \subsection{Beskrivning av systemet}
-text
+Roboten navigerar själva banan med hjälp av flertal sensorer, dessa finns specificerade i \mbox{kapitel \ref{sec:sensormodul}}. En regleringsmodell ser till att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
+
 \subsection{Delsystem}
-text
+Delsystemen och dess ingående komponenter finns beskrivna nedan.
+\begin{description}
+	\item[Delsystem 1 - Huvudmodul] \hfill \\
+	Mikroprocessor \\
+	Bluetooth\textsuperscript{\circledR} sändare/mottagare
+	\item[Delsystem 2 - Sensormodul] \hfill \\
+	Mikroprocessor \\
+	Sensorer
+	\item[Delsystem 3 - Styrmodul] \hfill \\
+	Mikroprocessor \\
+	Motorer till hjul och gripklo \\
+	LCD-display
+	\item[Delsystem 4 - Datormodul] \hfill \\
+	Dator \\
+	GUI \\
+	Bluetooth\textsuperscript{\circledR} sändare/mottagare
+\end{description}
+
+Ovanstående mikroprocessorer är av typ \verb+ATmega**+ där versionen bestäms i ett senare skede. Sensorerna består av avståndsmätare, vinkelhastighets-sensorer och identifierare av nödställd. 
 \subsection{Kommunikation mellan delsystem}
-text
+Kommunikationen mellan modulerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{i2c}.
 
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
+\label{sec:huvudmodul}
 text
 \subsection{LCD-display}
 text
@@ -184,6 +205,7 @@ text
 
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
+\label{sec:sensormodul}
 text
 \subsection{Sensorer}
 text
@@ -212,6 +234,14 @@ text
   Grupp 4,
   \emph{Kravspecifikation 1.0},
   2016-02-03
+  
+\bibitem{banspec}
+	Grupp 1-4,
+	\emph{Banspecifikation 1.0}
+	
+\bibitem{tavling}
+	Grupp 1-4,
+	\emph{Tävlingsregler 1.0}
 
 \end{thebibliography}
 
