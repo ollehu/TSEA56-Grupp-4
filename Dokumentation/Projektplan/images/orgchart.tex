@@ -4,6 +4,7 @@
 \usetikzlibrary{positioning}
 \begin{document}
 \begin{tikzpicture}
+{
 %\footnotesize
 
 \tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=100pt, minimum width=100pt}}
@@ -12,14 +13,14 @@
 
 \node[below=20pt] (projektgrupp) at (bestallare.south) {\textbf{Projektgrupp} \\ \vspace{2mm} Grupp 4};
 
-\node[above right=-15pt and 40pt of projektgrupp] (handledare) {\textbf{Handledare} \\ \vspace{2mm} Peter Johansson};
-\node[below right=-15pt and 40pt of projektgrupp] (experter) {\textbf{Experter}};
+\node[above right=-15pt and 40pt of projektgrupp,overlay] (handledare) {\textbf{Handledare} \\ \vspace{2mm} Peter Johansson};
+\node[below right=-15pt and 40pt of projektgrupp,overlay] (experter) {\textbf{Experter}};
 
-\node[below left = 50pt and -35pt of projektgrupp] (pm3) {\textbf{Hårdvaruansvarig} \\ \vspace{2mm} Emil Wasteson};
-\node[below right = 50pt and -35pt of projektgrupp] (pm4) {\textbf{Mjukvaruansvarig} \\ \vspace{2mm} Elena Tronje};
-\node[below = 20pt of pm3] (pm2) {\textbf{Dokumentansvarig} \\ \vspace{2mm} Olle Hynén Ulfsjöö};
-\node[below = 20pt of pm2] (pm1) {\textbf{Projektledare} \\ \vspace{2mm} Isak Strömberg};
-\node[below = 20pt of pm4] (pm5) {\textbf{Testansvarig} \\ \vspace{2mm} Zimon Inge};
+\node[below left = 50pt and -35pt of projektgrupp] (pm3) {\textbf{Projektledare} \\ \vspace{2mm} Isak Strömberg};
+\node[below right = 50pt and -35pt of projektgrupp] (pm4) {\textbf{Dokumentansvarig} \\ \vspace{2mm} Olle Hynén Ulfsjöö};
+\node[below = 20pt of pm3] (pm2) {\textbf{Hårdvaruansvarig} \\ \vspace{2mm} Emil Wasteson};
+\node[below = 20pt of pm2] (pm1) {\textbf{Testansvarig} \\ \vspace{2mm} Zimon Inge};
+\node[below = 20pt of pm4] (pm5) {\textbf{Mjukvaruansvarig} \\ \vspace{2mm} Elena Tronje};
 \node[below = 20pt of pm5] (pm6) {\textbf{Leveransansvarig} \\ \vspace{2mm} Lovisa Gustafsson};
 
 \coordinate (membertop1) at ($(projektgrupp.south)+(0,-70pt)$);
@@ -36,5 +37,6 @@
 	(handledare.west) -| (helptop) |- (experter.west)
 	
 	(bestallare.south) -- (projektgrupp.north);
+}
 \end{tikzpicture}
 \end{document}
