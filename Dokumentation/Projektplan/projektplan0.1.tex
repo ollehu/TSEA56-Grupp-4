@@ -2,9 +2,9 @@
 
 \usepackage{extras} % Se extras.sty
 
-\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 
 \begin{document}
 \begin{titlepage}
@@ -328,11 +328,54 @@ Nedan följer en tabell över de beslutspunkter projektet kommer innehålla:
 \section{Aktiviteter}
 text
 
-\begin{longtable}{| p{.05\linewidth} | p{.15\linewidth} | p{.4\linewidth} | p{.15\linewidth} | p{.1\linewidth} |} \hline
-\textbf{Nr.} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Föregångare} & \textbf{Tid [h]} \\ \hline
-1 & Testplanering & Utarbeta testplan enligt standard IEEE730 & 2 15 & 20 \\ \hline
-
+\begin{longtable}{| p{.05\linewidth} | p{.25\linewidth} | p{.4\linewidth} | p{.1\linewidth} | p{.05\linewidth} |} \hline
+\textbf{Nr.} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Före-gångare} & \textbf{Tid [h]} \\ \hline
+\kravlista & Förstudie: Reglering & Förstudie som behandlar reglering av styrningen & - & 100 \\ \hline
+\kravlista & Förstudie: Sensorer & Förstudie som behandlar val av sensorer & - & 100 \\ \hline
+\kravlista & Förstudie: Kommunikation & Förstudie som behandlar den intermodulära kommunikationen & - & 100 \\ \hline
+\kravlista & Design-specifikation & En detaljerad beskrivning av roboten och dess komponenter & - & 100 \\ \hline
+\kravlista & I\textsuperscript{2}C-buss & Konfigurerar I\textsuperscript{2}C-bussen mellan de tre modulerna & - & 45 \\ \hline
+\kravlista & Avbrotts-hantering för kommunikation & Möjliggör för dubbelsidig kommunikation längs I\textsuperscript{2}C-bussen & - & 15 \\ \hline
+\kravlista & Installera sensor som identifierar nödställd & Installera och konfigurera sensorn som identerifierar den nödställde & - & 15 \\ \hline
+\kravlista & Installera vinkelhastighetssensor & Installera och konfigurera sensor för vinkelhastighet & - & 15 \\ \hline
+\kravlista & Installera avståndssensor & Installera och konfigurera sensor för avståndsmätning & - & 15 \\ \hline
+\kravlista & Skicka data från huvud- till styrmodul & Kunna skicka styrkommandon och sensordata från huvud- till styrmodulen & 5 & 25 \\ \hline
+\kravlista & Kommunikation av sensordata & Huvudmodulen ska ta emot konverterad sensordata från sensormodulen & 5, 6, 13 & 25 \\ \hline
+\kravlista & Byte mellan autonom/-manuellt-läge & Huvudmodulen ska kopplas samman med en brytare som styr mellan autonomt/manuellt-läge & - & 10 \\ \hline
+\kravlista & Sensorerna ska läsas av sensormodulen & Sensormodulen ska kontinuerligt avläsa sensorernas mätvärden & 7, 8, 9 & 25 \\ \hline
+\kravlista & Sensormodulen ska konvertera sensordata & Sensordata ska konverteras till en digital SI-enhet & 13 & 35 \\ \hline
+\kravlista & Sensorvärden presenteras på LCD-display & Styrmodulen kommunicerar och presenterar relevanta sensordata på en LCD-display & 14, 10 & 35 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Datormodul $\rightarrow$ Huvudmodul & Datormodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & - & 55 \\ \hline
+\kravlista & Brusfiltrering & Sensormodulen ska kunna filtrera sensordata så störningar minimeras & 13 & 25 \\ \hline
+\kravlista & Identifikation av nödställd & Sensormodulen ska kunna identifiera den nödställde & 13 & 25 \\ \hline
+\kravlista & Kommunicera sensordata från sensor- till huvudmodul & Det konverterade sensordatan ska kunna kommuniceras från sensormodulen & 14, 11 & 25\\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & - & 55 \\ \hline
+\kravlista & Ta emot styrkommandon & Styrmodulen ska kunna ta emot styrkommandon från huvudmodulen & 16 & 25 \\ \hline
+\kravlista & Skicka styrkommandon & Datormodulen ska kunna skicka styrkommandon till huvudmodulen & 16 & 55 \\ \hline
+\kravlista & Manuell styrning & Styrmodulen ska kunna hantera kommandon för manuell styrning & 10, 16 & 35 \\ \hline
+\kravlista & Styrreglering & Huvudmodulen ska kunna reglera styrning utifrån sensordata & 11 & 35 \\ \hline
+\kravlista & Intern kartläggning & Huvudmodulen ska internt kunna kartlägga utforskade vägar & 11 & 55 \\ \hline
+\kravlista & Tolkning av styrkommandon & Styrkommandon ska kunna tolkas av styrmodulen och översättas till motorerna & 22 & 15\\ \hline
+\kravlista & PWM-modulering & Styrmodulen ska kunna utföra PWM-modulering för att styra servomotorerna & - & 15\\ \hline
+\kravlista & Gripklo-styrning & Styrmodulen ska kunna styra gripklon & - & 15 \\ \hline
+\kravlista & Automatisk styrning & Roboten ska kunna färdas i en labyrint utan hjälp av manuell styrning & 24 & 35 \\ \hline
+\kravlista & Svängreglering & Roboten ska kunna ta en sväng utan att kollidera med vägg & 11 & 35 \\ \hline
+\kravlista & Avsökningsalgoritm & Roboten ska utöva en effektiv avsökningsalgoritm för att utforska labyrinten & 29 & 45 \\ \hline
+\kravlista & Användarvänlig presentation av mätdata & Datormodulen ska via mjukvaran kunna presentera sensordata på ett användarvänligt sätt & 20 & 20 \\ \hline
+\kravlista & Beräkning av kortaste väg & Huvudmodulen ska utifrån sin interna kartläggning kunna beräkna den kortaste vägen mellan start och nödställd & 25 & 20 \\ \hline
+\kravlista & Modulmontering & Alla moduler ska monteras på robotchassit & - & 45 \\ \hline
+\kravlista & Extern kartläggning & Datormodulen ska grafiskt kunna representera den karta som huvudmodulen har loggat & 25 & 25\\ \hline
+\kravlista & Kappa & Dokument som sammanfattar hela projektet & Samtliga & 60 \\ \hline
+\kravlista & Efterstudie & Dokument som reflekterar över projektet & 36 & 40 \\ \hline
+\kravlista & Användarhandledning & Dokument som beskriver hur roboten används & - & 20\\ \hline
+\kravlista & Teknisk dokumentation & Dokument som förklarar projektets tekniska delar & - & 20 \\ \hline
+\kravlista & Dokument-buffert & Tidspool för dokumentskrivning & - & 25 \\ \hline
+\kravlista & Buffert & Tidspool för aktiviteter exklusive dokumentskrivning & - & 130\\ \hline
+\kravlista & Veckomöten & Projektmöten & - & 90 \\ \hline
+\kravlista & Utbildning & Tidspool för intern utbildning & - & 30 \\ \hline
+\kravlista & Projektledning & Tidspool för projektledarens administrativa uppgifter & - & 15\\ \hline
 \end{longtable}
+
 
 \pagebreak
 \section{Tidplan}
