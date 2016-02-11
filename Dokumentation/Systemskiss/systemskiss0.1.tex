@@ -181,10 +181,12 @@ De sensorer som används är följande,
 	\item[Identifierare av nödställd] \hfill \\
 	1 x IR-detektor \verb+IRM-8601-S+
 \end{description}
-och är placerade enligt figur \ref{sensors}.  
+och är placerade enligt figur \ref{sensors}. IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
+
+Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:n konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
-Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avståndet till den främre väggen och vinkeln mot väggen, se figur \ref{distances}. 
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{distances}. 
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
 Följande delar ska ingå i styrmodulen.
