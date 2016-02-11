@@ -152,11 +152,14 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
-text
-\subsection{LCD-display}
-text
-\subsection{Brytare}
-% Typ auto/manuell styrning
+Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan robototen och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+\subsection{Strömrytare}
+Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingång. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
+\subsection{Brytare för autonomt respektive manuellt läge}
+Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren så ska även denna kopplas till en av huvudmodulens avbrottsingångar samt vara studsfri för att säkerställa systemet ingår det körläge som användaren önskat.
+\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
+Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Via systemets 
+ 
 
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
@@ -169,6 +172,8 @@ text
 \section{Delsystem 3 - Styrmodul}
 text
 \subsection{Motorer}
+text
+\subsection{LCD-display}
 text
 \subsection{Gripklo}
 text
