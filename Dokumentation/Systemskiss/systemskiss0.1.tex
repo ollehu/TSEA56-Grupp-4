@@ -165,8 +165,10 @@ Kommunikationen mellan den externa datormodulen och roboten kommer att ske via B
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
 \label{sec:sensormodul}
-Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
-Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+
+Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
+
 
 \subsection{Sensorer}
 De sensorer som används är följande,
@@ -179,7 +181,10 @@ De sensorer som används är följande,
 	\item[Identifierare av nödställd] \hfill \\
 	1 x IR-detektor \verb+IRM-8601-S+
 \end{description}
-och är placerade enligt figur \ref{sensors}.  asd
+och är placerade enligt figur \ref{sensors}.  
+
+\subsection{Kommunikation med huvudmodul}
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avståndet 
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
 Följande delar ska ingå i styrmodulen.
