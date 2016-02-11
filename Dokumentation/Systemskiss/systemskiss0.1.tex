@@ -181,7 +181,16 @@ De sensorer som används är följande,
 	\item[Identifierare av nödställd] \hfill \\
 	1 x IR-detektor \verb+IRM-8601-S+
 \end{description}
-och är placerade enligt figur \ref{sensors}. IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
+och är placerade enligt figur \ref{sensors}. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\textwidth}{!}{
+	\input{images/sensor}	}
+	\caption{Sensorplacering \label{sensors}}
+\end{figure}
+
+IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
 
 Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:n konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
