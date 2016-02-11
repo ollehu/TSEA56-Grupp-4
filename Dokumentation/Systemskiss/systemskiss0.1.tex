@@ -195,7 +195,17 @@ IR-sensorerna och detektorn har endast en analog utspänning och behöver därf�
 Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:n konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
-Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{distances}. 
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{measurements}. 
+
+\begin{figure}[htbp]
+\centering
+
+\noindent\resizebox{.5\textwidth}{!}{
+	\input{images/measurements}}
+	\captionsetup{justification=centering}
+	\caption{Sensorerna i arbete, \\ $\alpha$ är vinkeln mot sidovägg, \\ $l$ är avståndet till främre vägg och \\ $\omega$ vinkelhastigheten}
+	\label{measurements}
+\end{figure}
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
 Följande delar ska ingå i styrmodulen.
