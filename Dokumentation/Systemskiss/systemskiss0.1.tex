@@ -50,7 +50,7 @@ Godkänd & - & - \\ \hline
 \section*{PROJEKTIDENTITET}
 2016/VT, Undsättningsrobot Gr. 4
 
-Linköpings JÄTTEtekniska högskola, ISY
+Linköpings tekniska högskola, ISY
 \vspace{5em}
 \begin{center}
 
@@ -152,24 +152,43 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
-text
-\subsection{Brytare}
-% Typ auto/manuell styrning
+
+Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan robototen och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+\subsection{Strömrytare}
+Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingång. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
+\subsection{Brytare för autonomt respektive manuellt läge}
+Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren så ska även denna kopplas till en av huvudmodulens avbrottsingångar samt vara studsfri för att säkerställa systemet ingår det körläge som användaren önskat.
+\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
+Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Via systemets 
+ 
 
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
 \label{sec:sensormodul}
-text
-\subsection{Sensorer}
-text
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
 
+\subsection{Sensorer}
+De sensorer som används är följande,
+\begin{description}
+	\item[Avstånd] \hfill \\
+	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+	\item[Vinkelhastighet] \hfill \\
+	1 x Gyro/accelerometer \verb+MPU-6500+ 
+	\item[Identifierare av nödställd] \hfill \\
+	1 x IR-detektor \verb+IRM-8601-S+
+\end{description}
+och är placerade enligt figur \ref{sensors}.  asd
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
 Följande delar ska ingå i styrmodulen.
 \subsection{Motorer}
+
 Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulpar respektive vänster hjulpar. Signalerna till respektive sida styr rotationsriktning respektive hastighet. Signalen som styr hastigheten ska vara pulsbreddsmodulerad.
 \subsection{LCD-display}
 För att skriva ut sensordata på display används en alphanumerisk LCD-display. Förslaget är att använda den alfanumeriska displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
+
 \subsection{Gripklo}
 Gripklon ska kunna styras för att öppna och stänga. 
 
