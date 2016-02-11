@@ -2,9 +2,9 @@
 
 \usepackage{extras} % Se extras.sty
 
-\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
-\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 
 \begin{document}
 \begin{titlepage}
@@ -346,7 +346,18 @@ Se Appendix A
 Alla dokument som skrivs ska granskas av en gruppmedlem som inte har medverkat i framtagandet av dokumentet. Detta gäller för alla typer av dokument, inklusive kod och presentationer. De personer som granskar dokumenten ska enbart komma med kommentarer, sedan är det upp till den som skriver dokumentet att göra justeringar. Detta upprepas till både skrivare och granskare är nöjda.
 
 \subsection{Testplan}
-text
+\begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
+\textbf{Nr.} & \textbf{Beskrivning} & \textbf{Datum} \\ \hline
+\testplan & Huvudmodulens blåtandskommunikation med PC & 2016-xx-yy \\ \hline
+\testplan & Sensorenheten (inkl. kommunikation med huvudenheten) & 2016-xx-yy \\ \hline
+\testplan & Reglering av roboten i rak korridor och sväng & 2016-xx-yy \\ \hline
+\testplan & Manuell styrning av roboten & 2016-xx-yy \\ \hline
+\testplan & Beräkningsalgoritm för kortaste väg & 2016-xx-yy \\ \hline
+\testplan & 2D-karta kan ritas upp & 2016-xx-yy \\ \hline
+\testplan & Identfiering av nödställda & 2016-xx-yy \\ \hline
+
+
+\end{longtable}
 
 \pagebreak
 \section{Prioriteringar}

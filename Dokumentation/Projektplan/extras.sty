@@ -47,6 +47,13 @@
 	\stepcounter{milstolpenummer}
 }
 
+\newcounter{testnummer}
+\setcounter{testnummer}{1}
+\newcommand{\testplan}{
+	\arabic{testnummer}
+	\stepcounter{testnummer}
+}
+
 \pagestyle{fancy}
 
 \chead{Undsättningsrobot}
