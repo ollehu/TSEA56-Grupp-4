@@ -1,33 +1,6 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
-\usepackage{tikz}
-\usepackage{parskip}
-\usepackage{standalone}
-%\usepackage{titlesec}
-\usetikzlibrary{positioning}
-\usetikzlibrary{shapes}
-\usetikzlibrary{calc}
-\usepackage{enumitem}
-\def\arraystretch{1.5}
-\graphicspath{ {images/} }
-\setlength{\LTpost}{0pt}
-\pagenumbering{roman}
-\setlength{\LTpost}{0pt}%
-\usepackage{graphicx}
-\usetikzlibrary{patterns}
-\usetikzlibrary{shapes.arrows}
-\usepackage{amsfonts}
-\usetikzlibrary{positioning}
-\usetikzlibrary{calc}
-\usetikzlibrary{decorations.pathmorphing}
-\usepackage{amssymb}
-\usetikzlibrary{shapes,arrows}
-
-%\usepackage[mode=buildnew]{standalone}
-
-%\titlespacing*{\subsection}{0pt}{1.1\baselineskip}{\baselineskip}
-
 
 \begin{document}
 \begin{titlepage}
@@ -40,7 +13,6 @@
 Version 0.1
 
 \vspace{5em}
-%
 Grupp 4 \\
 \begin{tabular}{rl}
 Hynén Ulfsjöö, Olle&\verb+ollul666+
@@ -131,7 +103,7 @@ tel: 013-28 13 45, epost: peter.a.johansson@liu.se
 \section{Inledning}
 Denna systemskiss utgör en del av förarbetet i kandidatprojektet TSEA56. På uppdrag av beställaren ska systemskissen ge en detaljerad beskrivning ar produkten och dess delsystem. Dokumentet inleds med en grov beskrivning av produkten, därefter följer en mer detaljerad beskrivning på modulnivå.
 \subsection{Syfte och mål}
-Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökande ska roboten kunna kommunicera med en datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse ned nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen.\cite{krav}
+Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökande ska roboten kunna kommunicera med en datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen.\cite{krav}
 
 \pagebreak
 \section{Översikt av systemet}

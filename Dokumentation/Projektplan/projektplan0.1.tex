@@ -1,24 +1,10 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
-\usepackage{tikz}
-\usepackage{parskip}
-\usepackage{standalone}
-%\usepackage{titlesec}
-\usetikzlibrary{positioning}
-\usetikzlibrary{shapes}
-\usetikzlibrary{calc}
-\usepackage{enumitem}
-\def\arraystretch{1.5}
-\graphicspath{ {images/} }
-\setlength{\LTpost}{0pt}
-\pagenumbering{roman}
-\setlength{\LTpost}{0pt}%
-\usepackage{graphicx}
-%\usepackage[mode=buildnew]{standalone}
 
-%\titlespacing*{\subsection}{0pt}{1.1\baselineskip}{\baselineskip}
-
+\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
 
 \begin{document}
 \begin{titlepage}
@@ -31,7 +17,6 @@
 Version 0.1
 
 \vspace{5em}
-%
 Grupp 4 \\
 \begin{tabular}{rl}
 Hynén Ulfsjöö, Olle&\verb+ollul666+
@@ -173,46 +158,12 @@ När roboten uppfyller alla krav i kravspecifikationen levereras den till bestä
 \pagebreak
 \section{Organisationsplan för hela projektet}
 Projektet kommer bedrivas enligt hierarkin i figur \ref{hierarki}.
+
 \begin{figure}[htbp]
-\center
-\begin{tikzpicture}[transform shape,scale=0.8]
-{
-%\footnotesize
-
-\tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=100pt, minimum width=100pt}}
-
-\node(bestallare) {\textbf{Beställare} \\ \vspace{2mm} Mattias Krysander};
-
-\node[below=20pt] (projektgrupp) at (bestallare.south) {\textbf{Projektgrupp} \\ \vspace{2mm} Grupp 4};
-
-\node[above right=-15pt and 40pt of projektgrupp,overlay] (handledare) {\textbf{Handledare} \\ \vspace{2mm} Peter Johansson};
-\node[below right=-15pt and 40pt of projektgrupp,overlay] (experter) {\textbf{Experter}};
-
-\node[below left = 50pt and -35pt of projektgrupp] (pm3) {\textbf{Projektledare} \\ \vspace{2mm} Isak Strömberg};
-\node[below right = 50pt and -35pt of projektgrupp] (pm4) {\textbf{Dokumentansvarig} \\ \vspace{2mm} Olle Hynén Ulfsjöö};
-\node[below = 20pt of pm3] (pm2) {\textbf{Hårdvaruansvarig} \\ \vspace{2mm} Emil Wasteson};
-\node[below = 20pt of pm2] (pm1) {\textbf{Testansvarig} \\ \vspace{2mm} Zimon Inge};
-\node[below = 20pt of pm4] (pm5) {\textbf{Mjukvaruansvarig} \\ \vspace{2mm} Elena Tronje};
-\node[below = 20pt of pm5] (pm6) {\textbf{Leveransansvarig} \\ \vspace{2mm} Lovisa Gustafsson};
-
-\coordinate (membertop1) at ($(projektgrupp.south)+(0,-70pt)$);
-\coordinate (membertop2) at ($(membertop1)+(0,-60pt)$);
-\coordinate (membertop3) at ($(membertop2)+(0,-60pt)$);
-\coordinate(helptop) at ($(projektgrupp.east)+(30pt,0)$);
-
-\draw[thick] (projektgrupp) -- (membertop1)
-	(pm1.east) -| (membertop2) |- (pm6.west)
-	(pm2.east) -| (membertop1) |- (pm5.west)
-	(pm3.east) -| (membertop1) |- (pm4.west)
-	
-	(projektgrupp.east) -- (helptop)
-	(handledare.west) -| (helptop) |- (experter.west)
-	
-	(bestallare.south) -- (projektgrupp.north);
-}
-\end{tikzpicture}
-\caption{Projekthierarki} \label{hierarki}
-
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/orgchart}}
+	\caption{Projekthierarki} \label{hierarki}	
 \end{figure}
 
 \subsection{Villkor för samarbete inom projektgtuppen}
@@ -289,7 +240,7 @@ Lovisa Gustafsson & Leveransansvarig & \vspace{-\baselineskip}
 \end{longtable}
 
 \pagebreak
-\section{Dokumentplan???????}
+\section{Dokumentplan}
 Följande tabell presenterar de olika dokument som ingår i projektet. 
 
 \begin{longtable}{| p{.17\linewidth} | p{.11\linewidth} | p{.31\linewidth} | p{.15\linewidth} | p{.11\linewidth} |} \hline
@@ -309,13 +260,13 @@ Efterstudie & Alla & \textit{Reflekterar över projektet.} & Projektgrupp & 3 ju
 
 \pagebreak
 \section{Utvecklingsmetodik}
-Projektet kommer att genomföras enligt LIPS-modellen. Det tekniska arbetet kommer att ske i grupper om två personer. Programmering kommer i första hand att ske i c, andra språk kommer att användas vid behov. Arbetet med mjukvaran kan ske på på egen hand.
+Projektet kommer att genomföras enligt LIPS-modellen. Det tekniska arbetet kommer att ske i grupper om två personer. Programmering kommer i första hand att ske i C, andra språk kommer att användas vid behov. Arbetet med mjukvaran kan ske på egen hand.
 
 \pagebreak
 \section{Utbildningsplan}
 Eftersom inte tillräckligt med tekniska kunskaper finns hos gruppens medlemmar när projektet inleds kommer samtliga i gruppen behöva utbildas inom de områden där kunskap saknas. 
-\subsection{Egen utbildning - Något att grotta ner sig i??}
-Varje individ i gruppen ansvarar för sin egen utbildning och för att ha de kunskaper som krävs för att genomföra projektet. Alla medlemmar behöver dock inte kunna allt inom alla områden, utan bara de områden individen arbetar med???
+\subsection{Egen utbildning}
+Varje individ i gruppen ansvarar för sin egen utbildning och för att ha de kunskaper som krävs för att genomföra projektet. Dessa timmar kommer att plockas från en \textit{utbildningspool} som innefattar \textcolor{red}{x} antal timmar. Utbildningsområde beror på medlemmens ansvar och består i grunden av C, Git och \LaTeX. 
 
 
 \pagebreak
@@ -329,13 +280,13 @@ Ett stående lunchmöte á 45 minuter ska hållas varje onsdag. På mötet ska a
 \pagebreak
 \section{Resursplan}
 \subsection{Personer}
-Vi är sex stycken i gruppen som ska arbeta lika mycket med projektet. Vi har tekniska experter och en handledare att tillgå under projektetes gång.
+Projektgruppen består av sex personer där alla lägger samma mängd timmar på projektet. Tekniska experter och en handledare finns att tillgå under projektets gång.
 
 \subsection{Material}
-ISY tillhandahåller den hårdvara, sensorer, motorer etc, som vi ska arbeta med. Det finns vid behov även möjlighet att beställa viss utrustning som i dagsläget inte finns hos ISY. 
+ISY tillhandahåller den hårdvara (sensorer, motorer, etc.) som tillhör projektet. Det finns vid behov även möjlighet att beställa viss utrustning som i dagsläget inte finns hos ISY. 
 
 \subsection{Lokaler}
-När designskissen har godkänts av beställaren kommer tillträde ges till ISY:s lab-lokal Muxen, där två stationer kommer finnas till gruppens förfogande. För att få plats kommer det aldrig vistas mer än två grupper om två personer vid stationerna vid samma tillfälle.
+När designskissen har godkänts av beställaren kommer tillträde ges till ISY:s laborationslokal Muxen, där två stationer kommer finnas till gruppens förfogande. För att få plats kommer det aldrig vistas mer än två grupper om två personer vid stationerna vid samma tillfälle.
 
 \subsection{Ekonomi}
 Efter projektplanen har blivit godkänd har gruppen 1380 timmar till sitt förfogande (230 timmar per person).
@@ -343,7 +294,7 @@ Efter projektplanen har blivit godkänd har gruppen 1380 timmar till sitt förfo
 \pagebreak
 \section{Milstolpar och beslutspunkter}
 \subsection{Milstolpar}
-text
+Nedan följer projektets milstolopar:
 
 \begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
 \textbf{Nr.} & \textbf{Beskrivning} & \textbf{Datum} \\ \hline
@@ -359,7 +310,7 @@ text
 \end{longtable}
 
 \subsection{Beslutspunkter}
-text
+Nedan följer en tabell över de beslutspunkter projektet kommer innehålla:
 
 \begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
 \textbf{Nr.} & \textbf{Beskrivning} & \textbf{Datum} \\ \hline
@@ -390,18 +341,32 @@ text
 \pagebreak
 \section{Kvalitetsplan}
 \subsection{Granskningar}
-text
+Alla dokument som skrivs ska granskas av en gruppmedlem som inte har medverkat i framtagandet av dokumentet. Detta gäller för alla typer av dokument, inklusive kod och presentationer. De personer som granskar dokumenten ska enbart komma med kommentarer, sedan är det upp till den som skriver dokumentet att göra justeringar. Detta upprepas till både skrivare och granskare är nöjda.
 
 \subsection{Testplan}
-text 
+text
 
 \pagebreak
 \section{Prioriteringar}
-text
+Vid tidsbrist kommer de funktioner som är mest centrala för robotens funktion få högsta prioritet. Detta innebär förutom alla krav på nivå två, funktioner som:
+\begin{itemize}
+	\item PC-programvarans grafiska gränssnitt... 
+	\begin{itemize}	
+		\item ...för presentation av data
+		\item ...för uppritning av kartan
+	\end{itemize}
+	\item Optimering av algoritmer i robotens programvara för...
+	\begin{itemize}
+		\item ...avsökning av labyrinten
+		\item ...beräkning av närmsta vägen
+		\item ...reglering av robotens körning
+	\end{itemize}
+	\item Kretskort (i stället för virkort) och andra konstruktionsmässiga robusthetsförbättringar.
+\end{itemize}
 
 \pagebreak
 \section{Projektavslut}
-text
+Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllt ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. 
 
 \end{flushleft}
 
