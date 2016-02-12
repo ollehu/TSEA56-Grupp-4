@@ -38,7 +38,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & OHU & 2016-02-12 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -92,7 +92,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & - \\ \hline
+0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -104,7 +104,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 Denna systemskiss utgör en del av förarbetet i kandidatprojektet TSEA56. På uppdrag av beställaren ska systemskissen ge en detaljerad beskrivning ar produkten och dess delsystem. Dokumentet inleds med en grov beskrivning av produkten, därefter följer en mer detaljerad beskrivning på modulnivå.
 \subsection{Syfte och mål}
-Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen.\cite{krav}
+Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen \cite{krav}.
 
 \pagebreak
 \section{Översikt av systemet}
@@ -226,9 +226,9 @@ Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen.
 \section{Delsystem 4 - Datormodul}
 Datormodulen kommunicerar med robotens huvudmodul via Bluetooth\textsuperscript{\circledR}. Signaler mellan dessa enheter ska kunna skickas åt båda hållen, vilket innebär en sändare och en mottagare på datormodulen. Mot användaren ska det finnas ett program för att se var roboten gör.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
-Se avsnitt \ref{bluetooth}
+Se avsnitt \ref{bluetooth}.
 \subsection{Mjukvara}
-Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativa språk, exempelvis Python eller C\texttt{++}. Användaren ska presenteras en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
+Mjukvara till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativa språk, exempelvis Python eller C\texttt{++}. Användaren ska presenteras en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
 
 Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet. Mjukvaran ska lyssna efter knapptryckningar på piltangenterna och kontinuerligt skicka vilka tangenter som hålls nere till roboten. De kommandon som ska finnas tillgängliga är presenterade i tabell \ref{commands}.
 
