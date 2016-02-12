@@ -152,8 +152,7 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
-
-Genom delsystem 1, tillika systemets huvudmodul, kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+Genom delsystem 1, tillika systemets huvudmodul, kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (\emph{master}) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
 \subsection{Strömbrytare}
 Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
 \subsection{Brytare för autonomt respektive manuellt läge}
@@ -165,6 +164,8 @@ Kommunikationen mellan den externa datormodulen och roboten kommer att ske via B
 \section{Delsystem 2 - Sensormodul}
 \label{sec:sensormodul}
 Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+
+Laser-sensorn placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
 
 Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
 
@@ -191,10 +192,10 @@ och är placerade enligt figur \ref{sensors}.
 
 IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
 
-Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
+Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på en sub-I\textsuperscript{2}C-buss alternativt in på multiplexern. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
-Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{measurements}. 
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen, avstånd till sidovägg och vinkel mot sidovägg, se figur \ref{measurements}. 
 
 \begin{figure}[htbp]
 \centering
@@ -222,7 +223,30 @@ Datormodulen kommunicerar med robotens huvudmodul via Bluetooth\textsuperscript{
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
 \textit{Se avsnitt 3.3.}
 \subsection{Mjukvara}
-Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, ex. python eller C++. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet.
+Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, exempelvis Python eller C\texttt{++}. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
+
+Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet. Mjukvaran ska lyssna efter knapptryckningar på piltangenterna och kontinuerligt skicka vilka tangenter som hålls nere till roboten. De kommandon som ska finnas tillgängliga är presenterade i tabell \ref{commands}.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} \\ \hline\hline
+	$\uparrow$ &  				&  				& 				& = & Kör framåt \\ \hline
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster \\ \hline
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger \\ \hline
+			   & $\leftarrow$	&				&				& = & Rotera medurs \\ \hline
+			   &				& $\rightarrow$	&				& = & Rotera moturs \\ \hline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster \\ \hline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger \\ \hline
+			   &				&				& $\downarrow$	& = & Kör bakåt \\ \hline
+	\caption{Knapptryckningar och dess översättning} \label{commands}
+\end{longtable}
+
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\textwidth}{!}{
+	\input{images/software}	}
+	\caption{Mjukvarans gränssnitt \label{software}}
+\end{figure}
 
 \setcounter{secnumdepth}{0}
 \pagebreak

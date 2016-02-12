@@ -141,7 +141,7 @@ Leveranserna i projektet ska ske enligt nedanstående lista.
 Utöver ovanstående leveranser ska tidsrapporter lämnas senaste kl 16.00 vid följande datum: 3 februari, 22 februari, 7 mars, 14 mars, 4 april, 11 april, 18 april, 25 april, 2 maj, 9 maj, 16 maj, 23 maj, 30 maj och 7 juni. 
 
 \subsection{Begränsningar}
-Roboten kommer vara begränsad till att röra sig i korridorer à 40 cm och kommer inte kunna manövreras i öppna rum. Sensorerna kommer att vara begränsade till att enbart kunna detektera ..... 
+Roboten kommer vara begränsad till att röra sig i korridorer à 40 cm och kommer inte kunna navigera autonomt i öppna rum. Sensorerna kommer vara begränsade till att enbart kunna detektera nödställda av den typ som anges i banspecifikationen. Gripklon kommer inte kunna greppa föremål autonomt utan behöva matas manuellt.
 
 \pagebreak
 \section{Fasplan}
@@ -266,7 +266,8 @@ Projektet kommer att genomföras enligt LIPS-modellen. Det tekniska arbetet komm
 \section{Utbildningsplan}
 Eftersom inte tillräckligt med tekniska kunskaper finns hos gruppens medlemmar när projektet inleds kommer samtliga i gruppen behöva utbildas inom de områden där kunskap saknas. 
 \subsection{Egen utbildning}
-Varje individ i gruppen ansvarar för sin egen utbildning och för att ha de kunskaper som krävs för att genomföra projektet. Dessa timmar kommer att plockas från en \textit{utbildningspool} som innefattar \textcolor{red}{x} antal timmar. Utbildningsområde beror på medlemmens ansvar och består i grunden av C, Git, \LaTeX samt ytterligare språk för mjukvara till datormodulen. 
+Varje individ i gruppen ansvarar för sin egen utbildning och för att ha de kunskaper som krävs för att genomföra projektet. Dessa timmar kommer att plockas från en \textit{utbildningspool} som innefattar \textcolor{red}{x} antal timmar. Utbildningsområde beror på medlemmens arbetsuppgifter och består i grunden av C, Git, \LaTeX och eventuellt ytterligare språk för mjukvara till datormodulen.
+
 
 
 \pagebreak
@@ -329,7 +330,6 @@ Nedan följer en tabell över de beslutspunkter projektet kommer innehålla:
 
 \pagebreak
 \section{Aktiviteter}
-text
 
 \begin{longtable}{| p{.05\linewidth} | p{.25\linewidth} | p{.4\linewidth} | p{.1\linewidth} | p{.05\linewidth} |} \hline
 \textbf{Nr.} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Före-gångare} & \textbf{Tid [h]} \\ \hline
@@ -347,12 +347,12 @@ text
 \kravlista & Byte mellan autonom/-manuellt-läge & Huvudmodulen ska kopplas samman med en brytare som styr mellan autonomt/manuellt-läge & - & 10 \\ \hline
 \kravlista & Sensorerna ska läsas av sensormodulen & Sensormodulen ska kontinuerligt avläsa sensorernas mätvärden & 7, 8, 9 & 25 \\ \hline
 \kravlista & Sensormodulen ska konvertera sensordata & Sensordata ska konverteras till en digital SI-enhet & 13 & 35 \\ \hline
-\kravlista & Sensorvärden presenteras på LCD-display & Styrmodulen kommunicerar och presenterar relevanta sensordata på en LCD-display & 14, 10 & 35 \\ \hline
+\kravlista & Sensorvärden presenteras på LCD-display & Styrmodulen kommunicerar och presenterar relevanta sensordata på en LCD-display & 10, 19 & 35 \\ \hline
 \kravlista & Bluetooth\textsuperscript{\circledR}: Datormodul $\rightarrow$ Huvudmodul & Datormodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & - & 55 \\ \hline
 \kravlista & Brusfiltrering & Sensormodulen ska kunna filtrera sensordata så störningar minimeras & 13 & 25 \\ \hline
 \kravlista & Identifikation av nödställd & Sensormodulen ska kunna identifiera den nödställde & 13 & 25 \\ \hline
 \kravlista & Kommunicera sensordata från sensor- till huvudmodul & Det konverterade sensordatan ska kunna kommuniceras från sensormodulen & 14, 11 & 25\\ \hline
-\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & - & 55 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till datormodulen via Bluetooth\textsuperscript{\circledR} & - & 55 \\ \hline
 \kravlista & Ta emot styrkommandon & Styrmodulen ska kunna ta emot styrkommandon från huvudmodulen & 16 & 25 \\ \hline
 \kravlista & Skicka styrkommandon & Datormodulen ska kunna skicka styrkommandon till huvudmodulen & 16 & 55 \\ \hline
 \kravlista & Manuell styrning & Styrmodulen ska kunna hantera kommandon för manuell styrning & 10, 16 & 35 \\ \hline
@@ -424,7 +424,7 @@ Vid tidsbrist kommer de funktioner som är mest centrala för robotens funktion 
 
 \pagebreak
 \section{Projektavslut}
-Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllt ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. 
+Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllt ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling anordnas, mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. 
 
 \end{flushleft}
 
