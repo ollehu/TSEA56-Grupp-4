@@ -153,7 +153,7 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
 
-Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (\emph{master}) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
 \subsection{Strömbrytare}
 Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
 \subsection{Brytare för autonomt respektive manuellt läge}
@@ -165,6 +165,8 @@ Kommunikationen mellan den externa datormodulen och roboten kommer att ske via B
 \section{Delsystem 2 - Sensormodul}
 \label{sec:sensormodul}
 Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+
+Laser-sensorn placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
 
 Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
 
@@ -191,10 +193,10 @@ och är placerade enligt figur \ref{sensors}.
 
 IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
 
-Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
+Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på en sub-I\textsuperscript{2}C-buss alternativt in på multiplexern. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
-Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{measurements}. 
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen, avstånd till sidovägg och vinkel mot sidovägg, se figur \ref{measurements}. 
 
 \begin{figure}[htbp]
 \centering
