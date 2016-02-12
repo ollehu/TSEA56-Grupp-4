@@ -103,7 +103,7 @@ tel: 013-28 13 45, epost: peter.a.johansson@liu.se
 \section{Inledning}
 Denna systemskiss utgör en del av förarbetet i kandidatprojektet TSEA56. På uppdrag av beställaren ska systemskissen ge en detaljerad beskrivning ar produkten och dess delsystem. Dokumentet inleds med en grov beskrivning av produkten, därefter följer en mer detaljerad beskrivning på modulnivå.
 \subsection{Syfte och mål}
-Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökande ska roboten kunna kommunicera med en datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen.\cite{krav}
+Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomnt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen.\cite{krav}
 
 \pagebreak
 \section{Översikt av systemet}
@@ -153,9 +153,9 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
 
-Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan robototen och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
-\subsection{Strömrytare}
-Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingång. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
+Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (Master) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+\subsection{Strömbrytare}
+Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
 \subsection{Brytare för autonomt respektive manuellt läge}
 Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren så ska även denna kopplas till en av huvudmodulens avbrottsingångar samt vara studsfri för att säkerställa systemet ingår det körläge som användaren önskat.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
@@ -192,7 +192,7 @@ och är placerade enligt figur \ref{sensors}.
 
 IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
 
-Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:n konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
+Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på den existerande bussen mellan modulerna. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan först bestämmas under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
 Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i kapitel \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information vill skickas. Informationen som skickas är avstånd till den främre väggen och vinkel mot väggarna längs med roboten, se figur \ref{measurements}. 
@@ -216,7 +216,7 @@ Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulp
 För att skriva ut sensordata på display används en alphanumerisk LCD-display. Förslaget är att använda den alfanumeriska displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
 
 \subsection{Gripklo}
-Gripklon ska kunna styras för att öppna och stänga. 
+Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen. 
 
 \pagebreak
 \section{Delsystem 4 - Datormodul}
