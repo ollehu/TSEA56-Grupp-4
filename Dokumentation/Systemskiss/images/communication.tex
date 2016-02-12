@@ -68,5 +68,8 @@
     	\draw[thick,fill=black] ($(styrmodul.north west) + (5pt,40pt)$) circle [radius=2pt] -- ($(styrmodul.north west) + (5pt,80pt)$) circle [radius=2pt];
     	\draw[thick,draw=black,fill=white] ($(styrmodul.north west) + (2pt,50pt)$) rectangle ($(styrmodul.north west) + (8pt,70pt)$);
 		\draw[thick,draw=black,fill=white] ($(sensormodul.north east) + (-8pt,50pt)$) rectangle ($(sensormodul.north east) + (-2pt,70pt)$) node [below left=-10pt and 20pt,draw=none,minimum width=0, text width = 0pt] {$R_p$};
+		
+		\draw[thick, ->] ($(sensormodul.south) + (+40pt,0)$) -- ($(sensormodul.south) + (40pt,-30pt)$) -- ($(huvudmodul.south) + (40pt,-30pt)$) -- ($(huvudmodul.south) + (40pt,0)$);
+		\draw[thick, ->] ($(styrmodul.south) + (+40pt,0)$) -- ($(styrmodul.south) + (40pt,-40pt)$) -- node [midway,below,minimum height=20pt, draw=none] {Avbrott}($(huvudmodul.south) + (30pt,-40pt)$) -- ($(huvudmodul.south) + (30pt,0)$);
 	\end{tikzpicture}
 \end{document}
