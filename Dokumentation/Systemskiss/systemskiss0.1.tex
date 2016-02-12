@@ -121,8 +121,8 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med
 Roboten navigerar själva banan med hjälp av flertal sensorer, dessa är specificerade i \mbox{avsnitt \ref{sec:sensormodul}}. En regleringsmodell ser till att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
 
 \subsection{Delsystem}
-Delsystemen och dess ingående komponenter finns beskrivna nedan.
-
+Delsystemen och dess ingående komponenter finns beskrivna nedan. \\*
+\vspace{1em}
 \begin{minipage}{\textwidth}
 \begin{description}
 	\item[Delsystem 1 - Huvudmodul] \hfill \\
@@ -149,7 +149,7 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
-	\input{images/communication}	}
+	\input{images/communication}}
 	\caption{Intermodulär kommunikation \label{communication}}
 \end{figure}
 
@@ -233,15 +233,15 @@ Mjukvara till datormodulen utvecklas från grunden. I första hand utvecklas den
 Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet. Mjukvaran ska lyssna efter knapptryckningar på piltangenterna och kontinuerligt skicka vilka tangenter som hålls nere till roboten. De kommandon som ska finnas tillgängliga är presenterade i tabell \ref{commands}.
 
 \begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
-	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} \\ \hline\hline
-	$\uparrow$ &  				&  				& 				& = & Kör framåt \\ \hline
-	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster \\ \hline
-	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger \\ \hline
-			   & $\leftarrow$	&				&				& = & Rotera medurs \\ \hline
-			   &				& $\rightarrow$	&				& = & Rotera moturs \\ \hline
-			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster \\ \hline
-			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger \\ \hline
-			   &				&				& $\downarrow$	& = & Kör bakåt \\ \hline
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \hline\hline
+	$\uparrow$ &  				&  				& 				& = & Kör framåt 				\\ \hline
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster 		\\ \hline
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger 			\\ \hline
+			   & $\leftarrow$	&				&				& = & Rotera medurs 			\\ \hline
+			   &				& $\rightarrow$	&				& = & Rotera moturs 			\\ \hline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster 		\\ \hline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger 			\\ \hline
+			   &				&				& $\downarrow$	& = & Kör bakåt 				\\ \hline
 	\caption{Knapptryckningar och dess översättning} \label{commands}
 \end{longtable}
 
