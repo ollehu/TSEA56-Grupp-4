@@ -224,7 +224,23 @@ Datormodulen består i huvudsak av nedanstående delar.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
 \textit{Se avsnitt ......}
 \subsection{Mjukvara}
-Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, ex. python eller C++. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet.
+Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, exempelvis Python eller C\texttt{++}. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
+
+Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet. Mjukvaran ska lyssna efter knapptryckningar på piltangenterna och kontinuerligt skicka vilka tangenter som hålls nere till roboten. De kommandon som ska finnas tillgängliga är presenterade i tabell \ref{commands}.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} \\ \hline\hline
+	$\uparrow$ &  				&  				& 				& = & Kör framåt \\ \hline
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster \\ \hline
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger \\ \hline
+			   & $\leftarrow$	&				&				& = & Rotera medurs \\ \hline
+			   &				& $\rightarrow$	&				& = & Rotera moturs \\ \hline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster \\ \hline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger \\ \hline
+			   &				&				& $\downarrow$	& = & Kör bakåt \\ \hline
+	\caption{Knapptryckningar och dess översättning} \label{commands}
+\end{longtable}
+
 
 \setcounter{secnumdepth}{0}
 \pagebreak
