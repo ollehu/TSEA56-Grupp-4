@@ -158,7 +158,7 @@ Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mel
 Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
 \subsection{Brytare för autonomt respektive manuellt läge}
 Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren så ska även denna kopplas till en av huvudmodulens avbrottsingångar samt vara studsfri för att säkerställa systemet ingår det körläge som användaren önskat.
-\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
+\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare} \label{bluetooth} 
 Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Det data som sensormodulen har samlat in (och bearbetat) kommer att kommuniceras till huvudenheten, vilken kommer att vidarebefordra mätdata från banan till datormodulen. Datormodulen ska därefter rita upp en karta baserad på det mätdata som den mottagit. Vid manuellt körläge så ska huvudmodulen i sin tur mottaga styrkommandon från datormodulen. 
 
 \pagebreak
@@ -222,7 +222,7 @@ Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen.
 \section{Delsystem 4 - Datormodul}
 Datormodulen består i huvudsak av nedanstående delar.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
-\textit{Se avsnitt ......}
+Se avsnitt \ref{bluetooth}
 \subsection{Mjukvara}
 Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, exempelvis Python eller C\texttt{++}. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
 
