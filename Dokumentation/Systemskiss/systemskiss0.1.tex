@@ -152,14 +152,14 @@ Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscrip
 \pagebreak
 \section{Delsystem 1 - Huvudmodul}
 \label{sec:huvudmodul}
-
-Genom delsystem 1, tillika systemets huvudmodul, så kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (\emph{master}) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+Genom delsystem 1, tillika systemets huvudmodul, kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (\emph{master}) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
 \subsection{Strömbrytare}
 Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
 \subsection{Brytare för autonomt respektive manuellt läge}
 Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren så ska även denna kopplas till en av huvudmodulens avbrottsingångar samt vara studsfri för att säkerställa systemet ingår det körläge som användaren önskat.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare} \label{bluetooth} 
-Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Det data som sensormodulen har samlat in (och bearbetat) kommer att kommuniceras till huvudenheten, vilken kommer att vidarebefordra mätdata från banan till datormodulen. Datormodulen ska därefter rita upp en karta baserad på det mätdata som den mottagit. Vid manuellt körläge så ska huvudmodulen i sin tur mottaga styrkommandon från datormodulen. 
+Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Det data som sensormodulen har samlat in (och bearbetat) kommer att kommuniceras till huvudenheten, vilken kommer att vidarebefordra mätdata från banan till datormodulen. Vid manuellt körläge ska huvudmodulen i sin tur mottaga styrkommandon från datormodulen. Används Firefly vesion 1.2 kan överföringen ske till en hastighet av 723.1 kbit/s, vilket är väl över den storleken som ATmega16's flashminne har (16kB).
+
 
 \pagebreak
 \section{Delsystem 2 - Sensormodul}
@@ -209,18 +209,18 @@ Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-bus
 \end{figure}
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
-Följande delar ska ingå i styrmodulen.
+Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig eller att styra gripklon. Kommunikationen sker genom I\textsuperscript{2}C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
 \subsection{Motorer}
 Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulpar respektive vänster hjulpar. Signalerna till respektive sida styr rotationsriktning respektive hastighet. Signalen som styr hastigheten ska vara pulsbreddsmodulerad.
 \subsection{LCD-display}
-För att skriva ut sensordata på display används den alphanumeriska LCD-displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
+För att skriva ut sensordata på display används den alphanumeriska LCD-displayen \textit{LCD JM162A}. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
 
 \subsection{Gripklo}
 Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen. 
 
 \pagebreak
 \section{Delsystem 4 - Datormodul}
-Datormodulen består i huvudsak av nedanstående delar.
+Datormodulen kommunicerar med robotens huvudmodul via Bluetooth\textsuperscript{\circledR}. Signaler mellan dessa enheter ska kunna skickas åt båda hållen, vilket innebär en sändare och en mottagare på datormodulen. Mot användaren ska det finnas ett program för att se var roboten gör.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
 Se avsnitt \ref{bluetooth}
 \subsection{Mjukvara}
