@@ -209,21 +209,20 @@ Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-bus
 \section{Delsystem 3 - Styrmodul}
 Följande delar ska ingå i styrmodulen.
 \subsection{Motorer}
-
 Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulpar respektive vänster hjulpar. Signalerna till respektive sida styr rotationsriktning respektive hastighet. Signalen som styr hastigheten ska vara pulsbreddsmodulerad.
 \subsection{LCD-display}
-För att skriva ut sensordata på display används en alphanumerisk LCD-display. Förslaget är att använda den alfanumeriska displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
+För att skriva ut sensordata på display används den alphanumeriska LCD-displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
 
 \subsection{Gripklo}
 Gripklon ska kunna styras för att öppna och stänga. 
 
 \pagebreak
 \section{Delsystem 4 - Datormodul}
-Följande delar återfinns i datormodulen.
+Datormodulen består i huvudsak av nedanstående delar.
 \subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
 \textit{Se avsnitt ......}
-\subsection{Gränssnitt}
-GUI. Färdigt program? Programmeringsspråk? Vad ska användaren kunna göra? Vad ska synas?
+\subsection{Mjukvara}
+Mjukvaran till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativt språk, ex. python eller C++. Användaren ska se en tabell med valda sensorvärden och en karta över utforskad del av banan. Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet.
 
 \setcounter{secnumdepth}{0}
 \pagebreak
