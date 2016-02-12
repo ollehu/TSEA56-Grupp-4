@@ -2,6 +2,8 @@
 
 \usepackage{extras} % Se extras.sty
 
+\DeclareUnicodeCharacter{00A4}{ }
+
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -78,20 +80,19 @@ tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
 Kursansvarig:  Tomas Svensson\\
 tel: 013-28 13 68, e-post: tomass@isy.liu.se \\
 Handledare: Peter Johansson \\
-tel: 013-28 13 45, epost: peter.a.johansson@liu.se
+tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \end{center}
 \pagebreak
 
 \tableofcontents
 
 \pagebreak
-
 \section*{Dokumenthistorik}
 \begin{table}[h]
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & FYLL I &  Första utkastet & Grupp 4 & - \\ \hline
+0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & - \\ \hline
 \end{tabular}
 \end{table}
 
@@ -121,6 +122,8 @@ Roboten navigerar själva banan med hjälp av flertal sensorer, dessa är specif
 
 \subsection{Delsystem}
 Delsystemen och dess ingående komponenter finns beskrivna nedan.
+
+\begin{minipage}{\textwidth}
 \begin{description}
 	\item[Delsystem 1 - Huvudmodul] \hfill \\
 	Mikroprocessor \\
@@ -138,6 +141,7 @@ Delsystemen och dess ingående komponenter finns beskrivna nedan.
 	GUI \\
 	Bluetooth\textsuperscript{\circledR} sändare/mottagare
 \end{description}
+\end{minipage}
 
 Ovanstående mikroprocessorer är av typ \verb+ATmega**+ där versionen bestäms i ett senare skede. Sensorerna består av avståndsmätare, vinkelhastighets-sensorer och identifierare av nödställd. 
 \subsection{Kommunikation mellan delsystem}
@@ -241,6 +245,7 @@ Programmet ska även möjliggöra för användaren att styra roboten manuellt me
 	\caption{Knapptryckningar och dess översättning} \label{commands}
 \end{longtable}
 
+\pagebreak
 \subsection{Grafiskt gränssnitt}
 Gränssnittet kommer konstrueras enligt figur \ref{software}.
 \begin{figure}[htbp]
