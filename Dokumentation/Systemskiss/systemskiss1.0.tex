@@ -1,0 +1,282 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+
+\DeclareUnicodeCharacter{00A4}{ }
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+{\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Systemskiss}
+
+\vspace{5em}
+
+Version 1.0
+
+\vspace{5em}
+Grupp 4 \\
+\begin{tabular}{rl}
+Hynén Ulfsjöö, Olle&\verb+ollul666+
+\\
+Wasteson, Emil&\verb+emiwa068+
+\\
+Tronje, Elena&\verb+eletr654+
+\\
+Gustafsson, Lovisa&\verb+lovgu777+
+\\
+Inge, Zimon&\verb+zimin415+
+\\
+Strömberg, Isak&\verb+isast763+
+\\
+\end{tabular}
+
+\vspace{5em}
+\today
+
+\vspace{16em}
+Status
+\begin{longtable}{|l|l|l|} \hline
+
+Granskad & IS & 2016-02-xx \\ \hline
+Godkänd & - & - \\ \hline
+ 
+\end{longtable}
+
+\end{center}
+\end{titlepage}
+
+\pagebreak
+\begin{center}
+
+\section*{PROJEKTIDENTITET}
+2016/VT, Undsättningsrobot Gr. 4
+
+Linköpings tekniska högskola, ISY
+\vspace{5em}
+\begin{center}
+
+\begin{tabular}{|l|l|l|l|} \hline
+\textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post}  \\ \hline 
+Isak Strömberg (IS) & Projektledare & 073-980 38 50 & isast763@student.liu.se \\ \hline
+Olle Hynén Ulfsjöö (OHU)& Dokumentansvarig & 070-072 91 84 & ollul666@student.liu.se \\ \hline
+Emil Wasteson (EW) & Hårdvaruansvarig & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
+Elena Tronje (ET) & Mjukvaruansvarig & 072-276 92 93 & eletr654@student.liu.se \\ \hline
+Zimon Inge (ZI)& Testansvarig & 070-171 35 18 & zimin415@student.liu.se \\ \hline
+Lovisa Gustafsson (LG) & Leveransansvarig & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
+\end{tabular}
+
+\end{center}
+
+E-postlista för hela gruppen: isast763@student.liu.se
+
+\vspace{5em}
+Kund: ISY, Linköpings universitet \\
+tel: 013-28 10 00, fax: 013-13 92 82 \\
+Kontaktperson hos kund: Mattias Krysander \\
+tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
+
+\vspace{5em}
+Kursansvarig:  Tomas Svensson\\
+tel: 013-28 13 68, e-post: tomass@isy.liu.se \\
+Handledare: Peter Johansson \\
+tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
+\end{center}
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+\section*{Dokumenthistorik}
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|} \hline
+
+\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
+1.0 & 2016-02-xx &  Andra utkastet & Grupp 4 & IS \\ \hline
+\end{tabular}
+\end{table}
+
+\pagebreak
+\pagenumbering{arabic}
+
+\begin{flushleft}
+
+\section{Inledning}
+Denna systemskiss utgör en del av förarbetet i kandidatprojektet TSEA56. På uppdrag av beställaren ska systemskissen ge en detaljerad beskrivning av produkten och dess delsystem. Dokumentet inleds med en grov beskrivning av produkten, därefter följer en mer detaljerad beskrivning på modulnivå.
+\subsection{Syfte och mål}
+Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen \cite{krav}.
+
+\pagebreak
+\section{Översikt av systemet}
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen \cite{banspec} och uppdraget utförs enligt tävlingsreglerna \cite{tavling}.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/overview}}
+	\caption{Översikt av systemet \label{system}}	
+\end{figure}
+
+
+\subsection{Beskrivning av systemet}
+Roboten navigerar själva banan med hjälp av flertal sensorer, dessa är specificerade i \mbox{avsnitt \ref{sec:sensormodul}}. En regleringsmodell ser till att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
+
+\subsection{Delsystem}
+Delsystemen och dess ingående komponenter finns beskrivna nedan. \\*
+\vspace{1em}
+\begin{minipage}{\textwidth}
+\begin{description}
+	\item[Delsystem 1 - Huvudmodul] \hfill \\
+	Mikroprocessor \\
+	Brytare för autonomt/manuellt-läge \\
+	Bluetooth\textsuperscript{\circledR} sändare/mottagare
+	\item[Delsystem 2 - Sensormodul] \hfill \\
+	Mikroprocessor \\
+	Sensorer
+	\item[Delsystem 3 - Styrmodul] \hfill \\
+	Mikroprocessor \\
+	Motorer till hjul och gripklo \\
+	LCD-display
+	\item[Delsystem 4 - Datormodul] \hfill \\
+	Dator \\
+	GUI \\
+	Bluetooth\textsuperscript{\circledR} sändare/mottagare
+\end{description}
+\end{minipage}
+
+Ovanstående mikroprocessorer är av typ \verb+ATmega**+ där versionen bestäms i ett senare skede. Sensorerna består av avståndsmätare, vinkelhastighets-sensorer och identifierare av nödställd. 
+\subsection{Kommunikation mellan delsystem}
+Kommunikationen mellan mikroprocessorerna sker med hjälp av en I\textsuperscript{2}C-buss enligt figur \ref{communication}. Mellan huvudmodulen och datormodulen sker kommunikationen via Bluetooth\textsuperscript{\circledR}.
+
+\begin{figure}[htbp]
+\noindent\resizebox{.97\textwidth}{!}{
+	\input{images/communication}}
+	\caption{Intermodulär kommunikation \label{communication}}
+\end{figure}
+
+\pagebreak
+\section{Delsystem 1 - Huvudmodul}
+\label{sec:huvudmodul}
+Genom delsystem 1, tillika systemets huvudmodul, kommer all komunikation mellan roboten och en extern datormodul att ske. Systemkonstruktionen för roboten är konstruerad på ett sådant vis att huvudmodulen kommer att verka som överordnad processorenhet (\emph{master}) i den tvåtrådsbuss som förbinder robotens olika delsystem. 
+\subsection{Strömbrytare}
+Robotens strömbrytare ska vara kopplad till en av huvudmodulens avbrottsingångar. När denna triggas så ska processorerna i huvudmodulen, sensormodulen samt styrmodulen gå in i viloläge. Anledningen till att dessa ska inträda i viloläge, snarare än att bryta strömförsörjningen helt, är främst för att bespara användaren att ånyo tvingas kalibrera sensorerna vid varje uppstart.
+\subsection{Brytare för autonomt respektive manuellt läge}
+Brytaren mellan autonomt och manuellt körläge tillåter användaren att välja mellan robotens två körlägen. Liksom strömbrytaren ska även denna kopplas till en av huvudmodulens avbrottsingångar. Brytaren ska även vara studsfri för att säkerställa att systemet ingår det körläge som användaren önskat.
+\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare} \label{bluetooth} 
+Kommunikationen mellan den externa datormodulen och roboten kommer att ske via Bluetooth\textsuperscript{\circledR}. Det data som sensormodulen har samlat in (och bearbetat) kommer att kommuniceras till huvudenheten, vilken kommer att vidarebefordra mätdata från banan till datormodulen. Vid manuellt körläge ska huvudmodulen i sin tur mottaga styrkommandon från datormodulen. Används Firefly vesion 1.2 kan överföringen ske till en hastighet av 723.1 kbit/s, vilket är mer än tillräcklig hastighet för en processor som ATmega16, vars flashminne är 16kB.
+
+
+\pagebreak
+\section{Delsystem 2 - Sensormodul}
+\label{sec:sensormodul}
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+
+Den främre avståndssensorn (laser-sensorn) placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
+
+Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
+
+
+\subsection{Sensorer}
+De sensorer som används är följande,
+\begin{description}
+	\item[Avstånd] \hfill \\
+	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+	\item[Vinkelhastighet] \hfill \\
+	1 x Gyro/accelerometer \verb+MPU-6500+ 
+	\item[Identifierare av nödställd] \hfill \\
+	1 x IR-detektor \verb+IRM-8601-S+
+\end{description}
+och är placerade enligt figur \ref{sensors}. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\textwidth}{!}{
+	\input{images/sensor}	}
+	\caption{Sensorplacering \label{sensors}}
+\end{figure}
+
+IR-sensorerna och detektorn har endast en analog utspänning och behöver därför passera en ADC. Den interna ADC:n i ATmega används tillsammans med en multiplexer för att avläsa sensorvärdena med godtycklig frekvens. 
+
+Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på en sub-I\textsuperscript{2}C-buss alternativt analogt in på multiplexern. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan bestämmas först under testkörningar. 
+
+\subsection{Kommunikation med huvudmodul}
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i avsnitt \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information ska skickas. Informationen som skickas är avstånd till den främre väggen, avstånd till sidovägg och vinkel mot sidovägg, se figur \ref{measurements}. 
+
+\begin{figure}[htbp]
+\centering
+
+\noindent\resizebox{.5\textwidth}{!}{
+	\input{images/measurements}}
+	\captionsetup{justification=centering}
+	\caption{Sensorerna i arbete, \\ $\alpha$ är vinkeln mot sidovägg, \\ $l$ är avståndet till främre vägg och \\ $\omega$ vinkelhastigheten}
+	\label{measurements}
+\end{figure}
+\pagebreak
+\section{Delsystem 3 - Styrmodul}
+Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig eller att styra gripklon. Kommunikationen sker genom I\textsuperscript{2}C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
+\subsection{Motorer}
+Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulpar respektive vänster hjulpar. Signalerna till respektive sida styr rotationsriktning respektive hastighet. Signalen som styr hastigheten ska vara pulsbreddsmodulerad.
+\subsection{LCD-display}
+För att skriva ut sensordata på display används den alphanumeriska LCD-displayen \textit{LCD JM162A}. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
+
+\subsection{Gripklo}
+Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen. 
+
+\pagebreak
+\section{Delsystem 4 - Datormodul}
+Datormodulen kommunicerar med robotens huvudmodul via Bluetooth\textsuperscript{\circledR}. Signaler mellan dessa enheter ska kunna skickas åt båda hållen, vilket innebär en sändare och en mottagare på datormodulen. Mot användaren ska det finnas ett program för att se var roboten gör.
+\subsection{Bluetooth\textsuperscript{\circledR} sändare/mottagare}
+Se avsnitt \ref{bluetooth}.
+\subsection{Mjukvara}
+Mjukvara till datormodulen utvecklas från grunden. I första hand utvecklas den i Java men upptäcks begränsningar väljs alternativa språk, exempelvis Python eller C\texttt{++}. Användaren ska presenteras en tabell med valda sensorvärden och en karta över utforskad del av banan. Till hjälp för felsökning ska sensorvärden även kunna presenteras i en graf som kontinuerligt uppdateras i realtid. 
+
+Programmet ska även möjliggöra för användaren att styra roboten manuellt med hjälp av tangentbordet. Mjukvaran ska lyssna efter knapptryckningar på piltangenterna och kontinuerligt skicka vilka tangenter som hålls nere till roboten. De kommandon som ska finnas tillgängliga är presenterade i tabell \ref{commands}.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \hline\hline
+	$\uparrow$ &  				&  				& 				& = & Kör framåt 				\\ \hline
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster 		\\ \hline
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger 			\\ \hline
+			   & $\leftarrow$	&				&				& = & Rotera medurs 			\\ \hline
+			   &				& $\rightarrow$	&				& = & Rotera moturs 			\\ \hline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster 		\\ \hline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger 			\\ \hline
+			   &				&				& $\downarrow$	& = & Kör bakåt 				\\ \hline
+	\caption{Knapptryckningar och dess översättning} \label{commands}
+\end{longtable}
+
+\pagebreak
+\subsection{Grafiskt gränssnitt}
+Gränssnittet kommer konstrueras enligt figur \ref{software}.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\textwidth}{!}{
+	\input{images/software}	}
+	\caption{Mjukvarans gränssnitt \label{software}}
+\end{figure}
+
+\setcounter{secnumdepth}{0}
+\pagebreak
+\begin{thebibliography}{9}
+
+\bibitem{krav}
+  Grupp 4,
+  \emph{Kravspecifikation 1.0},
+  2016-02-03
+  
+\bibitem{banspec}
+	Grupp 1-4,
+	\emph{Banspecifikation 1.0}
+	
+\bibitem{tavling}
+	Grupp 1-4,
+	\emph{Tävlingsregler 1.0}
+
+\end{thebibliography}
+
+\setcounter{secnumdepth}{2}
+
+\end{flushleft}
+
+\end{document}
