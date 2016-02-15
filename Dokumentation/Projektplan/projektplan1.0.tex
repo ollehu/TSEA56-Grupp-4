@@ -1,0 +1,443 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+
+%\titlespacing\section{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+%\titlespacing\subsubsection{0pt}{12pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+
+{\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Projektplan}
+
+\vspace{5em}
+
+Version 1.0
+
+\vspace{5em}
+Grupp 4 \\
+\begin{tabular}{rl}
+Hynén Ulfsjöö, Olle&\verb+ollul666+
+\\
+Wasteson, Emil&\verb+emiwa068+
+\\
+Tronje, Elena&\verb+eletr654+
+\\
+Gustafsson, Lovisa&\verb+lovgu777+
+\\
+Inge, Zimon&\verb+zimin415+
+\\
+Strömberg, Isak&\verb+isast763+
+\\
+\end{tabular}
+
+\vspace{5em}
+\today
+
+\vspace{16em}
+Status
+\begin{longtable}{|l|l|l|} \hline
+
+Granskad & 2016-02-xx & IS \\ \hline
+Godkänd & - & - \\ \hline
+ 
+\end{longtable}
+
+\end{center}
+\end{titlepage}
+
+\pagebreak
+\begin{center}
+
+\section*{PROJEKTIDENTITET}
+2016/VT, Undsättningsrobot Gr. 4
+
+Linköpings tekniska högskola, ISY
+\vspace{5em}
+\begin{center}
+
+\begin{tabular}{|l|l|l|l|} \hline
+\textbf{Namn} & \textbf{Ansvar} & \textbf{Telefon} & \textbf{E-post}  \\ \hline 
+Isak Strömberg (IS) & Projektledare & 073-980 38 50 & isast763@student.liu.se \\ \hline
+Olle Hynén Ulfsjöö (OHU)& Dokumentansvarig & 070-072 91 84 & ollul666@student.liu.se \\ \hline
+Emil Wasteson (EW) & Hårdvaruansvarig & 076-836 61 66 & emiwa068@student.liu.se \\ \hline
+Elena Tronje (ET) & Mjukvaruansvarig & 072-276 92 93 & eletr654@student.liu.se \\ \hline
+Zimon Inge (ZI)& Testansvarig & 070-171 35 18 & zimin415@student.liu.se \\ \hline
+Lovisa Gustafsson (LG) & Leveransansvarig & 070-210 32 53 & lovgu777@student.liu.se \\ \hline
+\end{tabular}
+
+\end{center}
+
+E-postlista för hela gruppen: isast763@student.liu.se
+
+\vspace{5em}
+Kund: ISY, Linköpings universitet \\
+tel: 013-28 10 00, fax: 013-13 92 82 \\
+Kontaktperson hos kund: Mattias Krysander \\
+tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
+
+\vspace{5em}
+Kursansvarig:  Tomas Svensson\\
+tel: 013-28 13 68, e-post: tomass@isy.liu.se \\
+Handledare: Peter Johansson \\
+tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
+\end{center}
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
+\section*{Dokumenthistorik}
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|} \hline
+
+\textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
+1.0 & 2016-02-xx & Andra utkastet  & Grupp 4 & IS \\ \hline
+\end{tabular}
+\end{table}
+
+\pagebreak
+\pagenumbering{arabic}
+
+\begin{flushleft}
+\section{Beställare}
+Beställare är Mattias Krysander, ISY Fordonssystem.
+
+\section{Översiktlig beskrivning av projektet}
+Nedan följer en grov beskrivning av projektet.
+\subsection{Syfte och mål}
+Syftet med projektet är att utveckla en undsättningsrobot som ska kunna leta upp nödställda i ett labyrintsystem för att sedan åka och hämta relevant nödutrustning. För att klara detta ska roboten kunna manövrera i små utrymmen. 
+
+Projektets mål är att maximera överlevnadschansen för de nödställda genom att på snabbast möjliga tid förse de nödställda med utrustning, alltså hitta kortast möjliga väg från ingång till nödställd.
+
+Gruppens mål med projektet är att få en större förståelse för hur olika system integrerar med varandra, inte bara hur delsystem fungerar när de är separerade.
+
+
+\subsection{Leveranser}
+Leveranserna i projektet ska ske enligt nedanstående lista.
+\begin{center}
+\begin{longtable}{|p{.01\linewidth} p{.07\linewidth} | p{.7\linewidth} | p{.1\linewidth} |} \hline
+\textbf{Datum} & & \textbf{Aktivitet} & \textbf{BP} \\ \hline
+9 & feb & Val av förstudier ska vara inlämnade till beställaren. & - \\ \hline
+15 & feb & Första versionen av projektplan, tidplan och systemskiss ska vara inlämnade till beställaren. & - \\ \hline
+19 & feb & Slutgiltlig version av projektplan, tidplan och systemskiss ska vara inlämnade till beställaren.& BP2 \\ \hline
+3 & mar & Första versionen av förstudien ska vara inlämnad till handledaren och beställaren. & - \\ \hline
+11 & mar & Första versionen av designspecifikationen ska vara inlämnad till handledaren. & - \\ \hline
+5 & apr & Designspecifikationen ska vara godkänd av handledaren. & BP3 \\ \hline
+8 & apr & Version 1.0 av förstudien ska vara inlämnad till handledaren och beställaren. & - \\ \hline
+15 & apr & Design ska vara presenterad och godkänd av handledaren. & BP4 \\ \hline
+19 & maj & Version 1.0 av \textit{Kappan} (exklusive appendix) ska vara inlämnad. & - \\ \hline
+25 & maj & Kraven ska vara verifierade.  & BP5 \\ \hline
+26 & maj & Version 1.0 av teknisk dokumentation och användarhandledning ska vara inlämnade till beställaren. & - \\ \hline
+\multicolumn{2}{| l |}{vecka  22} &  Redovisning och demonstration. & - \\ \hline
+3 & jun & Efterstudie och källkod ska vara inlämnade. & - \\ \hline
+10 & jun & All utrustning och nycklar ska vara återlämnade. & BP6 \\ \hline
+\end{longtable}
+\end{center}
+
+Utöver ovanstående leveranser ska tidsrapporter lämnas senaste kl 16.00 vid följande datum: 3 februari, 22 februari, 7 mars, 14 mars, 4 april, 11 april, 18 april, 25 april, 2 maj, 9 maj, 16 maj, 23 maj, 30 maj och 7 juni. 
+
+\subsection{Begränsningar}
+Roboten kommer vara begränsad till att röra sig i korridorer à 40 cm och kommer i första hand inte kunna navigera autonomt i öppna rum. Finns det tid kommer dock navigering utökas till att även innefatta öppna rum. Sensorerna kommer vara begränsade till att enbart kunna detektera nödställda av den typ som anges i banspecifikationen. Gripklon kommer inte kunna greppa föremål autonomt utan behöva matas manuellt.
+
+\pagebreak
+\section{Fasplan}
+Nedan följer en översiktlig beskrivning av projektets faser.
+\subsection{Före projektstart}
+I fasen före projektstart tas en kravspecifikation fram i samråd med beställaren. Denna specifikation har sin utgång i projektdirektivet gruppen fått ut. En utförlig tidsplan ska tas fram för att ge en översiktlig bild av vad som ska göras och hur mycket tid som ska läggas under vilka veckor. Före det praktiska arbetet inleds ska förstudier på alla delsystem göras så projektgruppen erhåller rätt kunskaper för att genomföra projektet. Även en systemskiss och projektplan ska tas fram före projektets start.
+
+\subsection{Under projektet}
+Till att börja med görs en designspecifikation för att underlätta inför konstruktionsmomenten av roboten. Delsystemen konstrueras och tester sker för att kontrollera att de uppfyller kravspecifikationen. Alla tester dokumenteras. Om kravspecifikationen ej uppfylls ska möte med beställaren bokas för att se över eventuella ändringar i denna. Under projektets gång ska avstämning mot tid- och projektplan ske kontinuerligt för att se till att planerna efterföljs.
+
+\subsection{Efter projektet}
+När roboten uppfyller alla krav i kravspecifikationen levereras den till beställaren. Därefter ska efterstudier göras för att analysera och utvärdera projektet. Efter projektet genomförs även en tävling mot grupper som har genomfört samma projekt för att se vilken grupp som har lyckats bäst. 
+
+\pagebreak
+\section{Organisationsplan för hela projektet}
+Projektet kommer bedrivas enligt hierarkin i figur \ref{hierarki}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/orgchart}}
+	\caption{Projekthierarki} \label{hierarki}	
+\end{figure}
+
+\subsection{Villkor för samarbete inom projektgruppen}
+Projektgruppens villkor för samarbete återfinns i listan nedan.
+\begin{itemize}
+	\item Målsättning är att ha en fast mötestid i veckan då hela projektgruppen träffas. Vid mötet ska en veckoplan tas fram.
+	\item Gruppen eftersträvar att träffas i helgrupp ytterligare en gång i veckan för idéutbyte och gemensamt arbete.
+	\item Om inte gruppen eller projektledaren känner sig missnöjda ska nuvarande projektledare inneha rollen under hela projektets gång.
+	\item De aktiviteter som bestäms på veckomötet ska ha en ytterst ansvarig person, oavsett hur många som arbetar med uppgiften.
+	\item Ansvarig gruppmedlem för en uppgift ska varken arbeta mer eller mindre än övriga i gruppen, enbart se till att uppgiften klaras av inom tidsramen.
+\end{itemize}
+
+\subsection{Definition av arbetsinnehåll och ansvar}
+Projektgruppens roller samt dess ansvar är specificerade nedan.
+\begin{longtable}{| p{.2\linewidth} | p{.2\linewidth} | p{.5\linewidth} |} \hline
+\textbf{Namn} & \textbf{Projektroll} & \textbf{Ansvar} \\ \hline \endhead
+
+\multicolumn{3}{r@{}}{fortsättning \ldots} \\
+\endfoot
+\endlastfoot
+Isak Strömberg & Projektledare & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Övergripande ansvar för projektet.
+\item Säkerställer att inget dubbelarbete görs.
+\item Bokar lokal och skickar kallelse till möten.
+\item Fördelar ut ansvar för arbetsområdena. 
+\item Ser till att tidrapportering sammanställs, uppdateras och skickas in i tid.
+\item Håller kontakt med beställare.
+\vspace{-\baselineskip}
+\end{itemize} 
+\\ \hline
+
+Olle Hynén Ulfsjöö & Dokumentansvarig & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Ansvarar för protokoll på möten.
+\item Ansvarar för dokumentation och layout.
+\item Står för sista granskning av dokument.
+\vspace{-\baselineskip}
+\end{itemize}
+\\ \hline
+
+Emil Wasteson & Hårdvaruansvarig & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Ansvarar för kopplingsschema.
+\item Ansvarar för beställning av hårdvara.
+\vspace{-\baselineskip}
+\end{itemize}
+\\ \hline
+
+Elena Tronje & Mjukvaruansvarig & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Ansvarar för att kod skrivs i lämpligt språk.
+\item Utför granskning av all kod som skrivs.
+\item Ansvarar över modulernas kommunikation.
+\vspace{-\baselineskip}
+\end{itemize}
+\\ \hline
+
+Zimon Inge & Testansvarig & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Ansvarar för slutgiltliga tester.
+\item Ser till att testprotokoll förs.
+\vspace{-\baselineskip}
+\end{itemize}
+\\ \hline
+
+Lovisa Gustafsson & Leveransansvarig & \vspace{-\baselineskip}
+\begin{itemize}[label={--},leftmargin=*,nosep]
+\item Ser till att material levereras innan deadline.
+\item Fördelar extraresurser.
+\item Påminner gruppen om deadlines.
+\vspace{-\baselineskip}
+\end{itemize}
+\\ \hline
+
+\end{longtable}
+
+\pagebreak
+\section{Dokumentplan}
+Följande tabell presenterar de olika dokument som ingår i projektet. 
+
+\begin{longtable}{| p{.17\linewidth} | p{.11\linewidth} | p{.31\linewidth} | p{.15\linewidth} | p{.11\linewidth} |} \hline
+\textbf{Dokument} & \textbf{Ansvarig} & \textbf{Syfte} & \textbf{Mottagare} & \textbf{Deadline} \\ \hline
+Krav-specifikation & Alla & \textit{Definierar alla krav på systemet.} & Beställare och projektgrupp & 2 feb \\ \hline
+Projektplan & Alla & \textit{Specificerar projektets upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
+Tidsplan & Alla & \textit{Planerar arbetsinsatsen.} & Beställare och projektgrupp & 19 feb \\ \hline
+Systemskiss & Alla & \textit{Beskriver produktens upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
+Förstudie & Alla & \textit{Utforskar de tekniska alternativ som finns tillgängliga.} & Beställare, projektgrupp, TEMA- och ISY-handledare & 8 apr \\ \hline
+Design-specifikation & Alla & \textit{Ger en mer detaljerad beskrivning av produkten.} & Beställare, projektgrupp och hand-ledare & 5 apr \\ \hline
+Kappa & Alla & \textit{Sammanfattar projektet.} & Beställare & 19 maj \\ \hline
+Teknisk \mbox{dokumentation} & Alla & \textit{Beskriver tekniken bakom produkten.} & Beställare & 26 maj\\ \hline
+Användar-handledning & Alla & \textit{Beskriver hur produkten används.} & Beställare & 26 maj \\ \hline
+Efterstudie & Alla & \textit{Reflekterar över projektet.} & Projektgrupp och beställare & 3 jun \\ \hline
+
+\end{longtable}
+
+\pagebreak
+\section{Utvecklingsmetodik}
+Projektet kommer att genomföras enligt LIPS-modellen. Det tekniska arbetet kommer att ske i grupper om två personer. Programmering kommer i första hand att ske i C, andra språk kommer att användas vid behov. Arbetet med mjukvaran kan ske på egen hand.
+
+\section{Utbildningsplan}
+Eftersom inte tillräckligt med tekniska kunskaper finns hos gruppens medlemmar när projektet inleds kommer samtliga i gruppen behöva utbildas inom de områden där kunskap saknas. 
+\subsection{Egen utbildning}
+Varje individ i gruppen ansvarar för sin egen utbildning och för att ha de kunskaper som krävs för att genomföra projektet. Dessa timmar kommer att plockas från en \textit{utbildningspool} som innefattar 30 antal timmar. Utbildningsområde beror på medlemmens arbetsuppgifter och består i grunden av C, Git, \LaTeX och eventuellt ytterligare språk för mjukvara till datormodulen.
+
+\section{Rapporteringsplan}
+Alla gruppmedlemmar ska på gruppmötet varje vecka uppdatera övriga i gruppen vad som har gjorts sedan förra mötet. Projektledaren sammanfattar vad som har gjorts och skickar veckovis in en statusrapport, tillsammans med en tidsrapport, till beställaren. Tidsrapporten utgår från ett exceldokument som fylls i kontinuerligt av gruppens medlemmar.
+
+\section{Mötesplan}
+Ett stående lunchmöte á 45 minuter ska hållas varje onsdag. På mötet ska alla medlemmar delta om ingen speciell anledning finns för att inte kunna medverka. Inför mötet bokar projektledaren en lokal och lägger upp en dagordning i gruppens gemensamma filutrymme. Under mötet för dokumentansvarig protokoll på det som diskuteras/bestäms. Det ska även bestämmas vad varje gruppmedlem ska göra och ha ansvar för under kommande vecka
+
+\pagebreak
+\section{Resursplan}
+Resurser som finns till projektgruppens förfogande beskrivs nedan.
+\subsection{Personer}
+Projektgruppen består av sex personer där alla lägger samma mängd timmar på projektet. Tekniska experter och en handledare finns att tillgå under projektets gång.
+
+\subsection{Material}
+ISY tillhandahåller den hårdvara (sensorer, motorer, etc.) som tillhör projektet. Det finns vid behov även möjlighet att beställa viss utrustning som i dagsläget inte finns hos ISY. 
+
+\subsection{Lokaler}
+När designspecifikationen har godkänts av beställaren kommer tillträde ges till ISY:s laborationslokal Muxen, där två stationer kommer finnas till gruppens förfogande. För att få plats kommer det aldrig vistas mer än två grupper om två personer vid stationerna vid samma tillfälle.
+
+\subsection{Ekonomi}
+Efter projektplanen har blivit godkänd har gruppen 1380 timmar till sitt förfogande (230 timmar per person).
+
+\pagebreak
+\section{Milstolpar och beslutspunkter}
+Projektet är uppdelat i både milstolpar och beslutspunkter, dessa återfinns nedan.
+\subsection{Milstolpar}
+Nedan följer projektets milstolpar.
+
+\begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
+\textbf{Nr.} & \textbf{Beskrivning} & \textbf{Datum} \\ \hline
+%\milstolpe & Kravspecifikationen är klar & 2016-02-02 \\ \hline
+\milstolpe & Designspecifikationen är klar & 2016-04-05 \\ \hline
+\milstolpe & Huvudmodulens blåtandskommunikation med PC är klar & 2016-04-17 \\ \hline
+\milstolpe & Sensorenheten (inklusive kommunikation med huvudenheten) är testad och klar & 2016-05-01 \\ \hline
+\milstolpe & Reglering av roboten i rak korridor och sväng är testad och klar & 2016-05-01 \\ \hline
+\milstolpe & Manuell styrning av roboten är testad och klar & 2016-05-01 \\ \hline
+\milstolpe & Beräkningsalgoritm för kortaste väg är klar & 2016-05-01 \\ \hline
+\milstolpe & Identifiering av nödställda fungerar & 2016-05-01 \\ \hline
+\milstolpe & 2D-karta kan ritas upp på PC & 2016-05-08 \\ \hline
+\milstolpe & Kravspecifikation uppfylld & 2016-05-22 \\ \hline
+
+
+\end{longtable}
+
+\subsection{Beslutspunkter}
+Nedan följer projektets beslutspunkter.
+
+\begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
+\textbf{Nr.} & \textbf{Beskrivning} & \textbf{Datum} \\ \hline
+0 & Godkännande av projektdirektiv & 2016-01-22 \\ \hline
+1 & Godkännande av kravspecifikation & 2016-02-02 \\ \hline
+2 & Godkännande av projektplan, tidplan och systemskiss & 2016-02-19 \\ \hline
+3 & Godkännande av designspecifikation & 2016-04-05 \\ \hline
+4 & Konstruktionsgranskning & 2016-04-15 \\ \hline
+5 & Verifiering av uppfylld kravspecifikationens & 2016-05-25 \\ \hline
+6 & Godkännande av projektet & 2016-06-10 \\ \hline
+
+\end{longtable}
+
+\pagebreak
+\section{Aktiviteter}
+Projektets aktiviteter finns specificerade nedan. 
+\begin{longtable}{| p{.05\linewidth} | p{.25\linewidth} | p{.4\linewidth} | p{.1\linewidth} | p{.05\linewidth} |} \hline
+
+\textbf{Nr.} & \textbf{Aktivitet} & \textbf{Beskrivning} & \textbf{Före-gångare} & \textbf{Tid [h]} \\ \hline \endhead
+
+\multicolumn{5}{r@{}}{fortsättning \ldots} \\
+\endfoot
+\endlastfoot
+\multicolumn{5}{|c|}{\textbf{Dokument}} \\ \hline
+\kravlista & Kravspecifikation & Dokument vilket specificerar de krav som beställare och projektgrupp \mbox{kommit} överens om & - & 60 \\ \hline
+\kravlista & Projektplan, systemskiss och tidplan & En plan som beskriver hur projektet ska genomföras, skiss som ingående beskriver de olika delkomponenterna i roboten samt en tidplan för hur arbetet med roboten ska fortskrida  & - & 100 \\ \hline
+\kravlista & Förstudie: Reglering & Förstudie som behandlar reglering av styrningen & - & 100 \\ \hline
+\kravlista & Förstudie: Sensorer & Förstudie som behandlar val av sensorer & - & 100 \\ \hline
+\kravlista & Förstudie: Kommunikation & Förstudie som behandlar den intermodulära kommunikationen & - & 100 \\ \hline
+\kravlista & Designspecifikation & En detaljerad beskrivning av roboten och dess komponenter & - & 100 \\ \hline
+\kravlista & Teknisk dokumentation & Dokument som förklarar projektets tekniska delar & - & 20 \\ \hline
+\kravlista & Kappa & Dokument som sammanfattar hela projektet & 48 & 60 \\ \hline
+\kravlista & Efterstudie & Dokument som reflekterar över projektet & 48 & 40 \\ \hline
+\kravlista & Användarhandledning & Dokument som beskriver hur roboten används & - & 20\\ \hline
+\kravlista & Test & Test av moduler & - & 30 \\ \hline
+\kravlista & Veckomöte & Stående mötestid veckovis för avstämning av projektets fortlöpande & - & 90 \\ \hline
+\kravlista & Projektledning & Tidspool för projektledarens administrativa uppgifter & - & 15\\ \hline
+\kravlista & Utbildning & Tidspool för intern utbildning & - & 30 \\ \hline
+\kravlista & Dokument-buffert & Tidspool för dokumentskrivning & - & 25 \\ \hline
+\kravlista & Buffert & Tidspool för aktiviteter exklusive dokumentskrivning & - & 90\\ \hline
+\multicolumn{5}{|c|}{\textbf{Delsystem 1 - Huvudmodul}} \\ \hline
+\kravlista & I\textsuperscript{2}C-buss & Konfigurerar I\textsuperscript{2}C-bussen mellan de tre modulerna & 5, 6 & 40 \\ \hline
+\kravlista & Avbrotts-hantering för kommunikation & Möjliggör för dubbelsidig kommunikation längs I\textsuperscript{2}C-bussen & 6 & 15 \\ \hline
+\kravlista & Skicka data från huvud- till styrmodul & Kunna skicka styrkommandon och sensordata från huvud- till styrmodul & 17 & 25 \\ \hline
+\kravlista & Kommunikation av sensordata & Huvudmodulen ska ta emot konverterad sensordata från sensormodulen & 17 & 20 \\ \hline
+\kravlista & Byte mellan autonom/-manuellt-läge & Huvudmodulen ska kopplas samman med en brytare som styr mellan autonomt/manuellt-läge & 6 & 10 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Datormodul $\rightarrow$ Huvudmodul & Datormodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & 6 & 50 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till datormodulen via Bluetooth\textsuperscript{\circledR} & 6 & 50 \\ \hline
+\kravlista & Manuell styrning & Styrmodulen ska kunna hantera kommandon för manuell styrning & 27, 45 & 30 \\ \hline
+\kravlista & Intern kartläggning & Huvudmodulen ska internt kunna kartlägga utforskade vägar & 29 & 50 \\ \hline
+\kravlista & Styrreglering & Huvudmodulen ska kunna reglera styrning utifrån sensordata & 27, 39, 42 & 30 \\ \hline
+\kravlista & Skicka styrkommandon till styrmodul & Huvudmodulen ska kunna skicka styrkommandon till styrmodulen & 5 & 40 \\ \hline
+\kravlista & Avsökningsalgoritm & Roboten ska utöva en effektiv avsökningsalgoritm för att utforska labyrinten & 6 & 40 \\ \hline
+\kravlista & Automatisk styrning & Roboten ska kunna färdas i en labyrint utan hjälp av manuell styrning & 26, 30 & 30 \\ \hline
+\kravlista & Svängreglering & Roboten ska kunna ta en sväng utan att kollidera med vägg & 27, 39, 42 & 30 \\ \hline
+\kravlista & Beräkning av kortaste väg & Huvudmodulen ska utifrån sin interna kartläggning kunna beräkna den kortaste vägen mellan start och nödställd & 6 & 20 \\ \hline
+\multicolumn{5}{|c|}{\textbf{Delsystem 2 - Sensormodul}} \\ \hline
+\kravlista & Installera sensor som identifierar nödställd & Installera och konfigurera sensorn som identifierar den nödställde & 6 & 15 \\ \hline
+\kravlista & Installera vinkelhastighets-sensor & Installera och konfigurera sensor för vinkelhastighet & 6 & 15 \\ \hline
+\kravlista & Installera avståndssensor & Installera och konfigurera sensor för avståndsmätning & 6 & 15 \\ \hline
+\kravlista & Sensorerna ska läsas av sensormodulen & Sensormodulen ska kontinuerligt avläsa sensorernas mätvärden & 17, 18, 32, 33, 34 & 25 \\ \hline
+\kravlista & Sensormodulen ska konvertera sensordata & Sensordata ska konverteras till en digital SI-enhet & 37 & 30 \\ \hline
+\kravlista & Brusfiltrering & Sensormodulen ska kunna filtrera sensordata så att störningar minimeras & 35 & 25 \\ \hline
+\kravlista & Identifikation av nödställd & Sensormodulen ska kunna identifiera den nödställde & 37 & 15 \\ \hline
+\kravlista & Kommunicera sensordata från sensor- till huvudmodul & Den konverterade sensordatan ska kunna kommuniceras från sensormodulen & 5, 36 & 25\\ \hline
+\multicolumn{5}{|c|}{\textbf{Delsystem 3 - Styrmodul}} \\ \hline
+\kravlista & Sensorvärden presenteras på LCD-display & Styrmodulen kommunicerar och presenterar relevanta sensordata på en LCD-display & 42 & 30 \\ \hline
+\kravlista & Ta emot styrkommandon & Styrmodulen ska kunna ta emot styrkommandon från huvudmodulen & 19 & 20 \\ \hline
+\kravlista & Tolkning av styrkommandon & Styrkommandon ska kunna tolkas av styrmodulen och översättas till motorerna & 41 & 15\\ \hline
+\kravlista & PWM-modulering & Styrmodulen ska kunna utföra PWM-modulering för att styra servomotorerna & 6 & 15\\ \hline
+\kravlista & Gripklo-styrning & Styrmodulen ska kunna styra gripklon & 6 & 15 \\ \hline
+\multicolumn{5}{|c|}{\textbf{Delsystem 4 - Datormodul}} \\ \hline
+\kravlista & Skicka styrkommandon & Datormodulen ska kunna skicka styrkommandon till huvudmodulen & 22 & 30 \\ \hline
+\kravlista & Användarvänlig presentation av mätdata & Datormodulen ska via mjukvaran kunna presentera sensordata på ett användarvänligt sätt & 23 & 20 \\ \hline
+\kravlista & Extern kartläggning & Datormodulen ska grafiskt kunna representera den karta som huvudmodulen har loggat & 23, 25 & 25\\ \hline
+\multicolumn{5}{|c|}{\textbf{Samtliga moduler}} \\ \hline
+\kravlista & Modulmontering & Alla moduler ska monteras på robotchassit & 17-47 & 45 \\ \hline
+\end{longtable}
+
+\section{Tidplan}
+Se Appendix A
+
+\pagebreak
+\section{Kvalitetsplan}
+Kvalitet inom projektet kommer behandlas enligt nedan.
+\subsection{Granskningar}
+Alla dokument som skrivs ska granskas av en gruppmedlem som inte har medverkat i framtagandet av dokumentet. Detta gäller för alla typer av dokument, inklusive kod och presentationer. De personer som granskar dokumenten ska enbart komma med kommentarer, sedan är det upp till den som skriver dokumentet att göra justeringar. Detta upprepas till både skrivare och granskare är nöjda.
+
+\subsection{Testplan}
+Tester kommer genomföras enligt nedanstående tabell. 
+\begin{longtable}{| p{.05\linewidth} | p{.7\linewidth} | p{.15\linewidth} |} \hline
+\textbf{Nr.} & \textbf{Beskrivning} & \textbf{Görs efter aktivitet nr.} \\ \hline
+\testplan & Huvudmodulens Bluetooth\textsuperscript{\circledR}-kommunikation med PC & 22, 23 \\ \hline
+\testplan & Sensorenheten (inkl. kommunikation med huvudenheten) & 36, 37, 39 \\ \hline
+\testplan & Reglering av roboten i rak korridor och sväng & 26, 30 \\ \hline
+\testplan & Manuell styrning av roboten & 24 \\ \hline
+\testplan & Beräkningsalgoritm för kortaste väg & 31 \\ \hline
+\testplan & 2D-karta kan ritas upp & 47 \\ \hline
+\testplan & Identifiering av nödställd & 38 \\ \hline
+\testplan & Uppfyller kravspecifikationen & 25, 48 \\ \hline
+\end{longtable}
+
+\pagebreak
+\section{Prioriteringar}
+Vid tidsbrist kommer de funktioner som är mest centrala för robotens funktion få högsta prioritet. Detta innebär att, förutom alla krav på nivå två, kommer följande funktioner nedprioriteras:
+\begin{itemize}
+	\item PC-programvarans grafiska gränssnitt... 
+	\begin{itemize}	
+		\item ...för presentation av data
+		\item ...för uppritning av kartan
+	\end{itemize}
+	\item Optimering av algoritmer i robotens programvara för...
+	\begin{itemize}
+		\item ...avsökning av labyrinten
+		\item ...beräkning av närmsta vägen
+		\item ...reglering av robotens körning
+	\end{itemize}
+	\item Kretskort (i stället för virkort) och andra konstruktionsmässiga robusthetsförbättringar.
+\end{itemize}
+
+\section{Projektavslut}
+Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllts ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling anordnas, mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. När all utrustning och alla nycklar är återlämnade avslutas projektet.
+
+\end{flushleft}
+
+\end{document}
