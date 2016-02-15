@@ -38,7 +38,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & IS & 2016-02-xx \\ \hline
+Granskad & OHU & 2016-02-15 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -93,7 +93,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
-1.0 & 2016-02-xx &  Andra utkastet & Grupp 4 & IS \\ \hline
+1.0 & 2016-02-15 &  Andra utkastet & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -105,11 +105,11 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 Denna systemskiss utgör en del av förarbetet i kandidatprojektet TSEA56. På uppdrag av beställaren ska systemskissen ge en detaljerad beskrivning av produkten och dess delsystem. Dokumentet inleds med en grov beskrivning av produkten, därefter följer en mer detaljerad beskrivning på modulnivå.
 \subsection{Syfte och mål}
-Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen \cite{krav}.
+Syftet med projektet är att bygga en undsättningsrobot på prototypnivå. Roboten ska autonomt kunna utforska en \textit{simulerad} grotta och finna en nödställd. Parallellt med sökandet ska roboten kunna kommunicera med en extern datormodul där en karta av grottan successivt ritas upp. När den nödställde är funnen ska en optimerande algoritm beräkna den kortaste vägen dit. Denna väg ska sedan användas när roboten ska förse den nödställde med någon förnödenhet. Dessa krav finns specificerade i kravspecifikationen, se appendix A.
 
 \pagebreak
 \section{Översikt av systemet}
-Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen \cite{banspec} och uppdraget utförs enligt tävlingsreglerna \cite{tavling}.
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen, se appendix B, och uppdraget utförs enligt tävlingsreglerna, se appendix C.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -201,7 +201,7 @@ IR-sensorerna och detektorn har endast en analog utspänning och behöver därf�
 Både laser-sensorn och gyro/accelerometern har inbyggt stöd för protokollet I\textsuperscript{2}C och kopplas enklast upp på en sub-I\textsuperscript{2}C-buss alternativt analogt in på multiplexern. Frekvensen med vilket avläsningarna görs bestäms senare i projektet. Faktorer som ADC:ns konverteringstid samt accelerometerns precision kommer att påverka samplingsfrekvensen och kan bestämmas först under testkörningar. 
 
 \subsection{Kommunikation med huvudmodul}
-Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i avsnitt \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information ska skickas. Informationen som skickas är avstånd till den främre väggen, avstånd till sidovägg och vinkel mot sidovägg, se figur \ref{measurements}. 
+Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-buss som är definierad i avsnitt \ref{sec:huvudmodul}. Eftersom sensormodulen är \emph{slave} i sammanhanget så anropar den huvudmodulen via ett avbrott när information ska skickas. Informationen som skickas är avstånd till den främre väggen, avstånd till sidovägg, vinkel mot sidovägg och eventuellt vinkelutslag, se figur \ref{measurements}. 
 
 \begin{figure}[htbp]
 \centering
@@ -209,12 +209,12 @@ Sensormodulen kommunicerar med huvudmodulen enligt den I\textsuperscript{2}C-bus
 \noindent\resizebox{.5\textwidth}{!}{
 	\input{images/measurements}}
 	\captionsetup{justification=centering}
-	\caption{Sensorerna i arbete, \\ $\alpha$ är vinkeln mot sidovägg, \\ $l$ är avståndet till främre vägg och \\ $\omega$ vinkelhastigheten}
+	\caption{Sensorerna i arbete, \\ $\alpha$ är vinkeln mot sidovägg, \\ $l$ är avståndet till främre vägg, \\ $\l_{\perp}$ är avständet till sidovägg och \\ $\omega$ vinkelhastigheten}
 	\label{measurements}
 \end{figure}
 \pagebreak
 \section{Delsystem 3 - Styrmodul}
-Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig eller att styra gripklon. Kommunikationen sker genom I\textsuperscript{2}C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
+Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig, rotera det eventuella lasersensortornet eller att styra gripklon. Kommunikationen sker genom I\textsuperscript{2}C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
 \subsection{Motorer}
 Det chassi som roboten byggs på har fyra hjul. Dessa styrs parvis, höger hjulpar respektive vänster hjulpar. Signalerna till respektive sida styr rotationsriktning respektive hastighet. Signalen som styr hastigheten ska vara pulsbreddsmodulerad.
 \subsection{LCD-display}
@@ -255,25 +255,25 @@ Gränssnittet kommer konstrueras enligt figur \ref{software}.
 	\input{images/software}	}
 	\caption{Mjukvarans gränssnitt \label{software}}
 \end{figure}
-
-\setcounter{secnumdepth}{0}
-\pagebreak
-\begin{thebibliography}{9}
-
-\bibitem{krav}
-  Grupp 4,
-  \emph{Kravspecifikation 1.0},
-  2016-02-03
-  
-\bibitem{banspec}
-	Grupp 1-4,
-	\emph{Banspecifikation 1.0}
-	
-\bibitem{tavling}
-	Grupp 1-4,
-	\emph{Tävlingsregler 1.0}
-
-\end{thebibliography}
+%
+%\setcounter{secnumdepth}{0}
+%\pagebreak
+%\begin{thebibliography}{9}
+%
+%\bibitem{krav}
+%  Grupp 4,
+%  \emph{Kravspecifikation 1.0},
+%  2016-02-03
+%  
+%\bibitem{banspec}
+%	Grupp 1-4,
+%	\emph{Banspecifikation 1.0}
+%	
+%\bibitem{tavling}
+%	Grupp 1-4,
+%	\emph{Tävlingsregler 1.0}
+%
+%\end{thebibliography}
 
 \setcounter{secnumdepth}{2}
 
