@@ -1,0 +1,3 @@
+Appendix A - Kravspecifikation
+Appendix B - Tidsplan
+Appendix C - Banspecifikation och tävligsregler
