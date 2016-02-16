@@ -14,7 +14,7 @@
 
 \vspace{5em}
 
-Version 0.1
+Version 0.2
 
 \vspace{5em}
 Grupp 4 \\
@@ -40,7 +40,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & 2016-02-12 & OHU \\ \hline
+Granskad & - & - \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -96,6 +96,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
+0.2 & - & Andra utkastet  & Grupp 4 & - \\ \hline
 \end{tabular}
 \end{table}
 
@@ -134,14 +135,14 @@ Leveranserna i projektet ska ske enligt nedanstående lista.
 26 & maj & Version 1.0 av teknisk dokumentation och användarhandledning ska vara inlämnade till beställaren. & - \\ \hline
 \multicolumn{2}{| l |}{vecka  22} &  Redovisning och demonstration. & - \\ \hline
 3 & jun & Efterstudie och källkod ska vara inlämnade. & - \\ \hline
-10 & jun & All utrustning och nycklar ska vara återlämnade. & - \\ \hline
+10 & jun & All utrustning och nycklar ska vara återlämnade. & BP6 \\ \hline
 \end{longtable}
 \end{center}
 
 Utöver ovanstående leveranser ska tidsrapporter lämnas senaste kl 16.00 vid följande datum: 3 februari, 22 februari, 7 mars, 14 mars, 4 april, 11 april, 18 april, 25 april, 2 maj, 9 maj, 16 maj, 23 maj, 30 maj och 7 juni. 
 
 \subsection{Begränsningar}
-Roboten kommer vara begränsad till att röra sig i korridorer à 40 cm och kommer inte kunna navigera autonomt i öppna rum. Sensorerna kommer vara begränsade till att enbart kunna detektera nödställda av den typ som anges i banspecifikationen. Gripklon kommer inte kunna greppa föremål autonomt utan behöva matas manuellt.
+Roboten kommer vara begränsad till att röra sig i korridorer à 40 cm och kommer i första hand inte kunna navigera autonomt i öppna rum. Finns det tid kommer dock navigering utökas till att även innefatta öppna rum. Sensorerna kommer vara begränsade till att enbart kunna detektera nödställda av den typ som anges i banspecifikationen. Gripklon kommer inte kunna greppa föremål autonomt utan behöva matas manuellt.
 
 \pagebreak
 \section{Fasplan}
@@ -190,6 +191,7 @@ Isak Strömberg & Projektledare & \vspace{-\baselineskip}
 \item Säkerställer att inget dubbelarbete görs.
 \item Bokar lokal och skickar kallelse till möten.
 \item Fördelar ut ansvar för arbetsområdena. 
+\item Ser till att tidrapportering sammanställs, uppdateras och skickas in i tid.
 \item Håller kontakt med beställare.
 \vspace{-\baselineskip}
 \end{itemize} 
@@ -250,12 +252,12 @@ Krav-specifikation & Alla & \textit{Definierar alla krav på systemet.} & Bestä
 Projektplan & Alla & \textit{Specificerar projektets upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
 Tidsplan & Alla & \textit{Planerar arbetsinsatsen.} & Beställare och projektgrupp & 19 feb \\ \hline
 Systemskiss & Alla & \textit{Beskriver produktens upplägg.} & Beställare och projektgrupp & 19 feb \\ \hline
-Förstudie & Alla & \textit{Utforskar de tekniska alternativ som finns tillgängliga.} & Beställare, projektgrupp & 8 apr \\ \hline
+Förstudie & Alla & \textit{Utforskar de tekniska alternativ som finns tillgängliga.} & Beställare, projektgrupp, TEMA- och ISY-handledare & 8 apr \\ \hline
 Design-specifikation & Alla & \textit{Ger en mer detaljerad beskrivning av produkten.} & Beställare, projektgrupp och hand-ledare & 5 apr \\ \hline
 Kappa & Alla & \textit{Sammanfattar projektet.} & Beställare & 19 maj \\ \hline
 Teknisk \mbox{dokumentation} & Alla & \textit{Beskriver tekniken bakom produkten.} & Beställare & 26 maj\\ \hline
 Användar-handledning & Alla & \textit{Beskriver hur produkten används.} & Beställare & 26 maj \\ \hline
-Efterstudie & Alla & \textit{Reflekterar över projektet.} & Projektgrupp & 3 jun \\ \hline
+Efterstudie & Alla & \textit{Reflekterar över projektet.} & Projektgrupp och beställare & 3 jun \\ \hline
 
 \end{longtable}
 
@@ -322,7 +324,7 @@ Nedan följer projektets beslutspunkter.
 3 & Godkännande av designspecifikation & 2016-04-05 \\ \hline
 4 & Konstruktionsgranskning & 2016-04-15 \\ \hline
 5 & Verifiering av uppfylld kravspecifikationens & 2016-05-25 \\ \hline
-6 & Godkännande av projektet & 2016-06-03 \\ \hline
+6 & Godkännande av projektet & 2016-06-10 \\ \hline
 
 \end{longtable}
 
@@ -434,7 +436,7 @@ Vid tidsbrist kommer de funktioner som är mest centrala för robotens funktion 
 \end{itemize}
 
 \section{Projektavslut}
-Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllts ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling anordnas, mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. 
+Projektet avslutas med att en färdig produkt lämnas till beställaren, vilket innebär att alla krav med prioritet 1 är uppfyllda. Avstämning sker mot kravspecifikationen för att försäkra sig om detta. Har krav av prioritet 2 och 3 uppyllts ska detta anges till beställaren och även testas. Som ett test på hur bra projektet har lyckats kommer en tävling anordnas, mot andra grupper som genomfört projekt med samma direktiv. Det kommer även skrivas en slutrapport och göras en efterstudie. När all utrustning och alla nycklar är återlämnade avslutas projektet.
 
 \end{flushleft}
 
