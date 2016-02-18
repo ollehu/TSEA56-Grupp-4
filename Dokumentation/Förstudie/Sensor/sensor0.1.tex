@@ -1,6 +1,8 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
+\usepackage{tikz}
+
 
 \begin{document}
 \begin{titlepage}
@@ -95,10 +97,21 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 I dagsläget finns det en mängd olika sensorer, alla med för- respektive nackdelar. Vilken sensor som är bäst beror ofta på vilket syfte som ska uppfyllas och vilka resurser som finns att tillgå. Att en undsättningsrobot som ska hitta nödställda har sensorer som gör det enkelt att identifiera sitt mål är en fråga om liv och död. Därav finns det ett stort behov av att öka kunskapen om sensorer, samt dess möjligheter och begränsningar.
 
 \section{Problemformulering}
+
+\subsection{Syfte}
+Syftet med denna rapport är att undersöka vilka sensorer som är relevanta för undsättningsroboten i sitt uppdrag. Syftet är fortsättningsvis att redogöra för en implementation av de sensorer som finnes intressanta för undsättningsrobotens ändamål.
+
+
+\subsection{Frågeställningar}
+Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behandlas i denna rapport:
+
 \begin{itemize}
-  \item Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?  
-  \item Vilka sensorer är lämpliga att använda till projektet?
-  \end{itemsize}
+\item{Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?}
+\item {Vilka sensorer är lämpliga att använda till projektet?}
+\item{Hur kan dessa implementeras? }
+\end{itemize}
+
+
 
 \section{Kunskapsbas}
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
