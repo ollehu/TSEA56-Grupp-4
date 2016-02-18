@@ -2,7 +2,7 @@
 
 \usepackage{extras} % Se extras.sty
 
-\begin{document}
+\begin{document} 
 \begin{titlepage}
 \begin{center}
 
@@ -94,14 +94,64 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 text \cite{893287}
 
+\pagebreak
+
 \section{Problemformulering}
-text
+\textit{Frågeställningar som rapporten ska behandla}
+
+\begin{itemize}
+	\item Vad är I2C (en beskrivning av hur den fungerar) och varför passar den?
+	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
+	
+		\begin{itemize}
+			\item Avbrott eller flera masters?
+			\item Parallella bussar?
+			\item Hur ska gränssnitt designas?
+			\item C eller assembler?
+		\end{itemize}
+
+\end{itemize}
+
+\pagebreak
 
 \section{Kunskapsbas}
-text
+\textit{Litteratur, datablad, dokumentation, bakgrundsteori, etc. Dela gärna upp efter vad förstudien handlar om.}
+
+\subsection{I\textsuperscript{2}C - hur microprocessorn fungerar}
+https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
+	\begin{itemize}
+		\item s. 8
+		\begin{itemize}
+			\item SDA and SCL tvåvägade. När bussen är \textquotedblleft ledig\textquotedblright{} ligger båda höga. 
+			\item Data kan skickas med en hastighet upp till 100kbit/s i standard läge (400 kbit/s Fast-mode, 3.4 Mbit/s High speed-mode).
+			\item The data on the SDA line must be stable during the HIGH period of the clock. The HICH or LOW state of the data line can only change when the clock signal on the SCL line is LOW.
+		\end{itemize}
+			
+		\item s. 9
+		\begin{itemize}
+			\item START and STOP conditions: hur de olika linorna måste vara (höga och/eller låga, samt positiv/negativ flank) för att indikera start och slut
+		\end{itemize}
+		
+		\item s. 10
+		\begin{itemize}
+			\item Varje bit på SDA-linan måste vara 8 bitar lång
+			\item Antal bytes som kan skickas per transfer är oreglerat
+			\item Mest signifikant bit (MSB) först
+			\item Slavarna kan sätta mastern i vänteläge
+		\end{itemize}
+		
+		\item s. 13
+		\begin{itemize}
+			\item Adressering: (1) START condition, (2) slavadress, (3) datariktning, (4) STOP condition. Alternativt kan STOP condition ersättas med START condition för att forsätta ha kommunikation på bussen.
+		\end{itemize}
+\end{itemize}			
+
+\pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
-text
+\textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
+
+\pagebreak
 
 \section{Resultat och slutsatser}
 text
