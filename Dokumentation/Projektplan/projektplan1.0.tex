@@ -40,7 +40,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & IS & 2016-02-17 \\ \hline
+Granskad & OHU & 2016-02-18 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -97,7 +97,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-02-12 &  Första utkastet & Grupp 4 & OHU \\ \hline
 0.2 & 2016-02-16 & Andra utkastet  & Grupp 4 & OHU \\ \hline
-1.0 & 2016-02-17 & Tredje utkastet  & Grupp 4 & IS \\ \hline
+1.0 & 2016-02-18 & Tredje utkastet  & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -356,20 +356,20 @@ Projektets aktiviteter finns specificerade nedan.
 \kravlista & Dokument-buffert & Tidspool för dokumentskrivning & - & 25 \\ \hline
 \kravlista & Buffert & Tidspool för aktiviteter exklusive dokumentskrivning & - & 90\\ \hline
 \multicolumn{5}{|c|}{\textbf{Delsystem 1 - Huvudmodul}} \\ \hline
-\kravlista & I\textsuperscript{2}C-buss & Konfigurerar I\textsuperscript{2}C-bussen mellan de tre modulerna & 5, 6 & 40 \\ \hline
+\kravlista & I\textsuperscript{2}C-buss & Konfigurerar I\textsuperscript{2}C-bussen mellan de tre modulerna & 5, 6 & 60 \\ \hline
 \kravlista & Avbrotts-hantering för kommunikation & Möjliggör för dubbelsidig kommunikation längs I\textsuperscript{2}C-bussen & 6 & 15 \\ \hline
 \kravlista & Skicka data från huvud- till styrmodul & Kunna skicka styrkommandon och sensordata från huvud- till styrmodul & 17 & 25 \\ \hline
 \kravlista & Kommunikation av sensordata & Huvudmodulen ska ta emot konverterad sensordata från sensormodulen & 17 & 20 \\ \hline
 \kravlista & Byte mellan autonom/-manuellt-läge & Huvudmodulen ska kopplas samman med en brytare som styr mellan autonomt/manuellt-läge & 6 & 10 \\ \hline
-\kravlista & Bluetooth\textsuperscript{\circledR}: Datormodul $\rightarrow$ Huvudmodul & Datormodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & 6 & 50 \\ \hline
-\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till datormodulen via Bluetooth\textsuperscript{\circledR} & 6 & 50 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Datormodul $\rightarrow$ Huvudmodul & Datormodulen ska kunna skicka information till huvudmodulen via Bluetooth\textsuperscript{\circledR} & 6 & 40 \\ \hline
+\kravlista & Bluetooth\textsuperscript{\circledR}: Huvudmodul $\rightarrow$ Datormodul & Huvudmodulen ska kunna skicka information till datormodulen via Bluetooth\textsuperscript{\circledR} & 6 & 40 \\ \hline
 \kravlista & Integrering av manuell styrning & Styrmodulen ska kunna hantera kommandon för manuell styrning & 27, 45 & 30 \\ \hline
 \kravlista & Intern kartläggning & Huvudmodulen ska internt kunna kartlägga utforskade vägar & 29 & 50 \\ \hline
-\kravlista & Styrreglering & Huvudmodulen ska kunna reglera styrning utifrån sensordata & 27, 39, 42 & 30 \\ \hline
+\kravlista & Styrreglering & Huvudmodulen ska kunna reglera styrning utifrån sensordata (flyttad till styrmodul) & 27, 39, 42 & 30 \\ \hline
 \kravlista & Skicka styrkommandon till styrmodul & Huvudmodulen ska kunna skicka styrkommandon till styrmodulen & 5 & 40 \\ \hline
 \kravlista & Avsökningsalgoritm & Roboten ska utöva en effektiv avsökningsalgoritm för att utforska labyrinten & 6 & 40 \\ \hline
 \kravlista & Automatisk styrning & Roboten ska kunna färdas i en labyrint utan hjälp av manuell styrning & 26, 30 & 30 \\ \hline
-\kravlista & Svängreglering & Roboten ska kunna ta en sväng utan att kollidera med vägg & 27, 39, 42 & 30 \\ \hline
+\kravlista & Svängreglering & Roboten ska kunna ta en sväng utan att kollidera med vägg (flyttad till styrmodul) & 27, 39, 42 & 30 \\ \hline
 \kravlista & Beräkning av kortaste väg & Huvudmodulen ska utifrån sin interna kartläggning kunna beräkna den kortaste vägen mellan start och nödställd & 6 & 20 \\ \hline
 \multicolumn{5}{|c|}{\textbf{Delsystem 2 - Sensormodul}} \\ \hline
 \kravlista & Installera sensor som identifierar nödställd & Installera och konfigurera sensorn som identifierar den nödställde & 6 & 15 \\ \hline
