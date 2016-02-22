@@ -124,36 +124,13 @@ Rapporten ska behandla följande frågor:
 \textit{Litteratur, datablad, dokumentation, bakgrundsteori, etc. Dela gärna upp efter vad förstudien handlar om.}
 
 \subsection{I\textsuperscript{2}C - hur microprocessorn fungerar}
+En I\textsuperscript{2}C-buss utgörs av två kablar som sköter överföringen mellan två enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. Denna roll bestämmer vilken/vilka enheter som kan initiera överföring på bussen, vilka är de med rollen master. På varje buss kan det finnas flera master-enheter likväl som flera slave-enheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan komma den upp i 3.4 Mbit/s.
+
+Överföringsprocessen består av fem steg: (1) Initiering, (2) adress till slav, (3) datariktning, (4) informationsutbyte och (5) avslut. (2) och (3) är informationen i den första byten. Viktigt att notera är att när en master-enhetet initierat anses alla andra enheter vara slavar. I (4) måste informationen skickas i hela bytes, där den mest signifikanta biten (MSB) skickas först. Antalet bytes som kan skickas per överföring är inte reglerat.
+
+När bussen är ledig ligger båda ledningarna SDA och SCL höga. (1) och (5) triggas av negativ respektive positiv flank på SDA så länge SCL ligger hög. Ett alternativ till att trigga avslut är att trigga en ny start, dvs att master-enheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring kan den sätta master-enheten i vänteläge.
+
 https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
-	\begin{itemize}
-		\item s. 8
-		\begin{itemize}
-			\item SDA and SCL tvåvägade. När bussen är \textquotedblleft ledig\textquotedblright{} ligger båda höga. 
-			\item Data kan skickas med en hastighet upp till 100kbit/s i standard läge (400 kbit/s Fast-mode, 3.4 Mbit/s High speed-mode).
-			\item The data on the SDA line must be stable during the HIGH period of the clock. The HICH or LOW state of the data line can only change when the clock signal on the SCL line is LOW.
-		\end{itemize}
-			
-		\item s. 9
-		\begin{itemize}
-			\item START and STOP conditions: hur de olika linorna måste vara (höga och/eller låga, samt positiv/negativ flank) för att indikera start och slut
-		\end{itemize}
-		
-		\item s. 10
-		\begin{itemize}
-			\item Varje bit på SDA-linan måste vara 8 bitar lång
-			\item Antal bytes som kan skickas per transfer är oreglerat
-			\item Mest signifikant bit (MSB) först
-			\item Slavarna kan sätta mastern i vänteläge
-		\end{itemize}
-		
-		\item s. 13
-		\begin{itemize}
-			\item Adressering: (1) START condition, (2) slavadress, (3) datariktning, (4) STOP condition. Alternativt kan STOP condition ersättas med START condition för att forsätta ha kommunikation på bussen.
-		\end{itemize}
-\end{itemize}	
-
-
-
 \pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
