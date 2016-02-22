@@ -203,7 +203,50 @@ där $\bfr{H}_{t} = \frac{\partial\,h}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{
 
 EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat den beräkningskapaciteten som behövs. I beräkningskomplexitets-väg är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$, men där viss optimeringspotential finns, se \cite{ordo}.
 
-\subsubsection{}
+\subsubsection{FastSLAM}
+FastSLAM är en alternativ lösning på SLAM-problemet som bygger på partikelfiltrering. Ett partikelfilter har inget krav på korrelation mellan landmärkena och behöver därför inte beräkna kovariansmatrisen vilket sänker beräkningskapaciteten för algoritmen. Istället utgör varje partikel en unik skattning av robotens position där de partiklar som anses ha en rimlig position omsamplas och de andra dör ut.
+
+Precis som EKF-SLAM så använder FastSLAM ett \emph{Extended Kalman filter} för att skatta landmärkenas position. För att minska matrisernas dimension och därmed algoritmens beräkningskapacitet använder FastSLAM istället ett filter per landmärke. Kartläggningen består med andra ord av en mängd oberoende fördelningar med linjär komplexitet istället för en kovarierande karta med kvadratisk komplexitet.
+
+Med utgångspunkt i grundproblemet så beräknar FastSLAM position och karta enligt
+\begin{align*}
+	p\left(\textbf{\textrm{x}}_{t},\textbf{\textrm{M}} \vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right) &= p\left(\textbf{\textrm{x}}_{t}\vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right)p\left(\textbf{\textrm{M}} \vert \textbf{\textrm{Z}}_{0:t}, \bfr{x}_{t}, \textbf{\textrm{x}}_0 \right) \\
+	&= p\left(\textbf{\textrm{x}}_{t}\vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right)\prod_{i=1}^{n} p\left(\theta_{i} \vert \textbf{\textrm{Z}}_{0:t}, \bfr{x}_{t}, \textbf{\textrm{x}}_0 \right)
+\end{align*}
+där sista likheten gäller på grund av obereoende-egenskapen hos fördelningarna. Problemet har nu övergått till att bestå av $n + 1$ antal subproblem. Dessa är enklare att lösa individuellt och sätta samman än att lösa grundproblemet.
+
+Utmaningen för algoritmen blir istället att intelligent välja ut vilka partiklar som ska samplas och vilka som ska ignoreras. Grisetti, et al. i \cite{reo} föreslår en algoritm för att filtrera bort partiklar med en hög mängd brus. Genom att beräkna en tröskelnivå som beror på både mängden partiklar och dess vikt, kan samtliga partiklar som överskrider nivån ignoreras. 
+
+Av komplexitetsskäl gör sig FastSLAM bättre på stora system jämfört med EKF-SLAM som inte skalar lika väl. Att omsampla partiklar utgör flaskhalsen för FastSLAM vilket görs med komplexitet $\mathcal{O}\left(n_{p}\log\left(n_{m}\right)\right)$ där $n_p$ är antalet partiklar och $n_m$ är antalet landmärken.
+
+\subsubsection{En jämförelse mellan EKF-SLAM och FastSLAM}
+EKF-SLAM bygger på en tillståndsvektor som innehar information om robotens position och alla landmärken. FastSLAM betraktar istället en mängd partiklar där varje partikel har en egen uppsättning med position och landmärken. EKF-SLAM behöver uppdatera sin vektor i varje tidssteg medan FastSLAM endast behöver sampla om de partiklar som algoritmen anser korrekta. 
+
+För EKF-SLAM utgörs alla skattningar av normalfördelningar. FastSLAM delar upp skattningsproblemet i $n + 1$ subproblem och löser dessa individuellt. EKF-SLAM förutsätter med andra ord att bruset är normalfördelat medan FastSLAM inte gör något antagande om bruset utseende.
+
+\subsection{Labyrintnavigering}
+Att autonomnt navigera en labyrint kräver någon typ av smart algoritm. Vilken typ av algoritm som platsar sig beror på både labyrintens komplexitet och robotens målsättning. Den typ av labyrint som studeras i detta avsnitt har inga öppna rum, en ingång och en markering istället för utgång. Alla korsningar och svängar är ortogonala och det kan finnas mer än en väg mellan ingång och markering. Robotens målsättning är att ta sig från början av labyrinten och åtminstone kartlägga den kortaste vägen till markeringen.
+
+I detta avsnitt behandlas algoritmer för hur en robot kan fatta beslut under kartläggning. Beräkning av den optimala vägen lämnas åt avsnitt \ref{optimalvag}.
+
+\subsubsection{Väggföljare}
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att man alltid följer en sida av korridoren. Ifall algoritmen är av högertyp följer man höger sida av korridoren och svänger höger där det är möjligt, vice versa för vänstertyp.
+
+Fördelar med algoritmen är att den är enkel att implementera. Men saknandet av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fasta i en oändlig loop.
+
+\subsubsection{\emph{Dead-end filling}}
+\emph{Dead-end filling} är en djup-först algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
+
+En vidareutveckling av dessa algoritmer återfinns i \cite{flood} där mer komplexa labyrinter studeras.
+
+\subsection{Kortaste-väg-beräkning}
+\label{optimalvag}
+Givet att vi har kartlagt labyrinten återstår uppgiften att finna den optimala vägen mellan ingång och markering. Väljer vi att representera kartan som noder (korsningar) och bågar (korridorer mellan korsningar) kan existerande algoritmer utnyttjas för att finna den kortaste vägen mellan två noder. Figur \ref{labToGraph} visar ett exempel på denna översättning från labyrint till nätverk. 
+
+\subsubsection{Dijkstras algoritm}
+
+\subsubsection{A*}
+
 \pagebreak
 \section{Resultat och slutsatser}
 text
