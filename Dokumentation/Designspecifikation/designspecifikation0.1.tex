@@ -224,7 +224,7 @@ Styrmodulen kommer kräva följande hårdvara:
 \end{itemize}
 
 \subsection{Mjukvara}
-Koden för styrmodulen är skriven i C och består av två delar, reglering och display.
+Koden för styrmodulen är skriven i C och består främst av två delar, reglering och display. Gripklon styrs direkt av ett styrkommando och kan endast öppnas respektive stängas.
 
 \subsubsection{Display}
 Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärden i realtid. I koden används drivrutinen \emph{lcd.h} för att initiera och skriva text till displayen. Genom att anropa initieringsmetoden rensas displayen och pekaren placeras på rätt position. Därefter skrivs typen av mätvärde och det faktiska värdet ut. Tack vare två rader kan flera mätvärden skrivas ut samtidigt, förslagsvis ett i respektive hörn av displayen.
@@ -232,7 +232,10 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
 \subsubsection{Reglering}
-När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av två komponenter. Den ena ser till att roboten färdas i mitten av korridoren och den andra anpassar hastigheten utifrån korridorens längd.
+När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
+
+Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
+
 
 
 
