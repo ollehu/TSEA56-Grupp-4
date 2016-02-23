@@ -2,6 +2,8 @@
 
 \usepackage{extras} % Se extras.sty
 
+
+
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -143,15 +145,24 @@ Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten 
 
 \subsection{Hårdvara}
 De sensorer som används är följande,
-\begin{description}
+
+
+
+\subsubsection{IR-sensor, GP2D120}
 	\item[Avstånd] \hfill \\
-	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
-	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
-	\item[Vinkelhastighet] \hfill \\
-	1 x Gyro/accelerometer \verb+MPU-6500+ 
-	\item[Identifierare av nödställd] \hfill \\
-	1 x IR-detektor \verb+IRM-8601-S+
-\end{description}
+
+\subsubsection{Laser-sensor, LIDAR-Lite v2}
+Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsätnningsrobot. Utöver att kunna möta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 0,025 meter. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 0,01 meter \cite{7131685}.
+
+Kommunikationen mellan Lidar-Lite v2 och microprocessorn, Atmega16, kommer att ske via ett PWM-interface som lasersensorn kommer med i sitt grundutförande. 
+
+
+\subsubsection{Gyro/accelerometer, MPU-6500}
+\item[Vinkelhastighet] \hfill \\
+ 
+\subsubsection{IR-detektor, IRM-8601-S}
+\item[Identifierare av nödställd] \hfill \\
+	
 
 \subsection{Mjukvara}
 \lipsum
@@ -241,6 +252,11 @@ Datormodulen kräver en dator kompatibel med Java.
 \pagebreak
 \section{Implementering}
 \lipsum
+
+\pagebreak
+\addcontentsline{toc}{section}{Referenser}
+\bibliographystyle{ieeetr}
+\bibliography{references}
 
 \end{flushleft}
 
