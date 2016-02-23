@@ -118,6 +118,30 @@ Låt $\bfr{A}$ vara en kvadratisk matris av storlek $n$ med elementen $a_{i,j}$.
 \end{equation*}
 och utgör summan av diagonalelementen.
 
+\subsection{Enkelt sammanhängande labyrint}
+En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till varandra. Se figur \ref{maze} för en grafisk beskrivning.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint1}}
+		\caption{Inte en enkelt sammanhängande labyrint}	
+		\label{non-connected}
+	\end{subfigure}%
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint2}}
+		\caption{En enkelt sammanhängande labyrint}	
+	\end{subfigure}%
+	\caption{Två exempel på labyrinter och den rutt som skulle tas av en väggföljningsalgoritm av vänstertyp}
+	\label{maze}
+\end{figure}%
+
+
+
 \pagebreak
 \section{Rapportens huvuddel, byt rubriknamn}
 text
@@ -241,12 +265,64 @@ En vidareutveckling av dessa algoritmer återfinns i \cite{flood} där mer kompl
 
 \subsection{Kortaste-väg-beräkning}
 \label{optimalvag}
-Givet att vi har kartlagt labyrinten återstår uppgiften att finna den optimala vägen mellan ingång och markering. Väljer vi att representera kartan som noder (korsningar) och bågar (korridorer mellan korsningar) kan existerande algoritmer utnyttjas för att finna den kortaste vägen mellan två noder. Figur \ref{labToGraph} visar ett exempel på denna översättning från labyrint till nätverk. 
+Givet att vi har kartlagt labyrinten återstår uppgiften att finna den optimala vägen mellan ingång och markering. Väljer vi att representera kartan som noder (korsningar samt återvändsgränder) och bågar (korridorer mellan korsningar) kan existerande algoritmer utnyttjas för att finna den kortaste vägen mellan två noder. Figur \ref{labToGraph} visar ett exempel på denna översättning från labyrint till nätverk. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.6\linewidth}{!}{
+	\input{images/network}}
+	\caption{En labyrint och dess motsvarande nätverk. Bågkostnaderna är det relativa avståndet och den optimala vägen är markerad grön.\label{labToGraph}}	
+\end{figure}
 
 \subsubsection{Dijkstras algoritm}
+Dijkstras algoritm är en girig, bäst-först algoritm. Genom algoritmen beräknar man den billigaste (kortaste) vägen från startnoden till samtliga noder och den fungerar på nätverk med icke-negativa bågkostnader. 
+
+Vid starten definieras två mängder, en mängd som innehåller de avsökta noderna och en de oavsökta noderna. De oavsökta noderna får ett oändligt nodpris och startnoden nodpriset noll. Med ursprung i startnoden sökes alla grannar genom. Ifall det nuvarande nodpriset plus bågkostnaden understiger grannens nodpris så uppdateras nodpriset med den billigaste kostnaden.
+
+Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills slutnoden har undersökts. Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då ges algoritmens pseudokod av algoritm \ref{dijk}.
+
+\begin{algorithm}
+	\caption{Dijkstras algoritm} \label{dijk}
+	\begin{algorithmic}[1]
+		\Function{DijkstrasAlgorithm}{Graph, s}	
+			\State $\textrm{dist}(s) \gets 0$
+			\ForAll {$v\in V - \{ s\}$}
+				\State $\textrm{dist}(v) \gets \infty$
+			\EndFor
+			
+			\State $S \gets \emptyset$
+			\State $Q \gets V$
+			
+			\While {$Q \neq \emptyset$}
+				\State $u \gets \textrm{minimumDistance}(Q,\textrm{dist})$%
+				\Comment{Välj nod med lägst nodpris}
+				\State $S \gets S +  \{ u\}$
+				\State $Q \gets Q - \{ u\}$
+				\ForAll {$v \in \textrm{neighbours}(u)$}
+				\Comment{Itererare över grannar till $u$}
+					\If {$\text{dist}(u) + w(u,v) < \textrm{dist}(v)$}
+						\State $\textrm{dist}(v) \gets \text{dist}(u) + w(u,v)$
+					\EndIf
+				\EndFor
+			\EndWhile
+			
+			\Return $\textrm{dist}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Den kortaste vägen kan nästas upp om man även sparar vilken föregångare som bidrog till en kortare väg. I implementeringsväg är algoritmen enkel, dock kräver den mycket minne eftersom alla noder och dess nodpris behöver sparas. En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
 
 \subsubsection{A*}
+A* är ytterliggare en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+\begin{equation*}
+	f(n) = g(n) + h(n)
+\end{equation*}
+där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
 
+Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. I fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
+
+$h(n)$ kan ses som en straffunktion som minskar nära slutnoden. A* kan till skillnad från Dijkstras algoritm se framåt i nätverket
 \pagebreak
 \section{Resultat och slutsatser}
 text
