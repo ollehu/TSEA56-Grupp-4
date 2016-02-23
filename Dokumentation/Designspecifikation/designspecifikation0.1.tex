@@ -69,7 +69,7 @@ Lovisa Gustafsson (LG) & Leveransansvarig & 070-210 32 53 & lovgu777@student.liu
 E-postlista för hela gruppen: isast763@student.liu.se
 
 \vspace{5em}
-Kund: ISY, Linköpings universitet \\
+Kund: ISY, Linköpings universitet 
 tel: 013-28 10 00, fax: 013-13 92 82 \\
 Kontaktperson hos kund: Mattias Krysander \\
 tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
@@ -109,7 +109,13 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \lipsum
 
 \subsection{Ställdon}
-\lipsum
+Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är motorerna som driver varsitt hjul. Motorerna kan dock inte styras individuellt utan enbart parvis, varför de egentligen kan ses som två enheter. Utöver dessa ska roboten ha ett servo i gripklon, för att kunna öppna och stänga densamma, och ett servo för rotation av lasersensorn.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/motors}}
+	\caption{Placering av ställdon \label{ställdon}}	
+\end{figure}
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
@@ -153,13 +159,6 @@ De sensorer som används är följande,
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
 \lipsum
-%Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig, rotera det eventuella lasersensortornet eller att styra gripklon. Kommunikationen sker genom I2C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
-
-
-
-%För att skriva ut sensordata på display används den alphanumeriska LCD-displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
-
-%Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen.
 
 \subsection{Detaljerad beskrivning}
 Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt lite övrig fakta kring modulen.
@@ -179,7 +178,12 @@ Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz för
 
 \subsubsection{Kommunikationsprotokoll}
 Följande protokoll används för att skicka data till styrmodulen:
-\input{images/styrdata}
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
+\end{figure}
 
 Där respektive segment motsvarar följande: 
 \begin{itemize}
