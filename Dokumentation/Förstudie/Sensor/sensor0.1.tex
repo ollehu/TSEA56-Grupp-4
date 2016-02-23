@@ -1,6 +1,8 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
+\usepackage{tikz}
+
 
 \begin{document}
 \begin{titlepage}
@@ -92,14 +94,68 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning}
-text \cite{893287}
+I dagsläget finns det en mängd olika sensorer, alla med för- respektive nackdelar. Vilken sensor som är bäst beror ofta på vilket syfte som ska uppfyllas och vilka resurser som finns att tillgå. Att en undsättningsrobot som ska hitta nödställda har sensorer som gör det enkelt att identifiera sitt mål är en fråga om liv och död. Därav finns det ett stort behov av att öka kunskapen om sensorer, samt dess möjligheter och begränsningar.
+
+\pagebreak
 
 \section{Problemformulering}
-text
+
+\subsection{Syfte}
+Syftet med denna rapport är att undersöka vilka sensorer som är relevanta för undsättningsroboten i sitt uppdrag. Syftet är fortsättningsvis att redogöra för en implementation av de sensorer som finnes intressanta för undsättningsrobotens ändamål.
+
+
+\subsection{Frågeställningar}
+Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behandlas i denna rapport:
+
+\begin{itemize}
+\item{Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?}
+\item {Vilka sensorer är lämpliga att använda till projektet?}
+\item{Hur kan dessa implementeras? }
+\end{itemize}
+
+\pagebreak
 
 \section{Kunskapsbas}
-text
+I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
+\subsection{Kapacitiv sensor}
+Den kapacitiva sensorn är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. När avståndet (d) mellan objektet och sensorn minskar så ökar kapacitansen enligt Ekvation 1, där  är en konstant som beror av materialets relativa kapacivitet. 
+
+I Figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+
+
+http://www.ti.com/lit/an/snoa927/snoa927.pdf
+
+http://www.fujitsu.com/downloads/MICRO/fme/articles/fujitsu-whitepaper-capacitive-touch-sensors.pdf
+
+http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html
+
+
+
+\subsection{Ljussensor}
+Ljussensorn (även kallad fotocell) omvandlar infallande ljus till elektrisk ström. Strömstyrkan varierar beroende ljusets styrka, varför en ljussensor är användbar vid detektering av konstraster på exempelvis en yta.
+
+\subsubsection{Reflektorfotocell}
+En reflektorfotocell är en typ av ljussensor som detekterar förändringar i ljusintensiteten. Den typiska reflektorfotocelnne består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare.
+
+http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors
+
+
+\subsubsection{Direktavkännare}
+
+\subsubsection{Sändare/mottagare}
+
+\subsubsection{IR-sensor}
+En IR-sensor är en tillämpning av en ljussensor genom att endast registrera önskade våglängder i det infraröda spektrumet. I Figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.
+
+Det går även att använda som en avståndssensor, vilket illustreras i Figur 3, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+
+Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt. 
+
+http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html
+
+
+\pagebreak
 \section{Rapportens huvuddel, byt rubriknamn}
 text
 

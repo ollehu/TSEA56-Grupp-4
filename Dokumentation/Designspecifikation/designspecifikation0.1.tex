@@ -126,13 +126,26 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
-\lipsum
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+
+Den främre avståndssensorn (laser-sensorn) placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
+
+Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
 
 \subsection{Detaljerad beskrivning}
 \lipsum
 
 \subsection{Hårdvara}
-\lipsum
+De sensorer som används är följande,
+\begin{description}
+	\item[Avstånd] \hfill \\
+	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+	\item[Vinkelhastighet] \hfill \\
+	1 x Gyro/accelerometer \verb+MPU-6500+ 
+	\item[Identifierare av nödställd] \hfill \\
+	1 x IR-detektor \verb+IRM-8601-S+
+\end{description}
 
 \subsection{Mjukvara}
 \lipsum
