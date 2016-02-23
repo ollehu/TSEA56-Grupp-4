@@ -2,6 +2,8 @@
 
 \usepackage{extras} % Se extras.sty
 
+
+
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -69,7 +71,7 @@ Lovisa Gustafsson (LG) & Leveransansvarig & 070-210 32 53 & lovgu777@student.liu
 E-postlista för hela gruppen: isast763@student.liu.se
 
 \vspace{5em}
-Kund: ISY, Linköpings universitet \\
+Kund: ISY, Linköpings universitet 
 tel: 013-28 10 00, fax: 013-13 92 82 \\
 Kontaktperson hos kund: Mattias Krysander \\
 tel: 013-28 21 98, e-post: matkr@isy.liu.se \\
@@ -109,7 +111,13 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \lipsum
 
 \subsection{Ställdon}
-\lipsum
+Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är motorerna som driver varsitt hjul. Motorerna kan dock inte styras individuellt utan enbart parvis, varför de egentligen kan ses som två enheter. Utöver dessa ska roboten ha ett servo i gripklon, för att kunna öppna och stänga densamma, och ett servo för rotation av lasersensorn.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/motors}}
+	\caption{Placering av ställdon \label{ställdon}}	
+\end{figure}
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
@@ -137,15 +145,24 @@ Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten 
 
 \subsection{Hårdvara}
 De sensorer som används är följande,
-\begin{description}
+
+
+
+\subsubsection{IR-sensor, GP2D120}
 	\item[Avstånd] \hfill \\
-	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
-	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
-	\item[Vinkelhastighet] \hfill \\
-	1 x Gyro/accelerometer \verb+MPU-6500+ 
-	\item[Identifierare av nödställd] \hfill \\
-	1 x IR-detektor \verb+IRM-8601-S+
-\end{description}
+
+\subsubsection{Laser-sensor, LIDAR-Lite v2}
+Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsätnningsrobot. Utöver att kunna möta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 0,025 meter. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 0,01 meter \cite{7131685}.
+
+Kommunikationen mellan Lidar-Lite v2 och microprocessorn, Atmega16, kommer att ske via ett PWM-interface som lasersensorn kommer med i sitt grundutförande. 
+
+
+\subsubsection{Gyro/accelerometer, MPU-6500}
+\item[Vinkelhastighet] \hfill \\
+ 
+\subsubsection{IR-detektor, IRM-8601-S}
+\item[Identifierare av nödställd] \hfill \\
+	
 
 \subsection{Mjukvara}
 \lipsum
@@ -153,13 +170,6 @@ De sensorer som används är följande,
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
 \lipsum
-%Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Det är antingen styrning av chassits motorer för att få roboten att röra på sig, rotera det eventuella lasersensortornet eller att styra gripklon. Kommunikationen sker genom I2C-bussen. Styrmodulen har även LCD-displayer kopplade till sig för att kunna skriva ut valda sensorvärden.
-
-
-
-%För att skriva ut sensordata på display används den alphanumeriska LCD-displayen LCD JM162A. Den har totalt 16 pinnar, där 8 stycken är databitar, 3 stycken för konfiguration (inställning av funktion) och resterande är referenssignaler och strömtillförsel.
-
-%Gripklon ska kunna öppnas och stängas på kommando från huvudmodulen.
 
 \subsection{Detaljerad beskrivning}
 Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt lite övrig fakta kring modulen.
@@ -179,7 +189,12 @@ Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz för
 
 \subsubsection{Kommunikationsprotokoll}
 Följande protokoll används för att skicka data till styrmodulen:
-\input{images/styrdata}
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
+\end{figure}
 
 Där respektive segment motsvarar följande: 
 \begin{itemize}
@@ -247,6 +262,11 @@ Datormodulen kräver en dator kompatibel med Java.
 \pagebreak
 \section{Implementering}
 \lipsum
+
+\pagebreak
+\addcontentsline{toc}{section}{Referenser}
+\bibliographystyle{ieeetr}
+\bibliography{references}
 
 \end{flushleft}
 
