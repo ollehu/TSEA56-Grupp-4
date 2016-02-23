@@ -320,9 +320,9 @@ A* är ytterliggare en bäst-först algoritm med målet att finna den billigaste
 \end{equation*}
 där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
 
-Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. I fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
+Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. Men i fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
 
-$h(n)$ kan ses som en straffunktion som minskar nära slutnoden. A* kan till skillnad från Dijkstras algoritm se framåt i nätverket
+$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså till skillnad från Dijkstras algoritm se framåt i nätverket och är därför en mer effektiv algoritm.
 \pagebreak
 \section{Resultat och slutsatser}
 text
