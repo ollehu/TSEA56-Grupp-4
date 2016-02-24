@@ -1,1 +1,6 @@
-- A mobile robot with a I2C-system: Tar upp sensorer och hur de kan passa bra tilsammans med I2C
+_A mobile robot with a I2C-system_
+Tar upp sensorer och hur de kan passa bra tilsammans med I2C
+
+_A semi-autonomous mobile robot for education and research_
+Upp till 128 enheter på samma buss
+

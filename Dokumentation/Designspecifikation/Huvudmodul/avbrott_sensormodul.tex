@@ -1,0 +1,41 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[decision](int2){INT2};
+\node[block, right of = int2, node distance = 3cm](in_sensor){Initiera kommunkation med sensormodul};
+\node[block, below of = in_sensor, node distance = 3cm](data_sensor){Ta emot data från sensormodul};
+\node[block, below of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
+\node[block, below of = in_styr, node distance = 3cm](data_styr){Skicka data till styrmodul};
+\node[block, below of = data_styr, node distance = 3cm](in_pc){Initiera kommunikation med datormodul};
+\node[block, below of = in_pc, node distance = 3cm](data_pc){Skicka data till datormodul};
+
+\draw[->](int2) |- ($(int2.north west) + (-0.5,0.5)$) |- node[near start,left]{nej}(int2);
+\draw[->](int2) -- node[above]{ja} (in_sensor);
+\draw[->](in_sensor) -- (data_sensor);
+\draw[->](data_sensor) -- (in_styr);
+\draw[->](in_styr) -- (data_styr);
+\draw[->](data_styr) -- (in_pc);
+\draw[->](in_pc) -- (data_pc);
+
+	\end{tikzpicture}
+	
+\end{document}

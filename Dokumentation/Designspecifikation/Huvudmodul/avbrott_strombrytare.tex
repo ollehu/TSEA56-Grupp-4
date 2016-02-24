@@ -1,0 +1,36 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[decision](int1){INT1};
+\node[decision, right of = int1](sleepmode){I viloläge?};
+\node[block, right of = sleepmode, node distance = 3.5cm](to_active){Aktivera};
+\node[block, below of = sleepmode, node distance = 3cm](to_sleepmode){Sätt i viloläge};
+
+\draw[->](int1) |- ($(int1.north west) + (-0.5,0.5)$) |- node[near start,left]{nej}(int1);
+\draw[->](int1) -- node[above]{ja} (sleepmode);
+\draw[->](sleepmode) -- node[above]{ja}(to_active);
+\draw[->](sleepmode) -- node[right]{nej}(to_sleepmode);
+
+
+	\end{tikzpicture}
+	
+\end{document}

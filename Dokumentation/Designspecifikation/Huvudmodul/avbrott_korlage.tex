@@ -1,0 +1,36 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[decision](int0){INT0};
+\node[decision, right of = int0](autonomous){I autonomnt läge?};
+\node[block, right of = autonomous, node distance = 3.5cm](to_manual){Byt till manuellt läge};
+\node[block, below of = autonomous, node distance = 3cm](to_autonomous){Byt till autonomnt läge};
+
+\draw[->](int0) |- ($(int0.north west) + (-0.5,0.5)$) |- node[near start,left]{nej}(int0);
+\draw[->](int0) -- node[above]{ja} (autonomous);
+\draw[->](autonomous) -- node[above]{ja}(to_manual);
+\draw[->](autonomous) -- node[right]{nej}(to_autonomous);
+
+
+	\end{tikzpicture}
+	
+\end{document}
