@@ -1,0 +1,24 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+\begin{document}
+	
+\begin{tikzpicture}[scale=1]
+		
+		
+		\draw[thick, ,draw=none, pattern=north west lines, pattern color=green] (1,1) rectangle (2,2);
+		\draw[thick] (0,0) -- (0,4) -- (4,4) -- (4,0) -- (1,0);
+		\draw[thick] (1,3) -- (1,1) -- (3,1) -- (3,3) -- (2,3);
+		\draw[thick] (1,2) -- (2,2);
+		\draw[thick] (3,1) -- (4,1);
+		
+		\draw[thick, ->] (.5,-.5) -- (.5,-0);
+		
+		\draw[thick, ->, loosely dotted, draw=blue] (.2,0) -- (.2,3.8) -- (3.8,3.8) -- (3.8,1.2) -- (3.2,1.2) -- (3.2,3.2) -- (1.8,3.2) -- (1.8,2.8) -- (2.8,2.8) -- (2.8,1.2) -- (2,1.2);
+		
+	\end{tikzpicture}
+\end{document}

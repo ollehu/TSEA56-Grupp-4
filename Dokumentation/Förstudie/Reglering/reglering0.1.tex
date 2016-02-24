@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
+\newcommand{\bfr}[1]{\textbf{\textrm{{#1}}}}
 
 \begin{document}
 \begin{titlepage}
@@ -97,12 +98,268 @@ text \cite{893287}
 \section{Problemformulering}
 text
 
+\pagebreak
 \section{Kunskapsbas}
-text
+\subsection{Jacobimatris}
+Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlekt $m\times n$ och definieras enligt
+\begin{equation*}
+	\bfr{J} = \frac{d\bfr{f}}{d\bfr{x}} = \left[ \begin{array}{ccc}
+		\frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_n} \\
+		\vdots & \ddots & \vdots \\
+		\frac{\partial f_m}{\partial x_1} & \cdots & \frac{\partial f_m}{\partial x_n}
+	\end{array} \right]
+\end{equation*}
+och betecknas ofta $\frac{\partial \left(f_1,\ldots,f_m\right)}{\partial \left(x_1,\ldots,x_n \right)}$.
 
+\subsection{Spår}
+Låt $\bfr{A}$ vara en kvadratisk matris av storlek $n$ med elementen $a_{i,j}$. Spåret (engelska \emph{trace}) av $\bfr{A}$ definieras då enligt
+\begin{equation*}
+	\mathrm{tr}\,\bfr{A} = \sum_{k=1}^{n} a_{k,k}
+\end{equation*}
+och utgör summan av diagonalelementen.
+
+\subsection{Enkelt sammanhängande labyrint}
+En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till varandra. Se figur \ref{maze} för en grafisk beskrivning.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint1}}
+		\caption{Inte en enkelt sammanhängande labyrint}	
+		\label{non-connected}
+	\end{subfigure}%
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint2}}
+		\caption{En enkelt sammanhängande labyrint}	
+	\end{subfigure}%
+	\caption{Två exempel på labyrinter och den rutt som skulle tas av en väggföljningsalgoritm av vänstertyp}
+	\label{maze}
+\end{figure}%
+
+
+
+\pagebreak
 \section{Rapportens huvuddel, byt rubriknamn}
 text
 
+\pagebreak
+%Olles del:
+\section{Utforskning och vägoptimering av okänd labyrint}
+Autonom styrning i alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemenen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
+
+SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för problem av denna typ och saknar än så länge en optimal lösning. Flera SLAM-metoder har utvecklats för att lösa lokaliseringsproblemet där EKF-SLAM och Fast-SLAM utgör de mest populära enligt \cite{rat}, dessa utforskas vidare i avsnitt \ref{slam}.
+
+Utöver att kunna kartlägga sin omgivning bör en robot även minimera sin färdsträcka genom att utnyttja en effektiv kartläggningsalgoritm. Robotens typ av omgivning ställer olika krav på komplexiteten av kartläggningsalgoritmen och i avsnitt \ref{mapping} diskuteras ett par av dessa.
+
+Den sista utmaningen som roboten ställs inför är att finna en optimal väg mellan två objekt förutsatt att det existerar minst en sådan. En verklig applicering av detta vore en undsättningsrobot som ska förse en nödställd med ett föremål och behöver hitta den kortaste vägen mellan ingång och nödställde. Detta problem kan formuleras som ett minkostnadsnätverk och löses med en optimerande algoritm, se avsnitt \ref{optimalvag}. 
+
+\subsection{SLAM}
+\label{slam}
+Enligt \cite{ekf} är implementeringen av en SLAM-algoritm utmanande. Problemet ligger i att sensorerna som undersöker omgivningen är mottagliga för störningar och har fysiska begränsningar. En IR-sensor som fungerar på korta avstånd blir obrukbar på långa avstånd och en ultraljuds-sensor som är exakt under rätt förhållanden blir känslig för störningar. Därför, för att kompensera för dessa avvikelser, gäller att både aktuella och historiska mätningar viktas och kombineras så att omgivningen presenteras med minsta möjliga felmarginal. 
+
+En SLAM-algoritms mål är att beräkna (approximera) sannolikhetsfördelningen
+\begin{equation*}
+	p\left(\textbf{\textrm{x}}_{t},\textbf{\textrm{M}} \vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right)
+\end{equation*}
+där $\textbf{\textrm{x}}_t$ är positionen vid den tidsdiskreta tiden $t$, $\textbf{\textrm{M}}=\theta_1,\ldots,\theta_n$ är positionerna för en mängd av landmärken, $\textbf{\textrm{Z}}_{0:t}$ är en mängd av observationer från $0,\ldots,t$, $\textbf{\textrm{U}}_{0:t}$ är en mängd av styr-indata från $0,\ldots,t$ och $\textbf{\textrm{x}}_0$ är den ursprungliga positionen. Vidare undersöks och jämförs två algoritmer som löser SLAM-problemet med olika angreppssätt.   
+
+\subsubsection{\emph{Kalman Filter} och EKF-SLAM}
+EKF-SLAM är en SLAM-algoritm som använder ett \emph{Extended Kalman Filter}, en icke-linjär utvidgning av ett \emph{Kalman filter}, för att i varje tidssteg  linjärisera en övergångs- och observationsmodell.
+
+Det urspringliga \emph{Kalman filtret} bygger på en linjär övergångs- och observationsmodell enligt
+\begin{align*}
+	\bfr{x}_t &= \bfr{A}_{t}\bfr{x}_{t-1} + \bfr{B}_{t}\bfr{u}_t + \boldsymbol{\epsilon}_t \\
+	\bfr{z}_t &= \bfr{C}_{t}\bfr{x}_t + \boldsymbol{\delta}_t
+\end{align*}
+där $\bfr{x}_t$ är det nuvarande tillståndet, $\bfr{A}_t$ en matris, $\bfr{x}_{t-1}$ det föregående tillståndet, $\bfr{B}_t$ en matris, $\bfr{u}_t$ nuvarande styrsignal, $\boldsymbol{\epsilon}_t$ en brusterm, $\bfr{z}_t$ nuvarande observation, $\bfr{C}_t$ en matris och $\boldsymbol{\delta}_t$ en brusterm. Brusen $\boldsymbol{\epsilon}_t$ och $\boldsymbol{\delta}_t$ är oberoende, normalfördelade, vita och  med väntevärde noll samt kovarians $\bfr{R}_t$ respektive $\bfr{Q}_t$, det vill säga $\boldsymbol{\epsilon}_t \sim \mathcal{N}\left(0,\bfr{R}_t\right)$ och $\boldsymbol{\delta}_t \sim \mathcal{N}\left(0,\bfr{Q}_t\right)$.
+
+Eftersom \emph{Kalman filtret} är en rekursiv estimator skattar den nästkommande tillstånd med hjälp av föregående. Låt $\hat{\bfr{x}}_{t\vert \tilde{t}}$ vara skattningen av tillståndet $\bfr{x}$ och $\bfr{P}_{t\vert \tilde{t}}$ vara kovariansmatrisen för felet i skattningen av tillståndet vid tiden $t$ givet observeringar upp till och med tiden $\tilde{t}\leq t$. Då ges skattningen av dessa variabler i tidpunkt $t$ av
+\begin{align*}
+	\hat{\bfr{x}}_{t\vert t-1} &= \bfr{A}_{t}\hat{\bfr{x}}_{t-1\vert t-1} + \bfr{B}_{t}\bfr{u}_{t} \\
+	\bfr{P}_{t\vert t-1} & = \bfr{A}_{t}\bfr{P}_{t-1\vert t-1}\bfr{A}_{t}^{\mathrm{T}} + \bfr{R}_t
+\end{align*}
+där $\bfr{P}_{t\vert t-1}$ härleds ur
+\begin{align*}
+	\bfr{P}_{t\vert t-1} &= \mathrm{cov}\left(\bfr{x}_{t}-\hat{\bfr{x}}_{t\vert t-1}\right) \\
+	&= \mathrm{cov}\left(\bfr{x}_{t}-\left(\bfr{A}_{t}\hat{\bfr{x}}_{t-1\vert t-1} + \bfr{B}_{t}\bfr{u}_{t}\right)\right) \\
+	&= \mathrm{cov}\left(\bfr{A}_{t}\bfr{x}_{t-1} + \bfr{B}_{t}\bfr{u}_t + \boldsymbol{\epsilon}_{t} - \bfr{A}_{t}\hat{\bfr{x}}_{t-1\vert t-1} - \bfr{B}_{t}\bfr{u}_t\right) \\
+	&= \mathrm{cov}\left(\bfr{A}_{t}\left(\bfr{x}_{t-1} - \hat{\bfr{x}}_{t-1\vert t-1}\right) + \boldsymbol{\epsilon}_{t}\right) \\
+	&= \bfr{A}_{t}\,\mathrm{cov}\left(\bfr{x}_{t-1} - \hat{\bfr{x}}_{t-1\vert t-1}\right)\bfr{A}_{t}^{\mathrm{T}} + \mathrm{cov}\left(\boldsymbol{\epsilon}_{t}\right) \\
+	&= \bfr{A}_{t}\,\bfr{P}_{t-1\vert t-1}\,\bfr{A}_{t}^{\mathrm{T}} + \bfr{R}_{t}.
+\end{align*}
+
+Vidare uppdateras $\hat{\bfr{x}}_{t\vert t}$ och $\bfr{P}_{t\vert t}$ enligt
+\begin{align*}
+	\hat{\bfr{x}}_{t\vert t} &= \hat{\bfr{x}}_{t\vert t-1} + \bfr{K}_{t}\left(\bfr{z}_{t} - \bfr{C}_{t}\hat{\bfr{x}}_{t\vert t-1}\right) \\
+	\bfr{P}_{t\vert t} &= \left(\bfr{I} - \bfr{K}_{t}\bfr{C}_{t}\right)\bfr{P}_{t-1\vert t-1}
+\end{align*}
+där $\bfr{I}$ är enhetsmatrisen och $\bfr{K}_{t}$ väljs så att medelkvadratfelet hos $\bfr{P}_{t\vert t}$ minimeras, vilket är ekvivalent med att minimera spåret av $\bfr{P}_{t\vert t}$ med hänsyn till $\bfr{K}_{t}$. Alltså väljs $\bfr{K}_{t}$ så att
+\begin{align*}
+	\frac{\partial\,\mathrm{tr}\left(\bfr{P}_{t\vert t}\right)}{\partial\,\bfr{K}_{t}} = 0
+\end{align*}
+vilket leder till
+\begin{align*}
+	\bfr{K}_{t} = \bfr{P}_{t\vert t-1}\bfr{C}_{t}^{\mathrm{T}}\left(\bfr{C}_{t}\bfr{P}_{t\vert t-1}\bfr{C}_{t}^{\mathrm{T}} + \bfr{Q}_{t}\right)^{-1}
+\end{align*}
+där härledningen återfinns i \cite{filtering}. 
+
+Den utvidgning som görs av EKF är att övergångs- och observationsmodellen antas se ut enligt
+\begin{align*}
+	\bfr{x}_{t} &= f\left(\bfr{x}_{t-1}, \bfr{u}_{t}\right) + \boldsymbol{\epsilon}_{t} \\
+	\bfr{z}_{t} &= h\left(\bfr{x}_{t}\right) + \boldsymbol{\delta}
+_{t}
+\end{align*}
+där $f$ och $h$ är differentierbara men inte nödvändigtvis linjära. De nya skattningarna av $\hat{\bfr{x}}_{t:\vert t-1}$ och $\bfr{P}_{t\vert t-1}$ ges då av 
+\begin{align*}
+	\hat{\bfr{x}}_{t\vert t-1} &= f\left(\hat{\bfr{x}}_{t-1\vert t-1},\bfr{u}_{t}\right) \\
+	\bfr{P}_{t\vert t-1} & = \bfr{F}_{t}\,\bfr{P}_{t-1\vert t-1}\,\bfr{F}_{t}^{\mathrm{T}} + \bfr{R}_t
+\end{align*}
+där $\bfr{F}_{t} = \frac{\partial\,f}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{t-1 \vert t-1}, \bfr{u}_{t}}$ utgör jacobimatrisen till $f$. Vidare uppdateras $\hat{\bfr{x}}_{t\vert t}$ och $\bfr{P}_{t\vert t}$ enligt de nya sambanden
+\begin{align*}
+	\hat{\bfr{x}}_{t\vert t} &= \hat{\bfr{x}}_{t\vert t-1} + \bfr{K}_{t}\left(\bfr{z}_{t} - h\left(\hat{\bfr{x}}_{t\vert t-1}\right)\right) \\
+	\bfr{P}_{t\vert t} &= \left(\bfr{I} - \bfr{K}_{t}\bfr{H}_{t}\right)\bfr{P}_{t\vert t-1}	
+\end{align*}
+där $\bfr{H}_{t} = \frac{\partial\,h}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{t\vert t-1}}$ utgör jacobimatrisen till $h$ och $\bfr{K}_{t}$ väljs till $\bfr{K}_{t} = \bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}}\left(\bfr{H}_{t}\bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}} + \bfr{Q}_{t}\right)^{-1}$ för att minimera spåret av $\bfr{P}_{t\vert t}$ med hänsyn till $\bfr{K}_{t}$.
+
+EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat den beräkningskapaciteten som behövs. I beräkningskomplexitets-väg är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$, men där viss optimeringspotential finns, se \cite{ordo}.
+
+\subsubsection{FastSLAM}
+FastSLAM är en alternativ lösning på SLAM-problemet som bygger på partikelfiltrering. Ett partikelfilter har inget krav på korrelation mellan landmärkena och behöver därför inte beräkna kovariansmatrisen vilket sänker beräkningskapaciteten för algoritmen. Istället utgör varje partikel en unik skattning av robotens position där de partiklar som anses ha en rimlig position omsamplas och de andra dör ut.
+
+Precis som EKF-SLAM så använder FastSLAM ett \emph{Extended Kalman filter} för att skatta landmärkenas position. För att minska matrisernas dimension och därmed algoritmens beräkningskapacitet använder FastSLAM istället ett filter per landmärke. Kartläggningen består med andra ord av en mängd oberoende fördelningar med linjär komplexitet istället för en kovarierande karta med kvadratisk komplexitet.
+
+Med utgångspunkt i grundproblemet så beräknar FastSLAM position och karta enligt
+\begin{align*}
+	p\left(\textbf{\textrm{x}}_{t},\textbf{\textrm{M}} \vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right) &= p\left(\textbf{\textrm{x}}_{t}\vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right)p\left(\textbf{\textrm{M}} \vert \textbf{\textrm{Z}}_{0:t}, \bfr{x}_{t}, \textbf{\textrm{x}}_0 \right) \\
+	&= p\left(\textbf{\textrm{x}}_{t}\vert \textbf{\textrm{Z}}_{0:t}, \textbf{\textrm{U}}_{0:t}, \textbf{\textrm{x}}_0 \right)\prod_{i=1}^{n} p\left(\theta_{i} \vert \textbf{\textrm{Z}}_{0:t}, \bfr{x}_{t}, \textbf{\textrm{x}}_0 \right)
+\end{align*}
+där sista likheten gäller på grund av obereoende-egenskapen hos fördelningarna. Problemet har nu övergått till att bestå av $n + 1$ antal subproblem. Dessa är enklare att lösa individuellt och sätta samman än att lösa grundproblemet.
+
+Utmaningen för algoritmen blir istället att intelligent välja ut vilka partiklar som ska samplas och vilka som ska ignoreras. Grisetti, et al. i \cite{reo} föreslår en algoritm för att filtrera bort partiklar med en hög mängd brus. Genom att beräkna en tröskelnivå som beror på både mängden partiklar och dess vikt, kan samtliga partiklar som överskrider nivån ignoreras. 
+
+Av komplexitetsskäl gör sig FastSLAM bättre på stora system jämfört med EKF-SLAM som inte skalar lika väl. Att omsampla partiklar utgör flaskhalsen för FastSLAM vilket görs med komplexitet $\mathcal{O}\left(n_{p}\log\left(n_{m}\right)\right)$ där $n_p$ är antalet partiklar och $n_m$ är antalet landmärken.
+
+\subsubsection{En jämförelse mellan EKF-SLAM och FastSLAM}
+EKF-SLAM bygger på en tillståndsvektor som innehar information om robotens position och alla landmärken. FastSLAM betraktar istället en mängd partiklar där varje partikel har en egen uppsättning med position och landmärken. EKF-SLAM behöver uppdatera sin vektor i varje tidssteg medan FastSLAM endast behöver sampla om de partiklar som algoritmen anser korrekta. 
+
+För EKF-SLAM utgörs alla skattningar av normalfördelningar. FastSLAM delar upp skattningsproblemet i $n + 1$ subproblem och löser dessa individuellt. EKF-SLAM förutsätter med andra ord att bruset är normalfördelat medan FastSLAM inte gör något antagande om bruset utseende.
+
+\subsection{Labyrintnavigering}
+Att autonomnt navigera en labyrint kräver någon typ av smart algoritm. Vilken typ av algoritm som platsar sig beror på både labyrintens komplexitet och robotens målsättning. Den typ av labyrint som studeras i detta avsnitt har inga öppna rum, en ingång och en markering istället för utgång. Alla korsningar och svängar är ortogonala och det kan finnas mer än en väg mellan ingång och markering. Robotens målsättning är att ta sig från början av labyrinten och åtminstone kartlägga den kortaste vägen till markeringen.
+
+I detta avsnitt behandlas algoritmer för hur en robot kan fatta beslut under kartläggning. Beräkning av den optimala vägen lämnas åt avsnitt \ref{optimalvag}.
+
+\subsubsection{Väggföljare}
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att man alltid följer en sida av korridoren. Ifall algoritmen är av högertyp följer man höger sida av korridoren och svänger höger där det är möjligt, vice versa för vänstertyp.
+
+Fördelar med algoritmen är att den är enkel att implementera. Men saknandet av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fasta i en oändlig loop.
+
+\subsubsection{\emph{Dead-end filling}}
+\emph{Dead-end filling} är en djup-först algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
+
+En vidareutveckling av dessa algoritmer återfinns i \cite{flood} där mer komplexa labyrinter studeras.
+
+\subsection{Kortaste-väg-beräkning}
+\label{optimalvag}
+Givet att vi har kartlagt labyrinten återstår uppgiften att finna den optimala vägen mellan ingång och markering. Väljer vi att representera kartan som noder (korsningar samt återvändsgränder) och bågar (korridorer mellan korsningar) kan existerande algoritmer utnyttjas för att finna den kortaste vägen mellan två noder. Figur \ref{labToGraph} visar ett exempel på denna översättning från labyrint till nätverk. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.6\linewidth}{!}{
+	\input{images/network}}
+	\caption{En labyrint och dess motsvarande nätverk. Bågkostnaderna är det relativa avståndet och den optimala vägen är markerad grön.\label{labToGraph}}	
+\end{figure}
+
+\subsubsection{Dijkstras algoritm}
+Dijkstras algoritm är en girig, bäst-först algoritm. Genom algoritmen beräknar man den billigaste (kortaste) vägen från startnoden till samtliga noder och den fungerar på nätverk med icke-negativa bågkostnader. 
+
+Vid starten definieras två mängder, en mängd som innehåller de avsökta noderna och en de oavsökta noderna. De oavsökta noderna får ett oändligt nodpris och startnoden nodpriset noll. Med ursprung i startnoden sökes alla grannar genom. Ifall det nuvarande nodpriset plus bågkostnaden understiger grannens nodpris så uppdateras nodpriset med den billigaste kostnaden.
+
+Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills slutnoden har undersökts. Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då ges algoritmens pseudokod av algoritm \ref{dijk}.
+
+\begin{algorithm}
+	\caption{Dijkstras algoritm} \label{dijk}
+	\begin{algorithmic}[1]
+		\Function{DijkstrasAlgorithm}{Graph, s}	
+			\State $\textrm{dist}(s) \gets 0$
+			\ForAll {$v\in V - \{ s\}$}
+				\State $\textrm{dist}(v) \gets \infty$
+			\EndFor
+			
+			\State $S \gets \emptyset$
+			\State $Q \gets V$
+			
+			\While {$Q \neq \emptyset$}
+				\State $u \gets \textrm{minDistance}(Q,\textrm{dist})$%
+				\Comment{Välj nod med lägst nodpris}
+				\State $S \gets S +  \{ u\}$
+				\State $Q \gets Q - \{ u\}$
+				\ForAll {$v \in \textrm{neighbours}(u)$}
+				\Comment{Itererare över grannar till $u$}
+					\If {$g(u) + w(u,v) < g(v)$}
+						\State $g(v) \gets g(u) + w(u,v)$
+					\EndIf
+				\EndFor
+			\EndWhile
+			
+			\Return $\textrm{dist}$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Den kortaste vägen kan nästas upp om man även sparar vilken föregångare som bidrog till en kortare väg. I implementeringsväg är algoritmen enkel, dock kräver den mycket minne eftersom alla noder och dess nodpris behöver sparas. En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
+
+\subsubsection{A*}
+A* är ytterliggare en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+\begin{equation*}
+	f(n) = g(n) + h(n)
+\end{equation*}
+där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
+
+Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. Men i fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
+
+$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras. Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då ges algoritmens pseudokod av algoritm \ref{astar}.
+
+\begin{algorithm}[H]
+	\caption{A*} \label{astar}
+	\begin{algorithmic}[1]
+		\Function{AStarAlgorithm}{Graph, s}	
+			\State $g(s) \gets 0$
+			\State $f(s) \gets g(s) + h(s)$
+			\ForAll {$v\in V - \{ s\}$}
+				\State $g(v) \gets \infty$
+				\State $f(v) \gets \infty$
+			\EndFor
+			
+			\State $S \gets \emptyset$
+			\State $Q \gets V$
+			
+			\While {$Q \neq \emptyset$}
+				\State $u \gets \textrm{minFvalue}(Q,f)$%
+				\Comment{Välj nod med lägst $f(n)$}
+				\State $S \gets S +  \{ u\}$
+				\State $Q \gets Q - \{ u\}$
+				\ForAll {$v \in \textrm{neighbours}(u)$}
+				\Comment{Itererare över grannar till $u$}
+					\If {$g(u) + w(u,v) < g(v)$}
+						\State $g(v) \gets g(u) + w(u,v)$
+						\State $f(v) \gets g(v) + h(v)$
+					\EndIf
+				\EndFor
+			\EndWhile
+			
+			\Return $g$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. Eftersom man endast är intresserad av avståndet från startnod till slutnod (inte från startnod till samtliga noder) så sparar man både minne och tid genom att avsöka färre noder. 
+
+\pagebreak
 \section{Resultat och slutsatser}
 text
 
