@@ -169,8 +169,12 @@ Kommunikationen mellan Lidar-Lite v2 och microprocessorn, Atmega16, kommer att s
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
-\lipsum
+Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via en I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
 
+Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \ 
+
+Prestandan hos \verb+ATmega+ räcker för modulens syfte. 
+ 
 \subsection{Detaljerad beskrivning}
 Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt lite övrig fakta kring modulen.
 
