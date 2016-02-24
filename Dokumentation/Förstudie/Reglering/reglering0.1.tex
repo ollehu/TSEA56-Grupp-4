@@ -155,7 +155,7 @@ SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för prob
 
 Utöver att kunna kartlägga sin omgivning bör en robot även minimera sin färdsträcka genom att utnyttja en effektiv kartläggningsalgoritm. Robotens typ av omgivning ställer olika krav på komplexiteten av kartläggningsalgoritmen och i avsnitt \ref{mapping} diskuteras ett par av dessa.
 
-Den sista utmaningen som roboten ställs inför är att finna en optimal väg mellan två objekt förutsatt att det existerar minst en sådan. En verklig applicering av detta vore en undsättningsrobot som ska förse en nödställd med ett föremål och behöver hitta den kortaste vägen mellan ingång och nödställde. Detta problem kan formuleras som ett minkostnadsnätverk och löses med en optimerande algoritm, se avsnitt \ref{algo}. 
+Den sista utmaningen som roboten ställs inför är att finna en optimal väg mellan två objekt förutsatt att det existerar minst en sådan. En verklig applicering av detta vore en undsättningsrobot som ska förse en nödställd med ett föremål och behöver hitta den kortaste vägen mellan ingång och nödställde. Detta problem kan formuleras som ett minkostnadsnätverk och löses med en optimerande algoritm, se avsnitt \ref{optimalvag}. 
 
 \subsection{SLAM}
 \label{slam}
@@ -294,14 +294,14 @@ Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills
 			\State $Q \gets V$
 			
 			\While {$Q \neq \emptyset$}
-				\State $u \gets \textrm{minimumDistance}(Q,\textrm{dist})$%
+				\State $u \gets \textrm{minDistance}(Q,\textrm{dist})$%
 				\Comment{Välj nod med lägst nodpris}
 				\State $S \gets S +  \{ u\}$
 				\State $Q \gets Q - \{ u\}$
 				\ForAll {$v \in \textrm{neighbours}(u)$}
 				\Comment{Itererare över grannar till $u$}
-					\If {$\text{dist}(u) + w(u,v) < \textrm{dist}(v)$}
-						\State $\textrm{dist}(v) \gets \text{dist}(u) + w(u,v)$
+					\If {$g(u) + w(u,v) < g(v)$}
+						\State $g(v) \gets g(u) + w(u,v)$
 					\EndIf
 				\EndFor
 			\EndWhile
@@ -322,7 +322,43 @@ där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en
 
 Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. Men i fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
 
-$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså till skillnad från Dijkstras algoritm se framåt i nätverket och är därför en mer effektiv algoritm.
+$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras. Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då ges algoritmens pseudokod av algoritm \ref{astar}.
+
+\begin{algorithm}[H]
+	\caption{A*} \label{astar}
+	\begin{algorithmic}[1]
+		\Function{AStarAlgorithm}{Graph, s}	
+			\State $g(s) \gets 0$
+			\State $f(s) \gets g(s) + h(s)$
+			\ForAll {$v\in V - \{ s\}$}
+				\State $g(v) \gets \infty$
+				\State $f(v) \gets \infty$
+			\EndFor
+			
+			\State $S \gets \emptyset$
+			\State $Q \gets V$
+			
+			\While {$Q \neq \emptyset$}
+				\State $u \gets \textrm{minFvalue}(Q,f)$%
+				\Comment{Välj nod med lägst $f(n)$}
+				\State $S \gets S +  \{ u\}$
+				\State $Q \gets Q - \{ u\}$
+				\ForAll {$v \in \textrm{neighbours}(u)$}
+				\Comment{Itererare över grannar till $u$}
+					\If {$g(u) + w(u,v) < g(v)$}
+						\State $g(v) \gets g(u) + w(u,v)$
+						\State $f(v) \gets g(v) + h(v)$
+					\EndIf
+				\EndFor
+			\EndWhile
+			
+			\Return $g$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. Eftersom man endast är intresserad av avståndet från startnod till slutnod (inte från startnod till samtliga noder) så sparar man både minne och tid genom att avsöka färre noder. 
+
 \pagebreak
 \section{Resultat och slutsatser}
 text
