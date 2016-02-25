@@ -121,16 +121,31 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
-\lipsum
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul och dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt ... Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+
+Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+Int0+ för knapp för att ställa in körläge,\verb+ Int1+ för knapp för att sätta på och av roboten(?) och \verb+Int2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+\subsubsection {Körläge}
+Knapp för val av körläge kopplas till \verb+Int0+.  Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+\subsubsection {Strömbrytare}
+Strömbrytare i form av en knapp kopplas till \verb+ Int1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan. 
+
+\subsubsection {Sensormodul} 
+\verb+Int2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+
+\subsubsection{Kartläggning}
 
 \subsection{Hårdvara}
-\lipsum
+Huvudmodulen kommer kräva följande hårdvara:
+\begin{itemize}
+	\item ATmega16
+	\item  Bluetooth\textsuperscript{\circledR} ( Firefly)
+\end{itemize}
+
 
 \subsection{Mjukvara}
-\lipsum
+Koden i huvudmodulen är skriven i C. 
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
