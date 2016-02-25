@@ -1,0 +1,11 @@
+_A mobile robot with a I2C-system_
+Tar upp sensorer och hur de kan passa bra tilsammans med I2C.
+
+_A semi-autonomous mobile robot for education and research_
+Upp till 128 enheter på samma buss.
+
+_I2C Hardware Master Serial Interface for Asynchronous ADCs_
+Elena: Jag har svårt att se att vi behöver denna.
+
+_I2C Protocol Design for Reusability_
+
