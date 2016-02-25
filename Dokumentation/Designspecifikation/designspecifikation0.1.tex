@@ -240,21 +240,50 @@ När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona u
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
 
-
-
-
 \pagebreak
 \section{Delmodul 4 - Datormodul}
-\lipsum
+Datormodulens syfte är att presentera ett gränssnitt för att styra, kartlägga och felsöka roboten i realtid. Kommunikationen sker via Bluetooth\textsuperscript{\circledR} och består av styrkommandon (datormodul $\rightarrow$ huvudmodul) samt mätvärden och karta (huvudmodul $\rightarrow$ datormodul). 
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+Mjukvarans grafiska gränssnitt konstrueras enligt figur \ref{datormodul:software}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/software}}
+	\caption{Datormodulens GUI \label{datormodul:software}}	
+\end{figure}
+
+Kartan över labyrinten ritas successivt upp under robotens färd och presenteras ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
+
+Tabellen över sensordata skriver ut informationen den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
+
+Grafen över historiska sensordata tar del av samma information som tabellen, men ritar även ut tidigare data i form av en graf. Denna ruta används främst för felsökning och ger ett tidsperspektiv till sensordatan.
+
+Panelen för knappar visar vilken knappkombination från tangenbordet som är aktiv. Tabell \ref{datormodul:combinations} visar möjliga knappkombinationer och dess översättning till styrkommando. Panelen fyller i de knappar som hålls nere och varnar ifall en knappkombination är otillåten, exempelvis ifall \mbox{$\leftarrow$ och $\rightarrow$} trycks samtidigt.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \nobreakhline\nobreakhline 
+	$\uparrow$ &  				&  				& 				& = & Kör framåt 				\\ \nobreakhline 
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster 		\\ \nobreakhline 
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger 			\\ \nobreakhline 
+			   & $\leftarrow$	&				&				& = & Rotera medurs 			\\ \nobreakhline
+			   &				& $\rightarrow$	&				& = & Rotera moturs 			\\ \nobreakhline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster 		\\ \nobreakhline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger 			\\ \nobreakhline
+			   &				&				& $\downarrow$	& = & Kör bakåt 				\\ \nobreakhline
+	\caption{Knapptryckningar och dess översättning} \label{datormodul:combinations}
+\end{longtable}
+
+
 
 \subsection{Hårdvara}
-Datormodulen kräver en dator kompatibel med Java.
+Datormodulen kräver en dator kompatibel med Java och Bluetooth\textsuperscript{\circledR}. 
 
 \subsection{Mjukvara}
-\lipsum
+Gränssnittet programmeras i Java SE 7 och körs i Java Runtime Environment. Valet av programmeringsspråk föll på Java eftersom att samma mjukvara ska köras på Windows, OSX och Linux. Kommunikationen via Bluetooth\textsuperscript{\circledR} sker med hjälp av ett existerande Bluetooth\textsuperscript{\circledR}-API utvecklat av Oracle för Java. 
+
+
 
 \pagebreak
 \section{Intermodulär kommunikation}
