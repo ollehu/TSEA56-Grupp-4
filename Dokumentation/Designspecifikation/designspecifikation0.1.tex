@@ -107,8 +107,16 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \subsection{Det totala systemet}
 \lipsum
 
+
 \subsection{Sensorer}
-\lipsum
+Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa, värden som anväds vid reglering av robotens rörelse rakt fram. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avtåndet till väggar framför roboten. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/sensor}}
+	\caption{Placering av sensorer \label{sensor}}	
+\end{figure}
 
 \subsection{Ställdon}
 Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är motorerna som driver varsitt hjul. Motorerna kan dock inte styras individuellt utan enbart parvis, varför de egentligen kan ses som två enheter. Utöver dessa ska roboten ha ett servo i gripklon, för att kunna öppna och stänga densamma, och ett servo för rotation av lasersensorn.
@@ -121,16 +129,31 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
-\lipsum
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul och dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt ... Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+
+Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+Int0+ för knapp för att ställa in körläge,\verb+ Int1+ för knapp för att sätta på och av roboten(?) och \verb+Int2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+\subsubsection {Körläge}
+Knapp för val av körläge kopplas till \verb+Int0+.  Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+\subsubsection {Strömbrytare}
+Strömbrytare i form av en knapp kopplas till \verb+ Int1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan. 
+
+\subsubsection {Sensormodul} 
+\verb+Int2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+
+\subsubsection{Kartläggning}
 
 \subsection{Hårdvara}
-\lipsum
+Huvudmodulen kommer kräva följande hårdvara:
+\begin{itemize}
+	\item ATmega16
+	\item  Bluetooth\textsuperscript{\circledR} ( Firefly)
+\end{itemize}
+
 
 \subsection{Mjukvara}
-\lipsum
+Koden i huvudmodulen är skriven i C. 
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
@@ -171,7 +194,7 @@ Kommunikationen mellan Lidar-Lite v2 och microprocessorn, Atmega16, kommer att s
 \section{Delmodul 3 - Styrmodul}
 Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via en I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
 
-Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \ 
+Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \verb+OC2+ är oanvänd.  
 
 Prestandan hos \verb+ATmega+ räcker för modulens syfte. 
  
@@ -189,7 +212,7 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 	\item sväng höger/vänster - inga (kommandot används enbart vid manuell styrning och behöver således inte regleras).
 	\item rotera höger/vänster - vinkel och vinkelhastighet.
 \end{itemize}
-Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, dvs vid autonom styrning av roboten.
+Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
 \subsubsection{Kommunikationsprotokoll}
 Följande protokoll används för att skicka data till styrmodulen:
@@ -205,17 +228,17 @@ Där respektive segment motsvarar följande:
 	\item A (Bit x-y) - Startbit
 	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
 	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
-	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommande och reglering) eller värde (om sensorvärde).
+	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
 	\item E (Bit x-y) - Slutbit
 \end{itemize}
 
 \subsubsection{Reglering}
-Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmoderna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
+Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
 
 \subsubsection{Övrigt}
 Plattformen som roboten byggs på har färdiga kretsar för att styra chassits hjul. Hjulen kan styras parvis (höger och vänster) genom att sätta en bit för att bestämma rotationsriktningen och sedan skicka en PWM-signal för att bestämma rotationshastigheten. Roboten styrs alltså differentiellt, dvs genom olika hastighet på höger och vänster sida.
 
-Roboten ska även vara utrustad med en gripklo, för att kunna greppa de förnödenheter som ka transporteras. Klons aktiva del består av ett servo av typen \verb+RG-180+ som styrs med en PWM-signal.
+Roboten ska även vara utrustad med en gripklo, för att kunna greppa de förnödenheter som ska transporteras. Klons aktiva del består av ett servo av typen \verb+RG-180+ som styrs med en PWM-signal.
 
 Det ska även finnas en alphanumerisk LCD-display, av typen \verb+LCD JM162A+, på roboten, som används för att visa relevanta sensorvärden vid reglering. Den har totalt 16 pinnar, varav åtta är databitar, tre används för konfiguration och resterane är referensignaler och strömtillförsel.
 
@@ -240,21 +263,50 @@ När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona u
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
 
-
-
-
 \pagebreak
 \section{Delmodul 4 - Datormodul}
-\lipsum
+Datormodulens syfte är att presentera ett gränssnitt för att styra, kartlägga och felsöka roboten i realtid. Kommunikationen sker via Bluetooth\textsuperscript{\circledR} och består av styrkommandon (datormodul $\rightarrow$ huvudmodul) samt mätvärden och karta (huvudmodul $\rightarrow$ datormodul). 
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+Mjukvarans grafiska gränssnitt konstrueras enligt figur \ref{datormodul:software}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/software}}
+	\caption{Datormodulens GUI \label{datormodul:software}}	
+\end{figure}
+
+Kartan över labyrinten ritas successivt upp under robotens färd och presenteras ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
+
+Tabellen över sensordata skriver ut informationen den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
+
+Grafen över historiska sensordata tar del av samma information som tabellen, men ritar även ut tidigare data i form av en graf. Denna ruta används främst för felsökning och ger ett tidsperspektiv till sensordatan.
+
+Panelen för knappar visar vilken knappkombination från tangenbordet som är aktiv. Tabell \ref{datormodul:combinations} visar möjliga knappkombinationer och dess översättning till styrkommando. Panelen fyller i de knappar som hålls nere och varnar ifall en knappkombination är otillåten, exempelvis ifall \mbox{$\leftarrow$ och $\rightarrow$} trycks samtidigt.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \nobreakhline\nobreakhline 
+	$\uparrow$ &  				&  				& 				& = & Kör framåt 				\\ \nobreakhline 
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster 		\\ \nobreakhline 
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger 			\\ \nobreakhline 
+			   & $\leftarrow$	&				&				& = & Rotera medurs 			\\ \nobreakhline
+			   &				& $\rightarrow$	&				& = & Rotera moturs 			\\ \nobreakhline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster 		\\ \nobreakhline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger 			\\ \nobreakhline
+			   &				&				& $\downarrow$	& = & Kör bakåt 				\\ \nobreakhline
+	\caption{Knapptryckningar och dess översättning} \label{datormodul:combinations}
+\end{longtable}
+
+
 
 \subsection{Hårdvara}
-Datormodulen kräver en dator kompatibel med Java.
+Datormodulen kräver en dator kompatibel med Java och Bluetooth\textsuperscript{\circledR}. 
 
 \subsection{Mjukvara}
-\lipsum
+Gränssnittet programmeras i Java SE 7 och körs i Java Runtime Environment. Valet av programmeringsspråk faller på Java eftersom samma mjukvara ska köras på Windows, OSX och Linux. Kommunikationen via Bluetooth\textsuperscript{\circledR} sker med hjälp av ett existerande Bluetooth\textsuperscript{\circledR}-API utvecklat av Oracle för Java. 
+
+Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva huvudklassen är centrerad kring Bluetooth\textsuperscript{\circledR}-kommunikationen och loopar i takt med att en ny sändning har skickats eller mottagits. 
 
 \pagebreak
 \section{Intermodulär kommunikation}
