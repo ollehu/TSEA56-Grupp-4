@@ -129,16 +129,31 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
-\lipsum
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul och dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt ... Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+
+Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+Int0+ för knapp för att ställa in körläge,\verb+ Int1+ för knapp för att sätta på och av roboten(?) och \verb+Int2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+\subsubsection {Körläge}
+Knapp för val av körläge kopplas till \verb+Int0+.  Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+\subsubsection {Strömbrytare}
+Strömbrytare i form av en knapp kopplas till \verb+ Int1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan. 
+
+\subsubsection {Sensormodul} 
+\verb+Int2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i bild...nedan.
+
+\subsubsection{Kartläggning}
 
 \subsection{Hårdvara}
-\lipsum
+Huvudmodulen kommer kräva följande hårdvara:
+\begin{itemize}
+	\item ATmega16
+	\item  Bluetooth\textsuperscript{\circledR} ( Firefly)
+\end{itemize}
+
 
 \subsection{Mjukvara}
-\lipsum
+Koden i huvudmodulen är skriven i C. 
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
@@ -197,7 +212,7 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 	\item sväng höger/vänster - inga (kommandot används enbart vid manuell styrning och behöver således inte regleras).
 	\item rotera höger/vänster - vinkel och vinkelhastighet.
 \end{itemize}
-Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, dvs vid autonom styrning av roboten.
+Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
 \subsubsection{Kommunikationsprotokoll}
 Följande protokoll används för att skicka data till styrmodulen:
@@ -248,21 +263,50 @@ När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona u
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
 
-
-
-
 \pagebreak
 \section{Delmodul 4 - Datormodul}
-\lipsum
+Datormodulens syfte är att presentera ett gränssnitt för att styra, kartlägga och felsöka roboten i realtid. Kommunikationen sker via Bluetooth\textsuperscript{\circledR} och består av styrkommandon (datormodul $\rightarrow$ huvudmodul) samt mätvärden och karta (huvudmodul $\rightarrow$ datormodul). 
 
 \subsection{Detaljerad beskrivning}
-\lipsum
+Mjukvarans grafiska gränssnitt konstrueras enligt figur \ref{datormodul:software}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/software}}
+	\caption{Datormodulens GUI \label{datormodul:software}}	
+\end{figure}
+
+Kartan över labyrinten ritas successivt upp under robotens färd och presenteras ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
+
+Tabellen över sensordata skriver ut informationen den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
+
+Grafen över historiska sensordata tar del av samma information som tabellen, men ritar även ut tidigare data i form av en graf. Denna ruta används främst för felsökning och ger ett tidsperspektiv till sensordatan.
+
+Panelen för knappar visar vilken knappkombination från tangenbordet som är aktiv. Tabell \ref{datormodul:combinations} visar möjliga knappkombinationer och dess översättning till styrkommando. Panelen fyller i de knappar som hålls nere och varnar ifall en knappkombination är otillåten, exempelvis ifall \mbox{$\leftarrow$ och $\rightarrow$} trycks samtidigt.
+
+\begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
+	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \nobreakhline\nobreakhline 
+	$\uparrow$ &  				&  				& 				& = & Kör framåt 				\\ \nobreakhline 
+	$\uparrow$ & $\leftarrow$	&				&				& = & Kör framåt vänster 		\\ \nobreakhline 
+	$\uparrow$ &				& $\rightarrow$	&				& = & Kör framåt höger 			\\ \nobreakhline 
+			   & $\leftarrow$	&				&				& = & Rotera medurs 			\\ \nobreakhline
+			   &				& $\rightarrow$	&				& = & Rotera moturs 			\\ \nobreakhline
+			   & $\leftarrow$	&				& $\downarrow$	& = & Kör bakåt vänster 		\\ \nobreakhline
+			   &				& $\rightarrow$ & $\downarrow$	& = & Kör bakåt höger 			\\ \nobreakhline
+			   &				&				& $\downarrow$	& = & Kör bakåt 				\\ \nobreakhline
+	\caption{Knapptryckningar och dess översättning} \label{datormodul:combinations}
+\end{longtable}
+
+
 
 \subsection{Hårdvara}
-Datormodulen kräver en dator kompatibel med Java.
+Datormodulen kräver en dator kompatibel med Java och Bluetooth\textsuperscript{\circledR}. 
 
 \subsection{Mjukvara}
-\lipsum
+Gränssnittet programmeras i Java SE 7 och körs i Java Runtime Environment. Valet av programmeringsspråk faller på Java eftersom samma mjukvara ska köras på Windows, OSX och Linux. Kommunikationen via Bluetooth\textsuperscript{\circledR} sker med hjälp av ett existerande Bluetooth\textsuperscript{\circledR}-API utvecklat av Oracle för Java. 
+
+Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva huvudklassen är centrerad kring Bluetooth\textsuperscript{\circledR}-kommunikationen och loopar i takt med att en ny sändning har skickats eller mottagits. 
 
 \pagebreak
 \section{Intermodulär kommunikation}
