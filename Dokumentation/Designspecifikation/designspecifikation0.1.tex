@@ -135,7 +135,7 @@ Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar
 
 \subsection{Detaljerad beskrivning}
 \subsubsection {Körläge}
-Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur.
+Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_korlage}.
 
 \begin{figure}[htbp]
 \centering
@@ -313,24 +313,6 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 \end{itemize}
 Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
-\subsubsection{Kommunikationsprotokoll}
-Följande protokoll används för att skicka data till styrmodulen:
-\begin{figure}[htbp]
-\centering
-\noindent\resizebox{.8\linewidth}{!}{
-	\input{images/controlldata}}
-	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
-\end{figure}
-
-Där respektive segment motsvarar följande: 
-\begin{itemize}
-	\item A (Bit x-y) - Startbit
-	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
-	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
-	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
-	\item E (Bit x-y) - Slutbit
-\end{itemize}
-
 \subsubsection{Reglering}
 Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
 
@@ -409,13 +391,59 @@ Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva
 
 \pagebreak
 \section{Intermodulär kommunikation}
-\lipsum
+För kommunikation mellan de olika modulerna kommer en I\textsuperscript{2}C-buss och Bluetooth\textsuperscript{\circledR} användas. 
 
 \subsection{I\textsuperscript{2}C-buss}
-\lipsum
+För att kommunicera mellan de olika modulerna kommer den två trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn ATMega16 kommer allt vara kopplat till samma buss. Detta för att ATMega16 enbart har en upsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkadet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
 
 \subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
-\lipsum
+För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/bluetooth}}
+	\caption{Protokoll för överföring mellan huvud- och datormodul \label{bluetooth}}	
+\end{figure}
+
+Respektive segment motsvarar följande:
+\begin{itemize}
+	\item A - Startbit
+	\item B - Informationsbitar (vanligen sju eller åtta stycken)
+	\item C - Eventuell paritetsbit
+	\item D - Slutbit (en eller två stycken)
+\end{itemize}
+
+För att initera kontakt används så kallade handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot.
+
+\subsection{Informationsflöde}
+I figur \ref{informationFlow} visualiseras informationsflödet. Där anges mottagare och sändare samt vilken typ av information som går mellan dem.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/informationFlow}}
+	\caption{Schema över informationsflödet\label{informationFlow}}	
+\end{figure}
+
+\subsubsection{Kommunikationsprotokoll - styrmodul}
+Följande protokoll används för att skicka data till styrmodulen:
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
+\end{figure}
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (Bit x-y) - Startbit
+	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
+	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
+	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
+	\item E (Bit x-y) - Slutbit
+\end{itemize}
 
 \pagebreak
 \section{Implementering}
