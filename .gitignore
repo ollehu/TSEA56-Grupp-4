@@ -44,3 +44,4 @@ Backup[ ]of[ ]*.numbers/
 
 #Öppnade excel filer
 ~*.xlsx
+.texpadtmp/
