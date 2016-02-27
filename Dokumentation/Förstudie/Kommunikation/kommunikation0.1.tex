@@ -131,6 +131,15 @@ En I\textsuperscript{2}C-buss utgörs av två kablar som sköter överföringen 
 När bussen är ledig ligger båda ledningarna SDA och SCL höga. (1) och (5) triggas av negativ respektive positiv flank på SDA så länge SCL ligger hög. Ett alternativ till att trigga avslut är att trigga en ny start, dvs att master-enheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring kan den sätta master-enheten i vänteläge.
 
 https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
+
+
+\subsection{Lovisa flummar}
+Sätt att utveckla system som innehåller flera moduler.
+Kan använda sig av topdown integration eller bottom up ( det vi ska använda iom LIPsmodellen).
+
+Varför använda c? Det tar upp me rminne men ändå kanske det är smidigast? Samtidfigt kan vi assembler bättre och om vi ändå ska tänka assembler och sne översätta till c varför inte bara skriva i assembler? Lättare att se med avbrottsflaggor.
+HUr ska vi kunna säkerställa att systemet hålls i realtid och inte alla avbrott hanteras för sent? Avbrottsrutiner extremt korta. Endast det mest nödvändiga där. Hur ha kvar information om avbryten proess vid avbrott?
+
 \pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
