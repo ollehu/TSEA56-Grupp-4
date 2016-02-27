@@ -131,40 +131,98 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 \section{Delmodul 1 - Huvudmodul}
 Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt ... Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
-Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+Int0+ för knapp för att ställa in körläge,\verb+ Int1+ för knapp för att sätta på och av roboten(?) och \verb+Int2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
+Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+INT0+ för knapp för att ställa in körläge,\verb+ INT1+ för knapp för att sätta på och av roboten(?) och \verb+INT2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \subsection{Detaljerad beskrivning}
 \subsubsection {Körläge}
-Knapp för val av körläge kopplas till \verb+Int0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur.
+Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur.
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.6\linewidth}{!}{
 	\input{images/avbrott_korlage}}
-	\caption{Flödesschema som beskriver förloppet vid avbrott på ingång INT0 \label{avbrott_korlage}}	
+	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT0+ \label{avbrott_korlage}}	
 \end{figure}
 
 \subsubsection {Strömbrytare}
-Strömbrytare i form av en knapp kopplas till \verb+Int1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
+Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.6\linewidth}{!}{
 	\input{images/avbrott_strombrytare}}
-	\caption{Flödesschema som beskriver förloppet vid avbrott på ingång INT1 \label{avbrott_strombrytare}}	
+	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT1+ \label{avbrott_strombrytare}}	
 \end{figure}
 
 \subsubsection {Sensormodul} 
-\verb+Int2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i \ref{avbrott_sensormodul}.
+\verb+INT2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i \ref{avbrott_sensormodul}.
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{1\linewidth}{!}{
 	\input{images/avbrott_sensormodul}}
-	\caption{Flödesschema som beskriver förloppet vid avbrott på ingång INT2 \label{avbrott_sensormodul}}	
+	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT2+ \label{avbrott_sensormodul}}	
 \end{figure}
 
 \subsubsection{Kartläggning}
+Eftersom kartan enligt appendix 	C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
+
+IR-sensorerna på robotens sida kan agera i avståndsområdet 5-30 cm och bottnas med andra ord när en sväng eller korsning upptäcks. Utifrån denna information kopplar kartläggningen ihop föregående modul med den typ av korsning som roboten står i. 
+
+Kartläggningsalgoritmen är av väggföljartyp. Eftersom banan är uppbyggd så att varken höger- eller vänsterföljning prirotieras, se appendix C, så faller valet på högerföljning. Med andra ord följer roboten höger vägg och försöker i korsningar först att svänga höger, därefter köra rakt fram och svänger vänster allra sist. Eftersom roboten endast ska finna den kortaste vägen från ingången till nödställde behöver nödvändigtvis inte hela kartan utforskas. Exempelvis, ifall fågelvägen från roboten till ingången är längre än en redan utforskad rutt ska roboten inte fortsätta utforska den korridoren.
+
+Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \ref{labToNetwork} för et exempel av labyrintkonvertering. En ny nod bildas vid varje korsning eller där roboten tvingas svänga. Bågkostnaden utgör det relativa avståndet mellan de två kopplade noderna, det relativa avståndet mellan två moduler är en enhet.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.6\linewidth}{!}{
+	\input{images/network}}
+	\caption{En labyrint och dess motsvarande nätverk. Bågkostnaderna är det relativa avståndet och den optimala vägen är markerad grön.\label{labToGraph}}	
+\end{figure}
+
+När kartan är representerad som ett nätverk och roboten med säkerhet att utforskat den kortaste vägen mellan ingång och nödställd, påbörjas optimeringen. Optimeringen för att hitta den kortaste vägen är ett enkelt problem eftersom optimerande metoder för att lösa minkostnadsnätverk kan utnyttjas.
+
+Roboten tillämpar optimeringsmodellen A* vilket är en vidareutveckling av Dijkstras algoritm. A* är en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+\begin{equation*}
+	f(n) = g(n) + h(n)
+\end{equation*}
+där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$. Heuristiken som används är så kallade \emph{Manhattan}-avståndet eftersom labyrintens korsningar är ortogonala.
+
+Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då implementeras algoritmens utifrån pseudokoden i algoritm \ref{astar}.
+
+\begin{algorithm}[H]
+	\caption{A*} \label{astar}
+	\begin{algorithmic}[1]
+		\Function{AStarAlgorithm}{Graph, s}	
+			\State $g(s) \gets 0$
+			\State $f(s) \gets g(s) + h(s)$
+			\ForAll {$v\in V - \{ s\}$}
+				\State $g(v) \gets \infty$
+				\State $f(v) \gets \infty$
+			\EndFor
+			
+			\State $S \gets \emptyset$
+			\State $Q \gets V$
+			
+			\While {$Q \neq \emptyset$}
+				\State $u \gets \textrm{minFvalue}(Q,f)$%
+				\Comment{Välj nod med lägst $f(n)$}
+				\State $S \gets S +  \{ u\}$
+				\State $Q \gets Q - \{ u\}$
+				\ForAll {$v \in \textrm{neighbours}(u)$}
+				\Comment{Itererare över grannar till $u$}
+					\If {$g(u) + w(u,v) < g(v)$}
+						\State $g(v) \gets g(u) + w(u,v)$
+						\State $f(v) \gets g(v) + h(v)$
+					\EndIf
+				\EndFor
+			\EndWhile
+			
+			\Return $g$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+  
 
 \subsection{Hårdvara}
 Huvudmodulen kommer kräva följande hårdvara:
