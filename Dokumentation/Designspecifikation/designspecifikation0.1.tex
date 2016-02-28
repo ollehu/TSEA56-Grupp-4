@@ -133,6 +133,13 @@ Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodu
 
 Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+INT0+ för knapp för att ställa in körläge,\verb+ INT1+ för knapp för att sätta på och av roboten(?) och \verb+INT2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\includegraphics{images/huvudmodul.eps}}
+	\caption{Kopplingsschema över huvudmodul \label{kopplingsschema:huvudmodul}}	
+\end{figure}
+
 \subsection{Detaljerad beskrivning}
 \subsubsection {Körläge}
 Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_korlage}.
@@ -243,6 +250,13 @@ Den främre avståndssensorn (laser-sensorn) placeras på ett roterande servo s�
 
 Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten tar en sväng. Mätdatan behöver därför integreras under ett tidsintervall och konverteras till en vinkel. Hur den nödställde ska representeras är ännu inte fastställt. Förslagsvis används en IR-fyr i kombination med en IR-sensor. Sensormodulens uppdrag blir då att ta beslutet om när den nödställde är funnen.
 
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\includegraphics{images/sensormodul.eps}}
+	\caption{Kopplingsschema över sensormodul \label{kopplingsschema:sensormodul}}	
+\end{figure}
+ 
 \subsection{Hårdvara}
 Den hårdvara som sensormodulen kommer att kräva är:
 
@@ -261,7 +275,7 @@ Sensormodulens processorenhet, ATmega16, är ansluten med två I\textsuperscript
 Resterande IR-sensor, GP2D120, och IR-detektor, IRM-8601-S, anslutes direkt till processorenhetens ingångar för AD-omvändling. Figur [??] visar en övergripande bild över sensormodulens implentation med dess respektive delkomponenter. 
 
 \subsubsection{Processorenhet, ATmega16}
-Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommuniceras till huvudmodulen. Figur [??] illustrerar ATmega16 och dess ingångar, samt hur respektive sensorenhet ska kopplas samman med processorn. 
+Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommuniceras till huvudmodulen. Figur \ref{kopplingsschema:sensormodul} illustrerar ATmega16 och dess ingångar, samt hur respektive sensorenhet ska kopplas samman med processorn. 
 
 \subsubsection{Laser-sensor, LIDAR-Lite v2}
 Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsätnningsrobot. Utöver att kunna möta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 0,025 meter. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 0,01 meter \cite{7131685}.
@@ -296,6 +310,13 @@ Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de 
 Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \verb+OC2+ är oanvänd.  
 
 Prestandan hos \verb+ATmega+ räcker för modulens syfte. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\includegraphics{images/styrmodul.eps}}
+	\caption{Kopplingsschema över styrmodul \label{kopplingsschema:styrmodul}}	
+\end{figure}
  
 \subsection{Detaljerad beskrivning}
 Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt lite övrig fakta kring modulen.
