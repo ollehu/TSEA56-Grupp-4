@@ -169,9 +169,9 @@ Eftersom kartan enligt appendix 	C består av moduler på 40x40cm, räcker det a
 
 IR-sensorerna på robotens sida kan agera i avståndsområdet 5-30 cm och bottnas med andra ord när en sväng eller korsning upptäcks. Utifrån denna information kopplar kartläggningen ihop föregående modul med den typ av korsning som roboten står i. 
 
-Kartläggningsalgoritmen är av väggföljartyp. Eftersom banan är uppbyggd så att varken höger- eller vänsterföljning prirotieras, se appendix C, så faller valet på högerföljning. Med andra ord följer roboten höger vägg och försöker i korsningar först att svänga höger, därefter köra rakt fram och svänger vänster allra sist. Eftersom roboten endast ska finna den kortaste vägen från ingången till nödställde behöver nödvändigtvis inte hela kartan utforskas. Exempelvis, ifall fågelvägen från roboten till ingången är längre än en redan utforskad rutt ska roboten inte fortsätta utforska den korridoren.
+Kartläggningsalgoritmen är av väggföljartyp. Eftersom banan är uppbyggd så att varken höger- eller vänsterföljning prioriteras, se appendix C, så faller valet på högerföljning. Med andra ord följer roboten höger vägg och försöker först att svänga höger, därefter köra rakt fram och svänger vänster allra sist. Eftersom roboten endast ska finna den kortaste vägen från ingången till nödställde behöver nödvändigtvis inte hela kartan utforskas. Exempelvis, ifall fågelvägen från roboten till ingången är längre än en redan utforskad rutt ska roboten inte fortsätta utforska den korridoren.
 
-Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \ref{labToNetwork} för et exempel av labyrintkonvertering. En ny nod bildas vid varje korsning eller där roboten tvingas svänga. Bågkostnaden utgör det relativa avståndet mellan de två kopplade noderna, det relativa avståndet mellan två moduler är en enhet.
+Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \ref{labToGraph} för ett exempel av labyrintkonvertering. En ny nod bildas vid varje korsning eller där roboten tvingas svänga. Bågkostnaden utgör det relativa avståndet mellan de två kopplade noderna där det relativa avståndet mellan två moduler är en enhet.
 
 \begin{figure}[htbp]
 \centering
@@ -180,13 +180,13 @@ Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \
 	\caption{En labyrint och dess motsvarande nätverk. Bågkostnaderna är det relativa avståndet och den optimala vägen är markerad grön.\label{labToGraph}}	
 \end{figure}
 
-När kartan är representerad som ett nätverk och roboten med säkerhet att utforskat den kortaste vägen mellan ingång och nödställd, påbörjas optimeringen. Optimeringen för att hitta den kortaste vägen är ett enkelt problem eftersom optimerande metoder för att lösa minkostnadsnätverk kan utnyttjas.
+När kartan är representerad som ett nätverk och roboten med säkerhet har utforskat den kortaste vägen mellan ingång och nödställd, påbörjas optimeringen. Optimeringen för att hitta den kortaste vägen sker med hjälp av optimerande metoder för att lösa minkostnadsnätverk.
 
-Roboten tillämpar optimeringsmodellen A* vilket är en vidareutveckling av Dijkstras algoritm. A* är en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+Roboten tillämpar optimeringsmodellen A* vilken är en vidareutveckling av Dijkstras algoritm. A* är en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
 \begin{equation*}
 	f(n) = g(n) + h(n)
 \end{equation*}
-där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$. Heuristiken som används är så kallade \emph{Manhattan}-avståndet eftersom labyrintens korsningar är ortogonala.
+där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$. Heuristiken som används är det så kallade \emph{Manhattan}-avståndet eftersom labyrintens korsningar är ortogonala.
 
 Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då implementeras algoritmens utifrån pseudokoden i algoritm \ref{astar}.
 
