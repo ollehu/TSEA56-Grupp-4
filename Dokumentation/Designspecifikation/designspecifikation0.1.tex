@@ -301,7 +301,13 @@ IR-detekron IRM-8601-S används i syfte att indentifiera den nödställde, vilke
 
 
 \subsection{Mjukvara}
-\lipsum
+Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvanlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, ATmega16.
+
+\subsubsection{IR-sensorerna}
+GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via ekvationXYXY, där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. 
+
+\subsubsection{LIDAR-Lite}
+text
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
