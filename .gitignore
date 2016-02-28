@@ -28,6 +28,7 @@
 *.mtc1
 *.out
 *.synctex.gz
+*.cpt
 # Spara pdfer?
 # *.pdf 
 
