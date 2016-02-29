@@ -92,10 +92,12 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning}
-text \cite{893287}
+Vid utveckling av en robot som består av olika moduler med olika funktion är det viktigt att undersöka hur dessa moduler ska integreras på bästa sätt. Hur ska dessa moduler kommunicera med varandra och tillsammans funktionera som en robot och inte som delmoduler i sig. För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
 
 \subsection{Syfte}
-Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad för att i projektfasen ha en grund att stå på.
+Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt.
+
+(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av  för att i projektfasen ha en grund att stå på.)
 
 \pagebreak
 
@@ -105,7 +107,7 @@ Syftet med denna studie är att beröra frågor som rör kommunikation och integ
 Rapporten ska behandla följande frågor:
 
 \begin{itemize}
-	\item Vad är I2C (en beskrivning av hur den fungerar) och varför passar den?
+	\item Hur fungerar en I\textsuperscript{2}C-buss och varför passar den vårt projekt?
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
 	
 		\begin{itemize}
@@ -132,19 +134,47 @@ När bussen är ledig ligger båda ledningarna SDA och SCL höga. (1) och (5) tr
 
 https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
+Ci tänker att vi har en avbrottstyrd i2c va? eller en pollad?
+
 
 \subsection{Lovisa flummar}
+
+
+
 Sätt att utveckla system som innehåller flera moduler.
 Kan använda sig av topdown integration eller bottom up ( det vi ska använda iom LIPsmodellen).
 
 Varför använda c? Det tar upp me rminne men ändå kanske det är smidigast? Samtidfigt kan vi assembler bättre och om vi ändå ska tänka assembler och sne översätta till c varför inte bara skriva i assembler? Lättare att se med avbrottsflaggor.
 HUr ska vi kunna säkerställa att systemet hålls i realtid och inte alla avbrott hanteras för sent? Avbrottsrutiner extremt korta. Endast det mest nödvändiga där. Hur ha kvar information om avbryten proess vid avbrott?
 
+\subsection{?}
+Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
+
+\textit{Realtidssystem}- Denna nivå beskriver processerna mellan roboten och dess omgivning genom sensorer exempelvis. Denna nivå behöver kunna utföra alla delar som behöver ske i realtid så som exempelvis kontroll av styrservo och behöver därför kunna utföra synkronisering och kommunicera mellan "uppgifter" för att nämna några saker. 
+
+\textit{Kontrollerat system}- ?
+
+\textit{Öppet system}- Roboten borde vara modifierbar, det ska var lätt att integrera eller ändra olika funktioners utformning efter tilltänkt tillämpning. För att göra detta behövs ett stegvis uppbyggt system med vanlig integrationsmetodologi. 
+
+Alltså behövs en modulärt uppbyggd robot både vad gäller funktionsnivå, standard-uppbyggnad och gränsnitt för modulerna. 
+
+
+\subsection{Assembler och C för programmering av AVR}
+
+Avbrott och annat.. i assembler
+i C
+
+Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
+
 \pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
 \textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
 
+\subsection {Assembler eller C}
+
+Det finns både fördelar och nackdelar med båda programmeringsspråken. De är båda hårdvarunära språk. C tar som nämnt ovan ofta större minnesutrymme när koden exekveras(?). Detta ses dock inte som något problem då ATmega16 anses ha gott om extra minne.
+I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering. 
 \pagebreak
 
 \section{Resultat och slutsatser}
