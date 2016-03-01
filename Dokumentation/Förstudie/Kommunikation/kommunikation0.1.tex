@@ -111,6 +111,7 @@ Rapporten ska behandla följande frågor:
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
 	
 		\begin{itemize}
+			\item Avbrott eller pollning?
 			\item Hur ska gränssnitt designas?
 			\item C eller assembler?
 			\item Hur designas tester för att säkerställa att modulen fungerar som den ska?
@@ -136,9 +137,6 @@ Ci tänker att vi har en avbrottstyrd i2c va? eller en pollad?
 
 
 \subsection{Lovisa flummar}
-
-
-
 Sätt att utveckla system som innehåller flera moduler.
 Kan använda sig av topdown integration eller bottom up ( det vi ska använda iom LIPsmodellen).
 
@@ -169,9 +167,20 @@ Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs
 \section{Rapportens huvuddel, byt rubriknamn}
 \textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
 
-\subsection{Användning av I\textsuperscript{2}C}
+\subsection{Roller på I\textsuperscript{2}C-bussen}
+https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
-\subsection {Assembler eller C}
+Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C. För att lösa detta kan alla enheter kopplas på samma buss och konfigureras på olika sätt. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
+
+\begin{enumerate}
+ \item Flera enheter kan konfigureras så att de innehar en master roll. Detta innebär att de kan, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data.
+ 
+ \item En eller flera slavenheter kan kopplas till den enda masterenheten med avbrott. När slaven vill ha kontakt över I\textsuperscript{2}C-bussen triggar den avbrottssignalen, vilket i sin tur får masterenheten att initiera kontakten. Detta medför att data enbart kan gå mellan masterenheten och respektive slav, inte slavarna emellan.
+ 
+ \item Bussens enda masterenheten pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
+\end{enumerate}
+
+\subsection{Assembler eller C}
 
 Det finns både fördelar och nackdelar med båda programmeringsspråken. De är båda hårdvarunära språk. C tar som nämnt ovan ofta större minnesutrymme när koden exekveras(?). Detta ses dock inte som något problem då ATmega16 anses ha gott om extra minne.
 I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering. 
