@@ -92,15 +92,55 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 
-\section{Inledning}
-text \cite{893287}
+\section{Inledning} \label{inledning}
+Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) har en underrubrik (antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering}) under vilken textmassan kopplad till respektive område och den övergripande rubriken placerats.
 
 \section{Problemformulering}
-text
+
+\subsection{Reglering}
+Från uppgiftsbeskrivningen:
+\begin{displayquote}
+``Vilka övergripande styrmoder är nödvändiga för att roboten ska kunna utföra sitt
+uppdrag? T ex köra rakt i korridor, svänga i korsning, styra efter tejp, etc. Vilken
+information/mätdata behövs i de olika moderna? Hur kan man reglera roboten i de
+olika styrmoderna?
+\begin{itemize}
+	\item Hur kan man köra rakt i en korridor? Algoritm? Koppling mellan hastighet
+och korridorbredd?
+	\item Hur kan reglering utefter en linje ske?
+	\item Hur kan styrning ske i kurvor och under rotationer? ``
+\end{itemize}
+\end{displayquote}
+
+
+\subsubsection{Frågeställning}
+Frågeställningen ovan är väldigt generell och mer tänkt som en riktlinje. Därför har den fått anpassas för att enbart innefatta de delar som är relevanta för det projekt som den här förstudien ska föregå. Den har begränsats till följande frågeställning:
+
+Vilken information/mätdata behövs och hur kan roboten regleras i följande tre styrmoder:
+\begin{itemize}
+	\item Körning rakt i en korridor - hur kan/behöver modellen ändras beroende på antalet väggar runt roboten.
+	\item Rotation - behöver rotation regleras för att förhindra att roboten förflyttar sig i sidled och hur kan det i så fall göras?
+\end{itemize}
+
+\subsubsection{Avgränsningar}
+Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i Appendix \textcolor{red}{A} utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
+\subsection{Kartläggning och vägoptimering}
+
+\subsubsection{Frågeställning}
+
+\subsubsection{Avgränsningar}
+
 
 \pagebreak
 \section{Kunskapsbas}
-\subsection{Jacobimatris}
+\subsection{Reglering}
+\subsubsection{\textcolor{red}{Nonholonomic} robot}
+En robot anses vara \textcolor{red}{holonomic} om alla dess frihetsgrader går att styra. Ett annat sätt att se det är att robotens nuvarande tillstånd ska va oberoende av dess väg dit. 
+
+En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan kontrolleras i dessa riktningar för att den ska vara \textcolor{red}{holonomic}. Detta innebär att en roboten av den typen som kommer användas i detta project är \textcolor{red}{nonholonomic} eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara \textcolor{red}{holonomic} krävs det att den är utrustad med så kallade omnihjul.
+
+\subsection{Kartläggning och vägoptimering}
+\subsubsection{Jacobimatris}
 Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlekt $m\times n$ och definieras enligt
 \begin{equation*}
 	\bfr{J} = \frac{d\bfr{f}}{d\bfr{x}} = \left[ \begin{array}{ccc}
@@ -111,14 +151,14 @@ Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorv�
 \end{equation*}
 och betecknas ofta $\frac{\partial \left(f_1,\ldots,f_m\right)}{\partial \left(x_1,\ldots,x_n \right)}$.
 
-\subsection{Spår}
+\subsubsection{Spår}
 Låt $\bfr{A}$ vara en kvadratisk matris av storlek $n$ med elementen $a_{i,j}$. Spåret (engelska \emph{trace}) av $\bfr{A}$ definieras då enligt
 \begin{equation*}
 	\mathrm{tr}\,\bfr{A} = \sum_{k=1}^{n} a_{k,k}
 \end{equation*}
 och utgör summan av diagonalelementen.
 
-\subsection{Enkelt sammanhängande labyrint}
+\subsubsection{Enkelt sammanhängande labyrint}
 En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till varandra. Se figur \ref{maze} för en grafisk beskrivning.
 
 \begin{figure}[htbp]
@@ -361,7 +401,8 @@ Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. E
 
 \pagebreak
 \section{Resultat och slutsatser}
-text
+\subsection{Reglering}
+\subsection{Kartläggning och vägoptimering}
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
