@@ -129,9 +129,9 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \pagebreak
 \section{Delmodul 1 - Huvudmodul}
-Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt ... Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
-Kopplingsschema för huvudmodulen ser ut enligt figur...? Alla avbrottsingångar används: \verb+INT0+ för knapp för att ställa in körläge,\verb+ INT1+ för knapp för att sätta på och av roboten(?) och \verb+INT2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
+Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul} Alla avbrottsingångar används: \verb+INT0+ för knapp för att ställa in körläge,\verb+ INT1+ för knapp för att sätta på och av roboten(?) och \verb+INT2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \begin{figure}[htbp]
 \centering
@@ -309,7 +309,7 @@ GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mät
 \subsubsection{LIDAR-Lite}
 Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
-\subusubsection{MPU-6050}
+\subsubsection{MPU-6050}
 Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För attlyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
 
 \pagebreak
@@ -420,7 +420,7 @@ Gränssnittet programmeras i Java SE 7 och körs i Java Runtime Environment. Val
 Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva huvudklassen är centrerad kring Bluetooth\textsuperscript{\circledR}-kommunikationen och loopar i takt med att en ny sändning har skickats eller mottagits. 
 
 \pagebreak
-\section{Intermodulär kommunikation}
+\section{Intermodulär kommunikation}\label{Intermodulär kommunikation}
 För kommunikation mellan de olika modulerna kommer en I\textsuperscript{2}C-buss och Bluetooth\textsuperscript{\circledR} användas. 
 
 \subsection{I\textsuperscript{2}C-buss}
@@ -477,7 +477,17 @@ Respektive segment motsvarar följande:
 
 \pagebreak
 \section{Implementering}
-\lipsum
+
+I början av utveckling av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt kunna testas med de olika modulerna. Lämpligt är att modulernas hårdvara och mjukvara först testas separat. Detta med hjälp av exempelvis en simulator eller logikanalysator för att undersöka om funktionen är tillfredsställande. Varje delmodul testas sedan med simulerad data för att se att den fungerar som önskat. Sedan kan kanske(?) en modul integreras och kopplas till I\textsuperscript{2}C-bussen i taget för att se att kommunikationen kan fungera mellan 2 moduler för att sedan utöka modulantalet. 
+
+Feedback.. finns en hel del sätt vill inte skriva nåt innan vi pratat om vi vill ha det skrivet.
+
+Optimalt är att varje delfunktion av roboten(enligt tidplan, kravspec?) testas så fort den är klar för att kunna säkerställa att den verkligen fungerar innan utvecklingsarbetet fortgår.
+
+Sampling bör ske så ofta som möjligt(eller finns det begränsning hos styrmodulen?). Det som begränsar tiden mellan samplingarna är den sensor som tar längst på sig i A/D omvandlingen eftersom alla sensorvärden skickas till styrmodulen på en gång. 
+
+
+
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}

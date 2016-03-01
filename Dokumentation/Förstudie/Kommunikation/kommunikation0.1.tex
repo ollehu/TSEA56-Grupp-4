@@ -137,11 +137,9 @@ Ci tänker att vi har en avbrottstyrd i2c va? eller en pollad?
 
 
 \subsection{Lovisa flummar}
-Sätt att utveckla system som innehåller flera moduler.
-Kan använda sig av topdown integration eller bottom up ( det vi ska använda iom LIPsmodellen).
 
-Varför använda c? Det tar upp me rminne men ändå kanske det är smidigast? Samtidfigt kan vi assembler bättre och om vi ändå ska tänka assembler och sne översätta till c varför inte bara skriva i assembler? Lättare att se med avbrottsflaggor.
-HUr ska vi kunna säkerställa att systemet hålls i realtid och inte alla avbrott hanteras för sent? Avbrottsrutiner extremt korta. Endast det mest nödvändiga där. Hur ha kvar information om avbryten proess vid avbrott?
+
+Bra grej, "The length of the polling loopmust be short enough to never miss a byte of serial data or byte from any other interface. In an interrupt-driven system, the same considerations apply to length of any polling loop plus the worst-case interrupt latencies."
 
 \subsection{?}
 Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
@@ -154,13 +152,19 @@ Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en
 
 Alltså behövs en modulärt uppbyggd robot både vad gäller funktionsnivå, standard-uppbyggnad och gränsnitt för modulerna. 
 
+Realtidssystem har ofta "Event- driven  scheduling" vilket innebär att uppgifter adderas och tas bort från listan över uppgifter allt eftersom föutsättningar ändras. 
 
-\subsection{Assembler och C för programmering av AVR}
+\subsection{Assembler och C för programmering av mikroprocessorer}
 
-Avbrott och annat.. i assembler
-i C
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. 
 
 Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
+
+\subsection{Testa system}
+En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
+
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att test undantagsfall också. 
+
 
 \pagebreak
 
