@@ -96,7 +96,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) har en underrubrik (antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering}) under vilken textmassan kopplad till respektive område och den övergripande rubriken placerats.
 
 \section{Problemformulering}
-
+Nedan presenteras de problemformuleringar som förstudien tar avstamp i.
 \subsection{Reglering}
 Från uppgiftsbeskrivningen:
 \begin{displayquote}
@@ -113,7 +113,7 @@ och korridorbredd?
 \end{displayquote}
 
 
-\subsubsection{Frågeställning}
+\subsubsection{Frågeställningar}
 Frågeställningen ovan är väldigt generell och mer tänkt som en riktlinje. Därför har den fått anpassas för att enbart innefatta de delar som är relevanta för det projekt som den här förstudien ska föregå. Den har begränsats till följande frågeställning:
 
 Vilken information/mätdata behövs och hur kan roboten regleras i följande tre styrmoder:
@@ -122,13 +122,21 @@ Vilken information/mätdata behövs och hur kan roboten regleras i följande tre
 	\item Rotation - behöver rotation regleras för att förhindra att roboten förflyttar sig i sidled och hur kan det i så fall göras?
 \end{itemize}
 
-\subsubsection{Avgränsningar}
+\subsubsection{Avgränsning}
 Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i Appendix \textcolor{red}{A} utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
+
 \subsection{Kartläggning och vägoptimering}
+Simultan lokalisering och kartläggning anses av \cite{grail} att vara en av de större utmaningarna med att bygga en autonom robot. Att kunna navigera och kartlägga en okänd omgivning ställer höga krav på både mjukvara och hårdvara. Förutsatt att sensorerna mäta med godkänd upplösning behöver roboten intelligent kunna tolka mätvärdena och översätta dessa till en karta och position. 
 
-\subsubsection{Frågeställning}
-
-\subsubsection{Avgränsningar}
+\subsubsection{Frågeställningar}
+De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
+\begin{itemize}
+	\item [-] Hur kan en robot som enbart har tillgång till sensordata kartlägga en okänd labyrint?
+	\item [-] Vilka kartsökningsalgoritmer ger en effektiv avsökningsekvens av en okänd labyrints korridorer?
+	\item [-] Givet en karta över en labyrint, hur kan då den kortaste vägen mellan två punkter berkäknas?
+\end{itemize}
+\subsubsection{Avgränsning}
+De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation från appendix C. Labyrinten är begränsad, enkelt sammanhängande och har alla korridorer i samma plan. Dessutom finns inga öppna rum vilket avgränsar samtliga tre underrubriker till att enbart kartlägga, följa och optimera en väg genom korridorer. 
 
 
 \pagebreak
@@ -141,7 +149,7 @@ En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och
 
 \subsection{Kartläggning och vägoptimering}
 \subsubsection{Jacobimatris}
-Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlekt $m\times n$ och definieras enligt
+Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlek $m\times n$ och definieras enligt
 \begin{equation*}
 	\bfr{J} = \frac{d\bfr{f}}{d\bfr{x}} = \left[ \begin{array}{ccc}
 		\frac{\partial f_1}{\partial x_1} & \cdots & \frac{\partial f_1}{\partial x_n} \\
@@ -289,6 +297,7 @@ EKF-SLAM bygger på en tillståndsvektor som innehar information om robotens pos
 För EKF-SLAM utgörs alla skattningar av normalfördelningar. FastSLAM delar upp skattningsproblemet i $n + 1$ subproblem och löser dessa individuellt. EKF-SLAM förutsätter med andra ord att bruset är normalfördelat medan FastSLAM inte gör något antagande om bruset utseende.
 
 \subsection{Labyrintnavigering}
+\label{mapping}
 Att autonomnt navigera en labyrint kräver någon typ av smart algoritm. Vilken typ av algoritm som platsar sig beror på både labyrintens komplexitet och robotens målsättning. Den typ av labyrint som studeras i detta avsnitt har inga öppna rum, en ingång och en markering istället för utgång. Alla korsningar och svängar är ortogonala och det kan finnas mer än en väg mellan ingång och markering. Robotens målsättning är att ta sig från början av labyrinten och åtminstone kartlägga den kortaste vägen till markeringen.
 
 I detta avsnitt behandlas algoritmer för hur en robot kan fatta beslut under kartläggning. Beräkning av den optimala vägen lämnas åt avsnitt \ref{optimalvag}.
