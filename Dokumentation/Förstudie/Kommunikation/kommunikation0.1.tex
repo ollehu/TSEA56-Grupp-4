@@ -92,29 +92,39 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning}
-Vid utveckling av en robot som består av olika moduler med olika funktion är det viktigt att undersöka hur dessa moduler ska integreras på bästa sätt. Hur ska dessa moduler kommunicera med varandra och tillsammans funktionera som en robot och inte som delmoduler i sig. För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
+Vid utveckling av en robot som består av olika moduler med olika funktion är det viktigt att undersöka hur dessa moduler ska integreras på bästa sätt. Därför är det intressant att titta på hur de ska kommunicera med varandra och tillsammans funktionera som en robot och inte som delmoduler. 
+
+%För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
 
 \subsection{Syfte}
 Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt.
 
-(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av  för att i projektfasen ha en grund att stå på.)
+%(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av för att i projektfasen ha en grund att stå på.)
 
 \pagebreak
 
 \section{Problemformulering}
 \textit{Frågeställningar som rapporten ska behandla}
 
-Rapporten ska behandla följande frågor:
+Rapporten tar avstamp i frågor som berör integration och kommunikation. De generella frågeställningarna är:
 
 \begin{itemize}
-	\item Hur fungerar en I\textsuperscript{2}C-buss och när är den lämplig?
+	\item Beskriv olika principer för kommunikation mellan processorer. Prestanda, funktion , 
+robusthet, etc (SPI, I2C, ...). Vilken/vilka lösningar passar er robot?  
+	\item Hur utvecklar och testar man ett realtidssystem som innehåller flera moduler/processorer Integration? Med eller utan operativsystem? Olika programstrukturer? Avbrottsstyrning? C eller assembler? Varför modularisering? Hållbar utveckling? Om ni skulle kommersialisera er robot i 100-tal eller miljontal, hur skulle ni byggt den då? 
+\end{itemize}
+
+För att denna förstudie ska få mening i det projekt som den föregår har frågorna smalnats av och formulerats om till följande:
+
+\begin{itemize}
+	\item Vilken konfiguration av en I\textsuperscript{2}C-buss är lämplig i ett modulbaserat projekt?
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
 	
 		\begin{itemize}
 			\item Avbrott eller pollning?
 			\item Hur ska gränssnitt designas?
 			\item C eller assembler?
-			\item Hur designas tester för att säkerställa att modulen fungerar som den ska?
+			\item Hur ska tester designas för att säkerställa att respektive modul fungerar enligt kravspecifikation?
 		\end{itemize}
 
 \end{itemize}
@@ -167,27 +177,50 @@ Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs
 \section{Rapportens huvuddel, byt rubriknamn}
 \textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
 
-\subsection{Roller på I\textsuperscript{2}C-bussen}
+\subsection{Konfiguration av I\textsuperscript{2}C-bussen}
 https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
 Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C. För att lösa detta kan alla enheter kopplas på samma buss och konfigureras på olika sätt. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
 
 \begin{enumerate}
- \item Flera enheter kan konfigureras så att de innehar en master roll. Detta innebär att de kan, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data.
+ \item Flera enheter kan konfigureras så att de innehar en master roll. Dessa kan då, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data.
  
  \item En eller flera slavenheter kan kopplas till den enda masterenheten med avbrott. När slaven vill ha kontakt över I\textsuperscript{2}C-bussen triggar den avbrottssignalen, vilket i sin tur får masterenheten att initiera kontakten. Detta medför att data enbart kan gå mellan masterenheten och respektive slav, inte slavarna emellan.
  
- \item Bussens enda masterenheten pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
+ \item Bussens enda masterenhet pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
 \end{enumerate}
+
+%http://www.nxp.com/documents/user_manual/UM10204.pdf
+%https://docs.isy.liu.se/pub/VanHeden/DataSheets/i2cspec2000.pdf
+
+Start condition på I\textsuperscript{2}C-bussen fungerar som ett avbrott, vilket gör att enheterna kopplade till bussen inte behöver ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.
+
+%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
+
+Avbrottsstyrning håller CPU:n fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker.
+
+I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan.
+
+\subsection{Gränssnittsdesign}
 
 \subsection{Assembler eller C}
 
 Det finns både fördelar och nackdelar med båda programmeringsspråken. De är båda hårdvarunära språk. C tar som nämnt ovan ofta större minnesutrymme när koden exekveras(?). Detta ses dock inte som något problem då ATmega16 anses ha gott om extra minne.
-I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering. 
+I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering.
+
+\subsection{Design av tester}
+ 
 \pagebreak
 
 \section{Resultat och slutsatser}
-text
+
+\subsection{Konfiguration av I\textsuperscript{2}C-bussen}
+
+\subsection{Gränssnittsdesign}
+
+\subsection{Assembler eller C}
+
+\subsection{Design av tester}
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
