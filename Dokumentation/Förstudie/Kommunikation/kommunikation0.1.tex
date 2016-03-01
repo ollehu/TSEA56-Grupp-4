@@ -105,12 +105,10 @@ Syftet med denna studie är att beröra frågor som rör kommunikation och integ
 Rapporten ska behandla följande frågor:
 
 \begin{itemize}
-	\item Vad är I2C (en beskrivning av hur den fungerar) och varför passar den?
+	\item Hur fungerar I\textsuperscript{2}C-bussen och varför passar den?
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
 	
 		\begin{itemize}
-			\item Avbrott eller flera masters?
-			\item Parallella bussar?
 			\item Hur ska gränssnitt designas?
 			\item C eller assembler?
 			\item Hur designas tester för att säkerställa att modulen fungerar som den ska?
@@ -123,8 +121,8 @@ Rapporten ska behandla följande frågor:
 \section{Kunskapsbas}
 \textit{Litteratur, datablad, dokumentation, bakgrundsteori, etc. Dela gärna upp efter vad förstudien handlar om.}
 
-\subsection{I\textsuperscript{2}C - hur microprocessorn fungerar}
-En I\textsuperscript{2}C-buss utgörs av två kablar som sköter överföringen mellan två enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. Denna roll bestämmer vilken/vilka enheter som kan initiera överföring på bussen, vilka är de med rollen master. På varje buss kan det finnas flera master-enheter likväl som flera slave-enheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan komma den upp i 3.4 Mbit/s.
+\subsection{I\textsuperscript{2}C}
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera master-enheter, likväl som flera slave-enheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komm upp i 3.4 Mbit/s.
 
 Överföringsprocessen består av fem steg: (1) Initiering, (2) adress till slav, (3) datariktning, (4) informationsutbyte och (5) avslut. (2) och (3) är informationen i den första byten. Viktigt att notera är att när en master-enhetet initierat anses alla andra enheter vara slavar. I (4) måste informationen skickas i hela bytes, där den mest signifikanta biten (MSB) skickas först. Antalet bytes som kan skickas per överföring är inte reglerat.
 
@@ -144,6 +142,8 @@ HUr ska vi kunna säkerställa att systemet hålls i realtid och inte alla avbro
 
 \section{Rapportens huvuddel, byt rubriknamn}
 \textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
+
+\subsection{Användning av I\textsuperscript{2}C}
 
 \pagebreak
 
