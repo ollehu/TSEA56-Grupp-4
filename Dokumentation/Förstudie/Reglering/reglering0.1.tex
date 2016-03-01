@@ -103,7 +103,7 @@ Från uppgiftsbeskrivningen:
 ``Vilka övergripande styrmoder är nödvändiga för att roboten ska kunna utföra sitt
 uppdrag? T ex köra rakt i korridor, svänga i korsning, styra efter tejp, etc. Vilken
 information/mätdata behövs i de olika moderna? Hur kan man reglera roboten i de
-olika styrmoderna?
+olika styrmodulerna?
 \begin{itemize}
 	\item Hur kan man köra rakt i en korridor? Algoritm? Koppling mellan hastighet
 och korridorbredd?
@@ -132,11 +132,11 @@ Simultan lokalisering och kartläggning anses av \cite{grail} att vara en av de 
 De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 \begin{itemize}
 	\item [-] Hur kan en robot som enbart har tillgång till sensordata kartlägga en okänd labyrint?
-	\item [-] Vilka kartsökningsalgoritmer ger en effektiv avsökningsekvens av en okänd labyrints korridorer?
-	\item [-] Givet en karta över en labyrint, hur kan då den kortaste vägen mellan två punkter berkäknas?
+	\item [-] Vilka kartsökningsalgoritmer ger en effektiv avsökningssekvens av en okänd labyrints korridorer?
+	\item [-] Givet en karta över en labyrint, hur kan då den kortaste vägen mellan två punkter beräknas?
 \end{itemize}
 \subsubsection{Avgränsning}
-De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation från appendix C. Labyrinten är begränsad, enkelt sammanhängande och har alla korridorer i samma plan. Dessutom finns inga öppna rum vilket avgränsar samtliga tre underrubriker till att enbart kartlägga, följa och optimera en väg genom korridorer. 
+De labyrinter som beaktas i förstudien är utformade enligt en banspecifikationen, appendix C. Labyrinten är begränsad, enkelt sammanhängande och har alla korridorer i samma plan. Dessutom finns inga öppna rum vilket avgränsar samtliga tre underrubriker till att enbart kartlägga, följa och optimera en väg genom korridorer. 
 
 
 \pagebreak
@@ -218,7 +218,7 @@ där $\textbf{\textrm{x}}_t$ är positionen vid den tidsdiskreta tiden $t$, $\te
 \subsubsection{\emph{Kalman Filter} och EKF-SLAM}
 EKF-SLAM är en SLAM-algoritm som använder ett \emph{Extended Kalman Filter}, en icke-linjär utvidgning av ett \emph{Kalman filter}, för att i varje tidssteg  linjärisera en övergångs- och observationsmodell.
 
-Det urspringliga \emph{Kalman filtret} bygger på en linjär övergångs- och observationsmodell enligt
+Det ursprungliga \emph{Kalman filtret} bygger på en linjär övergångs- och observationsmodell enligt
 \begin{align*}
 	\bfr{x}_t &= \bfr{A}_{t}\bfr{x}_{t-1} + \bfr{B}_{t}\bfr{u}_t + \boldsymbol{\epsilon}_t \\
 	\bfr{z}_t &= \bfr{C}_{t}\bfr{x}_t + \boldsymbol{\delta}_t
@@ -348,7 +348,7 @@ Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills
 				\State $S \gets S +  \{ u\}$
 				\State $Q \gets Q - \{ u\}$
 				\ForAll {$v \in \textrm{neighbours}(u)$}
-				\Comment{Itererare över grannar till $u$}
+				\Comment{Itererar över grannar till $u$}
 					\If {$g(u) + w(u,v) < g(v)$}
 						\State $g(v) \gets g(u) + w(u,v)$
 					\EndIf
@@ -363,7 +363,7 @@ Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills
 Den kortaste vägen kan nästas upp om man även sparar vilken föregångare som bidrog till en kortare väg. I implementeringsväg är algoritmen enkel, dock kräver den mycket minne eftersom alla noder och dess nodpris behöver sparas. En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
 
 \subsubsection{A*}
-A* är ytterliggare en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+A* är ytterligare en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
 \begin{equation*}
 	f(n) = g(n) + h(n)
 \end{equation*}
@@ -393,7 +393,7 @@ $h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, t
 				\State $S \gets S +  \{ u\}$
 				\State $Q \gets Q - \{ u\}$
 				\ForAll {$v \in \textrm{neighbours}(u)$}
-				\Comment{Itererare över grannar till $u$}
+				\Comment{Itererar över grannar till $u$}
 					\If {$g(u) + w(u,v) < g(v)$}
 						\State $g(v) \gets g(u) + w(u,v)$
 						\State $f(v) \gets g(v) + h(v)$
@@ -411,7 +411,19 @@ Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. E
 \pagebreak
 \section{Resultat och slutsatser}
 \subsection{Reglering}
+
 \subsection{Kartläggning och vägoptimering}
+Av de två SLAM-lösningar som behandlas i rapportens huvuddel passar ett \emph{Kalman filter} bäst för en autonom robot som utforskar en labyrint.  Eftersom roboten i detta projekt endast bevakar avstånden till främre, höger och vänster vägg har den relativt få landmärken att förhålla sig till. Någon minnesbegränsning kommer med andra ord inte att uppstå och \emph{FastSLAM} läggs därför åt sidan.
+
+Labyrinten som kartläggs byggs sådan att både höger- och vänsterväggföljning ska leda roboten till markeringen på liknande tid, se appendix C. Valet faller på en förbättrad variant av högerväggföljning. En av förbättringarna är att roboten inte behöver utforska vidare i en korridor ifall fågelavståndet mellan nuvarande position och ingång är längre än en utforskad väg till markeringen. Vidare behöver roboten inte utforska en återvändsgränd ifall den främre sensorn indikerar att det endast är en modul framöver, förutsatt att markeringen inte upptäcks i modulen. 
+
+Då roboten åtminstone har utforskat den kortaste vägen mellan ingång och markeringen optimeras den slutgiltiga välgen med hjälp av algoritmen A*. A* används eftersom roboten under kartläggningsfasen kommer att representera kartan med hjälp av noder och bågar. Att implementera A* är dessutom programmeringsmässigt enkelt.
+
+Den heuristik som används är det så kallade \emph{Manhattan}-avståndet, det vill säga summan av de ortogonala avståndet mellan aktiv nod och slutnod. Heuristiken väljs utifrån labyrintens utseende med ortogonala korsningar. 
+
+Sammanfattningsvis kan slutsatsen dras om att SLAM-problemet förenklas betydligt av att labyrinten inte har öppna rum och består av moduler. Till skillnad från ett verkligt scenario så har roboten i detta projekt alltid en vägg framåt att förhålla sig till. Det blir därför enklare att beräkna tillryggalagd sträcka. Att labyrinten inte innefattar öppna rum innebär att optimerande algoritmer som Dijkstras och A* kan användas. Vid kartläggningen kan roboten alltid följa en vägg och behöver inte utforska några öppna ytor.
+
+Resultatet av förstudien är att både kartläggning och vägoptimering är möjligt att implementera i projektets robot.  
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
