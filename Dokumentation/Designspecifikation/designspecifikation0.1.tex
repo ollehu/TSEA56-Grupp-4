@@ -290,7 +290,7 @@ Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut 
 Figur [??] visar vilka och till vad sensorns pinnar används.
 
 
-\subsubsection{Gyro/accelerometer, MPU-6500}
+\subsubsection{Gyro/accelerometer, MPU-6050}
 %\item[Vinkelhastighet] \hfill \\
 I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används MPU6050, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov och informationen från sensorn kommer att förmedlas via ett I\textsuperscript2C-buss-interface.
  
@@ -301,13 +301,16 @@ IR-detekron IRM-8601-S används i syfte att indentifiera den nödställde, vilke
 
 
 \subsection{Mjukvara}
-Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvanlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, ATmega16.
+Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvanlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, ATmega16. 
 
 \subsubsection{IR-sensorerna}
-GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via ekvationXYXY, där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. 
+GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via ekvationXYXY, där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figurXXYY. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
 
 \subsubsection{LIDAR-Lite}
-text
+Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
+
+\subusubsection{MPU-6050}
+Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För attlyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
