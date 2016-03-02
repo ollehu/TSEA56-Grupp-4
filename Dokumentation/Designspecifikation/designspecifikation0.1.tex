@@ -111,6 +111,16 @@ Det totala system kommer bestå av tre processormoduler, en blåtandsenhet, ett 
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
 
+En övergripande bild över systemet återfinns i figur \ref{overview}.
+
+\begin{figure}[!htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\input{images/overview}}
+	\caption{Det totala systemet \label{overview}}	
+\end{figure}
+
+\FloatBarrier
 \subsection{Sensorer}
 Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa, värden som anväds vid reglering av robotens rörelse rakt fram. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avtåndet till väggar framför roboten. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
 
@@ -130,7 +140,7 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 	\caption{Placering av ställdon \label{ställdon}}	
 \end{figure}
 
-\pagebreak
+\clearpage
 \section{Delmodul 1 - Huvudmodul}
 Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
