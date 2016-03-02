@@ -374,7 +374,7 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
-\subsubsection{Reglering}
+\subsubsection{Reglering} \label{mjukvarureglering}
 När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
@@ -444,8 +444,8 @@ För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-mo
 Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Startbit
-	\item B - Informationsbitar (vanligen sju eller åtta stycken)
-	\item C - Eventuell paritetsbit
+	\item B - Informationsbitar (åtta bitar)
+	\item C - Paritetsbit
 	\item D - Slutbit (en eller två stycken)
 \end{itemize}
 
@@ -461,14 +461,14 @@ I figur \ref{informationFlow} visualiseras informationsflödet. Där anges motta
 	\caption{Schema över informationsflödet\label{informationFlow}}	
 \end{figure}
 
-\subsubsection{Kommunikationsprotokoll - styrmodul}
-Följande protokoll används för att skicka data till styrmodulen:
+\subsubsection{Kommunikationsprotokoll - styrkommandon}
+Följande protokoll används för att skicka styrkommandon (gäller både för datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul):
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/controlldata}}
-	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
+	\caption{Protokoll för överföring av styrkommandon\label{styrdata}}	
 \end{figure}
 
 Respektive segment motsvarar följande: 
@@ -477,10 +477,10 @@ Respektive segment motsvarar följande:
 	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
 	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
 	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
-	\item E (Bit x-y) - Slutbit
+	\item E - Slutbit
 \end{itemize}
 
-\subsection{Kommunikationsprotokoll - kartdata}
+\subsubsection{Kommunikationsprotokoll - kartinformation}
 Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
 
 Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra denna information från huvudmodulen till datormodulen kommer varje nod att representeras enligt protokollet nedan:
@@ -489,7 +489,7 @@ Varje korsning kommer att representeras som en nod och vägarna däremellan som 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/mapdata}}
-	\caption{Protokoll för överföring av kartdata mellan huvud- och datormodul\label{kartdata}}	
+	\caption{Protokoll för överföring av kartdata \label{kartdata}}	
 \end{figure} 
 
 Respektive segment motsvarar följande: 
@@ -501,6 +501,49 @@ Respektive segment motsvarar följande:
 	\item E - Slutbit
 \end{itemize}
 
+\subsubsection{Kommunikationsprotokoll - sensordata}
+Sensordatat skickas enligt följande protokoll:
+
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/sensordata}}
+	\caption{Protokoll för överföring av sensordata\label{sensordata}}	
+\end{figure} 
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A - Startbit
+	\item B - Sensordatapaket
+	\item E - Slutbit
+\end{itemize}
+
+Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
+Körning rakt fram i korridor & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+Rotation & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+Körning i öppen yta & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+\caption{Tabell över de olika styrmoderna}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l | c |} \hline
+\textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
+0 & IR-sensor höger-fram & cm \\ \hline
+1 & IR-sensor vänster-fram  & cm \\ \hline
+2 & IR-sensor höger-bak  & cm  \\ \hline
+3 & IR-sensor vänster-bak  &  cm \\ \hline
+4 & Lasersensor & cm  \\ \hline
+5 & Rörelse i x-led & m/s\textsuperscript{2} \\ \hline
+6 & Rörelse i y-led & m/s\textsuperscript{2} \\ \hline
+7 & Rörelse i z-led & m/s\textsuperscript{2} \\ \hline
+8 & Rotation kring x-axeln & rad/s \\ \hline
+9 & Rotation kring y-axeln & rad/s \\ \hline
+10 & Rotation kring z-axeln & rad/s \\ \hline
+11 & Avstånd av mål & cm \\ \hline
+\caption{Tabell över sensorerna}
+\end{longtable}
 
 
 \pagebreak
