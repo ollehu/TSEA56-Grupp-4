@@ -424,7 +424,7 @@ Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva
 För kommunikation mellan de olika modulerna kommer en I\textsuperscript{2}C-buss och Bluetooth\textsuperscript{\circledR} användas. 
 
 \subsection{I\textsuperscript{2}C-buss}
-För att kommunicera mellan de olika modulerna kommer den två trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn ATMega16 kommer allt vara kopplat till samma buss. Detta för att ATMega16 enbart har en upsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkadet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
+För att kommunicera mellan de olika modulerna kommer den två trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn \verb+ATmega16+ kommer allt vara kopplat till samma buss. Detta för att \verb+ATmega16+ enbart har en upsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkadet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
 
 \subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
 För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
