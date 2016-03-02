@@ -272,7 +272,7 @@ Den hårdvara som sensormodulen kommer att kräva är:
 \subsection{Detaljerad beskrivning}
 
 Sensormodulens processorenhet, ATmega16, är ansluten med två I\textsuperscript{2}C-bussar. Den ena är i syfte att kunna kommunicera med huvudmodulen, där sensormodulens processorenheter agerar som slavenhet i förhållande till huvudmodulens dito. Den andra I\textsuperscript{2}C-bussen kommunicerar med Lasersensorn, LIDAR-Lite v2, samt gyro/accelerometern, MPU-6500. I fallet med den senare databussen så agerar sensormodulens processorenhet som masterenhet i förhållandet med lasersensorn och gyro/accelerometern.
-Resterande IR-sensor, GP2D120, och IR-detektor, IRM-8601-S, anslutes direkt till processorenhetens ingångar för AD-omvändling. Figur [??] visar en övergripande bild över sensormodulens implentation med dess respektive delkomponenter. 
+Resterande IR-sensor, GP2D120, och IR-detektor, IRM-8601-S, anslutes direkt till processorenhetens ingångar för AD-omvändling. Figur \ref{kopplingsschema:sensormodul} visar en övergripande bild över sensormodulens implentation med dess respektive delkomponenter. 
 
 \subsubsection{Processorenhet, ATmega16}
 Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommuniceras till huvudmodulen. Figur \ref{kopplingsschema:sensormodul} illustrerar ATmega16 och dess ingångar, samt hur respektive sensorenhet ska kopplas samman med processorn. 
@@ -424,7 +424,7 @@ Swing och AWT används för att ge användaren ett grafiskt gränssnitt. Själva
 För kommunikation mellan de olika modulerna kommer en I\textsuperscript{2}C-buss och Bluetooth\textsuperscript{\circledR} användas. 
 
 \subsection{I\textsuperscript{2}C-buss}
-För att kommunicera mellan de olika modulerna kommer den två trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn ATMega16 kommer allt vara kopplat till samma buss. Detta för att ATMega16 enbart har en upsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkadet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
+För att kommunicera mellan de olika modulerna kommer den två trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn \verb+ATmega16+ kommer allt vara kopplat till samma buss. Detta för att \verb+ATmega16+ enbart har en upsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkadet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
 
 \subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
 För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
