@@ -341,7 +341,7 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 	\item sväng höger/vänster - inga (kommandot används enbart vid manuell styrning och behöver således inte regleras).
 	\item rotera höger/vänster - vinkel och vinkelhastighet.
 \end{itemize}
-Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
+Dessa sensorvärden kommer skickas med en frekvens av 10-20 Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
 \subsubsection{Reglering}
 Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
@@ -478,15 +478,9 @@ Respektive segment motsvarar följande:
 \pagebreak
 \section{Implementering}
 
-I början av utveckling av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt kunna testas med de olika modulerna. Lämpligt är att modulernas hårdvara och mjukvara först testas separat. Detta med hjälp av exempelvis en simulator eller logikanalysator för att undersöka om funktionen är tillfredsställande. Varje delmodul testas sedan med simulerad data för att se att den fungerar som önskat. Sedan kan kanske(?) en modul integreras och kopplas till I\textsuperscript{2}C-bussen i taget för att se att kommunikationen kan fungera mellan 2 moduler för att sedan utöka modulantalet. 
+I början av utvecklingen av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt ha kommunikationen klar så att denna kan testas kontinuerligt under projektets gång. Hårdvara och mjukvara bör testas för sig först och sedan ihop för att lättare felsöka.Hjälp för testning är exempelvis Atmel Studio och JTAG ICE för on-chip debugging eller logikanalysator. Varje delmodul testas med simulerad data för att se att den fungerar som önskat. För att enklare kunna se vad som händer kan en extern klocka kopplas till processorn för att få tillräckligt låg frekvens. Optimalt är att varje delfunktion av roboten testas så fort den är klar för att kunna säkerställa att den fungerar innan utvecklingsarbetet fortgår. 
 
-Feedback.. finns en hel del sätt vill inte skriva nåt innan vi pratat om vi vill ha det skrivet.
-
-Optimalt är att varje delfunktion av roboten(enligt tidplan, kravspec?) testas så fort den är klar för att kunna säkerställa att den verkligen fungerar innan utvecklingsarbetet fortgår.
-
-Sampling bör ske så ofta som möjligt(eller finns det begränsning hos styrmodulen?). Det som begränsar tiden mellan samplingar är hur lång tid A/D omvandlingen av all sensordata tar.
-
-
+Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdateradev värden skickade till sig. Lämpligt är att sampla med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 
 
 
 \pagebreak
