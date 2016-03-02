@@ -2,8 +2,6 @@
 
 \usepackage{extras} % Se extras.sty
 
-
-
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -150,6 +148,16 @@ Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid ak
 	\input{images/avbrott_korlage}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT0+ \label{avbrott_korlage}}	
 \end{figure}
+
+Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.9\linewidth}{!}{
+	\input{images/autonomousMode}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
+\end{figure}
+
 
 \subsubsection {Strömbrytare}
 Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
