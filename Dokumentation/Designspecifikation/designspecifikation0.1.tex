@@ -480,6 +480,16 @@ Respektive segment motsvarar följande:
 	\item E (Bit x-y) - Slutbit
 \end{itemize}
 
+\subsection{Kommunikation av data}
+Huvudmodulen kommer för varje ny modul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
+
+Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra data från huvudmodulen till datormodulen kommer varje nod att representeras med två tvåsiffriga tal. Den första siffran står för nodens x-koordinat och den andra för nodens y-koordinat. 
+
+Informationen som behöver skickas för att kartan ska kunna ritas upp korrekt är vilken position roboten befinner sig vid, samt avståndet till väggarna. Dessa värden förmedlas från sensormodulen ungefär en gång varannan sekund.
+
+Skulle det vara så att beräkningar i huvudmodulen sker samtidigt som data ska skickas, och processorn inte är tillräckligt stark för att genomföra de båda operationerna samtidigt, kommer beräkningarna att prioriteras framför överföringen av data. Den data som ska skickas lagras då och skickas först när beräkningarna är klara.
+
+
 \pagebreak
 \section{Implementering}
 
