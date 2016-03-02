@@ -111,6 +111,16 @@ Det totala system kommer bestå av tre processormoduler, en blåtandsenhet, ett 
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
 
+En övergripande bild över systemet återfinns i figur \ref{overview}.
+
+\begin{figure}[!htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\input{images/overview}}
+	\caption{Det totala systemet \label{overview}}	
+\end{figure}
+
+\FloatBarrier
 \subsection{Sensorer}
 Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa, värden som anväds vid reglering av robotens rörelse rakt fram. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avtåndet till väggar framför roboten. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
 
@@ -130,7 +140,7 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 	\caption{Placering av ställdon \label{ställdon}}	
 \end{figure}
 
-\pagebreak
+\clearpage
 \section{Delmodul 1 - Huvudmodul}
 Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
@@ -248,7 +258,7 @@ Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$
 Huvudmodulen kommer kräva följande hårdvara:
 \begin{itemize}
 	\item ATmega16
-	\item  Bluetooth\textsuperscript{\circledR} ( Firefly)
+	\item  Bluetooth\textsuperscript{\circledR}  (Firefly)
 \end{itemize}
 
 
@@ -354,7 +364,7 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 	\item sväng höger/vänster - inga (kommandot används enbart vid manuell styrning och behöver således inte regleras).
 	\item rotera höger/vänster - vinkel och vinkelhastighet.
 \end{itemize}
-Dessa sensorvärden kommer skickas med en frekvens av \textcolor{red}{x} Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
+Dessa sensorvärden kommer skickas med en frekvens av 10-20 Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
 \subsubsection{Reglering}
 Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
@@ -382,7 +392,7 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
-\subsubsection{Reglering}
+\subsubsection{Reglering} \label{mjukvarureglering}
 När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
@@ -466,8 +476,8 @@ För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-mo
 Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Startbit
-	\item B - Informationsbitar (vanligen sju eller åtta stycken)
-	\item C - Eventuell paritetsbit
+	\item B - Informationsbitar (åtta bitar)
+	\item C - Paritetsbit
 	\item D - Slutbit (en eller två stycken)
 \end{itemize}
 
@@ -483,14 +493,14 @@ I figur \ref{informationFlow} visualiseras informationsflödet. Där anges motta
 	\caption{Schema över informationsflödet\label{informationFlow}}	
 \end{figure}
 
-\subsubsection{Kommunikationsprotokoll - styrmodul}
-Följande protokoll används för att skicka data till styrmodulen:
+\subsubsection{Kommunikationsprotokoll - styrkommandon}
+Följande protokoll används för att skicka styrkommandon (gäller både för datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul):
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/controlldata}}
-	\caption{Protokoll för dataöverföring mellan huvud- och styrenhet\label{styrdata}}	
+	\caption{Protokoll för överföring av styrkommandon\label{styrdata}}	
 \end{figure}
 
 Respektive segment motsvarar följande: 
@@ -499,10 +509,10 @@ Respektive segment motsvarar följande:
 	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
 	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
 	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
-	\item E (Bit x-y) - Slutbit
+	\item E - Slutbit
 \end{itemize}
 
-\subsection{Kommunikationsprotokoll - kartdata}
+\subsubsection{Kommunikationsprotokoll - kartinformation}
 Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
 
 Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra denna information från huvudmodulen till datormodulen kommer varje nod att representeras enligt protokollet nedan:
@@ -511,7 +521,7 @@ Varje korsning kommer att representeras som en nod och vägarna däremellan som 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/mapdata}}
-	\caption{Protokoll för överföring av kartdata mellan huvud- och datormodul\label{kartdata}}	
+	\caption{Protokoll för överföring av kartdata \label{kartdata}}	
 \end{figure} 
 
 Respektive segment motsvarar följande: 
@@ -523,20 +533,66 @@ Respektive segment motsvarar följande:
 	\item E - Slutbit
 \end{itemize}
 
+\subsubsection{Kommunikationsprotokoll - sensordata}
+Sensordatat skickas enligt följande protokoll:
+
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/sensordata}}
+	\caption{Protokoll för överföring av sensordata\label{sensordata}}	
+\end{figure} 
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A - Startbit
+	\item B - Sensordatapaket
+	\item E - Slutbit
+\end{itemize}
+
+Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
+Körning rakt fram i korridor & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+Rotation & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+Körning i öppen yta & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+\caption{Tabell över de olika styrmoderna}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l | c |} \hline
+\textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
+0 & IR-sensor höger-fram & cm \\ \hline
+1 & IR-sensor vänster-fram  & cm \\ \hline
+2 & IR-sensor höger-bak  & cm  \\ \hline
+3 & IR-sensor vänster-bak  &  cm \\ \hline
+4 & Lasersensor & cm  \\ \hline
+5 & Rörelse i x-led & m/s\textsuperscript{2} \\ \hline
+6 & Rörelse i y-led & m/s\textsuperscript{2} \\ \hline
+7 & Rörelse i z-led & m/s\textsuperscript{2} \\ \hline
+8 & Rotation kring x-axeln & rad/s \\ \hline
+9 & Rotation kring y-axeln & rad/s \\ \hline
+10 & Rotation kring z-axeln & rad/s \\ \hline
+11 & Avstånd av mål & cm \\ \hline
+\caption{Tabell över sensorerna}
+\end{longtable}
 
 
 \pagebreak
 \section{Implementering}
-
-I början av utveckling av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt kunna testas med de olika modulerna. Lämpligt är att modulernas hårdvara och mjukvara först testas separat. Detta med hjälp av exempelvis en simulator eller logikanalysator för att undersöka om funktionen är tillfredsställande. Varje delmodul testas sedan med simulerad data för att se att den fungerar som önskat. Sedan kan kanske(?) en modul integreras och kopplas till I\textsuperscript{2}C-bussen i taget för att se att kommunikationen kan fungera mellan 2 moduler för att sedan utöka modulantalet. 
-
-Feedback.. finns en hel del sätt vill inte skriva nåt innan vi pratat om vi vill ha det skrivet.
-
-Optimalt är att varje delfunktion av roboten(enligt tidplan, kravspec?) testas så fort den är klar för att kunna säkerställa att den verkligen fungerar innan utvecklingsarbetet fortgår.
-
-Sampling bör ske så ofta som möjligt(eller finns det begränsning hos styrmodulen?). Det som begränsar tiden mellan samplingar är hur lång tid A/D omvandlingen av all sensordata tar.
+Här beskrivs hur robotens delar ska implementeras. 
 
 
+\subsection{Fysisk design}
+Roboten kommer bestå av 3 virkort där varje virkort motsvarar en av robotens tre moduler. Detta för att enkelt kunna se modulariteten och jobba med olika moduler samtidigt.
+
+\subsection{Testning och feedback}
+I början av utvecklingen av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt ha kommunikationen klar så att denna kan testas kontinuerligt under projektets gång. Hårdvara och mjukvara bör testas för sig först och sedan ihop för att lättare felsöka. Hjälp för testning är exempelvis Atmel Studio och JTAG ICE för on-chip debugging eller logikanalysator. Varje delmodul testas med simulerad data för att se att den fungerar som önskat. För att enklare kunna se vad som händer kan en extern klocka kopplas till processorn för att få tillräckligt låg frekvens. Optimalt är att varje delfunktion av roboten testas så fort den är klar för att kunna säkerställa att den fungerar innan utvecklingsarbetet fortgår.  
+
+Inom utvceklingsarbetet för varje aktivitet hanteras också eventuell felhantering. Denna felhantering görs på alla eventuella problem som kan tänkas uppstå. Till processorn kan exempelvis en LED-lampa kopplas för att få feedback att något gått fel. I programvara i datorn är det lämpligt att använda sig av en körlogg för att kunna gå tillbaka och se vilken data som skickades när för att smidigt kunna se var och när något gick fel om det gjorde det. 
+
+\subsection{Sampling}
+Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdaterade värden skickade till sig. Sampling kommer ske med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 
 
 
 \pagebreak
