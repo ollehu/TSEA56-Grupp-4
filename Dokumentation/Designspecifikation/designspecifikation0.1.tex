@@ -2,8 +2,6 @@
 
 \usepackage{extras} % Se extras.sty
 
-
-
 \begin{document}
 \begin{titlepage}
 \begin{center}
@@ -105,8 +103,13 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \lipsum
 
 \subsection{Det totala systemet}
-\lipsum
-
+Det totala system kommer bestå av tre processormoduler, en blåtandsenhet, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna är:
+\begin{itemize}
+	\item Huvudmodul - sköter kommunikationen, både internt via I\textsuperscript{2}C-bussen och externt via en blåtandsenhet.
+	\item Sensormodul - är direktkopplad till alla sensor och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Det färdigkonvererade datat skickas sedan vidare till huvudmodulen.
+	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av vissa sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
+\end{itemize}
+Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
 
 \subsection{Sensorer}
 Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa, värden som anväds vid reglering av robotens rörelse rakt fram. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avtåndet till väggar framför roboten. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
@@ -151,6 +154,16 @@ Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid ak
 	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT0+ \label{avbrott_korlage}}	
 \end{figure}
 
+Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.9\linewidth}{!}{
+	\input{images/autonomousMode}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
+\end{figure}
+
+
 \subsubsection {Strömbrytare}
 Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
 
@@ -172,7 +185,7 @@ Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet v
 \end{figure}
 
 \subsubsection{Kartläggning}
-Eftersom kartan enligt appendix 	C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
+Eftersom kartan enligt appendix C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
 
 IR-sensorerna på robotens sida kan agera i avståndsområdet 5-30 cm och bottnas med andra ord när en sväng eller korsning upptäcks. Utifrån denna information kopplar kartläggningen ihop föregående modul med den typ av korsning som roboten står i. 
 
@@ -388,9 +401,9 @@ Mjukvarans grafiska gränssnitt konstrueras enligt figur \ref{datormodul:softwar
 	\caption{Datormodulens GUI \label{datormodul:software}}	
 \end{figure}
 
-Kartan över labyrinten ritas successivt upp under robotens färd och presenteras ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
+Kartan över labyrinten ritas successivt upp modulvis under robotens färd, och uppdateras alltså efter varje förflyttning till en ny banmodul. I det fall att datorn kopplar upp till roboten efter påbörjad körning skickas all den hittills lagrade kartdatan direkt, varpå kartan sedan uppdateras som beskrivet ovan. Kartan presenteras sedan ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
 
-Tabellen över sensordata skriver ut informationen den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
+Tabellen över sensordata skriver ut informationen från den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen, som skickas till datormodulen ett fåtal gånger per sekund. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
 
 Grafen över historiska sensordata tar del av samma information som tabellen, men ritar även ut tidigare data i form av en graf. Denna ruta används främst för felsökning och ger ett tidsperspektiv till sensordatan.
 
@@ -468,12 +481,35 @@ Följande protokoll används för att skicka data till styrmodulen:
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A (Bit x-y) - Startbit
+	\item A - Startbit
 	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
 	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
 	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
 	\item E (Bit x-y) - Slutbit
 \end{itemize}
+
+\subsection{Kommunikationsprotokoll - kartdata}
+Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
+
+Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra denna information från huvudmodulen till datormodulen kommer varje nod att representeras enligt protokollet nedan:
+
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/mapdata}}
+	\caption{Protokoll för överföring av kartdata mellan huvud- och datormodul\label{kartdata}}	
+\end{figure} 
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A - Startbit
+	\item B (Bit 0-3) - Motsvarar nodens x-koordinat (0-15)
+	\item C (Bit 4-7) - Motsvarar nodens y-koordinat (0-15)
+	\item D (Bit 8-11) - Representerar väggar kring noden (1 = vägg, 0 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b8 = N, b9 = W, b10 = S, b11 = E).
+	\item E - Slutbit
+\end{itemize}
+
+
 
 \pagebreak
 \section{Implementering}
