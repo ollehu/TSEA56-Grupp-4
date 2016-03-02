@@ -1,0 +1,33 @@
+\documentclass[crop,tikz]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\begin{document}
+\begin{tikzpicture}[scale=0.07,rotate=0]
+		
+	%Frame
+	\draw[thick, draw=black, fill=gray!10] (0,0) rectangle (190,30);
+
+	%Segments
+	%A
+	\draw[thick, draw=black, fill=red!10] (5,5) rectangle (25,25);
+	\node at (15,15) {\huge A};
+
+	%B
+	\draw[thick, draw=black, fill=blue!10] (30,5) rectangle (70,25);
+	\node at (50,15) {\huge B};
+	
+	%C
+	\draw[thick, draw=black, fill=green!10] (75,5) rectangle (115,25);
+	\node at (95,15) {\huge C};
+
+	%D
+	\draw[thick, draw=black, fill=yellow!10] (120,5) rectangle (160,25);
+	\node at (140,15) {\huge D};
+
+	%E
+	\draw[thick, draw=black, fill=orange!10] (165,5) rectangle (185,25);
+	\node at (175,15) {\huge E};
+	
+\end{tikzpicture}
+\end{document}

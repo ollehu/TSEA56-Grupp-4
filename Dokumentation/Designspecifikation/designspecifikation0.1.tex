@@ -473,21 +473,34 @@ Följande protokoll används för att skicka data till styrmodulen:
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A (Bit x-y) - Startbit
+	\item A - Startbit
 	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
 	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
 	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
 	\item E (Bit x-y) - Slutbit
 \end{itemize}
 
-\subsection{Kommunikation av data}
-Huvudmodulen kommer för varje ny modul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
+\subsection{Kommunikationsprotokoll - kartdata}
+Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
 
-Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra data från huvudmodulen till datormodulen kommer varje nod att representeras med två tvåsiffriga tal. Den första siffran står för nodens x-koordinat och den andra för nodens y-koordinat. 
+Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra denna information från huvudmodulen till datormodulen kommer varje nod att representeras enligt protokollet nedan:
 
-Informationen som behöver skickas för att kartan ska kunna ritas upp korrekt är vilken position roboten befinner sig vid, samt avståndet till väggarna. Dessa värden förmedlas från sensormodulen ungefär en gång varannan sekund.
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/mapdata}}
+	\caption{Protokoll för överföring av kartdata mellan huvud- och datormodul\label{kartdata}}	
+\end{figure} 
 
-Skulle det vara så att beräkningar i huvudmodulen sker samtidigt som data ska skickas, och processorn inte är tillräckligt stark för att genomföra de båda operationerna samtidigt, kommer beräkningarna att prioriteras framför överföringen av data. Den data som ska skickas lagras då och skickas först när beräkningarna är klara.
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A - Startbit
+	\item B (Bit 0-3) - Motsvarar nodens x-koordinat (0-15)
+	\item C (Bit 4-7) - Motsvarar nodens y-koordinat (0-15)
+	\item D (Bit 8-11) - Representerar väggar kring noden (1 = vägg, 0 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b8 = N, b9 = W, b10 = S, b11 = E).
+	\item E - Slutbit
+\end{itemize}
+
 
 
 \pagebreak
