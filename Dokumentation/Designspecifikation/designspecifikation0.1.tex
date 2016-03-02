@@ -311,8 +311,6 @@ För att kunna reglera på ett önskat sätt behöver roboten veta hur den förh
 
 Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas.
 %Om robotens reglering inte är tillräckligt bra är det risk att avståndssensorn tappar precision, %eller till och med mister avståndsbedömning helt. Det beror på att om roboten inte kör %parallellt med väggen kommer det utstrålade ljuset att reflekteras med en för stor vinkel för %att detektorerna ska kunna uppfatta reflektionen.
-Figur [??] visar vilka och till vad sensorns pinnar används.
-
 
 \subsubsection{Gyro/accelerometer, MPU-6050}
 %\item[Vinkelhastighet] \hfill \\
@@ -328,8 +326,21 @@ IR-detektorn IRM-8601-S används i syfte att indentifiera den nödställde, vilk
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via ekvationXYXY, där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figurXXYY. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
+GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via 
 
+\begin{equation*}
+	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
+\end{equation*}
+
+där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{images/IR_avstand}
+	\caption{Förhållande mellan analog spänning och avstånd \label{IR_avstand}}
+\end{figure}
+
+\FloatBarrier
 \subsubsection{LIDAR-Lite}
 Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
