@@ -348,11 +348,11 @@ Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
-Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via en I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
+Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
 
 Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \verb+OC2+ är oanvänd.  
 
-Prestandan hos \verb+ATmega+ räcker för modulens syfte. 
+Prestandan hos \verb+ATmega+16 räcker för modulens syfte. 
 
 \begin{figure}[htbp]
 \centering
