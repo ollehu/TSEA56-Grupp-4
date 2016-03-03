@@ -1,0 +1,38 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[block](start){Start};
+\node[decision, aspect=2, text width = 8em, below of = start, node distance = 3cm](kommando){Matar användare in styrkommando på tangentbordet?};
+\node[block, right of = kommando, node distance = 5cm, text width = 7em](blåtand){Styrkommando överförs via Bluetooth\textsuperscript{\circledR} från datormodul till huvudmodul};
+\node[block, right of = blåtand, node distance = 3.5cm, text width = 7em](toStart){Styrkommando skickas från huvudmodul till styrmodul};\node[decision, aspect=2, text width = 5em, right of = toStart, node distance = 4.5cm](isDone){Har knappen släppts upp?};
+
+\draw[->](start) -- coordinate[midway](aux) (kommando);
+\draw[->](kommando) -- node[above]{ja}(blåtand);
+\draw[->](blåtand) -- (toStart);
+\draw[->](toStart) -- (isDone);
+\draw[->](kommando.west) |- (aux);
+\draw[->](isDone.south) -| ++(0,-1.5) node(lowerright){} -| (kommando.south);
+
+
+	\end{tikzpicture}
+	
+\end{document}

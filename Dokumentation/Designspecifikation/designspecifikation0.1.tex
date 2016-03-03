@@ -154,15 +154,11 @@ Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvud
 \end{figure}
 
 \subsection{Detaljerad beskrivning}
-\subsubsection {Körläge}
-Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_korlage}.
 
-\begin{figure}[htbp]
-\centering
-\noindent\resizebox{.6\linewidth}{!}{
-	\input{images/avbrott_korlage}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT0+ \label{avbrott_korlage}}	
-\end{figure}
+\subsubsection {Körläge}
+Knapp för val av körläge kopplas till huvudmodulen på en dataingång. Ingången läses en gång per varv i huvudloopen.
+
+\textbf{\textit{Autonomt läge}}
 
 Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut.
 
@@ -173,6 +169,7 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
 \end{figure}
 
+\textbf{\textit{Manuellt läge}}
 
 \subsubsection {Strömbrytare}
 Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
