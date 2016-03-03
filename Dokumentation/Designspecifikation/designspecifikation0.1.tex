@@ -172,14 +172,23 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 
 \textbf{\textit{Manuellt läge}}
 
+I figur \ref{manualMode} syns kommunikationsflödet när roboten är intsälld på manuell styrning.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.9\linewidth}{!}{
+	\input{images/manualMode}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
+\end{figure}
+
 \subsubsection {Strömbrytare}
-Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
+Strömbrytare i form av en knapp som kopplas till en dataingång. Detta medför att förändring inte nödvändigtvis sker på en gång. I figur \ref{strombrytare} visas förloppet då huvudprogrammet är redo att läsa av ingången. 
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.6\linewidth}{!}{
-	\input{images/avbrott_strombrytare}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT1+ \label{avbrott_strombrytare}}	
+	\input{images/strombrytare}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid då strömbrytaren aktiveras \label{strombrytare}}	
 \end{figure}
 
 \subsubsection {Sensormodul} 
@@ -191,6 +200,9 @@ Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet v
 	\input{images/avbrott_sensormodul}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT2+ \label{avbrott_sensormodul}}	
 \end{figure}
+
+\subsubsection{Styrmodul}
+Styrmodulen är kopplad till huvudmodulens avbrottsingång  \verb+INT0+. Avbrottssignalen som skickas berättar när regleringen är klar och huvudmodulen kan ta ett nytt beslut enligt flödesschemat i figur \ref{autonomousMode}.
 
 \subsubsection{Kartläggning}
 Eftersom kartan enligt appendix C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
