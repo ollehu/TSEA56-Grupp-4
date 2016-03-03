@@ -105,10 +105,10 @@ uppdrag? T ex köra rakt i korridor, svänga i korsning, styra efter tejp, etc. 
 information/mätdata behövs i de olika moderna? Hur kan man reglera roboten i de
 olika styrmodulerna?
 \begin{itemize}
-	\item Hur kan man köra rakt i en korridor? Algoritm? Koppling mellan hastighet
+	\item [-] Hur kan man köra rakt i en korridor? Algoritm? Koppling mellan hastighet
 och korridorbredd?
-	\item Hur kan reglering utefter en linje ske?
-	\item Hur kan styrning ske i kurvor och under rotationer? ``
+	\item [-] Hur kan reglering utefter en linje ske?
+	\item [-] Hur kan styrning ske i kurvor och under rotationer? ``
 \end{itemize}
 \end{displayquote}
 
@@ -118,8 +118,8 @@ Frågeställningen ovan är väldigt generell och mer tänkt som en riktlinje. D
 
 Vilken information/mätdata behövs och hur kan roboten regleras i följande tre styrmoder:
 \begin{itemize}
-	\item Körning rakt i en korridor - hur kan/behöver modellen ändras beroende på antalet väggar runt roboten.
-	\item Rotation - behöver rotation regleras för att förhindra att roboten förflyttar sig i sidled och hur kan det i så fall göras?
+	\item [-] Körning rakt i en korridor - hur kan/behöver modellen ändras beroende på antalet väggar runt roboten.
+	\item [-] Rotation - behöver rotation regleras för att förhindra att roboten förflyttar sig i sidled och hur kan det i så fall göras?
 \end{itemize}
 
 \subsubsection{Avgränsning}
@@ -140,15 +140,66 @@ De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation
 
 
 \pagebreak
-\section{Kunskapsbas}
-\subsection{Reglering}
-\subsubsection{\textcolor{red}{Nonholonomic} robot}
-En robot anses vara \textcolor{red}{holonomic} om alla dess frihetsgrader går att styra. Ett annat sätt att se det är att robotens nuvarande tillstånd ska va oberoende av dess väg dit. 
+\section{Kunskapsbas - reglering}
+\subsection{Icke-holonom robot}
+En robot anses vara holonom alla dess frihetsgrader går att styra. Ett annat sätt att se det är att robotens nuvarande tillstånd ska va oberoende av dess väg dit. 
 
-En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan kontrolleras i dessa riktningar för att den ska vara \textcolor{red}{holonomic}. Detta innebär att en roboten av den typen som kommer användas i detta project är \textcolor{red}{nonholonomic} eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara \textcolor{red}{holonomic} krävs det att den är utrustad med så kallade omnihjul.
+En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan kontrolleras i dessa riktningar för att den ska vara holonom. Detta innebär att en roboten av den typen som kommer användas i detta project är icke-holonom eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
 
-\subsection{Kartläggning och vägoptimering}
-\subsubsection{Jacobimatris}
+\subsection{Väggföljning}
+Betrakta en differentiellt driven robot vars koordinater (\(x, y, \theta\)) är relaterade enligt
+\begin{equation}\label{robotekv}
+	\begin{cases}
+  	\dot{x} = v * \cos \theta \\
+  	\dot{y} = v * \sin \theta \\
+   	 \dot{\theta} = \omega \\
+  	\end{cases}
+\end{equation}
+där \(x\) och \(y\) representerar positionen i ett Kartesiskt koordinatsystem, \(\theta\) vinkeln mellan roboten och x-axeln, \(v\) hastigheten och \(\omega\) vinkelhastigheten. Dessa beror i sin tur på vinkelhastigheterna \(\omega_1, \omega_2\) enligt
+\begin{equation}
+	\begin{cases}
+	r\omega_1 = v + e\omega \\
+	r\omega_2 = v - e\omega \\
+	\end{cases}
+\end{equation}
+där \(r\) är robotens hjuls radie och \(e\) är halva bredden mellan hjulen.
+
+\paragraph{Väggföljningsproblemet:} 
+\begin{it}
+För en perfekt rak och oändligt lång vägg beskriven i det Kartesiska planet av ekvationen
+\begin{equation}\label{väggfölj}
+	(x - x_m) \sin\gamma - (y - y_m) \cos \gamma = 0
+\end{equation}
+bestäm en reglermodell sådan att en mobil robot \eqref{robotekv} rör sig med en konstant hastighet \(v_{des}\) längs väggen och på konstant avstånd \(d^0\) från den.
+\end{it}
+
+I representerar \eqref{väggfölj} \((x_m, y_m)\) och \(\gamma\) en punkt och väggens orientering, uttryckt i samma koordinatsystem som robotens position.
+
+\subsubsection{Ideal Wall-Following Problem (IWFP)}
+Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens fysikaliska egenskaper är försumbara, det vill säga att insignaler kan ges i form av hastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
+\begin{equation}\label{idealåterkoppling}
+	\begin{cases}
+	v = v_{des} \\
+	\omega = -\frac{k(d - d^0)}{v_{des} \cos (\theta - \gamma)} - \beta \tan (\theta - \gamma) \\
+	\end{cases}
+\end{equation}
+
+där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Sätter vi sedan \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}
+
+\begin{equation}
+	\begin{cases}
+	\dot{x_1} = x_2 \\
+	\dot{x_2} = -kx_1 - \beta x_2
+	\end{cases}
+\end{equation}
+
+Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då \(t \to \infty\).
+
+\subsubsection{Real Wall-Following Problem (RWFP)}
+
+
+\section{Kunskapsbas - kartläggning och vägoptimering}
+\subsection{Jacobimatris}
 Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlek $m\times n$ och definieras enligt
 \begin{equation*}
 	\bfr{J} = \frac{d\bfr{f}}{d\bfr{x}} = \left[ \begin{array}{ccc}
@@ -159,14 +210,14 @@ Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorv�
 \end{equation*}
 och betecknas ofta $\frac{\partial \left(f_1,\ldots,f_m\right)}{\partial \left(x_1,\ldots,x_n \right)}$.
 
-\subsubsection{Spår}
+\subsection{Spår}
 Låt $\bfr{A}$ vara en kvadratisk matris av storlek $n$ med elementen $a_{i,j}$. Spåret (engelska \emph{trace}) av $\bfr{A}$ definieras då enligt
 \begin{equation*}
 	\mathrm{tr}\,\bfr{A} = \sum_{k=1}^{n} a_{k,k}
 \end{equation*}
 och utgör summan av diagonalelementen.
 
-\subsubsection{Enkelt sammanhängande labyrint}
+\subsection{Enkelt sammanhängande labyrint}
 En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till varandra. Se figur \ref{maze} för en grafisk beskrivning.
 
 \begin{figure}[htbp]
