@@ -348,11 +348,11 @@ Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
-Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via en I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
+Styrmodulens uppgift är att översätta styrkommandon till servostyrning av de fyra hjulen och gripklon. Styrkommandona kommer via I\textsuperscript{2}C-bussen från huvudmodulen och konverteras därefter till en PWM-sekvens. PWM-sekvensen skickas till gripklon respektive H-bryggorna som styr ett hjulpar var. 
 
 Kopplingsschemat ser ut enligt figur \ref{kopplingsschema:styrmodul}, det framgår från figuren att utgångarna från \verb+ATmega16+ räcker för modulens ändamål. Både avbrottsingång \verb+INT0+ och \verb+INT1+ används inte men reservas ifall ytterligare funktionalitet önskas lägga till. Det finns även möjlighet att att styra en extra komponent via PWM eftersom utgången \verb+OC2+ är oanvänd.  
 
-Prestandan hos \verb+ATmega+ räcker för modulens syfte. 
+Prestandan hos \verb+ATmega+16 räcker för modulens syfte. 
 
 \begin{figure}[htbp]
 \centering
@@ -602,7 +602,7 @@ Roboten kommer bestå av 3 virkort där varje virkort motsvarar en av robotens t
 \subsection{Testning och feedback}
 I början av utvecklingen av roboten färdigställs I\textsuperscript{2}C-bussen för att tidigt ha kommunikationen klar så att denna kan testas kontinuerligt under projektets gång. Hårdvara och mjukvara bör testas för sig först och sedan ihop för att lättare felsöka. Hjälp för testning är exempelvis Atmel Studio och JTAG ICE för on-chip debugging eller logikanalysator. Varje delmodul testas med simulerad data för att se att den fungerar som önskat. För att enklare kunna se vad som händer kan en extern klocka kopplas till processorn för att få tillräckligt låg frekvens. Optimalt är att varje delfunktion av roboten testas så fort den är klar för att kunna säkerställa att den fungerar innan utvecklingsarbetet fortgår.  
 
-Inom utvecklingsarbetet för varje aktivitet hanteras också eventuell felhantering. Denna felhantering görs på alla eventuella problem som kan tänkas uppstå. Till processorn kan exempelvis en LED-lampa kopplas för att få feedback att något gått fel. I programvara i datorn är det lämpligt att använda sig av en körlogg för att kunna gå tillbaka och se vilken data som skickades när för att smidigt kunna se var och när något gick fel om det gjorde det. 
+Inom utvecklingsarbetet för varje aktivitet hanteras också eventuell felhantering. Denna felhantering görs på alla eventuella problem som kan tänkas uppstå. Till processorn kan exempelvis en LED-lampa kopplas för att få feedback att något gått fel. I programvara i datorn är det lämpligt att använda sig av en körlogg för att kunna gå tillbaka och se vilken data som skickades när för att smidigt kunna se var och när något gick fel om det gjorde det. Den LCD-display som är kopplad på styrmodulen ska förutom sensordata även kunna visa styrkommandon för att kunna se vad som händer vid körning.
 
 \subsection{Sampling}
 Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdaterade värden skickade till sig. Sampling kommer ske med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 

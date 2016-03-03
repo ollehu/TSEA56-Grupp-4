@@ -97,14 +97,13 @@ Vid utveckling av en robot som består av olika moduler med olika funktion är d
 %För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
 
 \subsection{Syfte}
-Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt.
+Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt. 
 
 %(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av för att i projektfasen ha en grund att stå på.)
 
 \pagebreak
 
 \section{Problemformulering}
-\textit{Frågeställningar som rapporten ska behandla}
 
 Rapporten tar avstamp i frågor som berör integration och kommunikation. De generella frågeställningarna är:
 
@@ -122,7 +121,6 @@ För att denna förstudie ska få mening i det projekt som den föregår har fr�
 	
 		\begin{itemize}
 			\item Avbrott eller pollning?
-			\item Hur ska gränssnitt designas?
 			\item C eller assembler?
 			\item Hur ska tester designas för att säkerställa att respektive modul fungerar enligt kravspecifikation?
 		\end{itemize}
@@ -135,92 +133,94 @@ För att denna förstudie ska få mening i det projekt som den föregår har fr�
 \textit{Litteratur, datablad, dokumentation, bakgrundsteori, etc. Dela gärna upp efter vad förstudien handlar om.}
 
 \subsection{I\textsuperscript{2}C}
-I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera master-enheter, likväl som flera slave-enheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komm upp i 3.4 Mbit/s.
+%https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Överföringsprocessen består av fem steg: (1) Initiering, (2) adress till slav, (3) datariktning, (4) informationsutbyte och (5) avslut. (2) och (3) är informationen i den första byten. Viktigt att notera är att när en master-enhetet initierat anses alla andra enheter vara slavar. I (4) måste informationen skickas i hela bytes, där den mest signifikanta biten (MSB) skickas först. Antalet bytes som kan skickas per överföring är inte reglerat.
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komm upp i 3.4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
 
-När bussen är ledig ligger båda ledningarna SDA och SCL höga. (1) och (5) triggas av negativ respektive positiv flank på SDA så länge SCL ligger hög. Ett alternativ till att trigga avslut är att trigga en ny start, dvs att master-enheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring kan den sätta master-enheten i vänteläge.
+Överföringsprocessen består av fem steg: 
 
-https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
+\begin{enumerate}
+	\item \textbf{Initiering:} Triggas av negativ flank på SDA då SCL ligger hög.
+	\item \textbf{Adress till slav:} En sju bitar lång sekvens som bildar ett unikt ID till en annan enhet på bussen. När er masterenhet triggat initiering anses alla andra enheter vara slavar.
+	\item \textbf{Datariktining:} En bit som reglerar om masterenheten vill skicka eller ta emot data. Tillsammans med ovanstående bildar de den första byten som skickas.
+	\item \textbf{Information:} Åtta bitar långa sekvenser med den mest signifikanta biten (MSB) först. Antalet bytes per överföring är inte reglerat.
+	\item \textbf{Avslut:} Triggas av positiv flank på SDA då SCL ligger hög.
+\end{enumerate}
 
-Ci tänker att vi har en avbrottstyrd i2c va? eller en pollad?
+Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
 
 
-\subsection{Lovisa flummar}
-
-
-Bra grej, "The length of the polling loopmust be short enough to never miss a byte of serial data or byte from any other interface. In an interrupt-driven system, the same considerations apply to length of any polling loop plus the worst-case interrupt latencies."
-
-\subsection{?}
-Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
-
-\textit{Realtidssystem}- Denna nivå beskriver processerna mellan roboten och dess omgivning genom sensorer exempelvis. Denna nivå behöver kunna utföra alla delar som behöver ske i realtid så som exempelvis kontroll av styrservo och behöver därför kunna utföra synkronisering och kommunicera mellan "uppgifter" för att nämna några saker. 
-
-\textit{Kontrollerat system}- ?
-
-\textit{Öppet system}- Roboten borde vara modifierbar, det ska var lätt att integrera eller ändra olika funktioners utformning efter tilltänkt tillämpning. För att göra detta behövs ett stegvis uppbyggt system med vanlig integrationsmetodologi. 
-
-Alltså behövs en modulärt uppbyggd robot både vad gäller funktionsnivå, standard-uppbyggnad och gränsnitt för modulerna. 
-
-Realtidssystem har ofta "Event- driven  scheduling" vilket innebär att uppgifter adderas och tas bort från listan över uppgifter allt eftersom föutsättningar ändras. 
 
 \subsection{Assembler och C för programmering av mikroprocessorer}
 
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. 
+Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras så som status register och tillhörande avbrott.  
 
 Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
-\subsection{Testa system}
-En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
+\subsection{Testning av system} 
 
-För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att test undantagsfall också. 
+För testning av mikroprocessorer finns verktyg att ta till, till exempel JTAG och logikanalysator.
 
+\subsubsection{JTAG ICE}
+%http://www.atmel.com/images/doc2475.pdf
+
+JTAG är ett verktyg för att debugga alla AVR 8-bitars mikrokontrollers som har ett JTAG-gränssnitt. Istället för att efterlika enhetens beteende likt en emulator använder JTAG ett inbyggt chip som finns på de enheter som har ett JTAG-gränssnitt. Detta innebär att den kör koden på den fysiska enheten. Användaren får feedback genom programmet AVR Studio. \cite{guideJTAG}
+
+\subsubsection{Logikanalysator}
+%http://cp.literature.agilent.com/litweb/pdf/54684-97011.pdf
+
+Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet signaler samtidigt. Det finns 16 kanaler logiska kanaler och  två \textit{scope channels}. Analysatorn har en rad inställnings- och beräkningsfunktioner för debugging. \cite{guideLogic}
 
 \pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
-\textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
-https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
+%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
-Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C. För att lösa detta kan alla enheter kopplas på samma buss och konfigureras på olika sätt. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
+Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C. För att lösa detta kan alla enheter kopplas på samma buss med en rad konfigurationsmöjligheter för att uppnå önskat resultat. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
 
 \begin{enumerate}
- \item Flera enheter kan konfigureras så att de innehar en master roll. Dessa kan då, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data.
+ \item Flera enheter kan konfigureras till att inneha en masterroll. Dessa kan då, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data.
  
  \item En eller flera slavenheter kan kopplas till den enda masterenheten med avbrott. När slaven vill ha kontakt över I\textsuperscript{2}C-bussen triggar den avbrottssignalen, vilket i sin tur får masterenheten att initiera kontakten. Detta medför att data enbart kan gå mellan masterenheten och respektive slav, inte slavarna emellan.
  
  \item Bussens enda masterenhet pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
 \end{enumerate}
 
+%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
+
+Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
+
 %http://www.nxp.com/documents/user_manual/UM10204.pdf
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Start condition på I\textsuperscript{2}C-bussen fungerar som ett avbrott, vilket gör att enheterna kopplade till bussen inte behöver ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.
+Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet. 
 
-%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
-
-Avbrottsstyrning håller CPU:n fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker.
-
-I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan.
-
-\subsection{Gränssnittsdesign}
+%Så länge en masterenhet inte är intresserad av att kommunicera kan slavenheten fortsätta med sitt.
 
 \subsection{Assembler eller C}
 
-Det finns både fördelar och nackdelar med båda programmeringsspråken. De är båda hårdvarunära språk. C tar som nämnt ovan ofta större minnesutrymme när koden exekveras(?). Detta ses dock inte som något problem då ATmega16 anses ha gott om extra minne.
-I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering.
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan funger på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
+
+Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En så detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C pga. dess smidighet vara ett mer fördelaktigt språk att programera i. Är något tidskritiskt kan det var en ide att överväga att skriva detta i Assembler. 
+
+Som nämnt går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
+
+\subsection{Att utveckla ett realtidssystem med fler moduler}
+
+\cite{IRS} beskriver faktorer att tänka på vid design av en ``open- architecture target environment''. Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorer kanske inte jobbar i samma hastighet och därför behöver olika frekvens. Det blir också problem om två uppgifter med samma frekvens skär sig vid integration av moduler vilket medför att integrationen ej ska bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas det det, särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att det tar så lite tid som möjligt för att inte trafikera bussen för länge.   
 
 \subsection{Design av tester}
- 
+En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
+
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också.
+
 \pagebreak
 
 \section{Resultat och slutsatser}
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
-
-\subsection{Gränssnittsdesign}
 
 \subsection{Assembler eller C}
 
