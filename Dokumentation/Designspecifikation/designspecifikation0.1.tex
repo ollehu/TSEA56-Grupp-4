@@ -155,15 +155,11 @@ Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvud
 \end{figure}
 
 \subsection{Detaljerad beskrivning}
-\subsubsection {Körläge}
-Knapp för val av körläge kopplas till \verb+INT0+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_korlage}.
 
-\begin{figure}[htbp]
-\centering
-\noindent\resizebox{.6\linewidth}{!}{
-	\input{images/avbrott_korlage}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT0+ \label{avbrott_korlage}}	
-\end{figure}
+\subsubsection {Körläge}
+Knapp för val av körläge kopplas till huvudmodulen på en dataingång. Ingången läses en gång per varv i huvudloopen.
+
+\textbf{\textit{Autonomt läge}}
 
 Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut.
 
@@ -174,6 +170,7 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
 \end{figure}
 
+\textbf{\textit{Manuellt läge}}
 
 \subsubsection {Strömbrytare}
 Strömbrytare i form av en knapp kopplas till \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_strombrytare}. 
@@ -295,8 +292,9 @@ Den hårdvara som sensormodulen kommer att kräva är:
 
 \subsection{Detaljerad beskrivning}
 
-Sensormodulens processorenhet, \verb+ATmega16+, är ansluten med två I\textsuperscript{2}C-bussar. Den ena är i syfte att kunna kommunicera med huvudmodulen, där sensormodulens processorenheter agerar som slavenhet i förhållande till huvudmodulens dito. Den andra I\textsuperscript{2}C-bussen kommunicerar med Lasersensorn, LIDAR-Lite v2, samt gyro/accelerometern, MPU-6500. I fallet med den senare databussen så agerar sensormodulens processorenhet som masterenhet i förhållandet med lasersensorn och gyro/accelerometern.
-Resterande IR-sensor, GP2D120, och IR-detektor, IRM-8601-S, anslutas direkt till processorenhetens ingångar för AD-omvandling. Figur \ref{kopplingsschema:sensormodul} visar en övergripande bild över sensormodulens implementation med dess respektive delkomponenter. 
+Sensormodulens processorenhet, \verb+ATmega16+, är ansluten med en I\textsuperscript{2}C-buss. Den har som uppgift att kommunicera med huvudmodulen, där sensormodulens processorenheter agerar som slavenhet i förhållande till huvudmodulens dito. 
+%Den andra I\textsuperscript{2}C-bussen kommunicerar med Lasersensorn, LIDAR-Lite v2, samt gyro/accelerometern, MPU-6500. I fallet med den senare databussen så agerar sensormodulens processorenhet som masterenhet i förhållandet med lasersensorn och gyro/accelerometern.
+IR-sensorn GP2D120 och IR-detektorn IRM-8601-S ansluts direkt till processorenhetens ingångar för AD-omvandling. Figur \ref{kopplingsschema:sensormodul} visar en övergripande bild över sensormodulens implementation med dess respektive delkomponenter. 
 
 \subsubsection{Processorenhet, ATmega16}
 Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommuniceras till huvudmodulen. Figur \ref{kopplingsschema:sensormodul} illustrerar \verb+ATmega16+ och dess ingångar, samt hur respektive sensorenhet ska kopplas samman med processorn. 
@@ -304,19 +302,18 @@ Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommu
 \subsubsection{Laser-sensor, LIDAR-Lite v2}
 Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsättningsrobot. Utöver att kunna möta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 0,025 meter. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 0,01 meter \cite{7131685}.
 
-Kommunikationen mellan Lidar-Lite v2 och processorenheten, \verb+Atmega16+, kommer att ske via ett I\textsuperscript{2}C-interface som lasersensorn kommer med i sitt grundutförande. Figur [??] konkretiserar hur implementationen av databussen ska genomföras. 
+%Kommunikationen mellan Lidar-Lite v2 och processorenheten, \verb+Atmega16+, kommer att ske via ett I\textsuperscript{2}C-interface som lasersensorn kommer med i sitt grundutförande. Figur [??] konkretiserar hur implementationen av databussen ska genomföras. 
 
 \subsubsection{IR-sensor, GP2D120}
 För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med ca 40 centimeters bredd, och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn GP2D120 bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm ifrån sensorn. 
 
-Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas.
+Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. GP2D120 är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord. 
 %Om robotens reglering inte är tillräckligt bra är det risk att avståndssensorn tappar precision, %eller till och med mister avståndsbedömning helt. Det beror på att om roboten inte kör %parallellt med väggen kommer det utstrålade ljuset att reflekteras med en för stor vinkel för %att detektorerna ska kunna uppfatta reflektionen.
-Figur [??] visar vilka och till vad sensorns pinnar används.
-
 
 \subsubsection{Gyro/accelerometer, MPU-6050}
 %\item[Vinkelhastighet] \hfill \\
-I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används MPU6050, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov och informationen från sensorn kommer att förmedlas via ett I\textsuperscript{2}C-buss-interface.
+I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används MPU6050, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+% och informationen från sensorn kommer att förmedlas via ett I\textsuperscript{2}C-buss-interface.
  
 \subsubsection{IR-detektor, IRM-8601-S}
 IR-detektorn IRM-8601-S används i syfte att indentifiera den nödställde, vilken ska sända ut en IR-signal. Liksom Figur [??] illustrerar så är IRM-8601-s förhållandevis trivial i sitt utförande, enheten har 2 ingångar vilka ska anslutas med 5 V samt jord. 
@@ -328,8 +325,21 @@ IR-detektorn IRM-8601-S används i syfte att indentifiera den nödställde, vilk
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via ekvationXYXY, där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figurXXYY. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
+GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via 
 
+\begin{equation*}
+	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
+\end{equation*}
+
+där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{images/IR_avstand}
+	\caption{Förhållande mellan analog spänning och avstånd \label{IR_avstand}}
+\end{figure}
+
+\FloatBarrier
 \subsubsection{LIDAR-Lite}
 Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
