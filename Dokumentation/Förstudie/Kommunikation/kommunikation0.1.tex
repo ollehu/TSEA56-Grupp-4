@@ -143,14 +143,6 @@ När bussen är ledig ligger båda ledningarna SDA och SCL höga. (1) och (5) tr
 
 https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Ci tänker att vi har en avbrottstyrd i2c va? eller en pollad?
-
-
-\subsection{Lovisa flummar}
-
-
-Bra grej, "The length of the polling loopmust be short enough to never miss a byte of serial data or byte from any other interface. In an interrupt-driven system, the same considerations apply to length of any polling loop plus the worst-case interrupt latencies."
-
 \subsection{?}
 Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
 
@@ -162,18 +154,18 @@ Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en
 
 Alltså behövs en modulärt uppbyggd robot både vad gäller funktionsnivå, standard-uppbyggnad och gränsnitt för modulerna. 
 
-Realtidssystem har ofta "Event- driven  scheduling" vilket innebär att uppgifter adderas och tas bort från listan över uppgifter allt eftersom föutsättningar ändras. 
+\cite{IRS} beskriver faktorer att tänka på vid design av en " open- architecture target environment". Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorer kanske inte jobbar i samma hastighet och därför behöver olika frekvens. Det blir också problem om två uppgifter med samma frekvens skär sig vid integration av moduler vilket medför att integrationen ej ska bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas det det, särskilt viktigt i realtidsystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att det tar så lite tid som möjligt för att inte trafikera bussen för länge.   
 
 \subsection{Assembler och C för programmering av mikroprocessorer}
 
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. 
+Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras så som status register och tillhörande avbrott.  
 
 Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
 \subsection{Testa system}
 En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
 
-För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att test undantagsfall också. 
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också. 
 
 
 \pagebreak
@@ -209,8 +201,13 @@ I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa
 
 \subsection{Assembler eller C}
 
-Det finns både fördelar och nackdelar med båda programmeringsspråken. De är båda hårdvarunära språk. C tar som nämnt ovan ofta större minnesutrymme när koden exekveras(?). Detta ses dock inte som något problem då ATmega16 anses ha gott om extra minne.
-I projektet som ska genomföras har medlemmarna erfarenhet av Assembler programmering.
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan funger på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt 
+
+Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En så detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C pga. dess smidighet vara ett mer fördelaktigt språk att programera i. 
+
+Vissa funktioner som avbrott blir mycket tydligar i Assembler men det kasnke inte är avgörande utan blir smidigare för programmeraren om det som med  C- kompilatorn fixas av sig självt. 
+
+Som nämnt går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
 
 \subsection{Design av tester}
  
