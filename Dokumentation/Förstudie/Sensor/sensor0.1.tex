@@ -110,15 +110,12 @@ Syftet med denna rapport är att undersöka vilka sensorer som är relevanta fö
 \subsection{Frågeställningar}
 Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behandlas i denna rapport:
 
-
-
 \begin{itemize}
-	\item	 Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
-	\item Vilka sensorer är lämpliga att använda till projektet?
-	\item 
-
-Hur kan dessa implementeras? 
+	\item [-] Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
+	\item [-] Vilka sensorer är lämpliga att använda till projektet?
+	\item [-] Hur kan dessa implementeras? 
 \end{itemize}
+
 
 
 
@@ -147,15 +144,15 @@ I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar s
 	\caption{Ett fingers påverkan på kapacitans \label{capacative}}
 \end{figure}
 
-Förhållandet mellan kapacitans och spänning visas i figur 2.
+%Förhållandet mellan kapacitans och spänning visas i figur 2.
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.8]{Images/capacitance_voltage}
-	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
-\end{figure}
+%\begin{figure}[htbp]
+%	\centering
+%	\includegraphics[scale=0.8]{Images/capacitance_voltage}
+%	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
+%\end{figure}
 
-
+    
 % http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
 %http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
@@ -234,16 +231,14 @@ Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/lidarlite2DS.pdf (2)
 
 
-\subsection{Gyro/accelerometer}
-
-\subsubsection{Gyro}
+\subsection{Gyro}
 För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyro användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) & kan storleken på rotationen (\straightphi) & uppskattas genom integrering, enligt ekvation 2, där t står för tiden som rotationen har pågått. (3)
 
   \begin{equation*}
 	\phi = \int_{t}^{ }  \omega dt 						
 \end{equation*}
 
-\subsubsection{Accelerometer}
+\subsection{Accelerometer}
 En accelerometer används för att mäta accelarationen mellan två objekt. Sensorns utsignal (V) är beroende av acceleration, så när den relativa hastigheten mellan sensorn och omgivningen ändras registrerar accelerometern detta genom att utspänningen ändras. (3)
 
 %http://ac.els-cdn.com/S0021929001002317/1-s2.0-S0021929001002317-main.pdf?_tid=b0659f78-e140-11e5-a337-00000aab0f01&acdnat=1457010545_25d6915b6fa7edf4d2cfd2d1a2627816 (3)
@@ -255,8 +250,26 @@ MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omv
 
 
 \pagebreak
-\section{Rapportens huvuddel, byt rubriknamn}
-text
+\section{Fallet undsättningsrobot}
+
+\subsection{Avståndssensor}
+% - Ultraljud
+% - GP2D120
+% - LIDAR-Lite
+
+\subsection{Detektering av mål}
+% - Kapacitans
+% - IRM-8601S
+% - SFH300
+% - BPX...
+
+\subsection{Vinkelmätning}
+% - MPU-6050
+% - GP2D120
+
+\subsection{Övriga funktioner}
+% - MPU-6050
+
 
 \section{Resultat och slutsatser}
 text
