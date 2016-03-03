@@ -2,6 +2,7 @@
 
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
+\usepackage{graphicx}
 
 
 \begin{document}
@@ -154,7 +155,13 @@ En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskad
 	\caption{Illustration av lasersensor \label{Laser}}
 \end{figure}
 
-Det går även att använda som en avståndssensor, vilket illustreras i Figur 3, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+Det går även att använda som en avståndssensor, vilket illustreras i Figur 2, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/laser_angle}
+	\caption{Vinkelmätning med lasersensor \label{laser_angle}}
+\end{figure}
 
 Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt . 
 
