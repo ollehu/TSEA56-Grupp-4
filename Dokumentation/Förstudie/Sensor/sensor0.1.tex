@@ -126,17 +126,51 @@ Hur kan dessa implementeras?
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-Den kapacitiva sensorn är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. När avståndet (d) mellan objektet och sensorn minskar så ökar kapacitansen enligt Ekvation 1, där  är en konstant som beror av materialets relativa kapacivitet. 
+En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. 
 
-I Figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+\subsubsection{FDC1004}
+En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften.
 
+\begin{equation*}
+	\textrm{C} = \frac {e_{r} \times e_{o} \times A}{d}						
+\end{equation*}
+
+I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/capacative}
+	\caption{Ett fingers påverkan på kapacitans \label{capacative}}
+\end{figure}
+
+Förhållandet mellan kapacitans och spänning visas i figur 2.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{Images/capacitance_voltage}
+	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
+\end{figure}
+
+
+http://www.ti.com/lit/ds/symlink/fdc1004.pdf
+
+http://www.capsense.com/capsense-wp.pdf
 
 http://www.ti.com/lit/an/snoa927/snoa927.pdf
 
-http://www.fujitsu.com/downloads/MICRO/fme/articles/fujitsu-whitepaper-capacitive-touch-sensors.pdf
-
 http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html
 
+\subsection{Ultraljudssensorer}
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+
+\begin{equation*}
+	\textrm{s} = v_{luft} \times t						
+\end{equation*}
+
+\subsubsection{SRF04}
+Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss.
+
+%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf
 
 
 \subsection{Ljussensor}
