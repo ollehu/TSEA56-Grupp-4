@@ -122,7 +122,6 @@ För att denna förstudie ska få mening i det projekt som den föregår har fr�
 	
 		\begin{itemize}
 			\item Avbrott eller pollning?
-			\item Hur ska gränssnitt designas?
 			\item C eller assembler?
 			\item Hur ska tester designas för att säkerställa att respektive modul fungerar enligt kravspecifikation?
 		\end{itemize}
@@ -204,8 +203,6 @@ Start condition på I\textsuperscript{2}C-bussen fungerar som ett avbrott, vilke
 Avbrottsstyrning håller CPU:n fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker.
 
 I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan.
-
-\subsection{Gränssnittsdesign}
 
 \subsection{Assembler eller C}
 
