@@ -104,7 +104,6 @@ Syftet med denna studie är att undersöka hur intern kommunikation och integrat
 \pagebreak
 
 \section{Problemformulering}
-\textit{Frågeställningar som rapporten ska behandla}
 
 Rapporten tar avstamp i frågor som berör integration och kommunikation. De generella frågeställningarna är:
 
@@ -150,18 +149,7 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 
 Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
 
-\subsection{?}
-Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
 
-\textit{Realtidssystem}- Denna nivå beskriver processerna mellan roboten och dess omgivning genom sensorer exempelvis. Denna nivå behöver kunna utföra alla delar som behöver ske i realtid så som exempelvis kontroll av styrservo och behöver därför kunna utföra synkronisering och kommunicera mellan "uppgifter" för att nämna några saker. 
-
-\textit{Kontrollerat system}- ?
-
-\textit{Öppet system}- Roboten borde vara modifierbar, det ska var lätt att integrera eller ändra olika funktioners utformning efter tilltänkt tillämpning. För att göra detta behövs ett stegvis uppbyggt system med vanlig integrationsmetodologi. 
-
-Alltså behövs en modulärt uppbyggd robot både vad gäller funktionsnivå, standard-uppbyggnad och gränsnitt för modulerna. 
-
-\cite{IRS} beskriver faktorer att tänka på vid design av en " open- architecture target environment". Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorer kanske inte jobbar i samma hastighet och därför behöver olika frekvens. Det blir också problem om två uppgifter med samma frekvens skär sig vid integration av moduler vilket medför att integrationen ej ska bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas det det, särskilt viktigt i realtidsystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att det tar så lite tid som möjligt för att inte trafikera bussen för länge.   
 
 \subsection{Assembler och C för programmering av mikroprocessorer}
 
@@ -186,7 +174,6 @@ Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet 
 \pagebreak
 
 \section{Rapportens huvuddel, byt rubriknamn}
-\textit{Modeller, beräkningar, analyser och ev experiment. Dela gärna upp efter vad förstudien handlar om.}
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
@@ -214,13 +201,15 @@ Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behö
 
 \subsection{Assembler eller C}
 
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan funger på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt 
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan funger på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
-Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En så detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C pga. dess smidighet vara ett mer fördelaktigt språk att programera i. 
-
-Vissa funktioner som avbrott blir mycket tydligar i Assembler men det kasnke inte är avgörande utan blir smidigare för programmeraren om det som med  C- kompilatorn fixas av sig självt. 
+Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En så detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C pga. dess smidighet vara ett mer fördelaktigt språk att programera i. Är något tidskritiskt kan det var en ide att överväga att skriva detta i Assembler. 
 
 Som nämnt går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
+
+\subsection{Att utveckla ett realtidssystem med fler moduler}
+
+\cite{IRS} beskriver faktorer att tänka på vid design av en ``open- architecture target environment''. Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorer kanske inte jobbar i samma hastighet och därför behöver olika frekvens. Det blir också problem om två uppgifter med samma frekvens skär sig vid integration av moduler vilket medför att integrationen ej ska bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas det det, särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att det tar så lite tid som möjligt för att inte trafikera bussen för länge.   
 
 \subsection{Design av tester}
 En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
