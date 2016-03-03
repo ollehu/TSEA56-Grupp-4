@@ -5,6 +5,10 @@
 \usepackage{graphicx}
 \usepackage{epstopdf}
 
+\usepackage{stringenc}
+\usepackage{pdfescape}
+\DeclareUnicodeCharacter{0308}{}
+
 
 \begin{document}
 \begin{titlepage}
@@ -112,11 +116,9 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 
 
 \begin{itemize}
-	\item	 Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
-	\item Vilka sensorer är lämpliga att använda till projektet?
-	\item 
-
-Hur kan dessa implementeras? 
+	\item	 Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
+	\item Vilka sensorer är lämpliga att använda till projektet?
+	\item Hur kan dessa implementeras? 
 \end{itemize}
 
 
@@ -127,12 +129,10 @@ Hur kan dessa implementeras?
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. (2)
-
-%http://www.capsense.com/capsense-wp.pdf (2)
+En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. \cite{website:capacative}
 
 \subsubsection{FDC1004}
-En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften. (1), (3)
+En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften. \cite{Texas}, \cite{Texas2}
 
 \begin{equation*}
 	\textrm{C} = \frac {e_{r} \times e_{o} \times A}{d}						
