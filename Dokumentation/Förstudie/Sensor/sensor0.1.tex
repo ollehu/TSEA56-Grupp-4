@@ -2,6 +2,7 @@
 
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
+\usepackage{graphicx}
 
 
 \begin{document}
@@ -119,17 +120,51 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-Den kapacitiva sensorn är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. När avståndet (d) mellan objektet och sensorn minskar så ökar kapacitansen enligt Ekvation 1, där  är en konstant som beror av materialets relativa kapacivitet. 
+En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. 
 
-I Figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+\subsubsection{FDC1004}
+En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften.
 
+\begin{equation*}
+	\textrm{C} = \frac {e_{r} \times e_{o} \times A}{d}						
+\end{equation*}
+
+I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/capacative}
+	\caption{Ett fingers påverkan på kapacitans \label{capacative}}
+\end{figure}
+
+Förhållandet mellan kapacitans och spänning visas i figur 2.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{Images/capacitance_voltage}
+	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
+\end{figure}
+
+
+http://www.ti.com/lit/ds/symlink/fdc1004.pdf
+
+http://www.capsense.com/capsense-wp.pdf
 
 http://www.ti.com/lit/an/snoa927/snoa927.pdf
 
-http://www.fujitsu.com/downloads/MICRO/fme/articles/fujitsu-whitepaper-capacitive-touch-sensors.pdf
-
 http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html
 
+\subsection{Ultraljudssensorer}
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+
+\begin{equation*}
+	\textrm{s} = v_{luft} \times t						
+\end{equation*}
+
+\subsubsection{SRF04}
+Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss.
+
+%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf
 
 
 \subsection{Ljussensor}
@@ -146,11 +181,25 @@ http://www.automation.com/library/articles-white-papers/sensors-sensing-technolo
 \subsubsection{Sändare/mottagare}
 
 \subsubsection{IR-sensor}
-En IR-sensor är en tillämpning av en ljussensor genom att endast registrera önskade våglängder i det infraröda spektrumet. I Figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.
+En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.
 
-Det går även att använda som en avståndssensor, vilket illustreras i Figur 3, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/Laser}
+	\caption{Illustration av lasersensor \label{Laser}}
+\end{figure}
 
-Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt . 
+Det går även att använda som en avståndssensor, vilket illustreras i figur 2, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/laser_angle}
+	\caption{Vinkelmätning med lasersensor \label{laser_angle}}
+\end{figure}
+
+Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt.
+
+
 
 http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html
 
