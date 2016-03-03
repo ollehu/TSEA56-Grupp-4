@@ -2,6 +2,8 @@
 
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{epstopdf}
 
 
 \begin{document}
@@ -107,11 +109,17 @@ Syftet med denna rapport är att undersöka vilka sensorer som är relevanta fö
 \subsection{Frågeställningar}
 Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behandlas i denna rapport:
 
+
+
 \begin{itemize}
-\item{Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?}
-\item {Vilka sensorer är lämpliga att använda till projektet?}
-\item{Hur kan dessa implementeras? }
+	\item	 Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
+	\item Vilka sensorer är lämpliga att använda till projektet?
+	\item 
+
+Hur kan dessa implementeras? 
 \end{itemize}
+
+
 
 \pagebreak
 
@@ -119,41 +127,108 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-Den kapacitiva sensorn är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. När avståndet (d) mellan objektet och sensorn minskar så ökar kapacitansen enligt Ekvation 1, där  är en konstant som beror av materialets relativa kapacivitet. 
+En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. (2)
 
-I Figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+%http://www.capsense.com/capsense-wp.pdf (2)
+
+\subsubsection{FDC1004}
+En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften. (1), (3)
+
+\begin{equation*}
+	\textrm{C} = \frac {e_{r} \times e_{o} \times A}{d}						
+\end{equation*}
+
+I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar sig sensorn och hur kapacitansändringen med hjälp av en AD-omvandlare görs om till en digital signal. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/capacative}
+	\caption{Ett fingers påverkan på kapacitans \label{capacative}}
+\end{figure}
+
+Förhållandet mellan kapacitans och spänning visas i figur 2.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.8]{Images/capacitance_voltage}
+	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
+\end{figure}
 
 
-http://www.ti.com/lit/an/snoa927/snoa927.pdf
+% http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
-http://www.fujitsu.com/downloads/MICRO/fme/articles/fujitsu-whitepaper-capacitive-touch-sensors.pdf
+%http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
 
-http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html
 
+\subsection{Ultraljudssensorer}
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+
+\begin{equation*}
+	\textrm{s} = v_{luft} \times t						
+\end{equation*}
+
+\subsubsection{SRF04}
+Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. (1)
+
+%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf (1)
 
 
 \subsection{Ljussensor}
-Ljussensorn (även kallad fotocell) omvandlar infallande ljus till elektrisk ström. Strömstyrkan varierar beroende ljusets styrka, varför en ljussensor är användbar vid detektering av konstraster på exempelvis en yta.
+En ljussensor består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
 
-\subsubsection{Reflektorfotocell}
-En reflektorfotocell är en typ av ljussensor som detekterar förändringar i ljusintensiteten. Den typiska reflektorfotocelnne består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare.
+Ljussensorn (även kallad fotocell) omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta.
 
-http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors
+En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{reflective}
+
+%http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors (1)
 
 
-\subsubsection{Direktavkännare}
 
-\subsubsection{Sändare/mottagare}
 
-\subsubsection{IR-sensor}
-En IR-sensor är en tillämpning av en ljussensor genom att endast registrera önskade våglängder i det infraröda spektrumet. I Figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.
+\subsubsection{Zimon}
 
-Det går även att använda som en avståndssensor, vilket illustreras i Figur 3, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
 
-Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt . 
+\subsection{IR-sensor}
+En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning. (1)
 
-http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/Laser}
+	\caption{Illustration av lasersensor \label{Laser}}
+\end{figure}
 
+Det går även att använda som en avståndssensor, vilket illustreras i figur 2, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta ställer högre krav på sensorn, eftersom strålningen behöver vara skarpare.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/laser_angle}
+	\caption{Vinkelmätning med lasersensor \label{laser_angle}}
+\end{figure}
+
+Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt.
+
+%http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html (1)
+
+\subsubsection{IRM-8601-S}
+
+
+\subsubsection{GP2D120}
+
+\subsection{Lasersensor}
+Det finns olika typer av lasersensorer som använder olika tekniker foch har olika funktioner. En typ är den avståndsmätande elektrooptiska sensorn som sänder ut en laser stråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) är räknas fram enligt ekvation 1, där c står för ljusets hastighet i luft.
+
+\begin{equation*}
+	\textrm{D} = \frac {c \times t}{2}						
+\end{equation*}
+
+En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. 
+
+%http://www.mtiinstruments.com/pdf/appnotes/lasersensor.pdf (1)
+
+\subsubsection{LIDAR-Lite}
+
+
+\subsection{Gyro-/accelerometer}
 
 \pagebreak
 \section{Rapportens huvuddel, byt rubriknamn}
@@ -164,12 +239,16 @@ text
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
-\bibliographystyle{ieeetr}
-\bibliography{references}
+
+
+
 
 \pagebreak
 \appendix
 \section{First Appendix}
 
 \end{flushleft}
+
+\bibliographystyle{ieeetr}
+\bibliography{references}
 \end{document}
