@@ -97,7 +97,7 @@ Vid utveckling av en robot som består av olika moduler med olika funktion är d
 %För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
 
 \subsection{Syfte}
-Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt.
+Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt. 
 
 %(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av för att i projektfasen ha en grund att stå på.)
 
@@ -148,7 +148,7 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 	\item \textbf{Avslut:} Triggas av positiv flank på SDA då SCL ligger hög.
 \end{enumerate}
 
-Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge.
+Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
 
 \subsection{?}
 Enligt \cite{GenoM} finns det tre aspekter att ha i åtanke vid uppbyggnad av en robots funktionsnivå: Realtidssystem, kontrollerat system och öppet system. 
@@ -176,12 +176,12 @@ För testning av mikroprocessorer finns verktyg att ta till, till exempel JTAG o
 \subsubsection{JTAG ICE}
 %http://www.atmel.com/images/doc2475.pdf
 
-JTAG är ett verktyg för att debugga alla AVR 8-bitars mikrokontrollers som har ett JTAG-gränssnitt. Istället för att efterlika enhetens beteende likt en emulator använder JTAG ett inbyggt chip som finns på de enheter som har ett JTAG-gränssnitt. Detta innebär att den kör koden på den fysiska enheten. Användaren får feedback genom programmet AVR Studio.
+JTAG är ett verktyg för att debugga alla AVR 8-bitars mikrokontrollers som har ett JTAG-gränssnitt. Istället för att efterlika enhetens beteende likt en emulator använder JTAG ett inbyggt chip som finns på de enheter som har ett JTAG-gränssnitt. Detta innebär att den kör koden på den fysiska enheten. Användaren får feedback genom programmet AVR Studio. \cite{guideJTAG}
 
 \subsubsection{Logikanalysator}
 %http://cp.literature.agilent.com/litweb/pdf/54684-97011.pdf
 
-Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet signaler samtidigt. Det finns 16 kanaler logiska kanaler och  två \textit{scope channels}. Analysatorn har en rad inställnings- och beräkningsfunktioner för debugging. 
+Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet signaler samtidigt. Det finns 16 kanaler logiska kanaler och  två \textit{scope channels}. Analysatorn har en rad inställnings- och beräkningsfunktioner för debugging. \cite{guideLogic}
 
 \pagebreak
 
@@ -201,16 +201,16 @@ Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är de
  \item Bussens enda masterenhet pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
 \end{enumerate}
 
+%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
+
+Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
+
 %http://www.nxp.com/documents/user_manual/UM10204.pdf
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Start condition på I\textsuperscript{2}C-bussen fungerar som ett avbrott, vilket gör att enheterna kopplade till bussen inte behöver ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med. Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet. 
+Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet. 
 
-%https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
-
-Avbrottsstyrning håller CPU:n fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker.
-
-I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan.
+%Så länge en masterenhet inte är intresserad av att kommunicera kan slavenheten fortsätta med sitt.
 
 \subsection{Assembler eller C}
 
@@ -232,8 +232,6 @@ För testning av system föreslår \cite{RWD} att testning av hårdvara och mjuk
 \section{Resultat och slutsatser}
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
-
-\subsection{Gränssnittsdesign}
 
 \subsection{Assembler eller C}
 
