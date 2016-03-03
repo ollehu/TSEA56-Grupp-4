@@ -3,6 +3,7 @@
 \usepackage{extras} % Se extras.sty
 \usepackage{tikz}
 \usepackage{graphicx}
+\usepackage{epstopdf}
 
 
 \begin{document}
@@ -152,13 +153,13 @@ Förhållandet mellan kapacitans och spänning visas i figur 2.
 \end{figure}
 
 
-http://www.ti.com/lit/ds/symlink/fdc1004.pdf
+% http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
-http://www.capsense.com/capsense-wp.pdf
+%http://www.capsense.com/capsense-wp.pdf (2)
 
-http://www.ti.com/lit/an/snoa927/snoa927.pdf
+%http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
 
-http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html
+%http://www.analog.com/library/analogDialogue/archives/40-10/cap_sensors.html (4)
 
 \subsection{Ultraljudssensorer}
 För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
@@ -170,7 +171,7 @@ För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skick
 \subsubsection{SRF04}
 Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss.
 
-%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf
+%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf (1)
 
 
 \subsection{Ljussensor}
@@ -178,16 +179,17 @@ En ljussensor består av en högresistiv halvledare vilken absorberar fotoner. B
 
 Ljussensorn (även kallad fotocell) omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta.
 
-En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. %http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors 
+En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. 
+
+%http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors (1)
 
 
 
 
-\subsubsection{Direktavkännare}
+\subsubsection{Zimon}
 
-\subsubsection{Sändare/mottagare}
 
-\subsubsection{IR-sensor}
+\subsection{IR-sensor}
 En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.
 
 \begin{figure}[htbp]
@@ -206,10 +208,16 @@ Det går även att använda som en avståndssensor, vilket illustreras i figur 2
 
 Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt.
 
+%http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html (1)
+
+\subsubsection{IRM-8601-S}
 
 
-http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html
+\subsubsection{GP2D120}
 
+\subsection{Lasersensor}
+
+\subsection{Gyro-/accelerometer}
 
 \pagebreak
 \section{Rapportens huvuddel, byt rubriknamn}
