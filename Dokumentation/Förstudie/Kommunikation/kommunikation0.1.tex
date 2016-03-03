@@ -82,7 +82,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & - &  Första utkastet & Grupp 4 & - \\ \hline
+0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & ET \\ \hline
 \end{tabular}
 \end{table}
 
@@ -96,7 +96,6 @@ Vid utveckling av en robot som består av olika moduler med olika funktion är d
 
 %För att undersöka detta genomförs en studie av kommunikationsalternativ mellan moduler och hur modulerna på ett bra sätt byggs upp för att lätt kunna integreras med varandra. 
 
-\subsection{Syfte}
 Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle var lämpligt för vårt projekt. 
 
 %(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av för att i projektfasen ha en grund att stå på.)
@@ -117,10 +116,15 @@ För att denna förstudie ska få mening i det projekt som den föregår har fr�
 
 \begin{itemize}
 	\item Vilken konfiguration av en I\textsuperscript{2}C-buss är lämplig i ett modulbaserat projekt?
+	
+\begin{itemize}
+	\item Avbrott eller pollning?
+	\item Master och slaveroller?
+\end{itemize}	
+	
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
 	
 		\begin{itemize}
-			\item Avbrott eller pollning?
 			\item C eller assembler?
 			\item Hur ska tester designas för att säkerställa att respektive modul fungerar enligt kravspecifikation?
 		\end{itemize}
@@ -130,12 +134,12 @@ För att denna förstudie ska få mening i det projekt som den föregår har fr�
 \pagebreak
 
 \section{Kunskapsbas}
-\textit{Litteratur, datablad, dokumentation, bakgrundsteori, etc. Dela gärna upp efter vad förstudien handlar om.}
+I detta avsnitt behandlas den bakgrundsinformation som krävs för att besvara frågeställningarna.
 
 \subsection{I\textsuperscript{2}C}
 %https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komm upp i 3.4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3.4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
 
 Överföringsprocessen består av fem steg: 
 
@@ -149,13 +153,9 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 
 Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
 
-
-
 \subsection{Assembler och C för programmering av mikroprocessorer}
 
-Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras så som status register och tillhörande avbrott.  
-
-Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
+\textit{Att göra: Lägga till information om språken, om det finns behov av det.}
 
 \subsection{Testning av system} 
 
@@ -173,7 +173,8 @@ Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet 
 
 \pagebreak
 
-\section{Rapportens huvuddel, byt rubriknamn}
+\section{Diskussion}
+I detta avsnitt disskuteras möjliga lösningar till frågeställningarna.
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
@@ -199,7 +200,13 @@ Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behö
 
 %Så länge en masterenhet inte är intresserad av att kommunicera kan slavenheten fortsätta med sitt.
 
+\textit{Att göra: Koppla ihop informationen kring avbrott och pollning med de alternativen som listats och med projektet vi ska genomföra}
+
 \subsection{Assembler eller C}
+
+Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras så som status register och tillhörande avbrott.  
+
+Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assembler rutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
 I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. Nackdelen är dock att framtida användare av koden får svårare att läsa den och måste sätta sig in i hur processorn fungerar. Dessutom ju mer komplext projektet blir desto mer tid går till att avsöka koden och att inte behöva lära sig nytt språk för varje processor blir också viktigt. Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan funger på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
@@ -216,6 +223,8 @@ En simulator är ett enkelt val för testning av kod då de flesta microprocesor
 
 För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svårt men det kan testas att skriva enklare kod som exempelvis att loopa eller skriva till en viss port och se vad ett oscilloskop ger för utslag. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktivera ett avbrott i taget för att hitta var felet är. Ta hjälp av en lokiganalysator för att isolera felet i hårdvaran. För att testa både hårdvara och mjukvara föreslås funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också.
 
+\textit{Att göra: Väva in på vilket sätt JTAG skulle kunna hjälpa.}
+
 \pagebreak
 
 \section{Resultat och slutsatser}
@@ -231,9 +240,9 @@ För testning av system föreslår \cite{RWD} att testning av hårdvara och mjuk
 \bibliographystyle{ieeetr}
 \bibliography{references}
 
-\pagebreak
-\appendix
-\section{First Appendix}
+%\pagebreak
+%\appendix
+%\section{First Appendix}
 
 \end{flushleft}
 \end{document}
