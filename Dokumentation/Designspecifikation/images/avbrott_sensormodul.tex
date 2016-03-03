@@ -21,7 +21,7 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[decision, below of = start](int2){INT2};
+\node[decision, below of = start](int2){INT1};
 \node[block, right of = int2, node distance = 3cm](in_sensor){Initiera kommunkation med sensormodul};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Ta emot data från sensormodul};
 \node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};

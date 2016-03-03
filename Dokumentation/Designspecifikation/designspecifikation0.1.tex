@@ -192,13 +192,13 @@ Strömbrytare i form av en knapp som kopplas till en dataingång. Detta medför 
 \end{figure}
 
 \subsubsection {Sensormodul} 
-\verb+INT2+ är kopplad till sensormodulen för att kunna hantera avbrott från denna. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i \ref{avbrott_sensormodul}.
+Sensormodulen är kopplad till huvudmodulens avbrottsingång \verb+INT1+. Händelseförloppet vid aktiverat avbrott kan ses i flödesschemat i figur \ref{avbrott_sensormodul}.
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{1\linewidth}{!}{
 	\input{images/avbrott_sensormodul}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT2+ \label{avbrott_sensormodul}}	
+	\cprotect\caption{Flödesschema som beskriver förloppet vid avbrott på ingång \verb+INT1+ \label{avbrott_sensormodul}}	
 \end{figure}
 
 \subsubsection{Styrmodul}
