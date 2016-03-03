@@ -175,18 +175,20 @@ Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ul
 
 
 \subsection{Ljussensor}
-En ljussensor består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
+En ljussensor (även kallad fotocell) består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
 
-Ljussensorn (även kallad fotocell) omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta.
+Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta.  \cite{612896}
 
-En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{reflective}
+En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{website:automation}
 
 %http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors (1)
 
+\subsubsection{SFH300}
+SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
 
 
-
-\subsubsection{Zimon}
+\subsubsection{BPX43-3}
+Liksom SFH300 så är även Siemens BPX43-3 även fotodiod som kan detektera infraröda våglängder. Idealt våglängdsintervall för denna fotodiolid ligger mellan 450 nm och 1100nm. Utsignalen är genereras i form av spänning, varför AD-omvandling krävs för processera utsignalen. Utspänningen ska emellertid vara mycket i linjär i förhållande till ljusstyrkan som dioden får som insignal.  \cite{siemens}
 
 
 \subsection{IR-sensor}
@@ -271,6 +273,6 @@ text
 
 \end{flushleft}
 
-\bibliographystyle{ieeetr}
+\bibliographystyle{ieeetran}
 \bibliography{references}
 \end{document}
