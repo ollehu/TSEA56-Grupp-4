@@ -21,16 +21,15 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[decision, below of = start](int1){INT1};
-\node[decision, right of = int1](sleepmode){I viloläge?};
-\node[block, right of = sleepmode, node distance = 3.5cm](to_active){Aktivera};
-\node[block, below of = sleepmode, node distance = 3cm](to_sleepmode){Sätt i viloläge};
+\node[block, right of = start, node distance = 2.5cm](mode){Läs av dataingången};
+\node[decision, right of = mode](byta){Behöver läge bytas?};
+\node[block, right of = byta, node distance = 3.5cm](to_active){Byt läge};
+\node[block, below of = byta, node distance = 3cm](to_sleepmode){Behåll nuvarande läge};
 
-\draw[->](start) -- (int1);
-\draw[->](int1) |- ($(int1.south west) + (-0.7,-0.6)$) |- node[near start,left]{nej}(int1);
-\draw[->](int1) -- node[above]{ja} (sleepmode);
-\draw[->](sleepmode) -- node[above]{ja}(to_active);
-\draw[->](sleepmode) -- node[right]{nej}(to_sleepmode);
+\draw[->](start) -- (mode);
+\draw[->](mode) -- (byta);
+\draw[->](byta) -- node[above]{ja}(to_active);
+\draw[->](byta) -- node[right]{nej}(to_sleepmode);
 
 
 	\end{tikzpicture}

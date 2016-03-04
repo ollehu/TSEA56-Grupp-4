@@ -29,7 +29,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & Isak Strömberg & 2016-03-03 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -93,37 +93,22 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning} \label{inledning}
-Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) har en underrubrik (antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering}) under vilken textmassan kopplad till respektive område och den övergripande rubriken placerats.
+Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) är uppdelad i antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering} under vilken textmassan kopplad till respektive område och rubriken placerats.
 
 \section{Problemformulering}
 Nedan presenteras de problemformuleringar som förstudien tar avstamp i.
 \subsection{Reglering}
-Från uppgiftsbeskrivningen:
-\begin{displayquote}
-``Vilka övergripande styrmoder är nödvändiga för att roboten ska kunna utföra sitt
-uppdrag? T ex köra rakt i korridor, svänga i korsning, styra efter tejp, etc. Vilken
-information/mätdata behövs i de olika moderna? Hur kan man reglera roboten i de
-olika styrmodulerna?
-\begin{itemize}
-	\item Hur kan man köra rakt i en korridor? Algoritm? Koppling mellan hastighet
-och korridorbredd?
-	\item Hur kan reglering utefter en linje ske?
-	\item Hur kan styrning ske i kurvor och under rotationer? ``
-\end{itemize}
-\end{displayquote}
-
+Att skapa system med hög grad av automation, som klarar av att operera i ostrukturerade miljöer är enligt \cite{intro} en av grundförutsättningarna för att öka robotars användningsområde. För att nå denna grad av självständighet krävs det att roboten, med hjälp av väldesignade modeller, kan förstå sin omgivning. Det krävs också att roboten, genom sensorer, kan utvinna meningsfull information ur sin omgivning för att få modellerna att fungera som avsett. I denna rapport läggs fokus på reglermodellerna och hur dessa, förutsatt att de förses med korrekt sensordata, kan utformas för att styra roboten på ett önskat sätt.
 
 \subsubsection{Frågeställningar}
-Frågeställningen ovan är väldigt generell och mer tänkt som en riktlinje. Därför har den fått anpassas för att enbart innefatta de delar som är relevanta för det projekt som den här förstudien ska föregå. Den har begränsats till följande frågeställning:
-
-Vilken information/mätdata behövs och hur kan roboten regleras i följande tre styrmoder:
+De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 \begin{itemize}
-	\item Körning rakt i en korridor - hur kan/behöver modellen ändras beroende på antalet väggar runt roboten.
-	\item Rotation - behöver rotation regleras för att förhindra att roboten förflyttar sig i sidled och hur kan det i så fall göras?
+	\item [-] Hur kan man reglera en robot så att den kör rakt i en korridor?
+	\item [-] Hur kan styrning ske i kurvor och under rotationer?
 \end{itemize}
 
 \subsubsection{Avgränsning}
-Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i Appendix \textcolor{red}{A} utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
+Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i appendix C utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
 
 \subsection{Kartläggning och vägoptimering}
 Simultan lokalisering och kartläggning anses av \cite{grail} att vara en av de större utmaningarna med att bygga en autonom robot. Att kunna navigera och kartlägga en okänd omgivning ställer höga krav på både mjukvara och hårdvara. Förutsatt att sensorerna mäta med godkänd upplösning behöver roboten intelligent kunna tolka mätvärdena och översätta dessa till en karta och position. 
@@ -140,15 +125,110 @@ De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation
 
 
 \pagebreak
-\section{Kunskapsbas}
-\subsection{Reglering}
-\subsubsection{\textcolor{red}{Nonholonomic} robot}
-En robot anses vara \textcolor{red}{holonomic} om alla dess frihetsgrader går att styra. Ett annat sätt att se det är att robotens nuvarande tillstånd ska va oberoende av dess väg dit. 
+\section{Kunskapsbas - reglering}
 
-En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan kontrolleras i dessa riktningar för att den ska vara \textcolor{red}{holonomic}. Detta innebär att en roboten av den typen som kommer användas i detta project är \textcolor{red}{nonholonomic} eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara \textcolor{red}{holonomic} krävs det att den är utrustad med så kallade omnihjul.
+\subsection{Icke-holonom robot}
+En robot anses vara holonom om alla dess frihetsgrader går att styra. Detta kan även ses som att robotens nuvarande tillstånd ska va oberoende av dess väg dit. 
 
-\subsection{Kartläggning och vägoptimering}
-\subsubsection{Jacobimatris}
+En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan förflytta sig i alla dessa riktningar för att den ska vara holonom. Roboten som kommer användas i detta project är icke-holonom, eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
+
+\subsection{Väggföljning}
+Betrakta en icke-holonom, differentiellt driven robot vars koordinater (\(x, y, \theta\)) är relaterade enligt
+\begin{equation}\label{robotekv}
+	\begin{cases}
+  	\dot{x} = v * \cos \theta \\
+  	\dot{y} = v * \sin \theta \\
+   	 \dot{\theta} = \omega \\
+  	\end{cases}
+\end{equation}
+där \(x\) och \(y\) representerar positionen i ett Kartesiskt koordinatsystem, \(\theta\) vinkeln mellan roboten och x-axeln, \(v\) hastigheten och \(\omega\) vinkelhastigheten. Dessa beror i sin tur på vinkelhastigheterna \(\omega_1, \omega_2\) enligt
+\begin{equation}\label{hjulekv}
+	\begin{cases}
+	r\omega_1 = v + e\omega \\
+	r\omega_2 = v - e\omega \\
+	\end{cases}
+\end{equation}
+där \(r\) är radien på robotens hjul och \(e\) är halva bredden mellan hjulen.
+
+\begin{figure}[H] %Figurplacering?
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\import{images/}{cartesian}} %Ska va images/cartesian
+	\caption{Väggföljningsproblemet\label{robot}}	
+\end{figure}
+
+\paragraph{Väggföljningsproblemet:} 
+\begin{it}
+För en perfekt rak och oändligt lång vägg beskriven i det Kartesiska planet av ekvationen
+\begin{equation}\label{väggfölj}
+	(x - x_m) \sin\gamma - (y - y_m) \cos \gamma = 0
+\end{equation}
+bestäm en reglermodell sådan att en mobil robot \eqref{robotekv} rör sig med en konstant hastighet \(v_{des}\) längs väggen och på konstant avstånd \(d^0\) från den.
+\end{it}
+
+I representerar \eqref{väggfölj} \((x_m, y_m)\) och \(\gamma\) en punkt och väggens orientering, uttryckt i samma koordinatsystem som robotens position.
+
+\subsubsection{Idella väggföljarproblemet (IWFP)}
+Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens fysikaliska egenskaper är försumbara, det vill säga att insignaler kan ges i form av hastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
+\begin{equation}\label{idealåterkoppling}
+	\begin{cases}
+	v = v_{des} \\
+	\omega = -\frac{k(d - d^0)}{v_{des} \cos (\theta - \gamma)} - \beta \tan (\theta - \gamma) \\
+	\end{cases}
+\end{equation}
+
+där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Sätter vi sedan \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}
+
+\begin{equation}
+	\begin{cases}
+	\dot{x_1} = x_2 \\
+	\dot{x_2} = -kx_1 - \beta x_2
+	\end{cases}
+\end{equation}
+
+Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då \(t \to \infty\).
+
+\subsubsection{Verkliga väggföljarproblemet (RWFP)}
+Betrakta vårt fall (Figur \ref{robot}), med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
+
+För att nå fram till en tillfredställande formulering av RWFP måste alltså även de ovanstående kraven tas med i beaktning, och översättas till lämpliga relationer mellan systemvariablerna. IR-sensorernas begränsning leder till följande begränsning
+
+\begin{equation}
+	|\theta - \gamma| \leq \sigma_{max}
+\end{equation}
+där vanligen \(\sigma_{max} \in [10\degree,15\degree]\). Om $\Omega_{max}$ är hjulens maximala tillåtna vinkelhastighet, det vill säga \(|\omega_1|,|\omega_2| \leq \Omega_{max}\), så fås tillsammans med \eqref{hjulekv} följande begränsning
+
+\begin{equation}
+	|v \pm e\omega| \leq r\Omega_{max}
+\end{equation}
+
+På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
+
+\begin{equation}
+	\begin{cases}
+	x(k) \approx x(k-1) + \frac{T_c}{2} (v(k) \cos \theta(k) + v(k-1)\cos \theta(k-1)) \\
+	y(k) \approx y(k-1) + \frac{T_c}{2} (v(k) \sin \theta(k) + v(k-1)\sin \theta(k-1)) \\
+	\theta(k) \approx \theta(k-1) + \frac{T_c}{2} (\omega(k) + \omega(k-1)) \\
+	\end{cases}
+\end{equation}
+
+Definierar vi $D_x$ och $D_y$ som komponenterna av avståndet mellan robotens mittpunkt och avståndssensorer enligt
+
+\begin{equation*}
+	\begin{cases}
+	D_x = \Delta_y \sin \theta - \Delta_x \cos \theta \\
+	D_y = -\Delta_y \cos \theta - \Delta_x \sin \theta \\
+	\end{cases}
+\end{equation*}
+
+fås följande uttryck för $z(k)$
+
+\begin{equation}
+	z(k) \approx |(x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |
+\end{equation}
+
+\section{Kunskapsbas - kartläggning och vägoptimering}
+\subsection{Jacobimatris}
 Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlek $m\times n$ och definieras enligt
 \begin{equation*}
 	\bfr{J} = \frac{d\bfr{f}}{d\bfr{x}} = \left[ \begin{array}{ccc}
@@ -159,14 +239,14 @@ Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorv�
 \end{equation*}
 och betecknas ofta $\frac{\partial \left(f_1,\ldots,f_m\right)}{\partial \left(x_1,\ldots,x_n \right)}$.
 
-\subsubsection{Spår}
+\subsection{Spår}
 Låt $\bfr{A}$ vara en kvadratisk matris av storlek $n$ med elementen $a_{i,j}$. Spåret (engelska \emph{trace}) av $\bfr{A}$ definieras då enligt
 \begin{equation*}
 	\mathrm{tr}\,\bfr{A} = \sum_{k=1}^{n} a_{k,k}
 \end{equation*}
 och utgör summan av diagonalelementen.
 
-\subsubsection{Enkelt sammanhängande labyrint}
+\subsection{Enkelt sammanhängande labyrint}
 En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till varandra. Se figur \ref{maze} för en grafisk beskrivning.
 
 \begin{figure}[htbp]
@@ -191,13 +271,13 @@ En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till vara
 
 
 \pagebreak
-\section{Rapportens huvuddel, byt rubriknamn}
+\section{Empiri - Reglering}
 text
 
 \pagebreak
 %Olles del:
-\section{Utforskning och vägoptimering av okänd labyrint}
-Autonom styrning i alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemenen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
+\section{Empiri - kartläggning och vägoptimering}
+Autonom styrning av alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemenen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
 
 SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för problem av denna typ och saknar än så länge en optimal lösning. Flera SLAM-metoder har utvecklats för att lösa lokaliseringsproblemet där EKF-SLAM och Fast-SLAM utgör de mest populära enligt \cite{rat}, dessa utforskas vidare i avsnitt \ref{slam}.
 
@@ -287,7 +367,7 @@ Med utgångspunkt i grundproblemet så beräknar FastSLAM position och karta enl
 \end{align*}
 där sista likheten gäller på grund av obereoende-egenskapen hos fördelningarna. Problemet har nu övergått till att bestå av $n + 1$ antal subproblem. Dessa är enklare att lösa individuellt och sätta samman än att lösa grundproblemet.
 
-Utmaningen för algoritmen blir istället att intelligent välja ut vilka partiklar som ska samplas och vilka som ska ignoreras. Grisetti, et al. i \cite{reo} föreslår en algoritm för att filtrera bort partiklar med en hög mängd brus. Genom att beräkna en tröskelnivå som beror på både mängden partiklar och dess vikt, kan samtliga partiklar som överskrider nivån ignoreras. 
+Utmaningen för algoritmen blir istället att intelligent välja ut vilka partiklar som ska samplas och vilka som ska ignoreras. Grisetti, et al. föreslår i \cite{reo} en algoritm för att filtrera bort partiklar med en hög mängd brus. Genom att beräkna en tröskelnivå som beror på både mängden partiklar och dess vikt, kan samtliga partiklar som överskrider nivån ignoreras. 
 
 Av komplexitetsskäl gör sig FastSLAM bättre på stora system jämfört med EKF-SLAM som inte skalar lika väl. Att omsampla partiklar utgör flaskhalsen för FastSLAM vilket görs med komplexitet $\mathcal{O}\left(n_{p}\log\left(n_{m}\right)\right)$ där $n_p$ är antalet partiklar och $n_m$ är antalet landmärken.
 
@@ -417,7 +497,7 @@ Av de två SLAM-lösningar som behandlas i rapportens huvuddel passar ett \emph{
 
 Labyrinten som kartläggs byggs sådan att både höger- och vänsterväggföljning ska leda roboten till markeringen på liknande tid, se appendix C. Valet faller på en förbättrad variant av högerväggföljning. En av förbättringarna är att roboten inte behöver utforska vidare i en korridor ifall fågelavståndet mellan nuvarande position och ingång är längre än en utforskad väg till markeringen. Vidare behöver roboten inte utforska en återvändsgränd ifall den främre sensorn indikerar att det endast är en modul framöver, förutsatt att markeringen inte upptäcks i modulen. 
 
-Då roboten åtminstone har utforskat den kortaste vägen mellan ingång och markeringen optimeras den slutgiltiga välgen med hjälp av algoritmen A*. A* används eftersom roboten under kartläggningsfasen kommer att representera kartan med hjälp av noder och bågar. Att implementera A* är dessutom programmeringsmässigt enkelt.
+Då roboten åtminstone har utforskat den kortaste vägen mellan ingång och markeringen optimeras den slutgiltiga vägen med hjälp av algoritmen A*. A* används eftersom roboten under kartläggningsfasen kommer att representera kartan med hjälp av noder och bågar. Att implementera A* är dessutom programmeringsmässigt enkelt.
 
 Den heuristik som används är det så kallade \emph{Manhattan}-avståndet, det vill säga summan av de ortogonala avståndet mellan aktiv nod och slutnod. Heuristiken väljs utifrån labyrintens utseende med ortogonala korsningar. 
 
@@ -430,9 +510,9 @@ Resultatet av förstudien är att både kartläggning och vägoptimering är mö
 \bibliographystyle{ieeetr}
 \bibliography{references}
 
-\pagebreak
-\appendix
-\section{First Appendix}
+%\pagebreak
+%\appendix
+%\section{First Appendix}
 
 \end{flushleft}
 \end{document}
