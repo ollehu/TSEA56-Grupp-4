@@ -418,7 +418,10 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
-\subsubsection{Reglering} \label{mjukvarureglering}
+\subsubsection{Regleringsmodeller} \label{mjukvarureglering}
+Roboten kommer ha tre olika styrmoder: \textit{rak körning i korridor}, \textit{rotation} och \textit{körning på öppen yta}. Av dessa tre är det \textit{rak körning i korridor} och \textit{körning på öppen yta} som presenterar de största utmaningarna. För att reglera rotationen räcker en enkel PD-reglering, varför den inte kommer beskrivas mer ingående här. 
+
+\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett Kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Detta illustreras i fig \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
 \begin{figure}[H] 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -426,9 +429,13 @@ Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden 
 	\caption{Väggföljning\label{robotwall}}	
 \end{figure}
 
-När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
+I denna situation regleras roboten lämpligen enligt följande modell.
 
-Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
+\textit{Fyll på med reglermodell utifrån förstudien}
+
+\paragraph{Körning på öppen yta} Betrakta roboten i korridorsexemplet ovan, men nu på ett avstånd från sidoväggen som är större än vad sensorerna klarar av att mäta. I denna situation krävs en annan reglermodell.
+
+\textit{Fyll på med reglermodell utifrån förstudien}
 
 \pagebreak
 \section{Delmodul 4 - Datormodul}
@@ -541,9 +548,9 @@ Följande protokoll används för att skicka styrkommandon (gäller både för d
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A - Startbit
-	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
-	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
-	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
+	\item B (Bit 1) - Definierar om ett körkommando eller ett sensorvärde skickas (1 om körkommando, 0 om sensorvärde).
+	\item C (Bit 2-5) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab}, s.\pageref{sensortab} och tabell \ref{styrtab}, s.\pageref{styrtab} för specifika värden.
+	\item D (Bit 6-15) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde) mellan (0-1023).
 	\item E - Slutbit
 \end{itemize}
 
@@ -587,15 +594,15 @@ Respektive segment motsvarar följande:
 
 Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
 
-\begin{table}
-\begin{tabular}[l]{| l | p{0.7\linewidth} |} \hline
+%\begin{table}
+\begin{longtable}[l]{| l | p{0.7\linewidth} |} \hline
 \textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
 Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
 Rotation & Vinkelhastighet $\omega$ \\ \hline
 Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
-%\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
-\end{tabular}
-\end{table}
+\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
+\end{longtable}
+%\end{table}
 
 
 \begin{longtable}[l]{| l | l | c |} \hline
@@ -612,7 +619,19 @@ Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
 9 & Rotation kring y-axeln & rad/s \\ \hline
 10 & Rotation kring z-axeln & rad/s \\ \hline
 11 & IR-sensor för mål & cm \\ \hline
-\caption{Tabell över sensorerna}
+\caption{Tabell över sensorerna}\label{sensortab}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Styrkommando} \\ \hline 
+0 & Reglering av/på \\ \hline
+1 & Kör fram \\ \hline
+2 & Kör bak \\ \hline
+3 & Rotera åt höger \\ \hline
+4 & Rotera åt vänster \\ \hline
+5 & Gripklo öppna/stäng \\ \hline
+
+\caption{Tabell över styrkommandon}\label{styrtab}
 \end{longtable}
 
 
