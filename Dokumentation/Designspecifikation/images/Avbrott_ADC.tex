@@ -1,0 +1,43 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[block](start){Start};
+\node[decision, below of = start](int2){ADIF};
+\node[block, right of = int2, node distance = 3cm](in_sensor){Omvandlar avstånd till lämplig SI-enhet};
+\node[block, right of = in_sensor, node distance = 3cm](data_sensor){Lägger omvandlat data på separat dataregister};
+%\node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
+%\node[block, right of = in_styr, node distance = 3cm](data_styr){Skicka data till styrmodul};
+%\node[block, right of = data_styr, node distance = 3cm](in_pc){Initiera kommunikation med datormodul};
+%\node[block, right of = in_pc, node distance = 3cm](data_pc){Skicka data till datormodul};
+
+\draw[->](start) -- (int2);
+\draw[->](int2) |- ($(int2.south west) + (-0.7,-0.6)$) |- node[near start,left]{nej}(int2);
+\draw[->](int2) -- node[above]{ja} (in_sensor);
+\draw[->](in_sensor) -- (data_sensor);
+%\draw[->](data_sensor) -- (in_styr);
+%\draw[->](in_styr) -- (data_styr);
+%\draw[->](data_styr) -- (in_pc);
+%\draw[->](in_pc) -- (data_pc);
+
+	\end{tikzpicture}
+	
+\end{document}
