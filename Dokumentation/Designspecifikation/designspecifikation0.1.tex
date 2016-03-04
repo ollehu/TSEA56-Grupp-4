@@ -143,9 +143,9 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \clearpage
 \section{Delmodul 1 - Huvudmodul}
-Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer om intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
-Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul} Alla avbrottsingångar används: \verb+INT0+ för knapp för att ställa in körläge,\verb+INT1+ för knapp för att sätta på och av roboten(?) och \verb+INT2+ för avbrott från sensormodulen. Som det framgår ur figuren räcker \verb+ATmega16+ för det modulen behöver, utgångarna räcker. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
+Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul}. Till avbrottsingång \verb+INT0+ är styrmodulen kopplad och till  \verb+INT1+ sensormodulen. Som det framgår av figuren räcker \verb+ATmega16+ för det modulen behöver. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \begin{figure}[htbp]
 \centering
