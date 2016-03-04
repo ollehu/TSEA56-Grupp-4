@@ -21,7 +21,7 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[decision, below of = start](int2){INT1};
+\node[decision, below of = start](int2){Positiv flank på \verb+INT1+?};
 \node[block, right of = int2, node distance = 3cm](in_sensor){Initiera kommunkation med sensormodul};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Ta emot data från sensormodul};
 \node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
@@ -30,7 +30,7 @@
 \node[block, right of = in_pc, node distance = 3cm](data_pc){Skicka data till datormodul};
 
 \draw[->](start) -- (int2);
-\draw[->](int2) |- ($(int2.south west) + (-0.7,-0.6)$) |- node[near start,left]{nej}(int2);
+\draw[->](int2) |- node[near start,right]{nej} ++(-1.5,-1.5) |- (int2);
 \draw[->](int2) -- node[above]{ja} (in_sensor);
 \draw[->](in_sensor) -- (data_sensor);
 \draw[->](data_sensor) -- (in_styr);
