@@ -10,8 +10,8 @@
 \pagestyle{empty}
 \begin{document}
 
-\tikzstyle{decision} = [diamond, draw,
-    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{decision} = [diamond, draw, aspect=2,
+    text width=6em, text badly centered, node distance=3cm, inner sep=0pt]
     
 \tikzstyle{block} = [rectangle, draw,
     text width=5em, text centered, rounded corners, minimum height=4em]
@@ -21,22 +21,27 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[decision, below of = start](int2){Positiv flank på \verb+INT1+?};
-\node[block, right of = int2, node distance = 3cm](in_sensor){Initiera kommunkation med sensormodul};
+\node[decision,below of = start](int2){Positiv flank på \verb+INT1+?};
+\node[block, right of = int2, node distance = 4cm](in_sensor){Initiera kommunkation med sensormodul};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Ta emot data från sensormodul};
 \node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
 \node[block, right of = in_styr, node distance = 3cm](data_styr){Skicka data till styrmodul};
-\node[block, right of = data_styr, node distance = 3cm](in_pc){Initiera kommunikation med datormodul};
+\node[decision,right of = data_styr, node distance = 4.5cm](to_pc){Ska data skickas till datormodulen?};
+\node[block, right of = to_pc, node distance = 4.5cm](in_pc){Initiera kommunikation med datormodul};
 \node[block, right of = in_pc, node distance = 3cm](data_pc){Skicka data till datormodul};
+\node[block, below of = data_pc, node distance=7em](slut){Slut};
 
 \draw[->](start) -- (int2);
-\draw[->](int2) |- node[near start,right]{nej} ++(-1.5,-1.5) |- (int2);
+\draw[->](int2) |- node[near start,right]{nej} ++(-2,-1.5) |- (int2);
 \draw[->](int2) -- node[above]{ja} (in_sensor);
 \draw[->](in_sensor) -- (data_sensor);
 \draw[->](data_sensor) -- (in_styr);
 \draw[->](in_styr) -- (data_styr);
-\draw[->](data_styr) -- (in_pc);
+\draw[->](data_styr) -- (to_pc);
+\draw[->](to_pc) -- node[above]{ja}(in_pc);
+\draw[->](to_pc) |- node[near start, right]{nej} (slut);
 \draw[->](in_pc) -- (data_pc);
+\draw[->](data_pc) -- (slut);
 
 	\end{tikzpicture}
 	
