@@ -161,7 +161,7 @@ Knapp för val av körläge kopplas till huvudmodulen på en dataingång. Ingån
 
 \textbf{\textit{Autonomt läge}}
 
-Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut.
+Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut. I frågan om när regleringen är klar avvaktas ett avbrott från styrmodulen, vilket beskrivs närmare i avsnitt \ref{styrModul}.
 
 \begin{figure}[htbp]
 \centering
@@ -202,7 +202,8 @@ Sensormodulen är kopplad till huvudmodulens avbrottsingång \verb+INT1+. Hände
 \end{figure}
 
 \subsubsection{Styrmodul}
-Styrmodulen är kopplad till huvudmodulens avbrottsingång  \verb+INT0+. Avbrottssignalen som skickas berättar när regleringen är klar och huvudmodulen kan ta ett nytt beslut enligt flödesschemat i figur \ref{autonomousMode}.
+\label{styrModul}
+Styrmodulen är kopplad till huvudmodulens avbrottsingång  \verb+INT0+. En avbrottssignal triggas på positiv flank och skickas när regleringen av nuvarande styrkommando är klart. Huvudmodulen kan då ta ett nytt beslut enligt flödesschemat i figur \ref{autonomousMode}.
 
 \subsubsection{Kartläggning}
 Eftersom kartan enligt appendix C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
@@ -479,9 +480,9 @@ I tabell \ref{slavAdress} listas den adress respektive modul ska konfigureras me
 \begin{center}
 \begin{longtable}{|l|l|} \hline
 \textbf{Modul} & \textbf{Adress}\\ \hline 
-Huvudmodul & 1111000 \\ \hline
-Sensormodul & 1100111 \\ \hline
-Styrmodul & 0011111\\ \hline
+Huvudmodul & 1100100 \\ \hline
+Sensormodul & 1100101 \\ \hline
+Styrmodul & 1100110\\ \hline
 \caption{Modulernas adresser för kommunikation över I\textsuperscript{2}C-bussen}
 \label{slavAdress}
 \end{longtable}
