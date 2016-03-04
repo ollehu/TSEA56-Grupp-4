@@ -390,7 +390,7 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 Dessa sensorvärden kommer skickas med en frekvens av 10-20 Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
 \subsubsection{Reglering}
-Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i förstudien, se appenix \textcolor{red}{x}
+Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i avsnitt \ref{mjukvarureglering}.
 
 \subsubsection{Övrigt}
 Plattformen som roboten byggs på har färdiga kretsar för att styra chassits hjul. Hjulen kan styras parvis (höger och vänster) genom att sätta en bit för att bestämma rotationsriktningen och sedan skicka en PWM-signal för att bestämma rotationshastigheten. Roboten styrs alltså differentiellt, dvs genom olika hastighet på höger och vänster sida.
@@ -416,6 +416,13 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
 \subsubsection{Reglering} \label{mjukvarureglering}
+\begin{figure}[H] 
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\import{images/}{cartesian}}
+	\caption{Väggföljning\label{robotwall}}	
+\end{figure}
+
 När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
@@ -577,13 +584,15 @@ Respektive segment motsvarar följande:
 
 Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
 
-\begin{longtable}[l]{| l | l |} \hline
+\begin{table}
+\begin{tabular}[l]{| l | p{0.7\linewidth} |} \hline
 \textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
-Körning rakt fram i korridor & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
+Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
 Rotation & Vinkelhastighet $\omega$ \\ \hline
-Körning i öppen yta & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
-\caption{Tabell över de olika styrmoderna, se figur \ref{robotwall}}
-\end{longtable}
+Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
+%\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
+\end{tabular}
+\end{table}
 
 \begin{longtable}[l]{| l | l | c |} \hline
 \textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
