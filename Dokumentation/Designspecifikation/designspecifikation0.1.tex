@@ -100,13 +100,13 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
-\lipsum
+Det här dokumentet innehåller en beskrivning av en undsättningsrobot, dess komponenter och hur kommunikationen mellan de olika delarna sker. Syftet är att ha en detaljerad beskrivning som underlag för konstruktionsarbetet.
 
 \subsection{Det totala systemet}
 Det totala system kommer bestå av tre processormoduler, en Bluetooth\textsuperscript{\circledR}, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna är:
 \begin{itemize}
 	\item Huvudmodul - sköter kommunikationen, både internt via I\textsuperscript{2}C-bussen och externt via en Bluetooth\textsuperscript{\circledR}-enhet.
-	\item Sensormodul - är direkt kopplad till alla sensor och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
+	\item Sensormodul - är direkt kopplad till alla sensorer och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
 	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av vissa sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
@@ -157,7 +157,7 @@ Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvud
 \subsection{Detaljerad beskrivning}
 
 \subsubsection {Körläge}
-Knapp för val av körläge kopplas till huvudmodulen på en dataingång. Ingången läses en gång per varv i huvudloopen.
+En brytare för val av körläge kopplas till huvudmodulen på en dataingång. Ingången läses en gång per varv i huvudloopen.
 
 \textbf{\textit{Autonomt läge}}
 
@@ -172,17 +172,17 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 
 \textbf{\textit{Manuellt läge}}
 
-I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning.
+I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning. Så fort datormodulen upptäcker att ett styrkommando matas in skickas det vidare till huvudmodulen. När det aktuella styrkommandot avbryts meddelas huvudmodulen, som i sin tur meddelar styrmodulen att avsluta regleringen.
 
 \begin{figure}[htbp]
 \centering
-\noindent\resizebox{0.9\linewidth}{!}{
+\noindent\resizebox{0.7\linewidth}{!}{
 	\input{images/manualMode}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
 \end{figure}
 
 \subsubsection {Strömbrytare}
-Strömbrytare i form av en knapp som kopplas till en dataingång. Detta medför att förändring inte nödvändigtvis sker på en gång. I figur \ref{strombrytare} visas förloppet då huvudprogrammet är redo att läsa av ingången. 
+Strömbrytare kopplas till en dataingång. Detta medför att förändring inte nödvändigtvis sker på en gång. I figur \ref{strombrytare} visas förloppet då huvudprogrammet är redo att läsa av ingången. 
 
 \begin{figure}[htbp]
 \centering
@@ -269,12 +269,30 @@ Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$
 Huvudmodulen kommer kräva följande hårdvara:
 \begin{itemize}
 	\item ATmega16
-	\item  Bluetooth\textsuperscript{\circledR}  (Firefly)
+	\item  Bluetooth\textsuperscript{\circledR}  (FireFly)
 \end{itemize}
 
 
 \subsection{Mjukvara}
-Koden i huvudmodulen är skriven i C. 
+Koden i huvudmodulen är skriven i C. Nedan beskrivs vad som händer i huvudprogrammet respektive i avbrott.
+
+\subsubsection{Huvudprogram}
+I huvudmodulens huvudprogram ska följande saker genomföras:
+
+\begin{itemize}
+	\item Läsa av körläge (autonomt eller manuellt)
+	\item Läsa av strömbrytaren (aktiv eller i viloläge)
+	\item I autonomnt körläge hantera avsökningen och skicka tillhörande körkommando
+\end{itemize}
+
+\subsubsection{Avbrott}
+De avbrott som är kopplade till huvudmodulen ska hantera följande:
+
+\begin{itemize}
+	\item Hämta och skicka sensordata
+	\item I autonomnt körläge trigga beslut kring vilken kartmodul som ska avsökas
+	\item I manuellt körläge ta emot körkommando via Bluetooth\textsuperscript{\circledR}
+\end{itemize}
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
@@ -334,11 +352,21 @@ I den labyrint där roboten ska hitta den nödställde kommer det finnas korsnin
 \subsubsection{IR-detektor, IRM-8601-S}
 IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilken ska sända ut en IR-signal. Liksom figur \ref{kopplingsschema:sensormodul} illustrerar så är IRM-8601-s förhållandevis trivial i sitt utförande, enheten har 2 ingångar vilka ska anslutas med 5 V samt jord. 
 
+
+%\item[Identifierare av nödställd] \hfill \\
+
+
+\subsection{Mjukvara}
+Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
+
+\subsubsection{IR-sensorerna}
 Liksom i fallet med GP2D120 så är IR-dektorns utsignal analog, vilket innebär att signal bör AD-omvandlas.  Omvandlingen sker via 
+
 
 \begin{equation*}
 	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
 \end{equation*}
+
 
 där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}.
 
@@ -371,6 +399,18 @@ Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av m
 
 \subsubsection{MPU-6050}
 Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
+
+\subsubsection{Kodstruktur}
+Sensormodulen har som nämnt tidigare tre huvuduppgifter: ta emot rådata från sensorerna (både i form av analoga och digitala signaler), A/D-omvandla och konvertera dessa signaler (om det krävs) och sedan skicka paket av relevant, konverterad sensordata till huvudmodulen.
+
+\subsubsection{Mottagande av data och omvandling}
+Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna omvandlas multiplexas till en insignal som sedan A/D-omvandlas konstant. När A/D-omvandlingen initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i ett separat register för varje sensor. %Fyll på om PWM och SPI
+
+\subsubsection{Konvertering}
+Konvertering av de sensorvärden som inte är linjära sker kontinuerligt i huvudloopen. Programmet hämtar ett värde i taget från registrena för okonverterade sensor data, konverterar sedan dessa med hjälp av en tabell eller formel och sparar det nya värdet i ett nytt register. 
+
+\subsubsection{Skicka sensordatapaket}
+De färdigkonverterade datapaketen från sensor modulen kommer skickas med jämna mellanrum, med en frekvens på ca 10-20 Hz. Det passar därför bra att initiera subrutinen, som har hand om överföringen, med ett avbrott kopplat till en klocka med lämplig frekvens. Detta avbrott har högst prioritet hos sensormodulen. Subrutinen skickar sedan en positiv flank till huvudmodulen, varpå ett avbrott initieras hos huvudmodulen och den upprättar kontakt via I\textsuperscript{2}C. När hela datapaketet sedan överförts är denna avbrottsrutin avklarad.
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
@@ -432,7 +472,10 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
-\subsubsection{Reglering} \label{mjukvarureglering}
+\subsubsection{Regleringsmodeller} \label{mjukvarureglering}
+Roboten kommer ha tre olika styrmoder: \textit{rak körning i korridor}, \textit{rotation} och \textit{körning på öppen yta}. Av dessa tre är det \textit{rak körning i korridor} och \textit{körning på öppen yta} som presenterar de största utmaningarna. För att reglera rotationen räcker en enkel PD-reglering, varför den inte kommer beskrivas mer ingående här. 
+
+\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett Kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Detta illustreras i fig \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
 \begin{figure}[H] 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -440,9 +483,24 @@ Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden 
 	\caption{Väggföljning\label{robotwall}}	
 \end{figure}
 
-När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
+I denna situation regleras roboten lämpligen enligt följande modell.
 
-Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
+\textit{Fyll på med reglermodell utifrån förstudien}
+
+\paragraph{Körning på öppen yta} Betrakta roboten i korridorsexemplet ovan, men nu på ett avstånd från sidoväggen som är större än vad sensorerna klarar av att mäta. I denna situation krävs en annan reglermodell.
+
+\textit{Fyll på med reglermodell utifrån förstudien}
+
+\subsubsection{Huvudloop och avbrott}
+Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på metoder utgående från typen av information som anländer. I fallet av manuell styrning mot styrkommandon sker ingen reglering gentemot väggar och kommandona översätts endast en PWM-sekvens åt motorerna.
+
+Då roboten navigerar i autonomnt läge består kommunikationen även av sensordata från huvudmodulen. Här kallas en metod som läser in sensordata och lagrar dessa i lokala variabler. Dessa variabler används i huvudloopens reglering och på så sätt sker alltid regleringen utifrån de allra senaste sensorvärdena. 
+
+Även LCD-displayen uppdateras i huvudloopen. Det finns inget behov av att uppdatera displayen i takt med att nya sensorvärden anländer, eftersom det skulle medföra en lång avbrottsrutin och lämna mindre tid åt regleringen. I stället uppdateras LCD-displayen endast vid var tionde uppdatering av sensordata, denna fördelning kan komma att ändras under projektets gång. 
+
+Gripklon styrs av en separat metod och aktiveras endast då huvudmodulen informerar styrmodulen om att den ska användas. Här återfinns en enkel reglermodell som tillåter styrmodulen att öppna respektive stänga gripklon. 
+
+När styrmodulen har genomfört styrkommandot signaleras huvudmodulen genom ett avbrott. Då får huvudmodulen vetskap om att styrmodulen är redo för ytterligare ett styrkommando. 
 
 \pagebreak
 \section{Delmodul 4 - Datormodul}
@@ -555,9 +613,9 @@ Följande protokoll används för att skicka styrkommandon (gäller både för d
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A - Startbit
-	\item B (Bit x-y) - Definierar om ett körkommando eller ett sensorvärde skickas.
-	\item C (Bit x-y) - Definierar vilket kommando eller vilken typ av värde som skickas.
-	\item D (Bit x-y) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
+	\item B (Bit 1) - Definierar om ett körkommando eller ett sensorvärde skickas (1 om körkommando, 0 om sensorvärde).
+	\item C (Bit 2-5) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab}, s.\pageref{sensortab} och tabell \ref{styrtab}, s.\pageref{styrtab} för specifika värden.
+	\item D (Bit 6-15) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde) mellan (0-1023).
 	\item E - Slutbit
 \end{itemize}
 
@@ -596,20 +654,20 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Startbit
 	\item B - Sensordatapaket
-	\item E - Slutbit
+	\item C - Slutbit
 \end{itemize}
 
 Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
 
-\begin{table}
-\begin{tabular}[l]{| l | p{0.7\linewidth} |} \hline
+%\begin{table}
+\begin{longtable}[l]{| l | p{0.7\linewidth} |} \hline
 \textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
 Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
 Rotation & Vinkelhastighet $\omega$ \\ \hline
 Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
-%\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
-\end{tabular}
-\end{table}
+\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
+\end{longtable}
+%\end{table}
 
 
 \begin{longtable}[l]{| l | l | c |} \hline
@@ -626,7 +684,19 @@ Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
 9 & Rotation kring y-axeln & rad/s \\ \hline
 10 & Rotation kring z-axeln & rad/s \\ \hline
 11 & IR-sensor för mål & cm \\ \hline
-\caption{Tabell över sensorerna}
+\caption{Tabell över sensorerna}\label{sensortab}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Styrkommando} \\ \hline 
+0 & Reglering av/på \\ \hline
+1 & Kör fram \\ \hline
+2 & Kör bak \\ \hline
+3 & Rotera åt höger \\ \hline
+4 & Rotera åt vänster \\ \hline
+5 & Gripklo öppna/stäng \\ \hline
+
+\caption{Tabell över styrkommandon}\label{styrtab}
 \end{longtable}
 
 
@@ -645,7 +715,6 @@ Inom utvecklingsarbetet för varje aktivitet hanteras också eventuell felhanter
 
 \subsection{Sampling}
 Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdaterade värden skickade till sig. Sampling kommer ske med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 
-
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
