@@ -441,7 +441,15 @@ När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona u
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
 
 \subsubsection{Huvudloop och avbrott}
-Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på olika metoder utgående från den typ av information som anländer. 
+Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på metoder utgående från typen av information som anländer. I fallet av manuell styrning mot styrkommandon sker ingen reglering gentemot väggar och kommandona översätts endast en PWM-sekvens åt motorerna.
+
+Då roboten navigerar i autonomnt läge består kommunikationen även av sensordata från huvudmodulen. Här kallas en metod som läser in sensordata och lagrar dessa i lokala variabler. Dessa variabler används i huvudloopens reglering och på så sätt sker alltid regleringen utifrån de allra senaste sensorvärdena. 
+
+Även LCD-displayen uppdateras i huvudloopen. Det finns inget behov av att uppdatera displayen i takt med att nya sensorvärden anländer, eftersom det skulle medföra en lång avbrottsrutin och lämna mindre tid åt regleringen. I stället uppdateras LCD-displayen endast vid var tionde uppdatering av sensordata, denna fördelning kan komma att ändras under projektets gång. 
+
+Gripklon styrs av en separat metod och aktiveras endast då huvudmodulen informerar styrmodulen om att den ska användas. Här återfinns en enkel reglermodell som tillåter styrmodulen att öppna respektive stänga gripklon. 
+
+När styrmodulen har genomfört styrkommandot signaleras huvudmodulen genom ett avbrott. Då får huvudmodulen vetskap om att styrmodulen är redo för ytterligare ett styrkommando. 
 
 \pagebreak
 \section{Delmodul 4 - Datormodul}
