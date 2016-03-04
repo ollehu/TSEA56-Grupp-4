@@ -370,6 +370,15 @@ där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 dig
 	\caption{Förhållande mellan analog spänning och avstånd \label{IR_avstand}}
 \end{figure}
 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/Avbrott_ADC}}
+	\caption{Flödesschema för hur AD-omvandling ska initieras\label{datormodul:Avbrott_ADC}}	
+\end{figure}
+
+
 \FloatBarrier
 \subsubsection{LIDAR-Lite}
 Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
@@ -431,6 +440,7 @@ Styrmodulen kommer kräva följande hårdvara:
 \subsection{Mjukvara}
 Koden för styrmodulen är skriven i C och består främst av två delar, reglering och display. Gripklon styrs direkt av ett styrkommando och kan endast öppnas respektive stängas.
 
+
 \subsubsection{Display}
 Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärden i realtid. I koden används drivrutinen \emph{lcd.h} för att initiera och skriva text till displayen. Genom att anropa initieringsmetoden rensas displayen och pekaren placeras på rätt position. Därefter skrivs typen av mätvärde och det faktiska värdet ut. Tack vare två rader kan flera mätvärden skrivas ut samtidigt, förslagsvis ett i respektive hörn av displayen.
 
@@ -447,6 +457,9 @@ Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden 
 När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona utifrån de senaste mottagna sensorvärdena. Den reglering som programmeras till modulen består av tre komponenter. Den ena ser till att roboten färdas i mitten av korridoren, den andra anpassar hastigheten utifrån korridorens längd och den tredje ser till att en sväng tas vinkelrätt.
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
+
+\subsubsection{Huvudloop och avbrott}
+Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på olika metoder utgående från den typ av information som anländer. 
 
 \pagebreak
 \section{Delmodul 4 - Datormodul}
