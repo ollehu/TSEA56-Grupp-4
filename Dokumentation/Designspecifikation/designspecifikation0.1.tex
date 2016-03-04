@@ -338,16 +338,20 @@ Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal
 \subsubsection{IR-sensor, GP2D120}
 För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med ca 40 centimeters bredd, och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn GP2D120 bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm ifrån sensorn. 
 
-Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. GP2D120 är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord. 
+Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. GP2D120 är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av ström, där IR-sensorerna behöver lågpassfiltreras.
 %Om robotens reglering inte är tillräckligt bra är det risk att avståndssensorn tappar precision, %eller till och med mister avståndsbedömning helt. Det beror på att om roboten inte kör %parallellt med väggen kommer det utstrålade ljuset att reflekteras med en för stor vinkel för %att detektorerna ska kunna uppfatta reflektionen.
 
 \subsubsection{Gyro/accelerometer, MPU-6050}
 %\item[Vinkelhastighet] \hfill \\
 I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används MPU6050, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+
+
+
 % och informationen från sensorn kommer att förmedlas via ett I\textsuperscript{2}C-buss-interface.
  
 \subsubsection{IR-detektor, IRM-8601-S}
 IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilken ska sända ut en IR-signal. Liksom figur \ref{kopplingsschema:sensormodul} illustrerar så är IRM-8601-s förhållandevis trivial i sitt utförande, enheten har 2 ingångar vilka ska anslutas med 5 V samt jord. 
+
 
 %\item[Identifierare av nödställd] \hfill \\
 
@@ -356,19 +360,29 @@ IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilke
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-GP2D120 och IRM-8601-S reflekterar ljus för att mäta avstånd till omgivande objekt och för att identifiera den nödställde. Utsignalen vid dessa operationer är spänning (Vout), vilken behöver omvandlas till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via 
+Liksom i fallet med GP2D120 så är IR-dektorns utsignal analog, vilket innebär att signal bör AD-omvandlas.  Omvandlingen sker via 
+
 
 \begin{equation*}
 	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
 \end{equation*}
 
-där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}. Av figuren är det uppenbart att någon typ av bearbening, utöver A/D-omvanlingen, kommer krävas för att få ett linjärt förhållande mellan avståndet och det digitala värdet. IR-sensorerna behöver även lågpassfiltreras, vilket görs genom multiplexning genom ett LP-filter.
+
+där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}.
 
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[scale=0.4]{images/IR_avstand}
 	\caption{Förhållande mellan analog spänning och avstånd \label{IR_avstand}}
 \end{figure}
+%\item[Identifierare av nödställd] \hfill \\
+
+
+\subsection{Mjukvara}
+Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
+
+\subsubsection{IR-sensorerna}
+GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. 
 
 
 \begin{figure}[htbp]
