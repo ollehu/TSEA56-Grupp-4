@@ -106,7 +106,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 Det totala system kommer bestå av tre processormoduler, en Bluetooth\textsuperscript{\circledR}, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna är:
 \begin{itemize}
 	\item Huvudmodul - sköter kommunikationen, både internt via I\textsuperscript{2}C-bussen och externt via en Bluetooth\textsuperscript{\circledR}-enhet.
-	\item Sensormodul - är direkt kopplad till alla sensor och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Det färdigkonverterade datat skickas sedan vidare till huvudmodulen.
+	\item Sensormodul - är direkt kopplad till alla sensor och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
 	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av vissa sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
@@ -172,7 +172,7 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 
 \textbf{\textit{Manuellt läge}}
 
-I figur \ref{manualMode} syns kommunikationsflödet när roboten är intsälld på manuell styrning.
+I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning.
 
 \begin{figure}[htbp]
 \centering
@@ -442,7 +442,7 @@ Tabellen över sensordata skriver ut informationen från den senaste kommunikati
 
 Grafen över historiska sensordata tar del av samma information som tabellen, men ritar även ut tidigare data i form av en graf. Denna ruta används främst för felsökning och ger ett tidsperspektiv till sensordatan.
 
-Panelen för knappar visar vilken knappkombination från tangenbordet som är aktiv. Tabell \ref{datormodul:combinations} visar möjliga knappkombinationer och dess översättning till styrkommando. Panelen fyller i de knappar som hålls nere och varnar ifall en knappkombination är otillåten, exempelvis ifall \mbox{$\leftarrow$ och $\rightarrow$} trycks samtidigt.
+Panelen för knappar visar vilken knappkombination från tangentbordet som är aktiv. Tabell \ref{datormodul:combinations} visar möjliga knappkombinationer och dess översättning till styrkommando. Panelen fyller i de knappar som hålls nere och varnar ifall en knappkombination är otillåten, exempelvis ifall \mbox{$\leftarrow$ och $\rightarrow$} trycks samtidigt.
 
 \begin{longtable}{|p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} p{.05\linewidth} c l|}
 	\multicolumn{4}{c}{\textbf{Knapptryckning}} & & \multicolumn{1}{l}{\textbf{Översättning}} 	\\ \nobreakhline\nobreakhline 
@@ -561,7 +561,7 @@ Respektive segment motsvarar följande:
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - sensordata}
-Sensordatat skickas enligt följande protokoll:
+Sensordata skickas enligt följande protokoll:
 
  \begin{figure}[H]
 \centering
@@ -584,7 +584,7 @@ Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med
 Körning rakt fram i korridor & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
 Rotation & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
 Körning i öppen yta & \textit{fyll i utifrån avnsitt \ref{mjukvarureglering}} \\ \hline
-\caption{Tabell över de olika styrmoderna}
+\caption{Tabell över de olika styrmodulerna}
 \end{longtable}
 
 \begin{longtable}[l]{| l | l | c |} \hline
