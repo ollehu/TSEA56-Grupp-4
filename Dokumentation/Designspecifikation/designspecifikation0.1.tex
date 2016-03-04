@@ -100,13 +100,13 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
-\lipsum
+Det här dokumentet innehåller en beskrivning av en undsättningsrobot, dess komponenter och hur kommunikationen mellan de olika delarna sker. Syftet är att ha en detaljerad beskrivning som underlag för konstruktionsarbetet.
 
 \subsection{Det totala systemet}
 Det totala system kommer bestå av tre processormoduler, en Bluetooth\textsuperscript{\circledR}, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna är:
 \begin{itemize}
 	\item Huvudmodul - sköter kommunikationen, både internt via I\textsuperscript{2}C-bussen och externt via en Bluetooth\textsuperscript{\circledR}-enhet.
-	\item Sensormodul - är direkt kopplad till alla sensor och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
+	\item Sensormodul - är direkt kopplad till alla sensorer och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
 	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av vissa sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
@@ -269,7 +269,7 @@ Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$
 Huvudmodulen kommer kräva följande hårdvara:
 \begin{itemize}
 	\item ATmega16
-	\item  Bluetooth\textsuperscript{\circledR}  (Firefly)
+	\item  Bluetooth\textsuperscript{\circledR}  (FireFly)
 \end{itemize}
 
 
@@ -575,7 +575,7 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Startbit
 	\item B - Sensordatapaket
-	\item E - Slutbit
+	\item C - Slutbit
 \end{itemize}
 
 Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
