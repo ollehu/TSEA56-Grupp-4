@@ -440,6 +440,9 @@ När styrmodulen tar emot ett kommando från huvudmodulen så regleras servona u
 
 Isak: fortsätt på stycket och förklara regleringen utifrån din förstudie
 
+\subsubsection{Huvudloop och avbrott}
+Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på olika metoder utgående från den typ av information som anländer. 
+
 \pagebreak
 \section{Delmodul 4 - Datormodul}
 Datormodulens syfte är att presentera ett gränssnitt för att styra, kartlägga och felsöka roboten i realtid. Kommunikationen sker via Bluetooth\textsuperscript{\circledR} och består av styrkommandon (datormodul $\rightarrow$ huvudmodul) samt mätvärden och karta (huvudmodul $\rightarrow$ datormodul). 
