@@ -172,11 +172,11 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 
 \textbf{\textit{Manuellt läge}}
 
-I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning.
+I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning. Så fort datormodulen upptäcker att ett styrkommando matas in skickas det vidare till huvudmodulen. När det aktuella styrkommandot avbryts meddelas huvudmodulen, som i sin tur meddelar styrmodulen att avsluta regleringen.
 
 \begin{figure}[htbp]
 \centering
-\noindent\resizebox{0.9\linewidth}{!}{
+\noindent\resizebox{0.7\linewidth}{!}{
 	\input{images/manualMode}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
 \end{figure}
@@ -274,7 +274,25 @@ Huvudmodulen kommer kräva följande hårdvara:
 
 
 \subsection{Mjukvara}
-Koden i huvudmodulen är skriven i C. 
+Koden i huvudmodulen är skriven i C. Nedan beskrivs vad som händer i huvudprogrammet respektive i avbrott.
+
+\subsubsection{Huvudprogram}
+I huvudmodulens huvudprogram ska följande saker genomföras:
+
+\begin{itemize}
+	\item Läsa av körläge (autonomt eller manuellt)
+	\item Läsa av strömbrytaren (aktiv eller i viloläge)
+	\item I autonomnt körläge hantera avsökningen och skicka tillhörande körkommando
+\end{itemize}
+
+\subsubsection{Avbrott}
+De avbrott som är kopplade till huvudmodulen ska hantera följande:
+
+\begin{itemize}
+	\item Hämta och skicka sensordata
+	\item I autonomnt körläge trigga beslut kring vilken kartmodul som ska avsökas
+	\item I manuellt körläge ta emot körkommando via Bluetooth\textsuperscript{\circledR}
+\end{itemize}
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
@@ -644,7 +662,6 @@ Inom utvecklingsarbetet för varje aktivitet hanteras också eventuell felhanter
 
 \subsection{Sampling}
 Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdaterade värden skickade till sig. Sampling kommer ske med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 
-
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
