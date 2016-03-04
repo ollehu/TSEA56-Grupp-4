@@ -1,0 +1,46 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{positioning}
+\usepackage{standalone}
+
+\begin{document}
+	
+\begin{tikzpicture}[scale=1,rotate=0]
+	
+	%Draw axis	
+	\draw [<->,thick] (0,15) node (yaxis) [above] {$y$}
+ 	|- (17,0) node (xaxis) [right] {$x$};
+ 	
+ 	%Draw wall
+ 	\coordinate (wallstart) at (2,1);
+	\draw[thick] (wallstart) --+ (20:16);
+ 	\draw[thick] (wallstart) --+ (5,0);
+ 	\draw (wallstart) --+ (1,0) arc (0:20:1);
+ 	\node at ($(wallstart) + (8:1.2)$) {$\gamma$};
+ 	
+ 	%x_m and y_m
+ 	\coordinate (xmym) at ($(wallstart) + (20:5)$);
+ 	%\fill (xmym) circle [radius=2pt] node [below, xshift = 15] {$(x_m,y_m)$};
+ 	
+ 	%Draw wall-following line
+ 	\coordinate (linestart) at (2,3);
+ 	\draw[thick, dotted] (linestart) --+ (20:16);
+ 	\draw[thick,<->] ($(linestart) + (20:13)$) --+ (110:-1.87) node[midway, right]{$d^0$};
+ 	
+ 	%Input robot.tex
+ 	\node[inner sep=0pt] (robot) at (9.5,8) 
+ 	{\input{../images/robot.tex}};
+	
+	%z(k) and d(k)
+	\draw[thick,<->] ($(wallstart) + (20:7.9)$) --+ (110:2.1) node[midway, right]{$z(k)$};
+	\draw[thick,<->] ($(wallstart) + (20:9.37)$) --+ (110:4.35) node[near start, right]{$d(k)$};
+	
+\end{tikzpicture}
+	
+\end{document}  

@@ -4,8 +4,16 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{epstopdf}
+
 \usepackage{textgreek}
 \usepackage{amsmath}
+
+
+\usepackage{stringenc}
+\usepackage{pdfescape}
+\DeclareUnicodeCharacter{0308}{}
+
+
 
 \begin{document}
 \begin{titlepage}
@@ -87,7 +95,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & - &  Första utkastet & Grupp 4 & - \\ \hline
+0.1 & 2016/03/03 &  Första utkastet & Grupp 4 & ZI \\ \hline
 \end{tabular}
 \end{table}
 
@@ -110,12 +118,15 @@ Syftet med denna rapport är att undersöka vilka sensorer som är relevanta fö
 \subsection{Frågeställningar}
 Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behandlas i denna rapport:
 
-\begin{itemize}
-	\item [-] Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
-	\item [-] Vilka sensorer är lämpliga att använda till projektet?
-	\item [-] Hur kan dessa implementeras? 
-\end{itemize}
 
+
+\begin{itemize}
+
+	\item	 Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
+	\item Vilka sensorer är lämpliga att använda till projektet?
+	\item Hur kan dessa implementeras? 
+
+\end{itemize}
 
 
 
@@ -125,12 +136,11 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 I följande avsnitt följer en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-En kapacitiva sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. (2)
-
-%http://www.capsense.com/capsense-wp.pdf (2)
+En kapacitiv sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. \cite{website:capacative}
 
 \subsubsection{FDC1004}
-En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften. (1), (3)
+En sensor som inte kräver kontakt är FDC1004. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kan känna igen olika typer av material. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation 1, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften. \cite{Texas}, \cite{Texas2}
+
 
 \begin{equation*}
 	\textrm{C} = \frac {e_{r} \times e_{o} \times A}{d}						
@@ -144,6 +154,7 @@ I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar s
 	\caption{Ett fingers påverkan på kapacitans \label{capacative}}
 \end{figure}
 
+
 %Förhållandet mellan kapacitans och spänning visas i figur 2.
 
 %\begin{figure}[htbp]
@@ -153,6 +164,19 @@ I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar s
 %\end{figure}
 
     
+% http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
+
+%http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
+
+
+\subsection{Ultraljudssensorer}
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+
+\begin{equation*}
+	\textrm{s} = v_{luft} \times t						
+\end{equation*}
+
+
 % http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
 %http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
@@ -179,6 +203,9 @@ Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där s
 En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{website:automation}
 
 %http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors (1)
+
+\subsubsection{SFH300}
+SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
 
 \subsubsection{SFH300}
 SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
@@ -215,12 +242,17 @@ Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eft
 \subsubsection{GP2D120}
 
 \subsection{Lasersensor}
+
 En lasersensorer mäter avstånd till objekt genom att sända ut en laserstråle för att sedan mäta hur lång tid (t) det tar för strålen av reflekteras. Avståndet till objektet (D) är räknas fram enligt ekvation 1, där c står för ljusets hastighet i luft. (1)
+
+Det finns olika typer av lasersensorer som använder olika tekniker foch har olika funktioner. En typ är den avståndsmätande elektrooptiska sensorn som sänder ut en laser stråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) är räknas fram enligt ekvation 1, där c står för ljusets hastighet i luft.
+
 
 \begin{equation*}
 	\textrm{D} = \frac {c \times t}{2}						
 \end{equation*}
 
+En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. 
 
 
 \subsubsection{LIDAR-Lite}
@@ -248,6 +280,13 @@ MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omv
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
 
+%http://www.mtiinstruments.com/pdf/appnotes/lasersensor.pdf (1)
+
+
+\subsubsection{LIDAR-Lite}
+
+
+\subsection{Gyro-/accelerometer}
 
 \pagebreak
 \section{Fallet undsättningsrobot}
