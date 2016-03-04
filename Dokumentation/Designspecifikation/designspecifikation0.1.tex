@@ -338,13 +338,13 @@ IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilke
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via 
+GP2D120 och IRM-8601-S reflekterar ljus för att mäta avstånd till omgivande objekt och för att identifiera den nödställde. Utsignalen vid dessa operationer är spänning (Vout), vilken behöver omvandlas till ett digitalt värde för att kunna skicka vidare informationen. Omvandlingen sker via 
 
 \begin{equation*}
 	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
 \end{equation*}
 
-där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}. En liknande omvandlingstabell för vinkelmätning finns ej utan får testas fram på egen hand. IR-sensorerna behöver lågpassfiltreras, vilket de gör genom användning av en multiplex.
+där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}. Av figuren är det uppenbart att någon typ av bearbening, utöver A/D-omvanlingen, kommer krävas för att få ett linjärt förhållande mellan avståndet och det digitala värdet. IR-sensorerna behöver även lågpassfiltreras, vilket görs genom multiplexning genom ett LP-filter.
 
 \begin{figure}[htbp]
 	\centering
@@ -358,6 +358,9 @@ Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av m
 
 \subsubsection{MPU-6050}
 Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
+
+\subsubsection{Kodstruktur}
+
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
