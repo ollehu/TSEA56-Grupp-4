@@ -360,7 +360,16 @@ Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av m
 Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
 
 \subsubsection{Kodstruktur}
+Sensormodulen har som nämnt tidigare tre huvuduppgifter: ta emot rådata från sensorerna (både i form av analoga och digitala signaler), A/D-omvandla och konvertera dessa signaler (om det krävs) och sedan skicka paket av relevant, konverterad sensordata till huvudmodulen.
 
+\subsubsection{Mottagande av data och omvandling}
+Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna omvandlas multiplexas till en insignal som sedan A/D-omvandlas konstant. När A/D-omvandlingen initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i ett separat register för varje sensor. %Fyll på om PWM och SPI
+
+\subsubsection{Konvertering}
+Konvertering av de sensorvärden som inte är linjära sker kontinuerligt i huvudloopen. Programmet hämtar ett värde i taget från registrena för okonverterade sensor data, konverterar sedan dessa med hjälp av en tabell eller formel och sparar det nya värdet i ett nytt register. 
+
+\subsubsection{Skicka sensordatapaket}
+De färdigkonverterade datapaketen från sensor modulen kommer skickas med jämna mellanrum, med en frekvens på ca 10-20 Hz. Det passar därför bra att initiera subrutinen, som har hand om överföringen, med ett avbrott kopplat till en klocka med lämplig frekvens. Detta avbrott har högst prioritet hos sensormodulen. Subrutinen skickar sedan en positiv flank till huvudmodulen, varpå ett avbrott initieras hos huvudmodulen och den upprättar kontakt via I\textsuperscript{2}C. När hela datapaketet sedan överförts är denna avbrottsrutin avklarad.
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
