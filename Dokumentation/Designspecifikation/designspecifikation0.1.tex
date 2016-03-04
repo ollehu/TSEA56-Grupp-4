@@ -389,6 +389,8 @@ Eftersom kommandona till styrmodulen skickas på den form som visats ovan kommer
 \end{itemize}
 Dessa sensorvärden kommer skickas med en frekvens av 10-20 Hz förutsatt att reglering är aktiverad, det vill säga vid autonom styrning av roboten.
 
+När styrmodulen har genomfört sitt körkommando från huvudmodulen skickar den en positiv flank på \verb+PB4+. Denna utgång är kopplad till en avbrottsingång på huvudmodulen och tolkas som att styrmodulen är redo för ett nytt kommando. 
+
 \subsubsection{Reglering}
 Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i Appendix \textcolor{red}{x}.
 
