@@ -98,7 +98,8 @@ Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den 
 \section{Problemformulering}
 Nedan presenteras de problemformuleringar som förstudien tar avstamp i.
 \subsection{Reglering}
-Att skapa system med hög grad av automation, som klarar av att operera i ostrukturerade miljöer är enligt \cite{intro} en av grundförutsättningarna för att öka robotars användningsområde. För att nå denna grad av självständighet krävs det att roboten, med hjälp av väldesignade modeller, kan förstå sin omgivning. Det krävs också att roboten, genom sensorer, kan utvinna meningsfull information ur sin omgivning för att få modellerna att fungera som avsett. I denna rapport läggs fokus på reglermodellerna och hur dessa, förutsatt att de förses med korrekt sensordata, kan utformas för att styra roboten på ett önskat sätt.
+Att skapa system med hög grad av automation, som klarar av att operera i ostrukturerade miljöer är enligt \cite{intro} %kanske fler källor
+ en av grundförutsättningarna för att öka robotars användningsområde. För att nå denna grad av självständighet krävs det att roboten, med hjälp av väldesignade modeller, kan förstå sin omgivning. Det krävs också att roboten, genom sensorer, kan utvinna meningsfull information ur sin omgivning för att få modellerna att fungera som avsett. I denna rapport läggs fokus på reglermodellerna och hur dessa, förutsatt att de förses med korrekt sensordata, kan utformas för att styra roboten på ett önskat sätt.
 
 \subsubsection{Frågeställningar}
 De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
@@ -143,10 +144,10 @@ Betrakta en icke-holonom, differentiellt driven robot vars koordinater (\(x, y, 
 \end{equation}
 där \(x\) och \(y\) representerar positionen i ett Kartesiskt koordinatsystem, \(\theta\) vinkeln mellan roboten och x-axeln, \(v\) hastigheten och \(\omega\) vinkelhastigheten. Dessa beror i sin tur på vinkelhastigheterna \(\omega_1, \omega_2\) enligt
 \begin{equation}\label{hjulekv}
-	\begin{cases}
+	\begin{aligned}
 	r\omega_1 = v + e\omega \\
 	r\omega_2 = v - e\omega \\
-	\end{cases}
+	\end{aligned}
 \end{equation}
 där \(r\) är radien på robotens hjul och \(e\) är halva bredden mellan hjulen.
 
@@ -188,23 +189,23 @@ där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd frå
 
 Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då \(t \to \infty\).
 
-\subsubsection{Verkliga väggföljarproblemet (RWFP)}
+\subsubsection{Verkliga väggföljarproblemet (RWFP)}\label{rwfp}
 Betrakta vårt fall (Figur \ref{robot}), med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
 
 För att nå fram till en tillfredställande formulering av RWFP måste alltså även de ovanstående kraven tas med i beaktning, och översättas till lämpliga relationer mellan systemvariablerna. IR-sensorernas begränsning leder till följande begränsning
 
-\begin{equation}
+\begin{equation}\label{IRkrav}
 	|\theta - \gamma| \leq \sigma_{max}
 \end{equation}
 där vanligen \(\sigma_{max} \in [10\degree,15\degree]\). Om $\Omega_{max}$ är hjulens maximala tillåtna vinkelhastighet, det vill säga \(|\omega_1|,|\omega_2| \leq \Omega_{max}\), så fås tillsammans med \eqref{hjulekv} följande begränsning
 
-\begin{equation}
+\begin{equation}\label{hastbegr}
 	|v \pm e\omega| \leq r\Omega_{max}
 \end{equation}
 
 På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
 
-\begin{equation}
+\begin{equation}\label{rwfpåterkoppling}
 	\begin{cases}
 	x(k) \approx x(k-1) + \frac{T_c}{2} (v(k) \cos \theta(k) + v(k-1)\cos \theta(k-1)) \\
 	y(k) \approx y(k-1) + \frac{T_c}{2} (v(k) \sin \theta(k) + v(k-1)\sin \theta(k-1)) \\
@@ -272,7 +273,140 @@ En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till vara
 
 \pagebreak
 \section{Empiri - Reglering}
-text
+För differentiellt driven robot av det slag som redan introducerats i den här rapporten är reglerad körning i en rak korridor en betydlig större utmaning än reglering av rotation. Förutsatt att de fyra motorernas egenskaper är relativt likvärdiga, vilket de antas vara, kan föflyttningen i x- och y-led vid rotation försummas. Detta leder till att reglerproblemet för rotation enbart innefattar vinkel och vinkelhastighet, varför det kan lösas med en enkel PD-reglering.
+
+Med detta i åtanke kommer detta avsnitt i huvudsak behandla problemet med reglerad körning i en rak korridor. En kortare presentation av den PD-reglering som krävs för rotationen ges i slutet.
+
+\subsection{Återkopplning med riktningskrav}
+Som nämnt i avsnitt \ref{rwfp} ger IR-sensorerna endast signifikanta mätvärden då deras riktning uppfyller kravet i \eqref{IRkrav}. En ändring av återkopplingen \eqref{idealåterkoppling} ger
+
+\begin{equation}\label{IRåterkoppling}
+	\begin{cases}
+	v = v_{des} \\
+	\omega = - \frac{k(d-d^0)} {v_{des}} - (\beta_0 + \beta_1 |d - d^0|) \tan(\theta - \gamma) \\
+	\end{cases}
+\end{equation}
+
+där $\beta_0$, $\beta_1$ är skalärer.
+	
+\paragraph{Theorem 1} \textit{Betrakta det slutna systemet \eqref{robotekv}, \eqref{IRåterkoppling} och låt} $\beta_0 \geq 0$,
+
+\begin{equation}
+	\beta_1 \triangleq \frac {k} {v_{des} \tan \sigma_{max}}
+\end{equation}
+
+\textit{Då kan, för varje initialvärde $(x(0), y(0), \theta(0)$ med $| \theta(0) - \gamma| \leq \sigma_{max}$,  RWFP lösas, eftersom}
+
+\begin{equation}
+	| \theta(t) - \gamma| \leq \sigma_{max}
+\end{equation}
+
+\textit{för alla $t \geq 0$, och}
+
+\begin{equation}
+\begin{aligned}
+	d(t) \to d^0 \\
+	\dot{d}(t) \to 0 \\ 
+	\theta(t) \to \gamma 
+\end{aligned}
+\end{equation}
+
+\textit{då $t \to \infty$}
+
+\paragraph{Bevis 1} Se avsnitt 3.1 i \cite{wfp}.
+
+\paragraph{Kommentar 1} Theorem 1 ger inget specifikt värde på $\beta_0$. Bemporad et al. skriver i \cite{wfp} att för små värden på $\beta_0$ är vinkelhastighetens storlek tillräckligt liten för att undvika plötsliga rotationer både i stabila tillstånd och övergångstillstånd. Större värden på $\beta_0$ ger dock större robusthet mot brus och modellfel. Parametern måste således justeras experimentiellt för den specifika applikationen. I \cite{wfp} användes formeln $\beta_0 = \alpha \beta_1$ med $\alpha \in [0.05,0.1]$.
+
+\subsection{Hastighetskrav}
+Återkopplingen \eqref{IRåterkoppling} betraktar inte de fysiska begränsningarna på hjulens vinkelhastighet (och därmed robotens hastighet) som visas i \eqref{hastbegr}. Dessa krav kan emellertid uppfyllas genom att direkt skala av utsignalen enligt
+
+\begin{equation}
+	\omega = \gamma \omega_\gamma
+\end{equation}
+\begin{equation}
+	v = \gamma v_{des}
+\end{equation}
+
+där $\omega_\gamma$ ges av högerledet i \eqref{IRåterkoppling} och $v_{des} < r \Omega_{max}$ är den önskade linjära hastigheten. Bemporad et al. skriver i \cite{wfp} att tanken är att välja $\gamma \in [0,1]$ direkt så att kravet i \eqref{hastbegr} uppfylls. Detta görs genom att sätta
+
+\begin{equation}\label{haståterkoppling}
+	\gamma \triangleq \max{\left\{ 1, \bigg| \frac {v_{des} \pm e \omega_\gamma} {r \Omega_{max}} \bigg|  \right\}}^{-1}
+\end{equation}
+
+vilket uppfyller kraven i \eqref{hastbegr} utan att påverka regleringens asymptotiska egenskaper \cite{wfp}.
+
+\subsection{Utökat Kalmanfilter}
+I \cite{wfp} föreslår Bemporad et al. användningen av ett utökat kalmanfilter (EKF) för att skatta robotens koordinater $(x,y,\theta)$. Låt oss införa vektorerna 
+
+\begin{equation*}
+	\begin{aligned}
+	&X(k) \triangleq [x(k), y(k), \theta(k)]' \\
+	&V(k) \triangleq [v(k), \omega(k)]'
+	\end{aligned}
+\end{equation*}
+
+and definiera $r(X(k))$ som avståndet från IR-sensorn till väggen, det vill säga
+
+\begin{equation*}
+	r(X(k)) \triangleq | (x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |
+\end{equation*}
+
+Vidare, låt $E_x(k)$ vara en stokastisk vektor (med medelvärde noll och kovariansmatris $Q_x(k)$) som tar brus och modellfel i beaktning och $\xi(k)$ en stokastisk variabel (med medelvärde noll och kovarians $\sigma_r^2$) som modellerar bruset som påverkar avståndsmätningen.
+
+Den resulterande icke-linjära modellen 
+
+\begin{equation}
+	\begin{cases}
+	X(k) = F(X(k-1),V(k)) + E_x(k) \\
+	z(k) = r(X(k)) + \xi(k)
+	\end{cases}
+\end{equation}
+
+har följande EKF-ekvationer
+
+\begin{equation*}
+	\begin{aligned}
+	P_x(k|k-1) &= J_x(k-1) P_x(k-1|k-1)J'_x(k-1) + \\
+	&+ J_v(k)P_{v_r}(k|k) + Q_x(k) \\
+	G_x(k) &= \frac {P_x(k | k-1) H'(k)} {H(k)P_x(k|k-1)H'(k) + \sigma_r^2} \\
+	P_x(k|k) &= [I - G_x(k)H(k)] P_x(k |  k - 1) \\
+	\hat{X}(k|k-1) &= F \Big(\hat{X}(k-1 | k-1), \hat{V}(k | k) \Big) \\
+	\hat{X}(k | k) &= \hat{X}(k | k - 1) + G_x(k) \Big[ z(k) - r(\hat{X}(k | k -1)) \Big] 
+	\end{aligned}
+\end{equation*}
+
+där $P_{v_r}(i|j)$ är den skattade kovariansmatrisen för $V(k)$ vid tiden $i$ baserat på information tillgänglig vid tiden $j$, $P_x(i|j)$ den skattade kovariansmatrisen för $X(k)$, $\hat{X}(i|j)$ skattningen av vektorn $X$, kalmanförstärkningen $G_x(k)$ och Jacobimatriserna till ekvation \eqref{rwfpåterkoppling} $J_V(k)$, $J_X(k)$ och $H(k)$
+
+\begin{equation*}
+	\begin{aligned}
+	J_X(k-1) &= \frac {\partial F(X,V)} {\partial X} \Big|_{X=X(k-1),V=V(k)} \\
+	J_V(k) &=  \frac {\partial F(X,V)} {\partial V} \Big|_{X=X(k-1),V=V(k)} \\
+	H(k) &=  \frac {\partial r (X(k))} {\partial X}
+	\end{aligned}
+\end{equation*}
+
+FIltret initieras genom att låta 
+
+\begin{equation*}
+	\begin{aligned}
+	P_x(0|0) &= Var [X(0)] \\
+	\hat{X}(0|0) &= E[X(0)]
+	\end{aligned}
+\end{equation*}
+
+där $Var[X(0)]$ beaktar precisionsgraden i skattningen $E[X(0)]$ av robotens startkoordinater.
+
+\subsection{Återkoppling med EKF}
+Avstånd- och hastighetsmätningar matas in i återkopplingen \eqref{IRåterkoppling},  \eqref{haståterkoppling} på följande vis:
+
+\begin{equation}\label{återkoppling}
+	\begin{cases}
+	v = \gamma v_{des} \\
+	\omega = - \gamma \bigg[ \frac {k(z + \Delta_y - d^0)} {v_{des}} + (\beta_0 + \beta_1 | z + \Delta_y - d^0 |) \tan (\hat{\theta} - \gamma) \bigg]
+	\end{cases}
+\end{equation}
+
+där $z$ är avståndet mätt med hjälp av IR-sensorn och $\hat{\theta}$ ges av EKF. Bemporad et al. skriver i \cite{wfp} att trots att skattningarna $\hat{x}$ och $\hat{y}$ inte används i \eqref{återkoppling} kan de komma till användning vid utförandet av den högre uppgift som kan tänkas kräva den förslagna återkopplingen.
 
 \pagebreak
 %Olles del:
