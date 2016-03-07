@@ -21,9 +21,9 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[block, below of = start, node distance = 3cm](initADC){Initiera ADC};
-\node[decision, below of = initADC](int2){ADIF};
-
+\node[block, below of = start, node distance = 3cm](initTIMSK){Initiera TIMSK};
+\node[block, below of = initTIMSK, node distance = 3cm](TIMER){Initierar TIMER0 med ett värde};
+\node[decision, below of = TIMER, node distance = 3cm](int2){TIMER0 overflow};
 \node[block, right of = int2, node distance = 3cm](in_sensor){Omvandlar avstånd till lämplig SI-enhet};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Lägger omvandlat data på separat dataregister};
 %\node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
@@ -31,8 +31,9 @@
 %\node[block, right of = data_styr, node distance = 3cm](in_pc){Initiera kommunikation med datormodul};
 %\node[block, right of = in_pc, node distance = 3cm](data_pc){Skicka data till datormodul};
 
-\draw[->](start) -- (initADC);
-\draw[->](initADC)-- (int2);
+\draw[->](start) -- (initTIMSK);
+\draw[->](initTIMSK)-- (TIMER);
+\draw[->](TIMER)--(int2);
 \draw[->](int2) |- ($(int2.south west) + (-0.7,-0.6)$) |- node[near start,left]{nej}(int2);
 \draw[->](int2) -- node[above]{ja} (in_sensor);
 \draw[->](in_sensor) -- (data_sensor);
