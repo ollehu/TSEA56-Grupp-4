@@ -36,7 +36,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & Isak Strömberg & 2016-03-07 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -100,16 +100,16 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
-Det här dokumentet innehåller en beskrivning av en undsättningsrobot, dess komponenter och hur kommunikationen mellan de olika delarna sker. Syftet är att ha en detaljerad beskrivning som underlag för konstruktionsarbetet.
+Det här dokumentet innehåller en beskrivning av en undsättningsrobot, dess komponenter och hur kommunikationen mellan de olika modulerna sker. Syftet är att ge en detaljerad beskrivning som underlag för konstruktionsarbetet.
 
 \subsection{Det totala systemet}
-Det totala system kommer bestå av tre processormoduler, en Bluetooth\textsuperscript{\circledR}, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna är:
+Det totala system kommer att bestå av tre processormoduler, en kommunikationsenhet för  Bluetooth\textsuperscript{\circledR}, ett chassi med inbyggda motorer, en gripklo, ett styrservo och ett antal olika sensorer. De olika modulerna följer:
 \begin{itemize}
 	\item Huvudmodul - sköter kommunikationen, både internt via I\textsuperscript{2}C-bussen och externt via en Bluetooth\textsuperscript{\circledR}-enhet.
-	\item Sensormodul - är direkt kopplad till alla sensorer och tar emot och konverterar all data från dessa (främst i form av analoga spänningar). Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
-	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av vissa sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
+	\item Sensormodul - är direkt kopplad till alla sensorer, tar emot och konverterar (om nödvändigt) all data från dessa. Den färdigkonverterade datan skickas sedan vidare till huvudmodulen.
+	\item Styrmodul - är sammankopplad med gripklon, ett servo för rotation av en sensorer och chassits motorer. Den tar emot instruktioner och data för reglering från huvudmodulen.
 \end{itemize}
-Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss, där huvudmodulen är master och kontrollerar kommunikationen. 
+Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss där huvudmodulen är master och kontrollerar kommunikationen. 
 
 En övergripande bild över systemet återfinns i figur \ref{overview}.
 
@@ -122,7 +122,7 @@ En övergripande bild över systemet återfinns i figur \ref{overview}.
 
 \FloatBarrier
 \subsection{Sensorer}
-Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa, värden som används vid reglering av robotens rörelse rakt fram. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avståndet till väggar framför roboten. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
+Roboten kommer vara utrustad med sex stycken sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avståndet till väggar framför roboten. Den sistnämnda är placerad på ett servo för att kunna roteras. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
 
 \begin{figure}[htbp]
 \centering
@@ -132,7 +132,7 @@ Roboten kommer vara utrustad med sex olika sensorer. Fyra infraröda sensorer av
 \end{figure}
 
 \subsection{Ställdon}
-Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är motorerna som driver varsitt hjul. Motorerna kan dock inte styras individuellt utan enbart parvis, varför de egentligen kan ses som två enheter. Utöver dessa ska roboten ha ett servo i gripklon, för att kunna öppna och stänga densamma, och ett servo för rotation av lasersensorn.
+Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är motorerna som driver varsitt hjul. Motorerna kan dock inte styras individuellt utan enbart parvis, varför de egentligen kan ses som två enheter. Utöver dessa ska roboten ha ett servo i gripklon, för att kunna öppna och stänga densamma, och ett servo för rotation av lasersensorn. Ställdonens placering visas nedan i figur \ref{ställdon}.
 
 \begin{figure}[htbp]
 \centering
@@ -145,7 +145,7 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 \section{Delmodul 1 - Huvudmodul}
 Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer om intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
-Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul}. Till avbrottsingång \verb+INT0+ är styrmodulen kopplad och till  \verb+INT1+ sensormodulen. Som det framgår av figuren räcker \verb+ATmega16+ för det modulen behöver. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
+Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul}. Till avbrottsingång \verb+INT0+ är styrmodulen kopplad och till  \verb+INT1+ sensormodulen. Dessa avbrott används då styr- eller sensormodulen vill initiera kommunikation med huvudmodulen. Som det framgår av figuren räcker \verb+ATmega16+ för det modulen behöver. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
 \begin{figure}[htbp]
 \centering
@@ -155,13 +155,13 @@ Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvud
 \end{figure}
 
 \subsection{Detaljerad beskrivning}
-
+Nedan följer en mer ingående beskrivning av robotens olika körlägen, avbrottshantering och kartläggning.
 \subsubsection {Körläge}
 En brytare för val av körläge kopplas till huvudmodulen på en dataingång. Ingången läses en gång per varv i huvudloopen.
 
 \textbf{\textit{Autonomt läge}}
 
-Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm\textsuperscript{2}, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut. I frågan om när regleringen är klar avvaktas ett avbrott från styrmodulen, vilket beskrivs närmare i avsnitt \ref{styrModul}.
+Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. Beslutet av vilken ny kartmodul, en ruta på ca 40x40 cm, som roboten ska avsöka tas utifrån den avsökningsalgoritm som implementeras. Oberoende av vilken kartmodul som väljs ser det efterföljande flödet likadant ut. I frågan om när regleringen är klar avvaktas ett avbrott från styrmodulen, vilket beskrivs närmare i avsnitt \ref{styrModul}.
 
 \begin{figure}[htbp]
 \centering
@@ -172,7 +172,7 @@ Kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMo
 
 \textbf{\textit{Manuellt läge}}
 
-I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning. Så fort datormodulen upptäcker att ett styrkommando matas in skickas det vidare till huvudmodulen. När det aktuella styrkommandot avbryts meddelas huvudmodulen, som i sin tur meddelar styrmodulen att avsluta regleringen.
+I figur \ref{manualMode} syns kommunikationsflödet när roboten är inställd på manuell styrning. Så fort datormodulen upptäcker att ett styrkommando matas in skickas det vidare till huvudmodulen. När det aktuella styrkommandot ändras meddelas huvudmodulen, som i sin tur meddelar styrmodulen.
 
 \begin{figure}[htbp]
 \centering
@@ -203,16 +203,16 @@ Sensormodulen är kopplad till huvudmodulens avbrottsingång \verb+INT1+. Hände
 
 \subsubsection{Styrmodul}
 \label{styrModul}
-Styrmodulen är kopplad till huvudmodulens avbrottsingång  \verb+INT0+. En avbrottssignal triggas på positiv flank och skickas när regleringen av nuvarande styrkommando är klart. Huvudmodulen kan då ta ett nytt beslut enligt flödesschemat i figur \ref{autonomousMode}.
+Styrmodulen är kopplad till huvudmodulens avbrottsingång  \verb+INT0+. Ett avbrott initieras vid positiv flank. Avbrottssignalen kommer skickas (från styrmodulen) när regleringen av nuvarande styrkommando är klart. Huvudmodulen kan då ta ett nytt beslut enligt flödesschemat i figur \ref{autonomousMode}.
 
 \subsubsection{Kartläggning}
-Eftersom kartan enligt appendix C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per sådan modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas ofta nog så att roboten kan beräkna när den har färdats till nästa modul. 
+Eftersom kartan enligt appendix C består av moduler på 40x40cm, räcker det att uppdatera kartläggningen en gång per modul. Genom mätvärden från lasersensor, då den riktas framåt, kan avståndet till den främre väggen beräknas. Denna signal samplas med sådan frekvens att roboten kan beräkna när den har färdats till nästa modul. 
 
-IR-sensorerna på robotens sida kan agera i avståndsområdet 5-30 cm och bottnas med andra ord när en sväng eller korsning upptäcks. Utifrån denna information kopplar kartläggningen ihop föregående modul med den typ av korsning som roboten står i. 
+IR-sensorerna på robotens sida kan mäta i avståndsområdet 5-30 cm och bottnas med andra ord när en sväng eller korsning upptäcks. Utifrån denna information kopplar kartläggningsalgoritmen ihop föregående modul med den typ av korsning som roboten åkt in i. 
 
 Kartläggningsalgoritmen är av väggföljartyp. Eftersom banan är uppbyggd så att varken höger- eller vänsterföljning prioriteras, se appendix C, så faller valet på högerföljning. Med andra ord följer roboten höger vägg och försöker först att svänga höger, därefter köra rakt fram och svänger vänster allra sist. Eftersom roboten endast ska finna den kortaste vägen från ingången till nödställde behöver nödvändigtvis inte hela kartan utforskas. Exempelvis, ifall fågelvägen från roboten till ingången är längre än en redan utforskad rutt ska roboten inte fortsätta utforska den korridoren. Vidare behöver roboten inte utforska en återvändsgränd ifall den främre sensorn indikerar att det endast är en modul framöver, förutsatt att målet inte har upptäckts i modulen.
 
-Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \ref{labToGraph} för ett exempel av labyrintkonvertering. En ny nod bildas vid varje korsning eller där roboten tvingas svänga. Bågkostnaden utgör det relativa avståndet mellan de två kopplade noderna där det relativa avståndet mellan två moduler är en enhet.
+Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \ref{labToGraph} för ett exempel av labyrintkonvertering. En ny nod bildas vid varje korsning eller där roboten tvingas svänga. Bågkostnaden utgör det relativa avståndet mellan två sammankopplade noderna och relativa avståndet mellan två moduler är en längdenhet.
 
 \begin{figure}[htbp]
 \centering
@@ -223,7 +223,7 @@ Mjukvarumässigt representeras kartan med hjälp av noder och bågar, se figur \
 
 När kartan är representerad som ett nätverk och roboten med säkerhet har utforskat den kortaste vägen mellan ingång och nödställd, påbörjas optimeringen. Optimeringen för att hitta den kortaste vägen sker med hjälp av optimerande metoder för att lösa minkostnadsnätverk.
 
-Roboten tillämpar optimeringsmodellen A* vilken är en vidareutveckling av Dijkstras algoritm. A* är en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+Roboten tillämpar optimeringsmodellen A* vilken är en vidareutveckling av Dijkstras algoritm. A* är en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm med skillnaden att noder avsöks i stigande ordning av
 \begin{equation*}
 	f(n) = g(n) + h(n)
 \end{equation*}
@@ -282,7 +282,7 @@ I huvudmodulens huvudprogram ska följande saker genomföras:
 \begin{itemize}
 	\item Läsa av körläge (autonomt eller manuellt)
 	\item Läsa av strömbrytaren (aktiv eller i viloläge)
-	\item I autonomnt körläge hantera avsökningen och skicka tillhörande körkommando
+	\item I autonomnt körläge, hantera avsökningen och skicka tillhörande körkommando
 \end{itemize}
 
 \subsubsection{Avbrott}
@@ -296,7 +296,7 @@ De avbrott som är kopplade till huvudmodulen ska hantera följande:
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
-Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas med konstant frekvens och konverteras därefter till motsvarande SI-enhet. För avståndssensorerna innebär detta att den analoga inspänningen konverteras till ett digitalt värde i enheten meter.
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas, omvandlas och konverteras (vid behov) med konstant frekvens. För avståndssensorerna innebär detta att den analoga inspänningen omvandlas till ett digitalt värde som sedan konverteras till enheten cm.
 
 Den främre avståndssensorn (laser-sensorn) placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
 
@@ -313,11 +313,11 @@ Vinkelhastighets-sensorerna används för att beräkna vinkelutslag då roboten 
 Den hårdvara som sensormodulen kommer att kräva är:
 
 \begin{itemize}
-\item{Processorenhet, ATmega16 x 1}
-\item{IR-sensor, GP2D120 x 2}
-\item{Laser-sensor, LIDAR-Lite v2 x1}
-\item{Gyro/accelerometer, MPU-6500 x 1}
-\item{IR-detektor, IRM-8601-S x 1}
+\item{Processorenhet, \verb+ATmega16+ x 1}
+\item{IR-sensor, \verb+GP2D120+ x 2}
+\item{Laser-sensor, \verb+LIDAR-Lite v2+ x1}
+\item{Gyro/accelerometer, \verb+MPU-6500+ x 1}
+\item{IR-detektor, \verb+IRM-8601-S+ x 1}
 
 \end{itemize}
 
@@ -325,32 +325,32 @@ Den hårdvara som sensormodulen kommer att kräva är:
 
 Sensormodulens processorenhet, \verb+ATmega16+, är ansluten med en I\textsuperscript{2}C-buss. Den har som uppgift att kommunicera med huvudmodulen, där sensormodulens processorenheter agerar som slavenhet i förhållande till huvudmodulens dito. 
 %Den andra I\textsuperscript{2}C-bussen kommunicerar med Lasersensorn, LIDAR-Lite v2, samt gyro/accelerometern, MPU-6500. I fallet med den senare databussen så agerar sensormodulens processorenhet som masterenhet i förhållandet med lasersensorn och gyro/accelerometern.
-IR-sensorn GP2D120 och IR-detektorn IRM-8601-S ansluts direkt till processorenhetens ingångar för AD-omvandling. Figur \ref{kopplingsschema:sensormodul} visar en övergripande bild över sensormodulens implementation med dess respektive delkomponenter. 
+IR-sensorn \verb+GP2D120+ och IR-detektorn \verb+IRM-8601-S+ ansluts direkt till processorenhetens ingångar för AD-omvandling. Figur \ref{kopplingsschema:sensormodul} visar en övergripande bild över sensormodulens implementation med dess respektive delkomponenter. 
 
-\subsubsection{Processorenhet, ATmega16}
+\subsubsection{Processorenhet}
 Insamlat sensordata bearbetas i modulens processorenhet för att därefter kommuniceras till huvudmodulen. Figur \ref{kopplingsschema:sensormodul} illustrerar \verb+ATmega16+ och dess ingångar, samt hur respektive sensorenhet ska kopplas samman med processorn. 
 
-\subsubsection{Laser-sensor, LIDAR-Lite v2}
-Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsättningsrobot. Utöver att kunna möta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 0,025 meter. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 0,01 meter \cite{7131685}.
+\subsubsection{Laser-sensor}
+\verb+Lidar-Lite v2+ är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för exempelvis en undsättningsrobot. Utöver att kunna mäta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 2,5 cm. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning 1 cm \cite{7131685}.
 
 %Kommunikationen mellan Lidar-Lite v2 och processorenheten, \verb+Atmega16+, kommer att ske via ett I\textsuperscript{2}C-interface som lasersensorn kommer med i sitt grundutförande. Figur [??] konkretiserar hur implementationen av databussen ska genomföras. 
 
-\subsubsection{IR-sensor, GP2D120}
-För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med ca 40 centimeters bredd, och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn GP2D120 bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm från sensorn. 
+\subsubsection{IR-sensor}
+För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med cirka 40 centimeters bredd och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm från sensorn. 
 
-Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. GP2D120 är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av ström, där IR-sensorerna behöver lågpassfiltreras.
+Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras.
 %Om robotens reglering inte är tillräckligt bra är det risk att avståndssensorn tappar precision, %eller till och med mister avståndsbedömning helt. Det beror på att om roboten inte kör %parallellt med väggen kommer det utstrålade ljuset att reflekteras med en för stor vinkel för %att detektorerna ska kunna uppfatta reflektionen.
 
-\subsubsection{Gyro/accelerometer, MPU-6050}
+\subsubsection{Gyro/accelerometer}
 %\item[Vinkelhastighet] \hfill \\
-I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används MPU6050, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används \verb+MPU6050+, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
 
 
 
 % och informationen från sensorn kommer att förmedlas via ett I\textsuperscript{2}C-buss-interface.
  
-\subsubsection{IR-detektor, IRM-8601-S}
-IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilken ska sända ut en IR-signal. Liksom figur \ref{kopplingsschema:sensormodul} illustrerar så är IRM-8601-s förhållandevis trivial i sitt utförande, enheten har 2 ingångar vilka ska anslutas med 5 V samt jord. 
+\subsubsection{IR-detektor}
+IR-detektorn \verb+IRM-8601-S+ används i syfte att identifiera den nödställde, vilken ska sända ut en IR-signal. Liksom figur \ref{kopplingsschema:sensormodul} illustrerar så är \verb+IRM-8601-S+ förhållandevis trivial i sitt utförande, enheten har 2 ingångar vilka ska anslutas med 5 V samt jord. 
 
 
 %\item[Identifierare av nödställd] \hfill \\
@@ -359,7 +359,7 @@ IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilke
 \subsection{Mjukvara}
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
-\subsubsection{IR-sensorerna}
+\subsubsection{IR-sensor}
 Initiering av AD-ingångarnas status- och kontrollregister (ADCSRA) sker i processorns startrutin. Processorenheten kommer därefter att fortsätta med dess respektive instruktioner tills dess att något sensorvärde är färdigomvandlat, varpå ett avbrott kommer att kallas. Figur \ref{Avbrott_ADC} visar ett flödesschema vilket beskriver hur hanteringen av sensorvärden ska fungera.
 
 
@@ -372,8 +372,8 @@ Initiering av AD-ingångarnas status- och kontrollregister (ADCSRA) sker i proce
 
 
 \FloatBarrier
-\subsubsection{LIDAR-Lite v2}
-Då lasersensorn LIDAR-lite v2 kommer att kopplas samman med processorenheten via ett PWM-interface så kommer avbrott, vilket kallas med hjälp av en timer (TCNT0), att behövas. För att göra detta så krävs det att TIMSK-registret (Timer/CounterInterrupt Mask Register) initeras. TIMER0-registret kommer att användas för att programmera timern, det är ett 8-bitars register vilket innebär att timern kan räkna upp 255 innan den nollställs och avbrott (TIMER0 overflow) anropas. Figer \ref{Avbrott_PWM} ger en översiktlig bild av hur PWM-interfacet är tänkt fungera.
+\subsubsection{Laser-sensor}
+Då lasersensorn \verb+LIDAR-lite v2+ kommer att kopplas samman med processorenheten via ett PWM-interface så kommer avbrott, vilket kallas med hjälp av en timer (TCNT0), att behövas. För att göra detta så krävs det att TIMSK-registret (Timer/CounterInterrupt Mask Register) initeras. TIMER0-registret kommer att användas för att programmera timern, det är ett 8-bitars register vilket innebär att timern kan räkna upp 255 innan den nollställs och avbrott (TIMER0 overflow) anropas. Figer \ref{Avbrott_PWM} ger en översiktlig bild av hur PWM-interfacet är tänkt fungera.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
@@ -385,7 +385,7 @@ Då lasersensorn LIDAR-lite v2 kommer att kopplas samman med processorenheten vi
 %Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
 \subsubsection{MPU-6500}
-Eftersom informationen från MPU-6500 kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
+Eftersom informationen från \verb+MPU-6500+ kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
@@ -399,13 +399,13 @@ Eftersom informationen från MPU-6500 kommer att överföras via ett SPI-interfa
 Sensormodulen har som nämnt tidigare tre huvuduppgifter: ta emot rådata från sensorerna (både i form av analoga och digitala signaler), A/D-omvandla och konvertera dessa signaler (om det krävs) och sedan skicka paket av relevant, konverterad sensordata till huvudmodulen.
 
 \subsubsection{Mottagande av data och omvandling}
-Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna omvandlas multiplexas till en insignal som sedan A/D-omvandlas konstant. När A/D-omvandlingen initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i ett separat register för varje sensor. %Fyll på om PWM och SPI
+Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna omvandlas multiplexas till en insignal som sedan A/D-omvandlas kontinuerligt. När A/D-omvandlingen är klar initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i en separat variabel för varje sensor. %Fyll på om PWM och SPI
 
 \subsubsection{Konvertering}
-Konvertering av de sensorvärden som inte är linjära sker kontinuerligt i huvudloopen. Programmet hämtar ett värde i taget från registrena för okonverterade sensor data, konverterar sedan dessa med hjälp av en tabell eller formel och sparar det nya värdet i ett nytt register. 
+Konvertering av de sensorvärden som inte är linjära sker kontinuerligt i huvudloopen. Programmet hämtar ett värde i taget från variablerna för okonverterade sensordata, konverterar sedan dessa med hjälp av en tabell eller funktion och sparar det nya värdet i en ny variabel. 
 
 \subsubsection{Skicka sensordatapaket}
-De färdigkonverterade datapaketen från sensor modulen kommer skickas med jämna mellanrum, med en frekvens på ca 10-20 Hz. Det passar därför bra att initiera subrutinen, som har hand om överföringen, med ett avbrott kopplat till en klocka med lämplig frekvens. Detta avbrott har högst prioritet hos sensormodulen. Subrutinen skickar sedan en positiv flank till huvudmodulen, varpå ett avbrott initieras hos huvudmodulen och den upprättar kontakt via I\textsuperscript{2}C. När hela datapaketet sedan överförts är denna avbrottsrutin avklarad.
+De färdigkonverterade datapaketen från sensormodulen kommer skickas med jämna mellanrum, med en frekvens på ca 10-20 Hz. Det passar därför bra att initiera subrutinen, som har hand om överföringen, med ett avbrott kopplat till en klocka med lämplig frekvens. Detta avbrott har högst prioritet hos sensormodulen. Subrutinen skickar sedan en positiv flank till huvudmodulen, varpå ett avbrott initieras hos huvudmodulen och den upprättar kontakt via I\textsuperscript{2}C. När hela datapaketet sedan överförts är denna avbrottsrutin avklarad.
 
 \pagebreak
 \section{Delmodul 3 - Styrmodul}
@@ -423,7 +423,7 @@ Prestandan hos \verb+ATmega+16 räcker för modulens syfte.
 \end{figure}
  
 \subsection{Detaljerad beskrivning}
-Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt lite övrig fakta kring modulen.
+Nedan följer en beskrivning av vilka styrkommandon styrmodulen ska kunna ta emot, hur kommunikationsprotokollet ser ut, hur regleringen ska ske samt övrig fakta kring modulen.
 
 \subsubsection{Styrkommandon}\label{Styrkommandon}
 Styrmodulen tar emot kommandon från huvudmodulen och verkställer dessa. Följande kommandon kommer kunna skickas: \textit{reglering av/på, gripklo öppna/stäng, fram/bak, sväng höger/vänster, rotera höger/vänster och stopp}. Kommandot \textit{reglering av/på} ställer in styrmodulen för manuell eller autonom körning, vilket påverkar tolkningen av det data som skickas från huvudmodulen.
@@ -444,7 +444,7 @@ När styrmodulen har genomfört sitt körkommando från huvudmodulen skickar den
 Vid manuell styrning av roboten sker ingen reglering. Detta för att användaren ska få ohämmad kontroll över roboten och förväntas sköta ``regleringen'' manuellt. Vid autonom styrning kommer dock alla förflyttningar behöva regleras. Som nämnt i avsnitt \ref{Styrkommandon} kommer huvudmodulen skicka relevanta sensorvärden vid autonom körning. Beroende på vilket styrkommando som skickats väljer styrmodulen sedan en styrmod och reglerar rörelsen. De olika styrmodulerna och hur deras reglering sker finns beskrivet mer ingående i avsnitt \ref{mjukvarureglering}.
 
 \subsubsection{Övrigt}
-Plattformen som roboten byggs på har färdiga kretsar för att styra chassits hjul. Hjulen kan styras parvis (höger och vänster) genom att sätta en bit för att bestämma rotationsriktningen och sedan skicka en PWM-signal för att bestämma rotationshastigheten. Roboten styrs alltså differentiellt, dvs genom olika hastighet på höger och vänster sida.
+Plattformen som roboten byggs på har färdiga kretsar för att styra chassits hjul. Hjulen kan styras parvis (höger och vänster) genom att sätta en bit för att bestämma rotationsriktningen och sedan skicka en PWM-signal för att bestämma rotationshastigheten. Roboten styrs alltså differentiellt, det vill säga genom olika hastighet på höger och vänster sida.
 
 Roboten ska även vara utrustad med en gripklo, för att kunna greppa de förnödenheter som ska transporteras. Klons aktiva del består av ett servo av typen \verb+RG-180+ som styrs med en PWM-signal.
 
@@ -453,7 +453,7 @@ Det ska även finnas en alphanumerisk LCD-display, av typen \verb+LCD JM162A+, p
 \subsection{Hårdvara}
 Styrmodulen kommer kräva följande hårdvara:
 \begin{itemize}
-	\item ATmega16
+	\item \verb+ATmega16+
 	\item Robotplattform (Terminator)
 	\item Gripklo %Specificera senare
 \end{itemize}
@@ -470,7 +470,7 @@ Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden 
 \subsubsection{Regleringsmodeller} \label{mjukvarureglering}
 Roboten kommer ha tre olika styrmoder: \textit{rak körning i korridor}, \textit{rotation} och \textit{körning på öppen yta}. Av dessa tre är det \textit{rak körning i korridor} och \textit{körning på öppen yta} som presenterar de största utmaningarna. För att reglera rotationen räcker en enkel PD-reglering, varför den inte kommer beskrivas mer ingående här. 
 
-\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett Kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Detta illustreras i fig \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
+\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel i förhållande till koordinatsystemet är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Detta illustreras i figur \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
 \begin{figure}[H] 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -487,7 +487,7 @@ I denna situation regleras roboten lämpligen enligt följande modell.
 \textit{Fyll på med reglermodell utifrån förstudien}
 
 \subsubsection{Huvudloop och avbrott}
-Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras betjänas det direkt och kallar på metoder utgående från typen av information som anländer. I fallet av manuell styrning mot styrkommandon sker ingen reglering gentemot väggar och kommandona översätts endast en PWM-sekvens åt motorerna.
+Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras, betjänas det direkt och kallar på metoder utgående från typen av information som anländer. I fallet av manuell styrning mot styrkommandon sker ingen reglering gentemot väggar och kommandona översätts endast till en PWM-sekvens åt motorerna.
 
 Då roboten navigerar i autonomnt läge består kommunikationen även av sensordata från huvudmodulen. Här kallas en metod som läser in sensordata och lagrar dessa i lokala variabler. Dessa variabler används i huvudloopens reglering och på så sätt sker alltid regleringen utifrån de allra senaste sensorvärdena. 
 
@@ -511,7 +511,7 @@ Mjukvarans grafiska gränssnitt konstrueras enligt figur \ref{datormodul:softwar
 	\caption{Datormodulens GUI \label{datormodul:software}}	
 \end{figure}
 
-Kartan över labyrinten ritas successivt upp modulvis under robotens färd, och uppdateras alltså efter varje förflyttning till en ny banmodul. I det fall att datorn kopplar upp till roboten efter påbörjad körning skickas all den hittills lagrade kartdatan direkt, varpå kartan sedan uppdateras som beskrivet ovan. Kartan presenteras sedan ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
+Kartan över labyrinten ritas successivt upp, modulvis, under robotens färd, och uppdateras alltså efter varje förflyttning till en ny banmodul. I det fall att datorn kopplar upp till roboten efter påbörjad körning skickas all den hittills lagrade kartdatan direkt, varpå kartan sedan uppdateras som beskrivet ovan. Kartan presenteras sedan ur ett fågelperspektiv. I första hand ritas kartan i två dimensioner och i mån av tid utvecklas en tredimensionell karta där roboten följs ur ett tredjepersons-perspektiv. 
 
 Tabellen över sensordata skriver ut informationen från den senaste kommunikationen med huvudmodulen. Kommunikationen består av sensorvärden som huvudmodulen har tagit del av från sensormodulen, som skickas till datormodulen ett fåtal gånger per sekund. Eftersom sensormodulen konverterar de analoga sensor-spänningarna till SI-enheter presenterar tabell-rutan avstånd och vinklar istället för de faktiska spänningsnivåerna. 
 
@@ -548,7 +548,7 @@ För kommunikation mellan de olika modulerna kommer en I\textsuperscript{2}C-bus
 
 \subsection{I\textsuperscript{2}C-buss}
 
-För att kommunicera mellan de olika modulerna kommer den två-trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn \verb+ATmega16+ kommer allt vara kopplat till samma buss. Detta för att \verb+ATmega16+ enbart har en uppsättning av de ingångar som krävs, SCL och SDA. Eftersom mycket av tänkandet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
+För att kommunicera mellan de olika modulerna kommer den två-trådade I\textsuperscript{2}C-bussen att användas. Då modulerna i huvudsak kommer bestå av processorn \verb+ATmega16+ kommer allt vara kopplat till samma buss. Detta för att \verb+ATmega16+ enbart har en uppsättning av de ingångar som krävs, \verb+SCL+ och \verb+SDA+. Eftersom mycket av tänkandet ligger i huvudmodulen får den master-status. Resterade blir slavar då informationen som ska mellan sensormodulen och styrmodulen även behövs i huvudmodulen.
 
 \subsubsection{Slavadresser}
 I tabell \ref{slavAdress} listas den adress respektive modul ska konfigureras med. 
@@ -571,7 +571,7 @@ För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-mo
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
-	\input{images/bluetooth}}
+	\input{images/bluetoothCom}}
 	\caption{Protokoll för överföring mellan huvud- och datormodul \label{bluetooth}}	
 \end{figure}
 
@@ -609,7 +609,7 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Startbit
 	\item B (Bit 1) - Definierar om ett körkommando eller ett sensorvärde skickas (1 om körkommando, 0 om sensorvärde).
-	\item C (Bit 2-5) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab}, s.\pageref{sensortab} och tabell \ref{styrtab}, s.\pageref{styrtab} för specifika värden.
+	\item C (Bit 2-5) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab} och tabell \ref{styrtab} för specifika värden.
 	\item D (Bit 6-15) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde) mellan (0-1023).
 	\item E - Slutbit
 \end{itemize}
@@ -660,7 +660,7 @@ Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med
 Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
 Rotation & Vinkelhastighet $\omega$ \\ \hline
 Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
-\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}, s.\pageref{robotwall}}
+\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}}
 \end{longtable}
 %\end{table}
 
@@ -697,7 +697,7 @@ Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
 
 \pagebreak
 \section{Implementering}
-Här beskrivs hur robotens delar ska implementeras. 
+Nedan beskrivs hur robotens delar ska implementeras. 
 
 
 \subsection{Fysisk design}
