@@ -21,10 +21,10 @@
 %http://www.texample.net/tikz/examples/simple-flow-chart/
 
 \node[block](start){Start};
-\node[block, below of = start, node distance = 3cm](initADC){Initiera ADC};
-\node[decision, below of = initADC](int2){ADIF};
+\node[block, below of = start, node distance = 3cm](initADC){Initiera SPI};
+\node[decision, below of = initADC](int2){SPIF};
 
-\node[block, right of = int2, node distance = 3cm](in_sensor){Omvandlar avstånd till lämplig SI-enhet};
+\node[block, right of = int2, node distance = 3cm](in_sensor){Omvandlar vinkelhastighet och acceleration till lämplig SI-enhet};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Lägger omvandlat data på separat dataregister};
 %\node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
 %\node[block, right of = in_styr, node distance = 3cm](data_styr){Skicka data till styrmodul};
