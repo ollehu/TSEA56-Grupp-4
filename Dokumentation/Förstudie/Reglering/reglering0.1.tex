@@ -321,16 +321,16 @@ där $\beta_0$, $\beta_1$ är skalärer.
 Återkopplingen \eqref{IRåterkoppling} betraktar inte de fysiska begränsningarna på hjulens vinkelhastighet (och därmed robotens hastighet) som visas i \eqref{hastbegr}. Dessa krav kan emellertid uppfyllas genom att direkt skala av utsignalen enligt
 
 \begin{equation}
-	\omega = \gamma \omega_\gamma
+	\omega = \lambda \omega_\gamma
 \end{equation}
 \begin{equation}
-	v = \gamma v_{des}
+	v = \lambda v_{des}
 \end{equation}
 
-där $\omega_\gamma$ ges av högerledet i \eqref{IRåterkoppling} och $v_{des} < r \Omega_{max}$ är den önskade linjära hastigheten. Bemporad et al. skriver i \cite{wfp} att tanken är att välja $\gamma \in [0,1]$ direkt så att kravet i \eqref{hastbegr} uppfylls. Detta görs genom att sätta
+där $\omega_\gamma$ ges av högerledet i \eqref{IRåterkoppling} och $v_{des} < r \Omega_{max}$ är den önskade linjära hastigheten. Bemporad et al. skriver i \cite{wfp} att tanken är att välja $\lambda \in [0,1]$ direkt så att kravet i \eqref{hastbegr} uppfylls. Detta görs genom att sätta
 
 \begin{equation}\label{haståterkoppling}
-	\gamma \triangleq \max{\left\{ 1, \bigg| \frac {v_{des} \pm e \omega_\gamma} {r \Omega_{max}} \bigg|  \right\}}^{-1}
+	\lambda \triangleq \max{\left\{ 1, \bigg| \frac {v_{des} \pm e \omega_\gamma} {r \Omega_{max}} \bigg|  \right\}}^{-1}
 \end{equation}
 
 vilket uppfyller kraven i \eqref{hastbegr} utan att påverka regleringens asymptotiska egenskaper \cite{wfp}.
@@ -401,8 +401,8 @@ Avstånd- och hastighetsmätningar matas in i återkopplingen \eqref{IRåterkopp
 
 \begin{equation}\label{återkoppling}
 	\begin{cases}
-	v = \gamma v_{des} \\
-	\omega = - \gamma \bigg[ \frac {k(z + \Delta_y - d^0)} {v_{des}} + (\beta_0 + \beta_1 | z + \Delta_y - d^0 |) \tan (\hat{\theta} - \gamma) \bigg]
+	v = \lambda v_{des} \\
+	\omega = - \lambda \bigg[ \frac {k(z + \Delta_y - d^0)} {v_{des}} + (\beta_0 + \beta_1 | z + \Delta_y - d^0 |) \tan (\hat{\theta} - \gamma) \bigg]
 	\end{cases}
 \end{equation}
 

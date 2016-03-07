@@ -470,7 +470,7 @@ Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden 
 \subsubsection{Regleringsmodeller} \label{mjukvarureglering}
 Roboten kommer ha tre olika styrmoder: \textit{rak körning i korridor}, \textit{rotation} och \textit{körning på öppen yta}. Av dessa tre är det \textit{rak körning i korridor} och \textit{körning på öppen yta} som presenterar de största utmaningarna. För att reglera rotationen räcker en enkel PD-reglering, varför den inte kommer beskrivas mer ingående här. 
 
-\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel i förhållande till koordinatsystemet är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Detta illustreras i figur \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
+\paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel i förhållande till koordinatsystemet är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Robotens vinkelhastighet betecknas med $\omega$ och fås från gyrot. Detta illustreras i figur \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
 \begin{figure}[H] 
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -478,9 +478,16 @@ Roboten kommer ha tre olika styrmoder: \textit{rak körning i korridor}, \textit
 	\caption{Väggföljning\label{robotwall}}	
 \end{figure}
 
-I denna situation regleras roboten lämpligen enligt följande modell.
+I denna situation regleras roboten lämpligen med tillståndsåterkoppling och utökat kalmanfilter enligt följande modell:
 
-\textit{Fyll på med reglermodell utifrån förstudien}
+\begin{equation}\label{återkoppling}
+	\begin{cases}
+	v = \lambda v_{des} \\
+	\omega = - \lambda \bigg[ \frac {k(z + \Delta_y - d^0)} {v_{des}} + (\beta_0 + \beta_1 | z + \Delta_y - d^0 |) \tan (\hat{\theta} - \gamma) \bigg]
+	\end{cases}
+\end{equation}
+
+där $v_{des}$ är den önskade hastighete, $\lambda \in [0,1]$ används för att reglera hastigheten, $k$ är ett positivt heltal sådant att $t=kT_c$ där $t$ är tiden och $T_c$ är sampelperioden, $\Delta_y$ är avståndet mellan avståndssensorn och robotens centrum i y-led, $\beta_0$ och $\beta_1$ är experimentiellt fastställda konstanter och $\hat{\theta}$ är en skattning av $\theta$. En mer ingående beskrivning av modellen, tillsammans med en härledning av densamma, finns i förstudien.
 
 \paragraph{Körning på öppen yta} Betrakta roboten i korridorsexemplet ovan, men nu på ett avstånd från sidoväggen som är större än vad sensorerna klarar av att mäta. I denna situation krävs en annan reglermodell.
 
