@@ -336,7 +336,7 @@ Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal
 %Kommunikationen mellan Lidar-Lite v2 och processorenheten, \verb+Atmega16+, kommer att ske via ett I\textsuperscript{2}C-interface som lasersensorn kommer med i sitt grundutförande. Figur [??] konkretiserar hur implementationen av databussen ska genomföras. 
 
 \subsubsection{IR-sensor, GP2D120}
-För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med ca 40 centimeters bredd, och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn GP2D120 bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm ifrån sensorn. 
+För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med ca 40 centimeters bredd, och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn GP2D120 bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm från sensorn. 
 
 Mätningen av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att till sedan sensorns detektorer känner av det reflekterade ljuset. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. GP2D120 är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av ström, där IR-sensorerna behöver lågpassfiltreras.
 %Om robotens reglering inte är tillräckligt bra är det risk att avståndssensorn tappar precision, %eller till och med mister avståndsbedömning helt. Det beror på att om roboten inte kör %parallellt med väggen kommer det utstrålade ljuset att reflekteras med en för stor vinkel för %att detektorerna ska kunna uppfatta reflektionen.
@@ -360,39 +360,39 @@ IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilke
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-Initiering av AD-ingångarnas status- och kontrollregister (ADCSRA) sker i processorns startrutin. Processorenheten kommer därefter att fortsätta med dess respektive instruktioner tills dess att något sensorvärde är färdigomvandlat, varpå ett avbrott kommer att kallas. Figur \ref{datormodul:Avbrott_ADC} visar ett flödesschema vilket beskriver hur hanteringen av sensorvärden ska fungera.
+Initiering av AD-ingångarnas status- och kontrollregister (ADCSRA) sker i processorns startrutin. Processorenheten kommer därefter att fortsätta med dess respektive instruktioner tills dess att något sensorvärde är färdigomvandlat, varpå ett avbrott kommer att kallas. Figur \ref{Avbrott_ADC} visar ett flödesschema vilket beskriver hur hanteringen av sensorvärden ska fungera.
 
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
 	\input{images/Avbrott_ADC}}
-	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_ADC}}	
+	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{Avbrott_ADC}}	
 \end{figure}
 
 
 \FloatBarrier
 \subsubsection{LIDAR-Lite v2}
-Då lasersensorn LIDAR-lite v2 kommer att kopplas samman med processorenheten via ett PWM-interface så kommer avbrott, vilket kallas med hjälp av en timer (TCNT0), att behövas. För att göra detta så krävs det att TIMSK-registret (Timer/CounterInterrupt Mask Register) initeras. TIMER0-registret kommer att användas för att programmera timern, det är ett 8-bitars register vilket innebär att timern kan räkna upp 255 innan den nollställs och avbrott (TIMER0 overflow) anropas. Figer \ref{datormodul:Avbrott_PWM} ger en översiktlig bild av hur PWM-interfacet är tänkt fungera.
+Då lasersensorn LIDAR-lite v2 kommer att kopplas samman med processorenheten via ett PWM-interface så kommer avbrott, vilket kallas med hjälp av en timer (TCNT0), att behövas. För att göra detta så krävs det att TIMSK-registret (Timer/CounterInterrupt Mask Register) initeras. TIMER0-registret kommer att användas för att programmera timern, det är ett 8-bitars register vilket innebär att timern kan räkna upp 255 innan den nollställs och avbrott (TIMER0 overflow) anropas. Figer \ref{Avbrott_PWM} ger en översiktlig bild av hur PWM-interfacet är tänkt fungera.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
 	\input{images/Avbrott_PWM}}
-	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_PWM}}	
+	\caption{Flödesschema som en översiktlig bild av hur sensorvärden från lasersensorn ska mottagas samt processeras \label{Avbrott_PWM}}	
 \end{figure}
 \pagebreak
 
 %Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
 \subsubsection{MPU-6500}
-Eftersom informationen från MPU-6500 kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{datormodul:Avbrott_SPI} visar ett flödesschema vilket beskriver SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dessa avbrottsflagga ettställs.
+Eftersom informationen från MPU-6500 kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
 	\input{images/Avbrott_SPI}}
-	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_SPI}}	
+	\caption{Flödesschema som illustrerar hur sensorvärden från gyrot ska behandlas\label{Avbrott_SPI}}	
 \end{figure}
-\pagebreak
+\pagebreak %Annars hamnar 
 %Rotationen av roboten genomförs av MPU-6500 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
 
 \subsubsection{Kodstruktur}
