@@ -360,45 +360,40 @@ IR-detektorn IRM-8601-S används i syfte att identifiera den nödställde, vilke
 Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
 
 \subsubsection{IR-sensorerna}
-Liksom i fallet med GP2D120 så är IR-dektorns utsignal analog, vilket innebär att signal bör AD-omvandlas.  Omvandlingen sker via 
-
-
-\begin{equation*}
-	\textrm{Digitalt värde} = \frac{255}{5}V_{out}
-\end{equation*}
-
-
-där den maximala utsignalen är 5 volt. Det analoga värdet delas upp i 256 digitala värden som motsvarar olika spänningar. Sambandet mellan spänning och avstånd till väggen kan utläsas av figur \ref{IR_avstand}.
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[scale=0.4]{images/IR_avstand}
-	\caption{Förhållande mellan analog spänning och avstånd \label{IR_avstand}}
-\end{figure}
-%\item[Identifierare av nödställd] \hfill \\
-
-
-\subsection{Mjukvara}
-Sensormodulens kod är skriven i C och har som huvuduppgift att göra om de analoga signaler som uppmäts till digitala signaler som skickas visare till huvudmodulen. De olika sensorerna tar in olika typer av analoga signaler, vilket innebär att även fler typer av omvandlingar behöver vara möjliga. Alla omvandlingar sker i enhetens processorenhet, \verb+ATmega16+. 
-
-\subsubsection{IR-sensorerna}
-GP2120 och IRM-8601-S reflekterar ljus för att identifiera nödställd och mäta avstånd och vinklar mot omgivande objekt. Utsignalen vid dessa operationer är spänning (Vout), vilket behöver göras om till ett digitalt värde för att kunna skicka vidare informationen. 
+Initiering av AD-ingångarnas status- och kontrollregister (ADCSRA) sker i processorns startrutin. Processorenheten kommer därefter att fortsätta med dess respektive instruktioner tills dess att något sensorvärde är färdigomvandlat, varpå ett avbrott kommer att kallas. Figur \ref{datormodul:Avbrott_ADC} visar ett flödesschema vilket beskriver hur hanteringen av sensorvärden ska fungera.
 
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
 	\input{images/Avbrott_ADC}}
-	\caption{Flödesschema för hur AD-omvandling ska initieras\label{datormodul:Avbrott_ADC}}	
+	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_ADC}}	
 \end{figure}
 
 
 \FloatBarrier
-\subsubsection{LIDAR-Lite}
-Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
+\subsubsection{LIDAR-Lite v2}
+Då lasersensorn LIDAR-lite v2 kommer att kopplas samman med processorenheten via ett PWM-interface så kommer avbrott, vilket kallas med hjälp av en timer (TCNT0), att behövas. För att göra detta så krävs det att TIMSK-registret (Timer/CounterInterrupt Mask Register) initeras. TIMER0-registret kommer att användas för att programmera timern, det är ett 8-bitars register vilket innebär att timern kan räkna upp 255 innan den nollställs och avbrott (TIMER0 overflow) anropas. Figer \ref{datormodul:Avbrott_PWM} ger en översiktlig bild av hur PWM-interfacet är tänkt fungera.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/Avbrott_PWM}}
+	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_PWM}}	
+\end{figure}
+\pagebreak
 
-\subsubsection{MPU-6050}
-Rotationen av roboten genomförs av MPU-6050 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
+%Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
+
+\subsubsection{MPU-6500}
+Eftersom informationen från MPU-6500 kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{datormodul:Avbrott_SPI} visar ett flödesschema vilket beskriver SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dessa avbrottsflagga ettställs.
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.5\linewidth}{!}{
+	\input{images/Avbrott_SPI}}
+	\caption{Flödesschema som illustrerar hur AD-omvandlade sensorvärden ska behandlas\label{datormodul:Avbrott_SPI}}	
+\end{figure}
+\pagebreak
+%Rotationen av roboten genomförs av MPU-6500 som får roboten att rotera önskat antal grader. För att lyckas rotera lagom mycket behöver tester genomföras för att uppmäta hur snabbt (grader per sekund) roboten roterar. Utifrån utmätt data kan en omvandlingstabell skapas.
 
 \subsubsection{Kodstruktur}
 Sensormodulen har som nämnt tidigare tre huvuduppgifter: ta emot rådata från sensorerna (både i form av analoga och digitala signaler), A/D-omvandla och konvertera dessa signaler (om det krävs) och sedan skicka paket av relevant, konverterad sensordata till huvudmodulen.
