@@ -489,9 +489,9 @@ I denna situation regleras roboten lämpligen med tillståndsåterkoppling och u
 
 där $v_{des}$ är den önskade hastighete, $\lambda \in [0,1]$ används för att reglera hastigheten, $k$ är ett positivt heltal sådant att $t=kT_c$ där $t$ är tiden och $T_c$ är sampelperioden, $\Delta_y$ är avståndet mellan avståndssensorn och robotens centrum i y-led, $\beta_0$ och $\beta_1$ är experimentiellt fastställda konstanter och $\hat{\theta}$ är en skattning av $\theta$. En mer ingående beskrivning av modellen, tillsammans med en härledning av densamma, finns i förstudien.
 
-\paragraph{Körning på öppen yta} Betrakta roboten i korridorsexemplet ovan, men nu på ett avstånd från sidoväggen som är större än vad sensorerna klarar av att mäta. I denna situation krävs en annan reglermodell.
+%\paragraph{Körning på öppen yta} Betrakta roboten i korridorsexemplet ovan, men nu på ett avstånd från sidoväggen som är större än vad sensorerna klarar av att mäta. I denna situation krävs en annan reglermodell.
 
-\textit{Fyll på med reglermodell utifrån förstudien}
+%\textit{Fyll på med reglermodell utifrån förstudien}
 
 \subsubsection{Huvudloop och avbrott}
 Eftersom I\textsuperscript{2}C-kommunikationen är avbrottstyrd består styrmodulens uppdrag till största del av att besvara kommandon från huvudmodulen. När ett avbrott signaleras, betjänas det direkt och kallar på metoder utgående från typen av information som anländer. I fallet av manuell styrning mot styrkommandon sker ingen reglering gentemot väggar och kommandona översätts endast till en PWM-sekvens åt motorerna.
@@ -666,7 +666,7 @@ Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med
 \textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
 Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
 Rotation & Vinkelhastighet $\omega$ \\ \hline
-Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
+%Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
 \caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}}
 \end{longtable}
 %\end{table}
