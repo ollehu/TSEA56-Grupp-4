@@ -343,7 +343,7 @@ Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut f
 
 \subsubsection{Gyro/accelerometer}
 %\item[Vinkelhastighet] \hfill \\
-I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används \verb+MPU6050+, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används \verb+MLX90609+, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
 
 
 
@@ -384,8 +384,8 @@ Då lasersensorn \verb+LIDAR-lite v2+ kommer att kopplas samman med processorenh
 
 %Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
-\subsubsection{MPU-6500}
-Eftersom informationen från \verb+MPU-6500+ kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från gyrot. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
+\subsubsection{MLX90609}
+Eftersom informationen från \verb+MLX90609+ kommer att överföras via ett SPI-interface så är initiering av SPCR (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från sensorn. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.5\linewidth}{!}{
