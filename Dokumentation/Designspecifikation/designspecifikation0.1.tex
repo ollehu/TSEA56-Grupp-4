@@ -593,6 +593,16 @@ Respektive segment motsvarar följande:
 För att initiera kontakt används så kallade handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot.
 
 \subsection{Informationsflöde}
+Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inleds kommunikationen med ett kommunikations-ID som betecknar vilken typ av data som kommer skickas. Varje datatyps respektive ID finns i tabellen nedan:
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Datatyp} \\ \hline 
+0 & Styrkommando \\ \hline
+1 & Kartinformation \\ \hline
+2 & Sensordata \\ \hline
+
+\caption{Tabell över kommunikations-ID}\label{kommunikationstab}
+\end{longtable}
+
 I figur \ref{informationFlow} visualiseras informationsflödet. Där anges mottagare och sändare samt vilken typ av information som går mellan dem.
 
 \begin{figure}[htbp]
@@ -614,11 +624,9 @@ Följande protokoll används för att skicka styrkommandon (gäller både för d
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A - Startbit
-	\item B (Bit 1) - Definierar om ett körkommando eller ett sensorvärde skickas (1 om körkommando, 0 om sensorvärde).
-	\item C (Bit 2-5) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab} och tabell \ref{styrtab} för specifika värden.
-	\item D (Bit 6-15) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde) mellan (0-1023).
-	\item E - Slutbit
+	\item A (1 byte) - Kommunikations-ID
+	\item B(1 byte) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab} och tabell \ref{styrtab} för specifika värden.
+	\item C (2 byte) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - kartinformation}
@@ -635,11 +643,10 @@ Varje korsning kommer att representeras som en nod och vägarna däremellan som 
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A - Startbit
-	\item B (Bit 0-3) - Motsvarar nodens x-koordinat (0-15)
-	\item C (Bit 4-7) - Motsvarar nodens y-koordinat (0-15)
-	\item D (Bit 8-11) - Representerar väggar kring noden (1 = vägg, 0 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b8 = N, b9 = W, b10 = S, b11 = E).
-	\item E - Slutbit
+	\item A (1 byte) - Kommunikations-ID
+	\item B (1 byte) - Motsvarar nodens x-koordinat (tillåtna värden: 0-15)
+	\item C (1 byte) - Motsvarar nodens y-koordinat (tillåtna värden: 0-15)
+	\item D (1 byte) - Representerar väggar kring noden (11 = vägg, 00 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b0-1 = N, b2-3 = W, b4-5 = S, b6-7 = E).
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - sensordata}
@@ -654,9 +661,8 @@ Sensordata skickas enligt följande protokoll:
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A - Startbit
+	\item A - Kommunikations-ID
 	\item B - Sensordatapaket
-	\item C - Slutbit
 \end{itemize}
 
 Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
@@ -700,7 +706,6 @@ Rotation & Vinkelhastighet $\omega$ \\ \hline
 
 \caption{Tabell över styrkommandon}\label{styrtab}
 \end{longtable}
-
 
 \pagebreak
 \section{Implementering}
