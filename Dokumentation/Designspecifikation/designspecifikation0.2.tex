@@ -111,6 +111,10 @@ Det totala system kommer att bestå av tre processormoduler, en kommunikationsen
 \end{itemize}
 Förutom förbindelserna med olika externa enheter är de tre modulerna sammankopplade med en I\textsuperscript{2}C-buss där huvudmodulen är master och kontrollerar kommunikationen. 
 
+Undsättningsroboten kommer att regleras med hjälp av PD-reglering. Nödvändiga konstanter för att kunna utföra denna typ reglering kommuniceras från datormodulen till huvudmodulen via Bluetooth\textsuperscript{\circledR}. Via I\textsuperscript{2}C-bussen vidarebefordrar huvudmodulen därefter konstanterna till styrmodulen där PD-reglering utförs. 
+
+Utöver detta så kommer även lysdioder att kopplas på kretskorten, detta för att underlätta felsökning. En utsignal kan då kopplas till en lysdiod för att säkerställa att ett värde generas till utporten.
+
 En övergripande bild över systemet återfinns i figur \ref{overview}.
 
 \begin{figure}[!htbp]
@@ -724,6 +728,7 @@ Inom utvecklingsarbetet för varje aktivitet hanteras också eventuell felhanter
 
 \subsection{Sampling}
 Det som begränsar tiden mellan samplingar av sensordata är hur lång tid A/D omvandlingen tar för den data som tar längst tid att omvandla. Sampling bör ske så ofta som möjligt för så bra värde som möjligt så att styrmodulen kan få uppdaterade värden skickade till sig. Sampling kommer ske med frekvens mellan 10-20 Hz för att hinna med omvandling av IR-sensorernas data. 
+ 
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
