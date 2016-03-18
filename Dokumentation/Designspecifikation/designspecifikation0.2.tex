@@ -573,7 +573,9 @@ Styrmodul & 1100110\\ \hline
 
 
 \subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
-För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
+För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. 
+
+(Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
 
 \begin{figure}[htbp]
 \centering
@@ -589,8 +591,8 @@ Respektive segment motsvarar följande:
 	\item C - Paritetsbit
 	\item D - Slutbit (en eller två stycken)
 \end{itemize}
-
-För att initiera kontakt används så kallade handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot.
+)
+För att initiera kontakt används så kallade handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot. Överföringen sker seriellt enligt protokoll. När huvudmodulen mottagit informationen som datormodulen skickat genereras ett avbrott. En flagga stätts när det finns information att läsa från mottagningsbufferten och återställs när all data är läst. Avbrott genereras vid satt flagga.
 
 \subsection{Informationsflöde}
 Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inleds kommunikationen med ett kommunikations-ID som betecknar vilken typ av data som kommer skickas. Varje datatyps respektive ID finns i tabellen nedan:
