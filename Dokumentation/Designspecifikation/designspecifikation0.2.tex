@@ -10,7 +10,7 @@
 
 \vspace{5em}
 
-Version 0.1
+Version 0.2
 
 \vspace{5em}
 Grupp 4 \\
@@ -36,7 +36,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & Isak Strömberg & 2016-03-07 \\ \hline
+Granskad & - & - \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -91,7 +91,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-0.1 & - &  Första utkastet & Grupp 4 & - \\ \hline
+0.1 & 2016-03-07 &  Första utkastet & Grupp 4 & IS \\ \hline
 \end{tabular}
 \end{table}
 
@@ -126,7 +126,7 @@ En övergripande bild över systemet återfinns i figur \ref{overview}.
 
 \FloatBarrier
 \subsection{Sensorer}
-Roboten kommer vara utrustad med sex stycken sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa. Vidare finns ett kombinerat 3-axligt gyro och 3-axlig accelerometer av typen \verb+MPU-6500+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avståndet till väggar framför roboten. Den sistnämnda är placerad på ett servo för att kunna roteras. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
+Roboten kommer vara utrustad med sex stycken sensorer. Fyra infraröda sensorer av typen \verb+GP2D120+ används för att bestämma avstånden till väggarna på robotens sidor och robotens vinkel i förhållande till dessa. Vidare finns en vinkelhastighetsgivare, \verb+MLX90609+ som används för att reglera rotation av roboten. Slutligen finns en lasersensor av typen \verb+Lidar-Lite v2+ för att bestämma avståndet till väggar framför roboten. Den sistnämnda är placerad på ett servo för att kunna roteras. Placeringen av sensorerna visas nedan i figur \ref{sensor}.
 
 \begin{figure}[htbp]
 \centering
@@ -320,7 +320,7 @@ Den hårdvara som sensormodulen kommer att kräva är:
 \item{Processorenhet, \verb+ATmega16+ x 1}
 \item{IR-sensor, \verb+GP2D120+ x 2}
 \item{Laser-sensor, \verb+LIDAR-Lite v2+ x1}
-\item{Gyro/accelerometer, \verb+MPU-6500+ x 1}
+\item{Vinkelhastighetssensor, \verb+MLX90609+ x 1}
 \item{IR-detektor, \verb+IRM-8601-S+ x 1}
 
 \end{itemize}
