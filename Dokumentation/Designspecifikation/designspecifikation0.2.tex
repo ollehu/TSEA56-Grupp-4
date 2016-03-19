@@ -576,7 +576,7 @@ Styrmodul & 1100110\\ \hline
 \end{center}
 
 \subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
-För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. För att initiera kontakt används handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot. Överföringen sker seriellt och när huvudmodulen mottagit informationen som datormodulen skickat genereras ett avbrott. Avbrott genereras genom att Bluetooth\textsuperscript{\circledR}-gränssnittet tänder en flagga när det finns information att hämta i bufferten.
+För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. För att initiera kontakt används handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot. Överföringen sker seriellt och när huvudmodulen mottagit informationen som datormodulen skickat genereras ett avbrott. Avbrott genereras genom att USART-gränssnittet tänder en flagga när det finns information att hämta i bufferten.
  
 
 %Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
