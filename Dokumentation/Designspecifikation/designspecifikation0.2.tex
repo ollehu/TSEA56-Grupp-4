@@ -575,31 +575,31 @@ Styrmodul & 1100110\\ \hline
 \end{longtable}
 \end{center}
 
+\subsection{Bluetooth\textsuperscript{\circledR}-kommunikation}
+För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. För att initiera kontakt används handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot. Överföringen sker seriellt och när huvudmodulen mottagit informationen som datormodulen skickat genereras ett avbrott. Avbrott genereras genom att Bluetooth\textsuperscript{\circledR}-gränssnittet tänder en flagga när det finns information att hämta i bufferten.
+ 
 
-\subsection{Bluetooth\textsuperscript{\circledR}-kommunikation sååå coolt}
-    För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-modulen användas. Robotens enhet kommer vara kopplad till huvudmodulens processor. 
+%Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
 
-(Överföringen sker seriellt med protokoll enligt figur \ref{bluetooth}.
+%\begin{figure}[htbp]
+%\centering
+%\noindent\resizebox{.8\linewidth}{!}{
+%	\input{images/bluetoothCom}}
+%	\caption{Protokoll för överföring mellan huvud- och datormodul \label{bluetooth}}	
+%\end{figure}
 
-\begin{figure}[htbp]
-\centering
-\noindent\resizebox{.8\linewidth}{!}{
-	\input{images/bluetoothCom}}
-	\caption{Protokoll för överföring mellan huvud- och datormodul \label{bluetooth}}	
-\end{figure}
+%Respektive segment motsvarar följande:
+%\begin{itemize}
+%	\item A - Startbit
+%	\item B - Informationsbitar (åtta bitar)
+%	\item C - Paritetsbit
+%	\item D - Slutbit (en eller två stycken)
+%\end{itemize}
 
-Respektive segment motsvarar följande:
-\begin{itemize}
-	\item A - Startbit
-	\item B - Informationsbitar (åtta bitar)
-	\item C - Paritetsbit
-	\item D - Slutbit (en eller två stycken)
-\end{itemize}
-)
-För att initiera kontakt används så kallade handskakningssignaler för att avgöra om vardera ände är redo att skicka respektive ta emot. Överföringen sker seriellt enligt protokoll. När huvudmodulen mottagit informationen som datormodulen skickat genereras ett avbrott. En flagga stätts när det finns information att läsa från mottagningsbufferten och återställs när all data är läst. Avbrott genereras vid satt flagga.
 
 \subsection{Informationsflöde}
 Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inleds kommunikationen med ett kommunikations-ID som betecknar vilken typ av data som kommer skickas. Varje datatyps respektive ID finns i tabellen nedan:
+
 \begin{longtable}[l]{| l | l |} \hline
 \textbf{ID} & \textbf{Datatyp} \\ \hline 
 0 & Styrkommando \\ \hline
