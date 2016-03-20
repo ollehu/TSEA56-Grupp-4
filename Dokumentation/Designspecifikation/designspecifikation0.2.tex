@@ -472,7 +472,7 @@ Displayen är en alphanumerisk 16x2 LCD-display och ska visa utvalda sensorvärd
 Utskriften till displayen sker i huvudloopen och i takt med att nya mätvärden tas emot.
 
 \subsubsection{Regleringsmodeller} \label{mjukvarureglering}
-Roboten kommer ha två olika styrmoder: \textit{rak körning i korridor} och \textit{rotation}. Av dessa två är det \textit{rak körning i korridor} som presenterar den största utmaningarna. Reglerering av rotationen sker intuitivt med en PD-reglering, varför den inte kommer beskrivas mer ingående här. 
+Roboten kommer ha två olika styrmoder: \textit{rak körning i korridor} och \textit{rotation}. Av dessa två är det \textit{rak körning i korridor} som presenterar den största utmaningarna. Reglerering av rotationen sker enkelt med en PD-reglering, varför den inte kommer beskrivas mer ingående här. 
 
 \paragraph{Rak körning i korridor} Betrakta roboten och en vägg i ett kartesiskt koordinatsystem. Detta exempel kan jämföras med roboten i en korridor, där vi för enkelhetens skulle enbart betraktar ena väggen. Väggens vinkel i förhållande till koordinatsystemet är $\gamma$ och robotens vinkel är $\theta$. Robotens hastighet $v$ fås genom derivering av avståndet till en godtycklig främre vägg $s$. Robotens uppmätta avstånd till väggen är $z$ och det önskade avståndet är $d^0$. Robotens vinkelhastighet betecknas med $\omega$ och fås från gyrot. Detta illustreras i figur \ref{robotwall} nedan. Den faktiska roboten har två avståndssensorer per sida, varför robotens vinkel i förhållande till väggen $\theta - \gamma$ enkelt kan beräknas. Dessa har dock ersatts av en enskild sensor i figuren för att behålla överskådligheten.
 
