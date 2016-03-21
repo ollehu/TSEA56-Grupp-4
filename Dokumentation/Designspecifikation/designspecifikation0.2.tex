@@ -36,7 +36,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & Olle Hynén Ulfsjöö & 2016-03-21 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -91,6 +91,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
+0.2 & 2016-03-21 & Andra utkastet & Grupp 4 & OHU \\ \hline
 0.1 & 2016-03-07 &  Första utkastet & Grupp 4 & IS \\ \hline
 \end{tabular}
 \end{table}
@@ -147,7 +148,7 @@ Roboten kommer använda sig av totalt sex olika ställdon. Fyra av dessa är mot
 
 \clearpage
 \section{Delmodul 1 - Huvudmodul}
-Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul, dels robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer om intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
+Robotens huvudmodul har som uppgift att kommunicera med dels en extern datormodul och dels med robotens övriga moduler. Kommunikationen med de övriga modulerna sker genom en tvåtrådsbuss, I\textsuperscript{2}C, och huvudmodulen fungerar där som överordnad de andra processorenheterna. Kommunikationen med datormodulen sker via  Bluetooth\textsuperscript{\circledR}. Mer om intermodulär kommunikation går att läsa i avsnitt \ref{Intermodulär kommunikation} Förutom detta ska huvudmodulen även sköta den interna kartläggningen. 
 
 Kopplingsschema för huvudmodulen ser ut enligt figur \ref{kopplingsschema:huvudmodul}. Till avbrottsingång \verb+INT0+ är styrmodulen kopplad och till  \verb+INT1+ sensormodulen. Dessa avbrott används då styr- eller sensormodulen vill initiera kommunikation med huvudmodulen. Som det framgår av figuren räcker \verb+ATmega16+ för det modulen behöver. Det finns möjlighet att koppla in ytterligare funktion då flera utgångar ej används.  
 
@@ -272,7 +273,7 @@ Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$
 \subsection{Hårdvara}
 Huvudmodulen kommer kräva följande hårdvara:
 \begin{itemize}
-	\item ATmega16
+	\item \verb+ATmega16+
 	\item  Bluetooth\textsuperscript{\circledR}  (FireFly)
 \end{itemize}
 
@@ -281,7 +282,7 @@ Huvudmodulen kommer kräva följande hårdvara:
 Koden i huvudmodulen är skriven i C. Nedan beskrivs vad som händer i huvudprogrammet respektive i avbrott.
 
 \subsubsection{Huvudprogram}
-I huvudmodulens huvudprogram ska följande saker genomföras:
+I huvudmodulens huvudloop ska följande saker genomföras:
 
 \begin{itemize}
 	\item Läsa av körläge (autonomt eller manuellt)
@@ -300,7 +301,7 @@ De avbrott som är kopplade till huvudmodulen ska hantera följande:
 
 \pagebreak
 \section{Delmodul 2 - Sensormodul}
-Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas, omvandlas och konverteras (vid behov) med konstant frekvens. För avståndssensorerna innebär detta att den analoga inspänningen omvandlas till ett digitalt värde som sedan konverteras till enheten cm.
+Sensormodulens uppdrag är att kommunicera med både sensorerna och huvudmodulen. Mätdata samplas, omvandlas och konverteras (vid behov) med konstant frekvens. För avståndssensorerna innebär detta att den analoga inspänningen omvandlas till ett digitalt värde som sedan konverteras till enheten centimeter.
 
 Den främre avståndssensorn (laser-sensorn) placeras på ett roterande servo så att den kan \emph{scanna} korridoren roboten befinner sig i. Detta förutsätter att servot går att styra så att vinkelutslaget går att beräkna med godtycklig precision. Tillåter inte servot en sådan styrning placeras laser-sensorn så att den konstant pekar rakt framåt.
 
@@ -318,7 +319,7 @@ Den hårdvara som sensormodulen kommer att kräva är:
 
 \begin{itemize}
 \item{Processorenhet, \verb+ATmega16+ x 1}
-\item{IR-sensor, \verb+GP2D120+ x 2}
+\item{IR-sensor, \verb+GP2D120+ x 4}
 \item{Laser-sensor, \verb+LIDAR-Lite v2+ x1}
 \item{Vinkelhastighetssensor, \verb+MLX90609+ x 1}
 \item{IR-detektor, \verb+IRM-8601-S+ x 1}
@@ -347,7 +348,7 @@ Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut f
 
 \subsubsection{Gyro/accelerometer}
 %\item[Vinkelhastighet] \hfill \\
-I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används \verb+MLX90609+, som får roboten att rotera. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+I den labyrint där roboten ska hitta den nödställde kommer det finnas korsningar, vilket ställer krav på roboten att svänga. För att klara av detta används \verb+MLX90609+. Genom att mäta hur mycket roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
 
 
 
@@ -388,7 +389,7 @@ Då lasersensorn \verb+LIDAR-lite v2+ kommer att kopplas samman med processorenh
 
 %Lasersensorn LIDAR-Lite används för att scanna av omgivningen och ge bild av miljön roboten rör sig i. Den kommer liksom IR-sensorerna få ut en analog utsignal i volt, som behöver konverteras till ett digitalt värde innan det skickas till huvudmodulen. Även här kommer tester få göras för att hitta sambandet mellan avstånd och spänning.
 
-\subsubsection{MLX90609}
+\subsubsection{Vinkelhastighetssensor}
 Eftersom informationen från \verb+MLX90609+ kommer att överföras via ett SPI-interface så är initiering av \verb+SPCR+ (SPI Control Register) nödvändigt. Detta ska ske när processorn startas. Övriga instruktioner kommer därefter att utföras tills dess att avbrottsflaggan tillhörande SPI:ns statusregister 1-ställs, varpå stackpekaren kommer att gå in i avbrottet för att behandla sensorvärdena från sensorn. Figur \ref{Avbrott_SPI} visar ett flödesschema vilket beskriver hur SPI-interfacet ska fungera samt hur sensorvärdena hanteras när dess avbrottsflagga ettställs.
 \begin{figure}[htbp]
 \centering
@@ -403,7 +404,7 @@ Eftersom informationen från \verb+MLX90609+ kommer att överföras via ett SPI-
 Sensormodulen har som nämnt tidigare tre huvuduppgifter: ta emot rådata från sensorerna (både i form av analoga och digitala signaler), A/D-omvandla och konvertera dessa signaler (om det krävs) och sedan skicka paket av relevant, konverterad sensordata till huvudmodulen.
 
 \subsubsection{Mottagande av data och omvandling}
-Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna omvandlas multiplexas till en insignal som sedan A/D-omvandlas kontinuerligt. När A/D-omvandlingen är klar initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i en separat variabel för varje sensor. %Fyll på om PWM och SPI
+Sensordatat kommer tas emot i tre olika format: analoga signaler från IR-sensorerna, PWM-signal från lasersensorn och SPI-signal från gyrot. De analoga signalerna A/D-omvandlas kontinuerligt. När A/D-omvandlingen är klar initieras en avbrottsrutin som sparar det icke bearbetade digitala värdet i en separat variabel för varje sensor. %Fyll på om PWM och SPI
 
 \subsubsection{Konvertering}
 Konvertering av de sensorvärden som inte är linjära sker kontinuerligt i huvudloopen. Programmet hämtar ett värde i taget från variablerna för okonverterade sensordata, konverterar sedan dessa med hjälp av en tabell eller funktion och sparar det nya värdet i en ny variabel. 
