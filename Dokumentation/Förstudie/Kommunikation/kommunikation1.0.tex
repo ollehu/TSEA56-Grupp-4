@@ -155,6 +155,19 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 
 Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
 
+\subsection{SPI}
+ATMega16 data sheet:
+SPI är ett överföringsprotokoll som kan användas för dataöverföring mellan två eller fler enheter. I konfigurationen finns det minst en masterenhet, vilken initierar all kommunikation, och resten är slavenheter. Som standard sker överföringen genom ett skifte där en bit i taget flyttas från slaven till mastern, och vice versa. Hårdvarumässigt krävs minst fyra portar:
+
+\begin{enumerate}
+	\item \textbf{MISO:} Master input, slave output
+	\item \textbf{MOSI:} Master output, slave input
+	\item \textbf{SCK:} Klockpuls
+	\item \textbf{SS:} Slavenheternas koppling till masterenheten
+\end{enumerate}
+
+Master-enheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till dataregistret. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. För att synkronisera överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
+
 \subsection{Assembler och C för programmering av mikroprocessorer}
 
 \textit{Att göra: Lägga till information om språken, om det finns behov av det.}
@@ -177,6 +190,21 @@ Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet 
 
 \section{Diskussion}
 I detta avsnitt disskuteras möjliga lösningar till frågeställningarna.
+
+\subsection{SPI eller I\textsuperscript{2}C}
+Fördelar med SPI:
+\begin{itemize}
+	\item Högre överföringshastighet än I\textsuperscript{2}C
+	\item Slavarna behöver inte unika adresser, som de behöver på I\textsuperscript{2}C
+\end{itemize}
+
+Nackdelar med SPI:
+\begin{itemize}
+	\item Ingen acknoledge-signal från slavenheten, vilket kan göra att masterenheten kan skicka till ingenting och inte veta om det
+	\item Kan potentiellt behöva fler antal portar än I\textsuperscript{2}C
+\end{itemize}
+
+Källa: https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Pros_and_cons
 
 \subsection{Konfiguration av I\textsuperscript{2}C-bussen}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
