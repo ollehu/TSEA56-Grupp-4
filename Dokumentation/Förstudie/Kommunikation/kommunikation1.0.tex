@@ -104,10 +104,10 @@ Syftet med denna studie är att undersöka hur intern kommunikation och integrat
 De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 
 \begin{itemize}
-	\item Vilken konfiguration av en I\textsuperscript{2}C-buss är lämplig i ett modulbaserat projekt?
-	\item Vilken konfiguration av en SPI-buss är lämplig i ett modulbaserat projekt?
-	\item Vilken busstyp är lämpligast för det projekt som ska genomföras?
-	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
+	\item Vilken busstyp är lämpligast, och hur ska den konfigureras?
+	\item Vilka för- och nackdelar finns med C repektive Assembler?
+	\item Hur ska tester designas?
+	\item Vad är viktigt att tänka på i ett modulbaserat projekt?
 \end{itemize}
 
 \pagebreak
@@ -214,6 +214,7 @@ Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler
 
 Som nämnts går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
 
+
 \subsection{Att utveckla ett realtidssystem med fler moduler}
 
 \cite{IRS} beskriver faktorer att tänka på vid design av en ''open- architecture target environment''. Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorers kanske inte jobbar i samma hastighet och därför behöver olika frekvens på olika uppgifter. Det kan också bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens vilket medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge.   
@@ -236,6 +237,10 @@ Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna p
 
 I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning kan enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
 
+\subsection{Att utveckla ett realtidssystem med fler moduler}
+
+\cite{IRS} beskriver faktorer att tänka på vid design av en ``open- architecture target environment''. Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorers kanske inte jobbar i samma hastighet och därför behöver olika frekvens på olika uppgifter. Det kan också bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens vilket medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge.   
+
 \pagebreak
 
 \section{Resultat och slutsatser}
@@ -250,6 +255,8 @@ När projektet är beroende av bra tajming är avbrottsstyd buss att föredra d�
 För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det.
 
 \subsection{Design av tester}
+
+\subsection{Att tänka på i modulbaserade projekt}
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
