@@ -15,9 +15,9 @@ Version 1.0
 \vspace{5em}
 Grupp 4 \\
 \begin{tabular}{rl}
-Tronje, Elena&\verb+eletr654+
-\\
 Gustafsson, Lovisa&\verb+lovgu777+
+\\
+Tronje, Elena&\verb+eletr654+
 \\
 \end{tabular}
 
@@ -100,36 +100,14 @@ Syftet med denna studie är att undersöka hur intern kommunikation och integrat
 
 %(Syftet med denna studie är att beröra frågor som rör kommunikation och integration vid modulär uppbyggnad av för att i projektfasen ha en grund att stå på.)
 
-\pagebreak
-
 \section{Problemformulering}
-%Busstyp redan vald? Annars lämpligt att undersöka för- och nackdelar med olika busstyper, tex SPI
-
-Rapporten tar avstamp i frågor som berör integration och kommunikation. De generella frågeställningarna är:
-
-\begin{itemize}
-	\item Beskriv olika principer för kommunikation mellan processorer. Prestanda, funktion , 
-robusthet, etc (SPI, I2C, ...). Vilken/vilka lösningar passar er robot?  
-	\item Hur utvecklar och testar man ett realtidssystem som innehåller flera moduler/processorer Integration? Med eller utan operativsystem? Olika programstrukturer? Avbrottsstyrning? C eller assembler? Varför modularisering? Hållbar utveckling? Om ni skulle kommersialisera er robot i 100-tal eller miljontal, hur skulle ni byggt den då? 
-\end{itemize}
-
-För att denna förstudie ska få mening i det projekt som den föregår har frågorna smalnats av och formulerats om till följande:
+De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 
 \begin{itemize}
 	\item Vilken konfiguration av en I\textsuperscript{2}C-buss är lämplig i ett modulbaserat projekt?
-	
-\begin{itemize}
-	\item Avbrott eller pollning?
-	\item Master och slaveroller?
-\end{itemize}	
-	
+	\item Vilken konfiguration av en SPI-buss är lämplig i ett modulbaserat projekt?
+	\item Vilken busstyp är lämpligast för det projekt som ska genomföras?
 	\item Hur görs integration av moduler på ett smidigt/lättarbetat/bra sätt?
-	
-		\begin{itemize}
-			\item C eller assembler?
-			\item Hur ska tester designas för att säkerställa att respektive modul fungerar enligt kravspecifikation?
-		\end{itemize}
-
 \end{itemize}
 
 \pagebreak
@@ -140,10 +118,9 @@ I detta avsnitt behandlas den bakgrundsinformation som krävs för att besvara f
 \subsection{I\textsuperscript{2}C}
 %https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3.4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3,4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
 
 Överföringsprocessen består av fem steg: 
-%Acknowledge?
 
 \begin{enumerate}
 	\item \textbf{Start:} Triggas av negativ flank på SDA då SCL ligger hög.
@@ -153,7 +130,7 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 	\item \textbf{Stop:} Triggas av positiv flank på SDA då SCL ligger hög.
 \end{enumerate}
 
-Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. \cite{guideI2CPhilips}
+Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen. \cite{guideI2CPhilips}
 
 \subsection{SPI}
 ATMega16 data sheet:
@@ -167,10 +144,6 @@ SPI är ett överföringsprotokoll som kan användas för dataöverföring mella
 \end{enumerate}
 
 Master-enheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till dataregistret. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. För att synkronisera överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
-
-\subsection{Assembler och C för programmering av mikroprocessorer}
-
-\textit{Att göra: Lägga till information om språken, om det finns behov av det.}
 
 \subsection{Testning av system} 
 
@@ -189,51 +162,45 @@ Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet 
 \pagebreak
 
 \section{Diskussion}
-I detta avsnitt disskuteras möjliga lösningar till frågeställningarna.
+I detta avsnitt diskuteras möjliga lösningar till frågeställningarna.
 
-\subsection{SPI eller I\textsuperscript{2}C}
-Fördelar med SPI:
-\begin{itemize}
-	\item Högre överföringshastighet än I\textsuperscript{2}C
-	\item Slavarna behöver inte unika adresser, som de behöver på I\textsuperscript{2}C
-\end{itemize}
-
-Nackdelar med SPI:
-\begin{itemize}
-	\item Ingen acknoledge-signal från slavenheten, vilket kan göra att masterenheten kan skicka till ingenting och inte veta om det
-	\item Kan potentiellt behöva fler antal portar än I\textsuperscript{2}C
-\end{itemize}
-
-%Källa: https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Pros_and_cons
-
-\subsection{Konfiguration av I\textsuperscript{2}C-bussen}
+\subsection{Konfiguration av I\textsuperscript{2}C och SPI}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
-Vid användning av ATMega16 tillsammans med en I\textsuperscript{2}C-buss är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C. För att lösa detta kan alla enheter kopplas på samma buss med en rad konfigurationsmöjligheter för att uppnå önskat resultat. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
+Vid användning av ATMega16 tillsammans med I\textsuperscript{2}C eller SPI är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C respektive SPI. Önskas parallella bussar behöver båda typerna användas. För repektive busstyp finns en rad konfigurationsmöjligheter. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
 
 \begin{enumerate}
- \item Flera enheter kan konfigureras till att inneha en masterroll. Dessa kan då, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data. %Arbitrering?
+ \item Flera enheter kan konfigureras till att inneha en masterroll. Dessa kan då, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data. Vid användning av I\textsuperscript{2}C används arbitrering för att hantera situationer få flera masterenheter vill använda bussen samtidigt för att säkerställa att enbart en når ut på bussen och att det meddelandet inte förstörs. \cite{guideI2C} Motsvarande system för att hantera flera masterenheter saknas för SPI.
  
- \item En eller flera slavenheter kan kopplas till den enda masterenheten med avbrott. När slaven vill ha kontakt över I\textsuperscript{2}C-bussen triggar den avbrottssignalen, vilket i sin tur får masterenheten att initiera kontakten. Detta medför att data enbart kan gå mellan masterenheten och respektive slav, inte slavarna emellan.
+ \item En eller flera slavenheter kan kopplas till den enda masterenheten med avbrott. När slaven vill ha kontakt över bussen triggar den avbrottssignalen, vilket i sin tur får masterenheten att initiera kontakten. Detta medför att data enbart kan gå mellan masterenheten och respektive slav, inte slavarna emellan.
  
- \item Bussens enda masterenhet pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
+ \item Bussens enda masterenhet pollar slavenheterna med ett jämt intervall. Då kan masterenheten själv styra när den vill ha respektive  data, med risk för att slavenheten inte har något att skicka och antingen sätter mastern i vänteläge eller skickar den vidare.
 \end{enumerate}
 
-%Man kan kombinera 2 och 3
+Det är även möjligt att kombinera alternativ 2 och 3, det vill säga att några slavenheter kopplas med avbrott för att säga till när det finns information att hämta och att några lämnas åt masterenheten att polla.
+
 %Vilken processor är lämplig att använda som master?
 
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf s. 350 (357 i filen)
 
-Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till CPU:n (huvudmodulen) att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
-
 %http://www.nxp.com/documents/user_manual/UM10204.pdf
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet. 
+Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet. Över SPI sker istället ett informationsutbyte mellan master och slav, vilket gör att dataregistret kopplat till SPI:n kan uppdateras med ny information så länge inte ett skifte pågår. Detta gör att slavarna kan fortsätta med sitt tills masterenheten önskar kontakt. \cite{ATMega16}
 
-%Så länge en masterenhet inte är intresserad av att kommunicera kan slavenheten fortsätta med sitt.
+Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger istället på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till huvudmodulen att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
 
-\textit{Att göra: Koppla ihop informationen kring avbrott och pollning med de alternativen som listats och med projektet vi ska genomföra}
+\subsection{SPI eller I\textsuperscript{2}C?}
+Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar, och har några väsentliga skillnader:
+
+\begin{enumerate}
+	\item På SPI behöver slavarna inte ha unika adresser, som de behöver ha på I\textsuperscript{2}C. Detta gör att för I\textsuperscript{2}C finns det ett begränsat antal kombinationer som kan användas, och därmed ett begränsat antal enheter som kan kopplas till bussen. Å andra sidan behöver SPI unika kopplingar mellan masterenheterna och slavenheterna, vilket kräver fler utgångar.
+	\item I\textsuperscript{2}C använder sig av en aknowledge-signal för att försäkra sändaren om att mottagaren fått informationen, vilken saknas på SPI. Detta gör det möjligt för masterenheten att skicka information till ingenting och inte veta om det. 
+	\item SPI använder fler antal portar än I\textsuperscript{2}C i grundutförandet.
+	\item I\textsuperscript{2}C har ett inbyggt system för att hantera flera masterenheter, vilket SPI inte har.
+\end{enumerate}
+
+Det som talar för SPI är kopplingen mellan de olika enheterna då den sker rent hårdvarumässigt och kräver ingen programmering av adresser. Dock tas fler portar i anspråk, vilket kan vara ett problem i vissa tillämpningar. Acknowledge-signalen som I\textsuperscript{2}C använder talar för användningen av den bussen då det går att försäkra sig om att information går fram. Vid mer komplexa system med behov av flera masterenheter är I\textsuperscript{2}C att föredra tack vare det inbyggda systemet. 
 
 \subsection{Assembler eller C}
 
@@ -241,11 +208,11 @@ Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmer
 
 Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assemblerrutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivå språk som C i enklare konstruktioner av realtidssystem. En nackdel med assembler är dock att koden blir svårare att läsa för framtida användare då denne måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med assembler är dock att koden blir svårare att läsa för framtida användare då denne måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
-Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En sån detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C pga. dess smidighet vara ett mer fördelaktigt språk att programera i. Är något tidskritiskt kan det var en ide att överväga att skriva detta i Assembler. 
+Det finns alltså fördelar och nackdelar med med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende det onödigt krångligt. En sån detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programera i. Är något tidskritiskt kan det var en ide att överväga att skriva detta i Assembler. 
 
-Som nämnt går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
+Som nämnts går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
 
 \subsection{Att utveckla ett realtidssystem med fler moduler}
 
@@ -254,9 +221,9 @@ Som nämnt går det också att mixa C och Assembler om så önskas. Då projektg
 Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} Ett problem med integration av moduler är dock hur pålitligt och exakt det hela systemet egentligen blir. \cite{DIMRS}
 
 \subsection{Design av tester}
-En simulator är ett enkelt val för testning av kod då de flesta microprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
+En simulator är ett enkelt val för testning av kod då de flesta mikroprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
 
-För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sen testas tillsammans. Hårdvarutestning kan vara svår  men exempelvis  kan enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktiveras ett avbrott i taget för att hitta var felet är. För att testa både hårdvara och mjukvara föreslås en funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också.
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan vara svår men exempelvis  kan enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktiveras ett avbrott i taget för att hitta var felet är. För att testa både hårdvara och mjukvara föreslås en funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också.
 
 \textit{Att göra: Väva in på vilket sätt JTAG skulle kunna hjälpa.}
 
@@ -264,7 +231,10 @@ För testning av system föreslår \cite{RWD} att testning av hårdvara och mjuk
 
 \section{Resultat och slutsatser}
 
-\subsection{Konfiguration av I\textsuperscript{2}C-bussen}
+\subsection{Val av databuss}
+I ett projekt med ett tydligt begränsat antal moduler, och där portarna inte är en begränsning, faller valet i första hand på I\textsuperscript{2}C då den har en acknowledge-signal för att bekräfta att informationen gått fram. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
+
+När projektet är beroende av bra tajming är avbrottsstyd buss att föredra då förfrågan kan hanteras på en gång. Eftersom det det beroende som finns mellan projektets olika moduler kan gå via en och samma modul, eller att informationen behövs hos alla, är det möjligt att enbart använda en masterenhet.
 
 \subsection{Assembler eller C}
 
