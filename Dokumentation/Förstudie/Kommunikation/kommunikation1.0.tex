@@ -255,6 +255,9 @@ När projektet är beroende av bra tajming är avbrottsstyd buss att föredra d�
 För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det.
 
 \subsection{Design av tester}
+I framtagningen av en testplan är det viktigt att se till att täcka alla fall av indata för att upptäcka alla eventuella fel så tidigt som möjligt i processen. Ju tidigare de upptäcks, desto lättare är det att identifiera dem och göra något åt dem. Därför kan en framgångsrikstrategi vara att designa test på olika nivåer för att stegvis lägga till mer och mer funktionalitet.
+
+I debuggingen av koden finns tillgång till JTAG ICE, vilken är bättre än en simulator då den kör koden på den faktiska enheten. Dock kvarstår viss problematik med att hantera alla avbrott som systemet styrs via. För att testa hårdvaran är logikanalysatorn ett lämpligt verktyg.
 
 \subsection{Att tänka på i modulbaserade projekt}
 
