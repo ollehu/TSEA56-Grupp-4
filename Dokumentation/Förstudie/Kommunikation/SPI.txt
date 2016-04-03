@@ -1,0 +1,15 @@
+ATMega16 data sheet:
+Fyra portar: MISO, MOSI, SCK, SS
+
+Master-enheten initierar kontakt genom att dra SS ur sitt idle-state på den slav som ska kontaktas. Båda enheterna förbereder sig för att skicka data till respektive skift-register. Master-enheten genererar önskad klockpuls. Synkroniseringen mellan enheterna sker genom att master-enheten drar SS hög efter varje datapaket. 
+
+SS måste hanteras av användaren. När detta är gjort, att skriva en byte till registret startar klockgeneratorn och skiftet startar. När en byte är skickad stannar klockgeneratorn och en flagga sätts (SPIF). Är avbrott tillåtet startas det. För att fortsätta skifta kan nästa byte skickas till dataregistret, annars kan SS-linan dras till idle-state. 
+
+Den senaste inkommande byten är lagrad i buffert registret för framtida användning.
+
+Beroende på hur CPOL och CPHA konfigureras skiftas och "hakas på" på olika sidor om klocksignalen.
+
+SPI Block Guide:
+https://web.archive.org/web/20150413003534/http://www.ee.nmt.edu/~teare/ee308l/datasheets/S12SPIV3.pdf
+
+Kan hantera multipla master-enheter, men man måste vara extra försiktig.
