@@ -221,9 +221,18 @@ Som nämnts går det också att mixa C och Assembler om så önskas. Då projekt
 \subsection{Design av tester}
 En simulator är ett enkelt val för testning av kod då de flesta mikroprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
 
-För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan vara svår men exempelvis  kan enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test av hårdvara i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är superviktiga stängas av för att se om felet kvarstår och sen aktiveras ett avbrott i taget för att hitta var felet är. För att testa både hårdvara och mjukvara föreslås en funktionell testplan. Med hjälp av en bra kravspecifikation kan testerna lätt definieras. Viktigt är att inte glömma att testa undantagsfall också.
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan exempelvis ske genom att enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är kritiska stängas av för att se om felet kvarstår och sen aktiveras ett avbrott i taget för att hitta var felet är.
 
-\textit{Att göra: Väva in på vilket sätt JTAG skulle kunna hjälpa.}
+\subsubsection{Olika typer av test}
+Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna på ett systematiskt sätt:
+\begin{enumerate}
+	\item \textbf{Enhetstest:} Testar en enskild enhet. Denna typ av test är viktigt då det är lättare att hitta fel när det är tydligt från vilken enhet felet kommer.
+	\item \textbf{Integrationstest:} Testar att interaktionen mellan olika enheter fungerar, med syfte att samanfoga enheter för att testa deras helhetsbeteende. Här ligger fokuset på att testa gränssnitt.
+	\item \textbf{Systemtest:} Testar hela systemet, och fokuserar på de egenskaper som enbart finns när systemet är komplett.
+	\item \textbf{Acceptanstest:} Test för att kunden ska godkänna systemet  
+\end{enumerate}
+
+I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning kan enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
 
 \pagebreak
 
