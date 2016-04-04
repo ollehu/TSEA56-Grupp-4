@@ -32,6 +32,9 @@
 # Spara pdfer?
 # *.pdf 
 
+# Eclipse-filer
+Java-kod/.metadata/
+
 # Mac IDE files
 *.swp
 *~
