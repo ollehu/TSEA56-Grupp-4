@@ -83,6 +83,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & ET \\ \hline
+1.0 & 2016-04--- &  Andra utkastet & Grupp 4 & \\ \hline
 \end{tabular}
 \end{table}
 
@@ -104,7 +105,7 @@ Syftet med denna studie är att undersöka hur intern kommunikation och integrat
 De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 
 \begin{itemize}
-	\item Vilken busstyp är lämpligast, och hur ska den konfigureras?
+	\item Vilken busstyp är lämpligast, SPI eller I\textsuperscript{2}C, och hur ska den konfigureras?
 	\item Vilka för- och nackdelar finns med C repektive Assembler?
 	\item Hur ska tester designas?
 	\item Vad är viktigt att tänka på i ett modulbaserat projekt?
@@ -130,7 +131,7 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 	\item \textbf{Stop:} Triggas av positiv flank på SDA då SCL ligger hög.
 \end{enumerate}
 
-Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen. \cite{guideI2CPhilips}
+Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
 
 \subsection{SPI}
 ATMega16 data sheet:
@@ -190,7 +191,7 @@ Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behö
 
 Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger istället på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till huvudmodulen att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
 
-\subsection{SPI eller I\textsuperscript{2}C?}
+\subsection{Jämförelse mellan SPI och I\textsuperscript{2}C}
 Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar, och har några väsentliga skillnader:
 
 \begin{enumerate}
@@ -204,13 +205,13 @@ Det som talar för SPI är kopplingen mellan de olika enheterna då den sker ren
 
 \subsection{Assembler eller C}
 
-Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras så som statusregister och tillhörande avbrott.  
+Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras, så som statusregister och tillhörande avbrott.  
 
-Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En Assemblerrutin kan bli synlig för en C kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
+Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En assemblerrutin kan bli synlig för en C-kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med assembler är dock att koden blir svårare att läsa för framtida användare då dessa måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Alltså bli Assembler inte lägre så attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer vilket kan vara fördelaktigt. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med Assembler är dock att koden blir svårare att läsa för framtida användare då dessa måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Detta gör Assembler mindre attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
-Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende saker onödigt krångliga. En sån detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till projektet som ska utföras är det så pass litet så att den snabbhet Assembler ger kanske inte är av största betydelse. Dessutom finns inte tid till att på detaljnivå förstå hårdvaran. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programmera i. Är något tidskritiskt kan det var en ide att överväga att skriva detta i Assembler. 
+Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende anvädningen onödigt krånglig. En sån detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till att projektet som ska utföras är så pass litet är det tveksamt om den snabbhet Assembler ger är av någon direkt betydelse. Dessutom finns det inte tid till att på detaljnivå förstå hårdvaran för att kunna skriva allt i Assembler. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programmera i. Är någon funktion tidskritisk kan det ändå vara en idé att överväga att skriva detta i Assembler. 
 
 Som nämnts går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
 
@@ -233,12 +234,13 @@ I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt 
 
 \subsection{Att utveckla ett realtidssystem med fler moduler}
 
-\cite{IRS} beskriver faktorer att tänka på vid design av en ''open-architecture target environment''. Det måste finnas en synkronisering av uppgifter då exempelvis alla sensorers kanske inte jobbar i samma hastighet och därför behöver olika frekvens på olika uppgifter. Det kan också bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens vilket medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Vid kommunikation mellan två moduler måste ett  helt set av data skickas, inte lite från den föregående cykeln och lite från den senaste. Det är också viktigt att förutspå hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge.   
+\cite{IRS} beskriver bland annat de nedanstående fyra faktorer att tänka på vid design av en ''open-architecture target environment''. Den första är att det måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens på olika uppgifter. Den andra är att det kan bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Nummer tre är att ett helt set av data måste skickas vid kommunikation mellan två moduler, inte lite från den föregående cykeln och lite från den senaste. Nummer fyra är att det är viktigt att förutspå hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge.   
 
-Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} I case-studien \cite{MMPD} bekräftas att modulär design bidrar till ökad produkt variation så ett fåtal moduler kan kombineras på många olika sätt och på så sätt skapa olika produkter. Även en förbättrad kvalitet och ledtid kan fås genom modularär design. \cite{MMPD} uppmärksammar även vikten av att system-integration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar. Enligt \cite{MRDCRD} är fördelarna med modulär design att tiden för designarbetet blir kortare, lägre priser och återigen ett ökat antal möjliga konfigurationer.
+Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} I case-studien \cite{MMPD} bekräftas att modulär design bidrar till ökad produkt variation då ett fåtal moduler kan kombineras på många olika sätt och på så sätt skapa olika produkter. Även en förbättrad kvalitet och ledtid kan fås genom modularär design. Enligt \cite{MRDCRD} är fördelarna med modulär design att tiden för designarbetet blir kortare, lägre priser och återigen ett ökat antal möjliga konfigurationer. 
 
+I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar. 
 
- Ett problem med integration av moduler är dock hur pålitligt och exakt det hela systemet egentligen blir. \cite{DIMRS}
+Ett problem med integration av moduler är hur pålitligt och exakt det hela systemet egentligen blir. \cite{DIMRS}
 
 \pagebreak
 
@@ -251,7 +253,7 @@ När projektet är beroende av bra tajming är avbrottsstyd buss att föredra d�
 
 \subsection{Assembler eller C}
 
-För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det.
+För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor, vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det.
 
 \subsection{Design av tester}
 I framtagningen av en testplan är det viktigt att se till att täcka alla fall av indata för att upptäcka alla eventuella fel så tidigt som möjligt i processen. Ju tidigare de upptäcks, desto lättare är det att identifiera dem och göra något åt dem. Därför kan en framgångsrikstrategi vara att designa test på olika nivåer för att stegvis lägga till mer och mer funktionalitet.
@@ -259,6 +261,7 @@ I framtagningen av en testplan är det viktigt att se till att täcka alla fall 
 I debuggingen av koden finns tillgång till JTAG ICE, vilken är bättre än en simulator då den kör koden på den faktiska enheten. Dock kvarstår viss problematik med att hantera alla avbrott som systemet styrs via. För att testa hårdvaran är logikanalysatorn ett lämpligt verktyg.
 
 \subsection{Att tänka på i modulbaserade projekt}
+Det är lätt att fastna i funktionstänk, men det är även viktigt att tänka på helheten och den dynamik som ett system medför. För att hantera omgivningen roboten ska verka i är det viktigt att se till att det inte finns något beroende till frekvens eller systemklockor. Viss hänsyn behöver även tas till att alla systemets sensorer inte nödvändigtvis inte arbetar med samma frekvens.
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
