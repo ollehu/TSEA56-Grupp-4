@@ -107,7 +107,6 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 I dagsläget finns det en mängd olika sensorer, alla med för- respektive nackdelar. Vilken sensor som är bäst beror ofta på vilket syfte som ska uppfyllas och vilka resurser som finns att tillgå. Att en undsättningsrobot som ska hitta nödställda har sensorer som gör det enkelt att identifiera sitt mål är en fråga om liv och död. Därav finns det ett stort behov av att öka kunskapen om sensorer, samt dess möjligheter och begränsningar.
 
-\pagebreak
 
 \section{Problemformulering}
 
@@ -163,19 +162,14 @@ I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar s
 %	\caption{Förhållande mellan analog spänning och kapacitans \label{capacitance_voltage}}
 %\end{figure}
 
+
+
     
 % http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
 %http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
 
 
-\subsection{Ultraljudssensorer}
-För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
-
-\begin{equation*}
-	\textrm{s} = v_{luft} \times t						
-\end{equation*}
-
 
 % http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
 
@@ -183,10 +177,10 @@ För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skick
 
 
 \subsection{Ultraljudssensorer}
-För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation 2 räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation  \ref{eq:equation1} räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
 
-\begin{equation*}
-	\textrm{s} = v_{luft} \times t						
+\begin{equation*} \label{eq:equation1}
+	\textrm{s} = v_{luft} \times t 				
 \end{equation*}
 
 \subsubsection{SRF04}
@@ -237,9 +231,13 @@ Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eft
 %http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html (1)
 
 \subsubsection{IRM-8601-S}
+IR-detektorn \verb+IRM-8601-S+ används för att identifiera en källa som sänder ut IR-signaler. Utformandet av sensorn är relativt enkel med tre ingångar, en som kopplas till en 5V spänningskälla och en som ansluts till jod.
 
 
 \subsubsection{GP2D120}
+För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med cirka 40 centimeters bredd och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den kan mäta avstånd till objekt som befinner sig på 4-30 cm från sensorn. 
+
+Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras.
 
 \subsection{Lasersensor}
 
@@ -258,6 +256,8 @@ En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex oc
 \subsubsection{LIDAR-Lite}
 Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner, till exempel avstånds- och hastighetsmätning av objekt. Den har en räckvidd på ca 40 meter med en felmarignal på på 0,025 meter och klarar även av att mäta signalstyrka på detta avstånd. (2)
 
+Med hjälp av pulsbreddsmodulering kan förhållandet mellan en hög signal (en etta) och en låg signal (en nolla) bestämmas. Utifrån denna kvot kan sensorn kalibreras och en förhållande mellan en kvot och ett avstånd kan tas fram.
+
 %http://www.mtiinstruments.com/pdf/appnotes/lasersensor.pdf (1)
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/lidarlite2DS.pdf (2)
@@ -275,7 +275,7 @@ En accelerometer används för att mäta accelarationen mellan två objekt. Sens
 
 %http://ac.els-cdn.com/S0021929001002317/1-s2.0-S0021929001002317-main.pdf?_tid=b0659f78-e140-11e5-a337-00000aab0f01&acdnat=1457010545_25d6915b6fa7edf4d2cfd2d1a2627816 (3)
 
-\subsubsection{MPU-6050}
+\subsubsection{MPU-6050!!!!!!!!!!!}
 MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. (4)
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
@@ -283,18 +283,27 @@ MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omv
 %http://www.mtiinstruments.com/pdf/appnotes/lasersensor.pdf (1)
 
 
-\subsubsection{LIDAR-Lite}
-
-
-\subsection{Gyro-/accelerometer}
-
 \pagebreak
 \section{Fallet undsättningsrobot}
+De flesta har både fördelar och nackdelar. En del är mer precisa men dyra och komplicerade, medan andra är billiga och enkla men brister i kvalitet. I vissa fall är även designen viktig och ställer krav på de sensorer som används. I följande kapitel beskrivs vilka sensorer som passar för en undsättningsrobot. 
 
 \subsection{Avståndssensor}
-% - Ultraljud
-% - GP2D120
-% - LIDAR-Lite
+Det finns flera olika sensorer som klarar av att mäta avstånd till omgivande objekt. Här följer en beskrivning vilken typ av sensor som passar bäst till just en undsättningsrobot. 
+
+\subsubsection{Ultraljud}
+En ultraljudssensor passar bra i miljöer med skiftande omgivning. Den påverkas inte av vilka färger eller material som ljudvågorna studsar emot och den kan användas problemfritt i dammiga och smutsiga miljöer. Att mäta avstånd till små objekt på stora avstånd är inte heller någon begränsning då ljudvågorna breder ut sig på ett stabilt sätt.
+
+Miljöer som begränsar ultralljudssensorer är höga tryck, vakuum och hög värme, men den största nackdelen att sensorn agerar förhållandevis långsamt. Ljudet utbereder sig med 340 m/s i luft, vilket gör att sensorn tar lbetydligt längre tid på sig att förmedla ett avstånd jämfört med sensorer som arbetar med ljus har en mycket högre hastighet. 
+
+\subsubsection{GP2D120}
+IR-sensorn GP2D120 är en enkelt utformad sensor som tillverkas för att precisionsmäta avstånd på 4-30 cm. Att mätintervallet är jämförelsevis litet är å ena sidan en begränsning, men det gör samtidigt att kvaliteten av mätningar inom intevallet kan göras mer precist. 
+
+En svaghet hos sensorn är att den enbart kan användas inom ett litet intervall, vilket gör den till ett dåligt alternativ i en osäker omgivning eller där avstånd som ska mätas inte inkluderas i intervallet. Sensorn är även känslig för högfrekvent brus, vilket ofta existerar i omgivningen. Detta kan dock förebyggas genom att ansvända sig av lågpassfilter. 
+
+\subsubsection{LIDAR-Lite}
+LIDAR-lite är en lasersensor som kan mäta avstånd till objekt med hög precision. Eftersom laser rör sig med ljusets hastighet och sensorn kan implementeras med avbrottshantering så sker mätningarna snabbt. Det är en stor fördel om flera sensorer delar på samma processor, eftersom endast en operation kan ske i taget. LIDAR-lite är mer avancerad och därmed dyrare än till exempel GP2D120, vilket gör att den inte bör användas om hög kvalitet efterfrågas. På en undsättningsrobot kan sensorn användas för att mäta avstånd frammåt till nästa objekt. Den kan även fästas på ett servo och kan på så sätt scanna av 360 grader av ett rum. 
+
+
 
 \subsection{Detektering av mål}
 % - Kapacitans
