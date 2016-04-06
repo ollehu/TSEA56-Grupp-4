@@ -187,6 +187,8 @@ Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behö
 
 Generellt innebär avbrottsstyrning att CPU:n hålls fri då enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger istället på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis då det sker. I polling är det upp till huvudmodulen att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
 
+När projektet är beroende av bra tajming är avbrottsstyd buss att föredra då förfrågan kan hanteras på en gång. Eftersom det det beroende som finns mellan projektets olika moduler kan gå via en och samma modul, eller att informationen behövs hos alla, är det möjligt att enbart använda en masterenhet.
+
 \subsection{Jämförelse mellan SPI och I\textsuperscript{2}C}
 Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar, och har några väsentliga skillnader:
 
@@ -198,6 +200,8 @@ Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar, och har
 \end{enumerate}
 
 Det som talar för SPI är kopplingen mellan de olika enheterna då den sker rent hårdvarumässigt och kräver ingen programmering av adresser. Dock tas fler portar i anspråk, vilket kan vara ett problem i vissa tillämpningar. Acknowledge-signalen som I\textsuperscript{2}C använder talar för användningen av den bussen då det går att försäkra sig om att information går fram. Vid mer komplexa system med behov av flera masterenheter är I\textsuperscript{2}C att föredra tack vare det inbyggda systemet. 
+
+I ett projekt med ett tydligt begränsat antal moduler, och där portarna inte är en begränsning, faller därför valet i första hand på I\textsuperscript{2}C. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
 
 \subsection{Assembler eller C}
 
@@ -250,11 +254,10 @@ Ett problem med integration av moduler är hur pålitligt och exakt det hela sys
 \pagebreak
 
 \section{Resultat och slutsatser}
+Nedan presenteras studiens resultat och slutsatser.
 
-\subsection{Val av databuss}
-I ett projekt med ett tydligt begränsat antal moduler, och där portarna inte är en begränsning, faller valet i första hand på I\textsuperscript{2}C då den har en acknowledge-signal för att bekräfta att informationen gått fram. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
-
-När projektet är beroende av bra tajming är avbrottsstyd buss att föredra då förfrågan kan hanteras på en gång. Eftersom det det beroende som finns mellan projektets olika moduler kan gå via en och samma modul, eller att informationen behövs hos alla, är det möjligt att enbart använda en masterenhet.
+\subsection{Val av databuss och hur den ska konfigureras}
+\textit{Svara både på vilken buss som ska användas och hur den ska konfigureras}
 
 \subsection{Assembler eller C}
 
