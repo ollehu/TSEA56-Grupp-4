@@ -201,8 +201,6 @@ En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detektera
 \subsubsection{SFH300}
 SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
 
-\subsubsection{SFH300}
-SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
 
 
 \subsubsection{BPX43-3}
@@ -306,10 +304,21 @@ LIDAR-lite är en lasersensor som kan mäta avstånd till objekt med hög precis
 
 
 \subsection{Detektering av mål}
-% - Kapacitans
-% - IRM-8601S
-% - SFH300
-% - BPX...
+Att identifiera objekt kan göras med hjälp av flera olika tekniker och sensorer, som alla har sina fördelar och nackdelar. I detta avsnitt följer en beskrivning av hur olika sensorer passar för detektering av ett mål på en undsättningsrobot.
+
+\subsubsection{Kapacitans}
+En kapacitiv sensor har många fördelar när ett objekt ska detekteras. Det som utmärker denna typen av sensor mest jämfört med övriga detektorer är att den kan detektera de flesta typer av objekt, alltfrån metaller och plast till hud och vatten. Det gör att samma sensor kan användas i flera typer av projekt och miljöer. En nackdel är dock att den behöver komma nära objekten som ska detekteras, vilket gör att en bra uppfattning om var objektet finns innan sökning börjar.
+
+\subsubsection{IRM-8601S}
+Denna IR-sensor är en enkelt utformad detektor känner av ljus i det infraröda spektrat. I och med att den är så pass enkelt utformad med begränsat användningsområde är den också relativt billig.  
+
+\subsubsection{SFH300}
+Precis som IRM-8601S detekterar SFH300 vågor inom ett visst intervall, 420 nm till 1130 nm. Detta intervall inkluderar synligt ljus och även IR-vågor. Den kan alltså användas på ett bredare plan än IRM-8601S, vilket kan vara nödvändigt då det är säkert vad det är som ska detekteras. 
+
+\subsubsection{BPX43-3}
+Likt SFH300 är BPX43-3 en detektor som känner av synligt ljus samt infraröda vågor. De har ungefär samma prestanda och det som avgör vilken av dessa som är att föredra beror främst på pris och design.
+
+
 
 \subsection{Vinkelmätning}
 % - MPU-6050
