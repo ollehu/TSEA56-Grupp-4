@@ -104,7 +104,7 @@ För att besvara syftet med studien avses följande frågeställningar undersök
 	\item Vilken busstyp är lämpligast, SPI eller I\textsuperscript{2}C, och hur ska den konfigureras?
 	\item Vilka för- och nackdelar finns med C repektive Assembler? 
 	\item Hur ska tester designas?
-	\item Vad är viktiga faktorer att ha i åtanke vid utveckling av modulbaserade projekt?
+	\item Vad är viktiga faktorer att ha i åtanke vid utveckling av modulbaserade projekt? (inte bra heller)
 \end{itemize}
 
 \pagebreak
@@ -228,13 +228,22 @@ Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna p
 
 I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning kan enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
 
-\subsection{Att utveckla ett realtidssystem med fler moduler}
+\subsection{Modulbaserade projekt}
 
-\cite{IRS} beskriver bland annat de nedanstående fyra faktorer att tänka på vid design av en ''open-architecture target environment''. Den första är att det måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens på olika uppgifter. Den andra är att det kan bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Nummer tre är att ett helt set av data måste skickas vid kommunikation mellan två moduler, inte lite från den föregående cykeln och lite från den senaste. Nummer fyra är att det är viktigt att förutspå hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge.   
+Nedan beskrivs fördelar med modulära system samt faktorer att tänka på vid utveckling av modulära system.
 
-Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} I case-studien \cite{MMPD} bekräftas att modulär design bidrar till ökad produkt variation då ett fåtal moduler kan kombineras på många olika sätt och på så sätt skapa olika produkter. Även en förbättrad kvalitet och ledtid kan fås genom modularär design. Enligt \cite{MRDCRD} är fördelarna med modulär design att tiden för designarbetet blir kortare, lägre priser och återigen ett ökat antal möjliga konfigurationer. 
+\subsubsection{Modulär design(byt rubrik)}
 
-I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar. 
+Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} I case-studien \cite{MMPD} bekräftas att modulär design bidrar till ökad produktvariation då ett fåtal moduler kan kombineras på många olika sätt och på så sätt skapa olika produkter. Även en förbättrad kvalitet och ledtid kan fås genom modulär design. Enligt \cite{MRDCRD} är fördelarna med modulär design att tiden för designarbetet blir kortare, lägre priser och likt ovanstående ett ökat antal möjliga konfigurationer. 
+
+
+\subsubsection{Att tänka på vid design av modulära system}
+
+
+I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar. (under vilken rubrik?)
+
+\cite{IRS} beskriver bland annat följande faktorer att tänka på vid design av en ''open-architecture target environment''.  Det  måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens för olika uppgifter. Det kan även bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Dessutom bör ett helt set av data skickas vid kommunikation mellan två moduler, inte en del från den föregående cykeln och en del från den senaste.Det är även viktigt att kommunikationen mellan moduler är förutsägbar så att det kan förutspås hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge. På så sätt är det mer sannolikt att händelser sker i realtid.  
+
 
 Ett problem med integration av moduler är hur pålitligt och exakt det hela systemet egentligen blir. \cite{DIMRS}
 
@@ -257,7 +266,11 @@ I framtagningen av en testplan är det viktigt att se till att täcka alla fall 
 I debuggingen av koden finns tillgång till JTAG ICE, vilken är bättre än en simulator då den kör koden på den faktiska enheten. Dock kvarstår viss problematik med att hantera alla avbrott som systemet styrs via. För att testa hårdvaran är logikanalysatorn ett lämpligt verktyg.
 
 \subsection{Att tänka på i modulbaserade projekt}
-Det är lätt att fastna i funktionstänk, men det är även viktigt att tänka på helheten och den dynamik som ett system medför. För att hantera omgivningen roboten ska verka i är det viktigt att se till att det inte finns något beroende till frekvens eller systemklockor. Viss hänsyn behöver även tas till att alla systemets sensorer inte nödvändigtvis inte arbetar med samma frekvens.
+
+
+Modulbaserade system  kan ge flertalet fördelar, bland annat en ökad produktvariation då moduler kan kombineras på flertalet olika sätt och minskade kostnader.Vid utveckling av dess system är det dock viktigt att inte bara dela upp efter funktion utan även tänka på systemet som helhet särkilt vad gäller stora system. Faktorer att tänka på vid utveckling av moduler är också hur de ska fungera tillsammans. Integrationen av moduler bör ej bero på frekvens eller systemklockor vid synkronisering. Det är även viktigt att ha tänkt igenom kommunikationen mellan moduler så att inte bussen blir uppehållen för länge och processer tar för lång tid och att det som kommuniceras är så uppdaterat som möjligt.
+
+
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
