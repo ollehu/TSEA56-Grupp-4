@@ -283,7 +283,16 @@ Sensorn MLX90609 är ett exempel på en sensor som består av ett gyroskop med u
 
 \pagebreak
 \section{Resultat och slutsatser}
-text
+En förutsättning för att en undsättningsrobot ska kunna operera på ett effektivt sätt behövs flera olika typer av sensorer. De viktigaste egenskaperna hos en undsättningsrobot är att den ska kunna navigera och reglera på ett effektivt sätt samt att den kan hitta det objekt som eftersöks. Eftersom roboten ska kunna svänga är även en sensor som mäter vinkelhastighet viktig.
+
+För att kunna roboten ska kunna regleras behöver data som beskriver omgivningen samlas in. Ett effektivt sätt att göra detta på är att fästa fyra avståndssensorer, två på höger och på två vänster sida av roboten, för att ha koll på avstånd till sidoväggarna. Om avståndet till väggarna är 4 – 30cm är GP2D120 ett bra alternativ. Är avståndet istället är utanför detta intervall, eller helt okänt, är en mer avancerad sensor, som LIDAR-lite, vara att föredra. En ultraljudssensor är ett bra val om miljön som roboten arbetar i är smutsigt och i miljöer som är skiftande. Eftersom vi har givet att roboten ska användas i 40 cm breda korridorer så föll valet på GP2D120.
+
+För att roboten inte ska krocka, och för att den ska avläsa omgivningen så effektivt som möjligt är det av stor vikt att en avståndssensor, som mäter avstånd till nästa vägg framåt, också installeras. I detta fallet räcker inte GP2D120 till, utan en ultraljudssensor eller LIDAR-lite är att föredra. Båda uppfyller syftet, dock är en lasersensor betydligt snabbare än en ultraljudssensor vilket gör att LIDAR-lite är den bästa sensor för detta syfte. 
+
+Valet av sensor för detektering beror på vilket typ av objekt ska detekteras. Är det odefinierat är en kapacitiv sensor ett naturligt val, medan en IR-senor lämpar sig bäst för att detektera IR-ljus. Då roboten i detta fall ska upptäcka en källa som sänder ut IR-ljus är IRM-8601S en passande sensor, som dessutom är billig och enkel att installera.
+
+Om roboten kommer fram till en korsning och ska svänga, genom rotation, behöver den känna av hur snabbt rotationen sker. Två gyroskop som mäter just vinkelhastighet är MPU-6050 och MLX90609, som är relativt lika i sin utformning. MPU-6050 kan dock utöver vinkelhastighet även mäta acceleration, via tre stycken accelerometrar. I fallet för denna undsättningsrobot är denna funktion överflödig, därför är MLX90609 att föredra. 
+
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
