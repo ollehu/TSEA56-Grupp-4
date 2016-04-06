@@ -33,7 +33,7 @@
 # *.pdf 
 
 # Eclipse-filer
-Java-kod/.metadata/
+.metadata/
 
 # Mac IDE files
 *.swp
