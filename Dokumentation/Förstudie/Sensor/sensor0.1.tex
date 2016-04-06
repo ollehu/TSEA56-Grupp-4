@@ -46,6 +46,7 @@ Godkänd & - & - \\ \hline
  
 \end{longtable}
 
+
 \end{center}
 \end{titlepage}
 
@@ -132,7 +133,7 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 \pagebreak
 
 \section{Kunskapsbas}
-I följande avsnitt följer en beskrivning av olika typer av sensorer.
+För att kunna avgöra vilka sensorer som är ändamålsenliga för en undsättningsrobotot så krävs en redogörelse av vad som finns att tillgå. I följande avsnitt följer således en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
 En kapacitiv sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. \cite{website:capacative}
@@ -164,18 +165,6 @@ I figur 4 illustreras hur kapacitansen ändras när objektet (fingret) närmar s
 
 
 
-    
-% http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
-
-%http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
-
-
-
-% http://www.ti.com/lit/ds/symlink/fdc1004.pdf (1)
-
-%http://www.ti.com/lit/an/snoa927/snoa927.pdf (3)
-
-
 \subsection{Ultraljudssensorer}
 För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation  \ref{eq:equation1} räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
 
@@ -184,9 +173,8 @@ För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skick
 \end{equation*}
 
 \subsubsection{SRF04}
-Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. (1)
+Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. \cite{Devantech}
 
-%https://docs.isy.liu.se/pub/VanHeden/DataSheets/srf04.pdf (1)
 
 
 \subsection{Ljussensor}
@@ -196,7 +184,6 @@ Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där s
 
 En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{website:automation}
 
-%http://www.automation.com/library/articles-white-papers/sensors-sensing-technologies/fundamentals-of-photoelectric-sensors (1)
 
 \subsubsection{SFH300}
 SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
@@ -208,7 +195,7 @@ Liksom SFH300 så är även Siemens BPX43-3 även fotodiod som kan detektera inf
 
 
 \subsection{IR-sensor}
-En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning. (1)
+En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur 1 illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.  \cite{website:cmu}
 
 \begin{figure}[htbp]
 	\centering
@@ -224,9 +211,8 @@ Det går även att använda som en avståndssensor, vilket illustreras i figur 2
 	\caption{Vinkelmätning med lasersensor \label{laser_angle}}
 \end{figure}
 
-Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt.
+Ytterligare en möjlighet med en IR-sensor är att mäta hur ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt. \cite{website:cmu}
 
-%http://education.rec.ri.cmu.edu/content/electronics/boe/ir_sensor/1.html (1)
 
 \subsubsection{IRM-8601-S}
 IR-detektorn \verb+IRM-8601-S+ används för att identifiera en källa som sänder ut IR-signaler. Utformandet av sensorn är relativt enkel med tre ingångar, en som kopplas till en 5V spänningskälla och en som ansluts till jod.
@@ -255,26 +241,23 @@ En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex oc
 Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner, till exempel avstånds- och hastighetsmätning av objekt. Den har en räckvidd på ca 40 meter med en felmarignal på på 0,025 meter och klarar även av att mäta signalstyrka på detta avstånd. (2)
 
 Med hjälp av pulsbreddsmodulering kan förhållandet mellan en hög signal (en etta) och en låg signal (en nolla) bestämmas. Utifrån denna kvot kan sensorn kalibreras och en förhållande mellan en kvot och ett avstånd kan tas fram.
-
+ 
 %http://www.mtiinstruments.com/pdf/appnotes/lasersensor.pdf (1)
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/lidarlite2DS.pdf (2)
 
 
-\subsection{Gyro}
-För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyro användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) & kan storleken på rotationen (\straightphi) & uppskattas genom integrering, enligt ekvation 2, där t står för tiden som rotationen har pågått. (3)
+\subsection{Gyroskop}
+För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyroskop användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) & kan storleken på rotationen (\straightphi) & uppskattas genom integrering, enligt ekvation 2, där t står för tiden som rotationen har pågått. (3)
 
   \begin{equation*}
 	\phi = \int_{t}^{ }  \omega dt 						
 \end{equation*}
 
-\subsection{Accelerometer}
-En accelerometer används för att mäta accelarationen mellan två objekt. Sensorns utsignal (V) är beroende av acceleration, så när den relativa hastigheten mellan sensorn och omgivningen ändras registrerar accelerometern detta genom att utspänningen ändras. (3)
 
-%http://ac.els-cdn.com/S0021929001002317/1-s2.0-S0021929001002317-main.pdf?_tid=b0659f78-e140-11e5-a337-00000aab0f01&acdnat=1457010545_25d6915b6fa7edf4d2cfd2d1a2627816 (3)
+\subsubsection{MLX90609}
+Sensorn MLX90609 är ett exempel på en sensor som består av ett gyroskop med uppgift att avgöra ett föremåls momentana vinkelhastighet. Sensorn kommicerar vinkelhastigheten i form av ett bitmönster via ett SPI-interface (Serial Peripheral Interface) till en masterenhet (anledningen till att den externa enheten väljs till master beror på att MLX90609 är förprogrammerad att alltid agera slav vid kommunikation till externa enheter). 
 
-\subsubsection{MPU-6050!!!!!!!!!!!}
-MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. (4)
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
 
