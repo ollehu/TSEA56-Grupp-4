@@ -115,23 +115,25 @@ I detta avsnitt behandlas den bakgrundsinformation som krävs för att besvara f
 \subsection{I\textsuperscript{2}C}
 %https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enhter. Varje enhet har en unik adress, och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss hamna i två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master} kan. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3,4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enheter. Varje enhet har en unik adress och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss konfigureras till två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master}. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3,4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
 
 Överföringsprocessen består av fem steg: 
 
 \begin{enumerate}
 	\item \textbf{Start:} Triggas av negativ flank på SDA då SCL ligger hög.
-	\item \textbf{Adress till slav:} En sju bitar lång sekvens som bildar ett unikt ID till en annan enhet på bussen. När er masterenhet triggat initiering anses alla andra enheter vara slavar.
+	\item \textbf{Adress till slav:} En sju bitar lång sekvens som bildar ett unikt ID till en annan enhet på bussen. När en masterenhet triggat initiering anses alla andra enheter vara slavar.
 	\item \textbf{Datariktining:} En bit som reglerar om masterenheten vill skicka eller ta emot data. Tillsammans med ovanstående bildar de den första byten som skickas.
 	\item \textbf{Information:} Åtta bitar långa sekvenser med den mest signifikanta biten (MSB) först. Antalet bytes per överföring är inte reglerat.
 	\item \textbf{Stop:} Triggas av positiv flank på SDA då SCL ligger hög.
 \end{enumerate}
 
-Ett alternativ till att trigga avslut är att trigga en ny start, dvs att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring då den är kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
+Ett alternativ till att trigga avslut är att trigga en ny start, det vill säga att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföringnär den blir kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
 
 \subsection{SPI}
-ATMega16 data sheet:
-SPI är ett överföringsprotokoll som kan användas för dataöverföring mellan två eller fler enheter. I konfigurationen finns det minst en masterenhet, vilken initierar all kommunikation, och resten är slavenheter. Som standard sker överföringen genom ett skifte där en bit i taget flyttas från slaven till mastern, och vice versa. Hårdvarumässigt krävs minst fyra portar:
+\textit{ATMega16 data sheet:}
+SPI är ett överföringsprotokoll som kan användas för dataöverföring mellan två eller fler enheter. I konfigurationen finns det minst en masterenhet, vilken initierar all kommunikation, och resten är slavenheter. Som standard sker överföringen genom ett skifte där en bit i taget flyttas från slaven till mastern och vice versa. Hårdvarumässigt krävs minst fyra portar:
+
+\pagebreak
 
 \begin{enumerate}
 	\item \textbf{MISO:} Master input, slave output
@@ -140,7 +142,7 @@ SPI är ett överföringsprotokoll som kan användas för dataöverföring mella
 	\item \textbf{SS:} Slavenheternas koppling till masterenheten
 \end{enumerate}
 
-Master-enheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till dataregistret. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. För att synkronisera överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
+Master-enheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till \textit{dataregistret}. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. Synkronisering av överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
 
 \subsection{Testning av system} 
 
