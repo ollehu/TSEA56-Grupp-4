@@ -32,7 +32,7 @@ void lcdClearBottomRow(void);
 /**
 	Flip the Enable bit
 */
-void flipEN(void)
+void lcdFlipEN(void)
 {
 	//_delay_us(100);
 	lcdControl |= (1<<EN);
@@ -51,7 +51,7 @@ void lcdCommand(unsigned char command)
 	_delay_us(1);
 	
 	lcdData = command;
-	flipEN();
+	lcdFlipEN();
 }
 
 /**
@@ -74,7 +74,7 @@ void lcdWriteChar(char data)
 	lcdControl |= (1<<RS);
 	lcdControl &= ~(1<<RW);
 	lcdData = data;
-	flipEN();
+	lcdFlipEN();
 }
 
 /**
@@ -134,6 +134,16 @@ void lcdClearBottomRow(void)
 */
 void writeTempMessage(char *topRow, char *bottomRow)
 {
+	
+	counter = 0;
+	activeTempMessage = 1;
+	
+	//Start counter
+	TCCR0B |= (1<<CS02)|(1<<CS00);
+	TCCR0B &= ~(1<<CS01);
+	
+	lcdClear();
+	
 	int i;
 	lcdCommand(0x80 + (16 - strlen(topRow))/2);
 	for(i=0;topRow[i]!='\0';i++){
@@ -171,7 +181,7 @@ ISR (TIMER0_COMPA_vect)
 /**
 	Initiate counter
 */
-void initCounter(void)
+void lcdInitCounter(void)
 {
 	//Set output
 	DDRB |= (1<<DDB3);
@@ -191,22 +201,6 @@ void initCounter(void)
 	TIMSK0 |= (1<<OCIE0A);
 	
 	sei();
-}
-
-/**
-	Send a temporary message to display
-*/
-void lcdTempMessage(char *topRow, char *bottomRow)
-{
-	counter = 0;
-	activeTempMessage = 1;
-	
-	//Start counter
-	TCCR0B |= (1<<CS02)|(1<<CS00);
-	TCCR0B &= ~(1<<CS01);
-	
-	lcdClear();
-	writeTempMessage(topRow, bottomRow);
 }
 
 /**
@@ -244,5 +238,5 @@ void initLCD(void)
 	lcdCommand(0x80);
 	
 	//Initiate counter
-	initCounter();
+	lcdInitCounter();
 }
