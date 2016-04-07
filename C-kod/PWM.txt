@@ -1,0 +1,39 @@
+== PWM.h ==
+
+- Innehåll - 
+initPWM()
+leftWheelPair(uint_8 speed, uint_8 direction)
+rightWheelPair(uint_8 speed, uint_8 direction)
+stopWheels()
+openPicker()
+closePicker()
+
+
+- initPWM() - 
+Sätter de register som används för PWM-styrning på styrmodulen. Krävs för att kunna använda någon av funktionerna nedan.
+
+
+- leftWheelPair(uint_8 speed, uint_8 direction) -
+Sätter hastighet och riktning för vänster hjulpar. Använder sig av timer1 och påverkar inte huvudloppen efter den initieras. Körs tills den ges ett nytt värde.
+
+@param speed - hjulens hastighet i % (0-100)
+@param direction - hjulens rotationsriktning (0 = bakåt, 1 = framåt)
+
+
+- rightWheelPair(uint_8 speed, uint_8 direction) - 
+Sätter hastighet och riktning för vänster hjulpar. Använder sig av timer1 och påverkar inte huvudloppen efter den initieras. Körs tills den ges ett nytt värde.
+
+@param speed - hjulens hastighet i % (0-100)
+@param direction - hjulens rotationsriktning (0 = bakåt, 1 = framåt)
+
+
+- stopWheels() - 
+Stannar båda hjulen. Timer1 används fortfarande och initieringen av PWM är opåverkad.
+
+
+- openPicker() - 
+Öppnar gripklon. Använder sig av timer3 och påverkar inte huvudloppen efter den initieras. Körs tills den ges ett nytt värde.
+
+
+- closePicker() -
+Stänger gripklon. Använder sig av timer3 och påverkar inte huvudloppen efter den initieras. Körs tills den ges ett nytt värde.
