@@ -73,6 +73,9 @@ Handledare: Peter Johansson \\
 tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \end{center}
 \pagebreak
+\textbf{Sammanfattning}
+
+\pagebreak
 
 \tableofcontents
 
@@ -130,7 +133,6 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 Ett alternativ till att trigga avslut är att trigga en ny start, det vill säga att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföringnär den blir kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
 
 \subsection{SPI}
-\textit{ATMega16 data sheet:}
 SPI är ett överföringsprotokoll som kan användas för dataöverföring mellan två eller fler enheter. I konfigurationen finns det minst en masterenhet, vilken initierar all kommunikation, och resten är slavenheter. Som standard sker överföringen genom ett skifte där en bit i taget flyttas från slaven till mastern och vice versa. Hårdvarumässigt krävs minst fyra portar:
 
 \pagebreak
@@ -203,7 +205,7 @@ Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar och har 
 
 Det som talar för SPI är kopplingen mellan de olika enheterna då den sker rent hårdvarumässigt och kräver ingen programmering av adresser. Dock tas fler portar i anspråk, vilket kan vara ett problem i vissa tillämpningar. Acknowledge-signalen som I\textsuperscript{2}C använder talar för användningen av den bussen då det går att försäkra sig om att information går fram. Vid mer komplexa system med behov av flera masterenheter är I\textsuperscript{2}C att föredra tack vare det inbyggda systemet. 
 
-I ett projekt med ett tydligt begränsat antal moduler, och där portarna inte är en begränsning, faller därför valet i första hand på I\textsuperscript{2}C. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
+I ett projekt med ett tydligt begränsat antal moduler, och där portarna är en begränsning, faller därför valet i första hand på I\textsuperscript{2}C. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
 
 \subsection{Assembler eller C}
 
@@ -259,7 +261,11 @@ Ett problem med integration av moduler är hur pålitligt och exakt det hela sys
 Nedan presenteras studiens resultat och slutsatser.
 
 \subsection{Val av databuss och hur den ska konfigureras}
-\textit{Svara både på vilken buss som ska användas och hur den ska konfigureras}
+I projektet är antalet moduler begränsat till tre, vilket innebär att de utan problem får plats på I\textsuperscript{2}C-bussen. Eftersom den största begränsningen inte är ett problem faller valet på I\textsuperscript{2}C för huvudbussen. 
+
+I projketet går det att konfigurera bussen med enbart en masterenhet då beroendet mellan dessa moduler kan styras med en central modul. Detta skapar ett behov av att även implementera en SPI-buss om några av slavarna behöver viss information från andra enheter än de andra modulerna. 
+
+Projektet har ett stort behov av tajming, att uppgifter utförs direkt när de behövs. Därför faller valet på avbrottsstyrning över pollning.
 
 \subsection{Assembler eller C}
 
