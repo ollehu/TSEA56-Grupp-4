@@ -168,7 +168,7 @@ För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skick
 
 En ultraljudssensor passar bra i miljöer med skiftande omgivning. Den påverkas inte av vilka färger eller material som ljudvågorna studsar emot och den kan användas problemfritt i dammiga och smutsiga miljöer. Att mäta avstånd till små objekt på stora avstånd är inte heller någon begränsning då ljudvågorna breder ut sig på ett stabilt sätt.
 
-Miljöer som begränsar ultralljudssensorer är höga tryck, vakuum och hög värme, men den största nackdelen att sensorn agerar förhållandevis långsamt. Ljudet utbereder sig med 340 m/s i luft, vilket gör att sensorn tar lbetydligt längre tid på sig att förmedla ett avstånd jämfört med sensorer som arbetar med ljus har en mycket högre hastighet. 
+Miljöer som begränsar ultralljudssensorer är höga tryck, vakuum och hög värme, men den största nackdelen att sensorn agerar förhållandevis långsamt. Ljudet utbereder sig med 340 m/s i luft, vilket gör att sensorn tar lbetydligt längre tid på sig att förmedla ett avstånd jämfört med sensorer som arbetar med ljus har en mycket högre hastighet. \cite{Ultraljud}
 
 \subsection{Ljussensor}
 En ljussensor (även kallad fotocell) består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
@@ -215,7 +215,10 @@ För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyrosko
 	\phi = \int_{t}^{ }\omega dt 						
 \end{equation}
 
+Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet så kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas.
 
+\subsection{Accelerometer}
+En accelerometer är en typ av sensor som används för att detektera ett föremåls acceleration. När ett föremål går från stillastående till någon hastighet så börjar mycket små kristaller (piezoelektriska kristaller) inuti sensorn att vibrera. Beroende på intensiteten av kristallernas vibration så alstras en spänning vilken är proportionerlig mot föremålets acceleration, varpå densamma kan bestämmas.
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
 
@@ -270,15 +273,19 @@ Precis som IRM-8601S detekterar SFH300 vågor inom ett visst intervall, 420 nm t
 Liksom SFH300 så är även Siemens BPX43-3 även fotodiod som kan detektera infraröda våglängder. Idealt våglängdsintervall för denna fotodiolid ligger mellan 450 nm och 1100nm. Utsignalen är genereras i form av spänning, varför AD-omvandling krävs för processera utsignalen. Utspänningen ska emellertid vara mycket i linjär i förhållande till ljusstyrkan som dioden får som insignal. \cite{siemens}
 
 \subsection{Vinkelhastighetsmätning}
+Ett flertal olika sensorer kan användas för att avgöra undsättningsrobotens position och orientering. Vanligast förekommande för detta ändåmål är olika typer av gyroskopiska sensorer. Vinkelhastighetsmätning är av betydelse då roboten bör känna till sin position vid exempelvis kurvtagning i ett grottsystem.
 
 \subsubsection{MPU-6050}
- MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. (4)
+MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. (4)
 
 \subsubsection{MLX90609}
 Sensorn MLX90609 är ett exempel på en sensor som består av ett gyroskop med uppgift att avgöra ett föremåls momentana vinkelhastighet. Sensorn kommicerar vinkelhastigheten i form av ett bitmönster via ett SPI-interface (Serial Peripheral Interface) till en masterenhet (anledningen till att den externa enheten väljs till master beror på att MLX90609 är förprogrammerad att alltid agera slav vid kommunikation till externa enheter). \cite{Melexis}
 
-\subsection{Övriga funktioner}
-% - MPU-6050
+\subsection{Acceleration}
+För detektering av undsättningsrobotens acceleration så används främst sensortypen accelerometer. I nästföljande stycke så ges förslag på eventuell accelerometer till roboten.
+
+\subsubsection{MPU-6050}
+Eftersom sensorn av modell MPU-6050 även består av 3 accelerometrar så finns möjligheten att även erhålla värden på robotens acceleration. Även denna information skulle i sådana fall skickas via det I\textsuperscript{2}C-buss-interface som kommer förprogrammerat med sensorn.
 
 
 \pagebreak
