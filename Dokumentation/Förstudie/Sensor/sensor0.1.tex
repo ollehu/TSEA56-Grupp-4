@@ -160,26 +160,26 @@ En kapacitiv sensor har många fördelar när ett objekt ska detekteras. Det som
 %\end{figure}
 
 \subsection{Ultraljudssensorer}
-För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation \ref{ultra} räkna ut avståndet (s) till det objekt som gav upphov till ekot. 
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation \ref{ultra} räkna ut avståndet (s) till det objekt som gav upphov till ekot. \cite{Ultraljud}
 
 \begin{equation}\label{ultra}
 	\textrm{s} = v_{luft} \times t 				
 \end{equation}
 
-En ultraljudssensor passar bra i miljöer med skiftande omgivning. Den påverkas inte av vilka färger eller material som ljudvågorna studsar emot och den kan användas problemfritt i dammiga och smutsiga miljöer. Att mäta avstånd till små objekt på stora avstånd är inte heller någon begränsning då ljudvågorna breder ut sig på ett stabilt sätt.
+En ultraljudssensor passar bra i miljöer med skiftande omgivning. Den påverkas inte av vilka färger eller material som ljudvågorna studsar emot och den kan användas problemfritt i dammiga och smutsiga miljöer. Att mäta avstånd till små objekt på stora avstånd är inte heller någon begränsning då ljudvågorna breder ut sig på ett stabilt sätt. \cite{Ultraljud}
 
 Miljöer som begränsar ultralljudssensorer är höga tryck, vakuum och hög värme, men den största nackdelen att sensorn agerar förhållandevis långsamt. Ljudet utbereder sig med 340 m/s i luft, vilket gör att sensorn tar lbetydligt längre tid på sig att förmedla ett avstånd jämfört med sensorer som arbetar med ljus har en mycket högre hastighet. \cite{Ultraljud}
 
 \subsection{Ljussensor}
 En ljussensor (även kallad fotocell) består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
 
-Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta.  \cite{612896}
+Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende ljusets styrka. Av denna anledning så är en ljussensor användbar vid detektering av konstraster på exempelvis en yta. \cite{612896}
 
 En reflektorfotocell är en typ av ljussensor som, liksom ljussensorn, detekterar förändringar i ljusintensiteten. Det typiska i reflektorfotocellen är dock att den  består av en ljuskälla, en motagare, en signalkonverterare och slutligen en förstärkare. \cite{website:automation} 
 
 
 \subsection{IR-sensor}
-En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur \ref{Laser} illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning.  \cite{website:cmu}
+En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskade våglängder i det infraröda spektrumet. I figur \ref{Laser} illustreras hur en sensor, med hjälp av en LED-lampa som sänder ut strålning med samma våglängd som den sensorn uppfattar, kan avgöra om ett det finns ett objekt i sensorns riktning. Detekteras reflekterad strålning betyder det att ett föremål finns i sensorns riktning. \cite{website:cmu}
 
 \begin{figure}[htbp]
 	\centering
@@ -209,16 +209,16 @@ Det finns olika typer av lasersensorer som använder olika tekniker foch har oli
 En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. \cite{website:mti}
 
 \subsection{Gyroskop}
-För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyroskop användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) kan storleken på rotationen (\straightphi) uppskattas genom integrering, enligt ekvation \ref{gyro}, där t står för tiden som rotationen har pågått. (3)
+För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyroskop användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) kan storleken på rotationen (\straightphi) uppskattas genom integrering, enligt ekvation \ref{gyro}, där t står för tiden som rotationen har pågått. \cite{Gyroscope}
 
 \begin{equation}\label{gyro}
 	\phi = \int_{t}^{ }\omega dt 						
 \end{equation}
 
-Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet så kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas.
+Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet så kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas. \cite{Gyro}
 
 \subsection{Accelerometer}
-En accelerometer är en typ av sensor som används för att detektera ett föremåls acceleration. När ett föremål går från stillastående till någon hastighet så börjar mycket små kristaller (piezoelektriska kristaller) inuti sensorn att vibrera. Beroende på intensiteten av kristallernas vibration så alstras en spänning vilken är proportionerlig mot föremålets acceleration, varpå densamma kan bestämmas.
+En accelerometer är en typ av sensor som används för att detektera ett föremåls acceleration. När ett föremål går från stillastående till någon hastighet så börjar mycket små kristaller (piezoelektriska kristaller) inuti sensorn att vibrera. Beroende på intensiteten av kristallernas vibration så alstras en spänning vilken är proportionerlig mot föremålets acceleration, varpå densamma kan bestämmas. \cite{Accelerometer}
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
 
@@ -236,13 +236,13 @@ Det finns flera olika sensorer som klarar av att mäta avstånd till omgivande o
 Ultraljudssensorn SRF04 mäter avstånd mellan 3 cm och 3 meter med hjälp av ultraljud. Den har en detektionskon på ca 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. \cite{Devantech}
 
 \subsubsection{GP2D120} %IR-SENSOR
-IR-sensorn GP2D120 är en enkelt utformad sensor som tillverkas för att precisionsmäta avstånd på kortare avstånd, typiskt 4-30 cm. Att mätintervallet är jämförelsevis litet är en begränsning, men det gör samtidigt att kvaliteten av mätningar inom intevallet kan göras mer precist. 
+IR-sensorn GP2D120 är en enkelt utformad sensor som tillverkas för att precisionsmäta avstånd på kortare avstånd, typiskt 4-30 cm. Att mätintervallet är jämförelsevis litet är en begränsning, men det gör samtidigt att kvaliteten av mätningar inom intevallet kan göras mer precist. \cite{website:cmu}, \cite{Sharp}
 
 För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med cirka 40 centimeters bredd och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den precist kan mäta avstånd till objekt som befinner sig på ungefär 10-20 cm avstånd.
 
-Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras.
+Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras. \cite{Sharp}
 
-En svaghet hos sensorn är att den enbart kan användas inom ett litet intervall, vilket gör den till ett dåligt alternativ i en osäker omgivning eller där avstånd som ska mätas inte inkluderas i intervallet. Sensorn är även känslig för högfrekvent brus, vilket ofta existerar i omgivningen. Detta kan dock förebyggas genom att ansvända sig av lågpassfilter. 
+En svaghet hos sensorn är att den enbart kan användas inom ett litet intervall, vilket gör den till ett dåligt alternativ i en osäker omgivning eller där avstånd som ska mätas inte inkluderas i intervallet. Sensorn är även känslig för högfrekvent brus, vilket ofta existerar i omgivningen. Detta kan dock förebyggas genom att ansvända sig av lågpassfilter. \cite{Sharp}
 
 \subsubsection{LIDAR-Lite v2}
 Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner, till exempel avstånds- och hastighetsmätning av objekt. Den har en räckvidd på ca 40 meter med en felmarignal på på 0,025 meter och klarar även av att mäta signalstyrka på detta avstånd. \cite{Lidar}
@@ -276,7 +276,7 @@ Liksom SFH300 så är även Siemens BPX43-3 även fotodiod som kan detektera inf
 Ett flertal olika sensorer kan användas för att avgöra undsättningsrobotens position och orientering. Vanligast förekommande för detta ändåmål är olika typer av gyroskopiska sensorer. Vinkelhastighetsmätning är av betydelse då roboten bör känna till sin position vid exempelvis kurvtagning i ett grottsystem.
 
 \subsubsection{MPU-6050}
-MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. (4)
+MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. \cite{MPU}
 
 \subsubsection{MLX90609}
 Sensorn MLX90609 är ett exempel på en sensor som består av ett gyroskop med uppgift att avgöra ett föremåls momentana vinkelhastighet. Sensorn kommicerar vinkelhastigheten i form av ett bitmönster via ett SPI-interface (Serial Peripheral Interface) till en masterenhet (anledningen till att den externa enheten väljs till master beror på att MLX90609 är förprogrammerad att alltid agera slav vid kommunikation till externa enheter). \cite{Melexis}
@@ -285,7 +285,7 @@ Sensorn MLX90609 är ett exempel på en sensor som består av ett gyroskop med u
 För detektering av undsättningsrobotens acceleration så används främst sensortypen accelerometer. I nästföljande stycke så ges förslag på eventuell accelerometer till roboten.
 
 \subsubsection{MPU-6050}
-Eftersom sensorn av modell MPU-6050 även består av 3 accelerometrar så finns möjligheten att även erhålla värden på robotens acceleration. Även denna information skulle i sådana fall skickas via det I\textsuperscript{2}C-buss-interface som kommer förprogrammerat med sensorn.
+Eftersom sensorn av modell MPU-6050 även består av 3 accelerometrar så finns möjligheten att även erhålla värden på robotens acceleration. Även denna information skulle i sådana fall skickas via det I\textsuperscript{2}C-buss-interface som kommer förprogrammerat med sensorenheten. \cite{MPU}
 
 
 \pagebreak
@@ -309,7 +309,6 @@ Om roboten kommer fram till en korsning och ska svänga, genom rotation, behöve
 
 \pagebreak
 \appendix
-\section{First Appendix}
 
 \end{flushleft}
 
