@@ -1,6 +1,5 @@
 package serialCOM;
 
-import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import control.Handler;
@@ -52,7 +51,23 @@ public class SerialPortCOM {
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 	}
 
-	public 
+	public void sendControlCommand(int controlCommand) throws SerialPortException {
+		// send control command (1 byte)
+		sendData(convertIntToByte(controlCommand));
+		
+		// send speed (2 bytes)
+		// TODO decide how to send 2 bytes
+	}
+	
+	private byte convertIntToByte(int data) {
+		// TODO test if this works properly
+		return (byte) data;
+	}
+	
+	private void sendData(byte data) throws SerialPortException {
+		// TODO test if this works properly
+		serialPort.writeByte(data);
+	}
 	
 	/**
 	 * Lyssnar efter event på serieporten och skriver, vid event, ut det mottagna data.
