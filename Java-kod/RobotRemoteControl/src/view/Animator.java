@@ -22,6 +22,7 @@ public class Animator {
 		this.handler = handler;
 		
 		frame = new JFrame("Robot remote control");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// create and add controlpanel
 		robotControlPanel = new RobotControlPanel();

@@ -3,14 +3,18 @@ package view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -20,12 +24,26 @@ import javax.swing.plaf.basic.BasicArrowButton;
 public class RobotControlPanel extends JPanel 
 implements 	ChangeListener {
 
-	private BasicArrowButton upArrowKey;
-	private BasicArrowButton downArrowKey;
-	private BasicArrowButton leftArrowKey;
-	private BasicArrowButton rightArrowKey;
-	
+	private JPanel buttonPanel;
+	private JPanel statusPanel;
+
+	private BasicArrowButton upArrowKeyButton;
+	private BasicArrowButton downArrowKeyButton;
+	private BasicArrowButton leftArrowKeyButton;
+	private BasicArrowButton rightArrowKeyButton;
+
+	private JButton clawButton;
+	private JButton controlButton;
+
+	private JLabel controlStatusLabel;
+	private JLabel clawStatusLabel;
+
+	private boolean isControlOn = false;
+	private boolean isClawOpen = true;
+
 	private Color pressedBackgroundColor = new Color(40, 40, 40);
+	private Color trueColor = new Color(40, 200, 40);
+	private Color falseColor = new Color(200, 40, 40);
 
 	private JSlider speedSlider;
 
@@ -36,32 +54,44 @@ implements 	ChangeListener {
 	private int speed;
 
 	public RobotControlPanel() {
-		setLayout(new GridBagLayout());
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-		// create and add arrow buttons
-		upArrowKey = new BasicArrowButton(BasicArrowButton.NORTH);
-		downArrowKey = new BasicArrowButton(BasicArrowButton.SOUTH);
-		leftArrowKey = new BasicArrowButton(BasicArrowButton.WEST);
-		rightArrowKey = new BasicArrowButton(BasicArrowButton.EAST);
+		// add labels 
+		statusPanel = new JPanel(new BorderLayout());
 
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.weightx = 0.5;
-		constraints.weighty = 0.5;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		
-		constraints.gridx = 1;
-		constraints.gridy = 0;
-		add(upArrowKey, constraints);
-		
-		constraints.gridx = 1;
-		constraints.gridy = 1;
-		add(downArrowKey, constraints);
-		
-		constraints.gridx = 0;
-		add(leftArrowKey, constraints);
-		
-		constraints.gridx = 2;
-		add(rightArrowKey, constraints);
+		controlStatusLabel = new JLabel("Control: off");
+		controlStatusLabel.setForeground(falseColor);
+
+		clawStatusLabel = new JLabel("Claw: open");
+		clawStatusLabel.setForeground(trueColor);
+
+		statusPanel.add(controlStatusLabel, BorderLayout.WEST);
+		statusPanel.add(clawStatusLabel, BorderLayout.EAST);
+
+		add(statusPanel);
+
+		// create and add buttons
+		buttonPanel = new JPanel(new GridLayout(2, 3));
+
+		controlButton = new JButton("Control");
+		controlButton.addActionListener(new ControlListener());
+
+		upArrowKeyButton = new BasicArrowButton(BasicArrowButton.NORTH);
+		downArrowKeyButton = new BasicArrowButton(BasicArrowButton.SOUTH);
+		leftArrowKeyButton = new BasicArrowButton(BasicArrowButton.WEST);
+		rightArrowKeyButton = new BasicArrowButton(BasicArrowButton.EAST);
+
+		clawButton = new JButton("Claw");
+		clawButton.addActionListener(new ClawListener());
+
+		buttonPanel.add(controlButton);
+		buttonPanel.add(upArrowKeyButton);
+		buttonPanel.add(clawButton);
+		buttonPanel.add(leftArrowKeyButton);
+		buttonPanel.add(downArrowKeyButton);
+		buttonPanel.add(rightArrowKeyButton);
+
+		add(buttonPanel);
 
 		// initialize and add slider
 		speedSlider = new JSlider(JSlider.HORIZONTAL, SPEED_MIN, SPEED_MAX, SPEED_INIT);
@@ -73,29 +103,27 @@ implements 	ChangeListener {
 		speedSlider.setPaintLabels(true);
 		speedSlider.setFocusable(false);
 
-		constraints.gridx = 1;
-		constraints.gridy = 2;
-		add(speedSlider, constraints);
+		add(speedSlider);
 	}
 
 
 	public void updateKeys(boolean[] keysCurrentlyPressed) {
-		upArrowKey.setBackground(null);
-		downArrowKey.setBackground(null);
-		leftArrowKey.setBackground(null);
-		rightArrowKey.setBackground(null);
-		
+		upArrowKeyButton.setBackground(null);
+		downArrowKeyButton.setBackground(null);
+		leftArrowKeyButton.setBackground(null);
+		rightArrowKeyButton.setBackground(null);
+
 		if(keysCurrentlyPressed[KeyEvent.VK_UP]) {
-			upArrowKey.setBackground(pressedBackgroundColor);
+			upArrowKeyButton.setBackground(pressedBackgroundColor);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_DOWN]) {
-			downArrowKey.setBackground(pressedBackgroundColor);
+			downArrowKeyButton.setBackground(pressedBackgroundColor);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
-			leftArrowKey.setBackground(pressedBackgroundColor);
+			leftArrowKeyButton.setBackground(pressedBackgroundColor);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_RIGHT]) {
-			rightArrowKey.setBackground(pressedBackgroundColor);
+			rightArrowKeyButton.setBackground(pressedBackgroundColor);
 		}
 
 	}
@@ -114,7 +142,50 @@ implements 	ChangeListener {
 	public int getSpeed() {
 		return speed;
 	}
-	
-	
 
+	private class ControlListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// toggle isControlOn
+			isControlOn = !isControlOn;
+
+			// change label and send control command
+			if(isControlOn) {
+				controlStatusLabel.setText("Control: on");
+				controlStatusLabel.setForeground(trueColor);
+				
+				//TODO send control command
+			} else {
+				controlStatusLabel.setText("Control: off");
+				controlStatusLabel.setForeground(falseColor);
+				
+				//TODO send control command
+			}
+		}
+
+	}
+
+	private class ClawListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// toggle isClawOpen
+			isClawOpen = !isClawOpen;
+
+			// change label and send control command
+			if(isClawOpen) {
+				clawStatusLabel.setText("Claw: open");
+				clawStatusLabel.setForeground(trueColor);
+				
+				//TODO send control command
+			} else {
+				clawStatusLabel.setText("Claw: closed");
+				clawStatusLabel.setForeground(falseColor);
+				
+				//TODO send control command
+			}
+		}
+
+	}
 }
