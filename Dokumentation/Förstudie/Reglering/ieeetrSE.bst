@@ -222,7 +222,7 @@ FUNCTION {format.names}
               if$
               t "others" =
                 { " {\em et~al.}" * }
-                { " and " * t * }
+                { " och " * t * }
               if$
             }
           if$
@@ -257,14 +257,14 @@ FUNCTION {format.editors}
 FUNCTION {format.title}
 { title empty$
     { "" }
-    { "``" title "t" change.case$ * ",''" * }
+    { "``" title "t" change.case$ * "''," * }
   if$
 }
 
 FUNCTION {format.title.p}
 { title empty$
     { "" }
-    { "``" title "t" change.case$ * ".''" * }
+    { "{\"}" title "t" change.case$ * ".''" * }
   if$
 }
 
