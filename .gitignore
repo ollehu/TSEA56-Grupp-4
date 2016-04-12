@@ -30,7 +30,7 @@
 *.synctex.gz
 *.cpt
 # Spara pdfer?
-# *.pdf 
+*.pdf 
 
 # Eclipse-filer
 .metadata/
