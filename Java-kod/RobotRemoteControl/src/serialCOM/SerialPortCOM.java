@@ -24,39 +24,39 @@ public class SerialPortCOM {
 	public SerialPortCOM(Handler handler) throws UnknownOperatingSystemException, SerialPortException {
 		this.handler = handler;
 
-		String osName = System.getProperty("os.name");
-		String[] portNames;
-
-		// get port names
-		if(osName.contains("Windows")){
-			portNames = SerialPortList.getPortNames();
-		} else if(osName.contains("Mac")) {
-			portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-		} else {
-			throw new UnknownOperatingSystemException();
-		}
-
-		// get user port choice
-		int userPortChoiceIndex = handler.getUserPortChoice(portNames);
-		serialPort = new SerialPort(portNames[userPortChoiceIndex]);
-
-		// open port for communication
-		serialPort.openPort();
-		// baundRate, numberOfDataBits, numberOfStopBits, parity
-		serialPort.setParams(baudRate, numberOfDataBits, numberOfStopBits, numberOfParityBits);
-		// byte data transfer
-		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
-				SerialPort.FLOWCONTROL_RTSCTS_OUT);
-		// add port listener
-		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+//		String osName = System.getProperty("os.name");
+//		String[] portNames;
+//
+//		// get port names
+//		if(osName.contains("Windows")){
+//			portNames = SerialPortList.getPortNames();
+//		} else if(osName.contains("Mac")) {
+//			portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+//		} else {
+//			throw new UnknownOperatingSystemException();
+//		}
+//
+//		// get user port choice
+//		int userPortChoiceIndex = handler.getUserPortChoice(portNames);
+//		serialPort = new SerialPort(portNames[userPortChoiceIndex]);
+//
+//		// open port for communication
+//		serialPort.openPort();
+//		// baundRate, numberOfDataBits, numberOfStopBits, parity
+//		serialPort.setParams(baudRate, numberOfDataBits, numberOfStopBits, numberOfParityBits);
+//		// byte data transfer
+//		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
+//				SerialPort.FLOWCONTROL_RTSCTS_OUT);
+//		// add port listener
+//		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 	}
 
 	public void sendControlCommand(int controlCommand) throws SerialPortException {
 		// send control command (1 byte)
 		sendData(convertIntToByte(controlCommand));
 		
-		// send speed (2 bytes)
-		// TODO decide how to send 2 bytes
+		// send speed (1 (2?) bytes)
+		sendData(convertIntToByte(handler.getSpeed()));
 	}
 	
 	private byte convertIntToByte(int data) {
@@ -66,7 +66,8 @@ public class SerialPortCOM {
 	
 	private void sendData(byte data) throws SerialPortException {
 		// TODO test if this works properly
-		serialPort.writeByte(data);
+		// serialPort.writeByte(data);
+		System.out.println("Data sent: " + data);
 	}
 	
 	/**

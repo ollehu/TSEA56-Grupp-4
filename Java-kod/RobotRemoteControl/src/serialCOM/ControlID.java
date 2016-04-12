@@ -22,4 +22,6 @@ public class ControlID {
 	
 	public static final int CLAW_SETTING = 9;
 	
+	public static final int STOP = 10;
+	
 }
