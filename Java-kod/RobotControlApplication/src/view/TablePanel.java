@@ -10,7 +10,7 @@ public class TablePanel extends JPanel{
 	public TablePanel() {
 		tablePlaceHolder = new JTextArea(20,20);
 		tablePlaceHolder.setEditable(false);
-		tablePlaceHolder.setText("This is a placeholder for the map");
+		tablePlaceHolder.setText("This is a placeholder for the tables");
 
 		add(tablePlaceHolder);
 	}

@@ -10,7 +10,7 @@ public class GraphPanel extends JPanel{
 	public GraphPanel() {
 		graphPlaceHolder = new JTextArea(7,40);
 		graphPlaceHolder.setEditable(false);
-		graphPlaceHolder.setText("This is a placeholder for the map");
+		graphPlaceHolder.setText("This is a placeholder for the graphs");
 
 		add(graphPlaceHolder);
 	}

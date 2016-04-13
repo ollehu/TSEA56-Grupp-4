@@ -237,20 +237,30 @@ implements 	ChangeListener {
 			} else if(osName.contains("Mac")) {
 				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
 			} else {
-				throw new UnknownOperatingSystemException();
+				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm)[0-9]{1,3}"));
 			}
 
-			String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
-																	"Select COM port", 
-																	"Select COM port",
-																	JOptionPane.PLAIN_MESSAGE,
-																	null,
-																	portNames,
-																	portNames[0]);
-			
-			if(selectedPort != null) {
-				handler.connectToSerialPort(selectedPort);
+			if(portNames.length == 0) {
+				JOptionPane.showMessageDialog(animator.getFrame(),
+					    "No ports available!",
+					    "Port error",
+					    JOptionPane.ERROR_MESSAGE);
+			} else {
+				String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
+						"Select COM port", 
+						"Select COM port",
+						JOptionPane.PLAIN_MESSAGE,
+						null,
+						portNames,
+						portNames[0]);
+				
+				if(selectedPort != null) {
+					handler.connectToSerialPort(selectedPort);
+				}
 			}
+			
+			
+			
 		}
 
 	}
