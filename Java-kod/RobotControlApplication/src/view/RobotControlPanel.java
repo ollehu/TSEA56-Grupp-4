@@ -11,10 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowListener;
+import java.util.regex.Pattern;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
@@ -22,12 +24,15 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicArrowButton;
 
 import control.Handler;
+import jssc.SerialPortList;
+import serialCOM.UnknownOperatingSystemException;
 
 public class RobotControlPanel extends JPanel 
 implements 	ChangeListener {
 
 	private Handler handler;
-	
+	private Animator animator;
+
 	private JPanel buttonPanel;
 	private JPanel statusPanel;
 
@@ -35,6 +40,8 @@ implements 	ChangeListener {
 	private BasicArrowButton downArrowKeyButton;
 	private BasicArrowButton leftArrowKeyButton;
 	private BasicArrowButton rightArrowKeyButton;
+
+	private JButton selectCOMPortButton;
 
 	private JButton clawButton;
 	private JButton controlButton;
@@ -57,10 +64,16 @@ implements 	ChangeListener {
 
 	private int speed;
 
-	public RobotControlPanel(Handler handler) {
+	public RobotControlPanel(Handler handler, Animator animator) {
 		this.handler = handler;
-		
+		this.animator = animator;
+
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		// add selectCOMPortButton
+		selectCOMPortButton = new JButton("Select COM port");
+		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
+		add(selectCOMPortButton);
 
 		// add labels 
 		statusPanel = new JPanel(new BorderLayout());
@@ -148,7 +161,7 @@ implements 	ChangeListener {
 	public int getSpeed() {
 		return speed;
 	}
-	
+
 	public boolean isControlOn() {
 		return isControlOn;
 	}
@@ -173,10 +186,10 @@ implements 	ChangeListener {
 		public void actionPerformed(ActionEvent e) {
 			// toggle isControlOn
 			isControlOn = !isControlOn;
-			
+
 			// send command to robot
 			handler.setControlOn(isControlOn);
-			
+
 			// change label and send control command
 			if(isControlOn) {
 				controlStatusLabel.setText("Control: on");
@@ -195,10 +208,10 @@ implements 	ChangeListener {
 		public void actionPerformed(ActionEvent e) {
 			// toggle isClawOpen
 			isClawOpen = !isClawOpen;
-			
+
 			// send command to robot
 			handler.setClawOpen(isClawOpen);
-			
+
 			// change label
 			if(isClawOpen) {
 				clawStatusLabel.setText("Claw: open");
@@ -206,6 +219,37 @@ implements 	ChangeListener {
 			} else {
 				clawStatusLabel.setText("Claw: closed");
 				clawStatusLabel.setForeground(falseColor);
+			}
+		}
+
+	}
+
+	private class SelectCOMPortListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String osName = System.getProperty("os.name");
+			String[] portNames = {"port 1", "port 2", "port 3"};
+
+			// get port names
+			if(osName.contains("Windows")){
+				portNames = SerialPortList.getPortNames();
+			} else if(osName.contains("Mac")) {
+				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+			} else {
+				throw new UnknownOperatingSystemException();
+			}
+
+			String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
+																	"Select COM port", 
+																	"Select COM port",
+																	JOptionPane.PLAIN_MESSAGE,
+																	null,
+																	portNames,
+																	portNames[0]);
+			
+			if(selectedPort != null) {
+				handler.connectToSerialPort(selectedPort);
 			}
 		}
 

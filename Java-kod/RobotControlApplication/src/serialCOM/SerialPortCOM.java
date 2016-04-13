@@ -21,24 +21,12 @@ public class SerialPortCOM {
 	private int numberOfStopBits = 1;
 	private int numberOfParityBits = 0;
 
-	public SerialPortCOM(Handler handler) throws UnknownOperatingSystemException, SerialPortException {
+	public SerialPortCOM(Handler handler) {
 		this.handler = handler;
-
-		String osName = System.getProperty("os.name");
-		String[] portNames;
-
-		// get port names
-		if(osName.contains("Windows")){
-			portNames = SerialPortList.getPortNames();
-		} else if(osName.contains("Mac")) {
-			portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-		} else {
-			throw new UnknownOperatingSystemException();
-		}
-
-		// get user port choice
-		int userPortChoiceIndex = handler.getUserPortChoice(portNames);
-		serialPort = new SerialPort(portNames[userPortChoiceIndex]);
+	}
+	
+	public void connectToSerialPort(String portName) throws SerialPortException {
+		serialPort = new SerialPort(portName);
 
 		// open port for communication
 		serialPort.openPort();

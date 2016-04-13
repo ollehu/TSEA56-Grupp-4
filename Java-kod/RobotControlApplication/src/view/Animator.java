@@ -1,9 +1,13 @@
 package view;
 
+import java.awt.BorderLayout;
 import java.awt.Frame;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import control.*;
 
@@ -12,6 +16,9 @@ public class Animator {
 	private Handler handler;
 	
 	private JFrame frame;
+	
+	private JPanel topPanel;
+	private JPanel bottomPanel;
 	
 	private RobotControlPanel robotControlPanel;
 	private MapPanel mapPanel;
@@ -26,19 +33,26 @@ public class Animator {
 		this.handler = handler;
 		
 		frame = new JFrame("Robot remote control");
-		frame.setLayout(new GridLayout(2, 2));
+		frame.setLayout(new BorderLayout());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		// create and add panels
-		robotControlPanel = new RobotControlPanel(handler);
+		// create and add layout panels
+		topPanel = new JPanel();
+		bottomPanel = new JPanel();
+		
+		frame.add(topPanel, BorderLayout.NORTH);
+		frame.add(bottomPanel, BorderLayout.SOUTH);
+		
+		// create and add content panels
+		robotControlPanel = new RobotControlPanel(handler, this);
 		mapPanel = new MapPanel();
 		graphPanel = new GraphPanel();
 		tablePanel = new TablePanel();
 		
-		frame.add(robotControlPanel);
-		frame.add(mapPanel);
-		frame.add(graphPanel);
-		frame.add(tablePanel);
+		topPanel.add(mapPanel);
+		topPanel.add(tablePanel);
+		bottomPanel.add(graphPanel);
+		bottomPanel.add(robotControlPanel);
 	}
 	
 	public void showFrame() {
@@ -49,6 +63,12 @@ public class Animator {
 	public RobotControlPanel getRobotControlPanel() {
 		return robotControlPanel;
 	}
+
+	public JFrame getFrame() {
+		return frame;
+	}
+	
+	
 	
 	
 }

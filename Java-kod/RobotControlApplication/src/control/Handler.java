@@ -22,23 +22,18 @@ public class Handler {
 		animator = new Animator(this);
 		animator.showFrame();
 
+		serialPortCOM = new SerialPortCOM(this);
+
+		myKeyListener = new MyKeyListener(animator, this);
+	}
+	
+	public void connectToSerialPort(String portName) {
 		try {
-			serialPortCOM = new SerialPortCOM(this);
-		} catch (UnknownOperatingSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			serialPortCOM.connectToSerialPort(portName);
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		myKeyListener = new MyKeyListener(animator, this);
-	}
-
-	public int getUserPortChoice(String[] portNames) {
-		// TODO get user input
-
-		return 1;
 	}
 
 	public void respondsToKeyEvent(boolean[] keysCurrentlyPressed) {
@@ -96,7 +91,7 @@ public class Handler {
 			e.printStackTrace();
 		}
 	}
-
+	
 	public int getSpeed() {
 		return animator.getRobotControlPanel().getSpeed();
 	}
