@@ -1,5 +1,8 @@
 ﻿== LCD.h ==
 
+!!!Det tar lång tid att skriva ut saker på dispalyen, gör det så lite som möjligt 
+(speciellt inte i avbrott)!!!
+
 - Innehåll - 
 lcdFlipEN()
 lcdCommand()

@@ -1,0 +1,17 @@
+== I2C ==
+
+MASTER(int times, uin8_t SLA, int data[])
+Initierar kontakt över I2C och skriver/läser data. Upprepad START ej implementerad dvs. MASTER kan antingen läsa eller skriva vid kommunikation med SLAVE, ej båda. 
+För detta upprättas en ny kommunikation.
+
+@param times- Antal gånger MASTER ska läsa/skriva till slaven. Viktigt vid läsning från slav.
+@param SLA- Slavadress + R/W : 1 för Read, 0 för Write (i en och samma byte)
+@param data[]- Array av data som ska skickas över bussen, en byte åt gången. 
+	Sensordata: Första byten kommunikations-ID, sen sensor-ID följt av tillhörande data (varannan ID, varannan data). Total längd 25.
+	Styrkommando: Första byten kommunikations-ID följt av ett styrkommando-ID. Total längd 2.
+
+
+
+SLAVE
+
+Avbrottsstyrd. MASTER avbryter om den vill upprätta kommunikation och bestämmer när kommunikationen ska avslutas. 
