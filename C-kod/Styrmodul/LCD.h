@@ -61,7 +61,7 @@ void lcdClear(void)
 {
 	//Clear display
 	lcdCommand(0x1);
-	//_delay_ms(2);
+	_delay_ms(2);
 }
 
 
@@ -125,7 +125,7 @@ void lcdClearBottomRow(void)
 	lcdCommand(0xC0);
 	int i;
 	for(i = 0; i < 16; i++){
-		lcdWriteChar(" ");
+		lcdWriteChar(0x20);
 	}
 }
 

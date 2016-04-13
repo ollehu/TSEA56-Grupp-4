@@ -21,9 +21,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicArrowButton;
 
+import control.Handler;
+
 public class RobotControlPanel extends JPanel 
 implements 	ChangeListener {
 
+	private Handler handler;
+	
 	private JPanel buttonPanel;
 	private JPanel statusPanel;
 
@@ -53,7 +57,9 @@ implements 	ChangeListener {
 
 	private int speed;
 
-	public RobotControlPanel() {
+	public RobotControlPanel(Handler handler) {
+		this.handler = handler;
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		// add labels 
@@ -142,6 +148,24 @@ implements 	ChangeListener {
 	public int getSpeed() {
 		return speed;
 	}
+	
+	public boolean isControlOn() {
+		return isControlOn;
+	}
+
+
+	public boolean isClawOpen() {
+		return isClawOpen;
+	}
+
+	public void setControlOn(boolean isControlOn) {
+		this.isControlOn = isControlOn;
+	}
+
+
+	public void setClawOpen(boolean isClawOpen) {
+		this.isClawOpen = isClawOpen;
+	}
 
 	private class ControlListener implements ActionListener {
 
@@ -149,18 +173,17 @@ implements 	ChangeListener {
 		public void actionPerformed(ActionEvent e) {
 			// toggle isControlOn
 			isControlOn = !isControlOn;
-
+			
+			// send command to robot
+			handler.setControlOn(isControlOn);
+			
 			// change label and send control command
 			if(isControlOn) {
 				controlStatusLabel.setText("Control: on");
 				controlStatusLabel.setForeground(trueColor);
-				
-				//TODO send control command
 			} else {
 				controlStatusLabel.setText("Control: off");
 				controlStatusLabel.setForeground(falseColor);
-				
-				//TODO send control command
 			}
 		}
 
@@ -172,18 +195,17 @@ implements 	ChangeListener {
 		public void actionPerformed(ActionEvent e) {
 			// toggle isClawOpen
 			isClawOpen = !isClawOpen;
-
-			// change label and send control command
+			
+			// send command to robot
+			handler.setClawOpen(isClawOpen);
+			
+			// change label
 			if(isClawOpen) {
 				clawStatusLabel.setText("Claw: open");
 				clawStatusLabel.setForeground(trueColor);
-				
-				//TODO send control command
 			} else {
 				clawStatusLabel.setText("Claw: closed");
 				clawStatusLabel.setForeground(falseColor);
-				
-				//TODO send control command
 			}
 		}
 

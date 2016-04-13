@@ -25,7 +25,7 @@ public class Animator {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		// create and add controlpanel
-		robotControlPanel = new RobotControlPanel();
+		robotControlPanel = new RobotControlPanel(handler);
 		frame.add(robotControlPanel);
 		
 	}

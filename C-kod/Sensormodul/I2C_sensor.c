@@ -11,11 +11,11 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 	
-int sensorData[24];
+int sensorData[25];
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
-	PORTA = (0<<PORTA0);
+	//PORTA = (0<<PORTA0);
 	
 	int counter = 0;
 	
@@ -29,8 +29,6 @@ ISR(TWI_vect){
 		} else if ((TWSR & 0xF8) == 0x80){
 			//SLA_W, ACK returned, wait for data
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWEN);
-			DDRB = 0xFF;
-			PORTB = TWDR;
 		} else if ((TWSR & 0xF8) == 0x80){
 			//SLA_W, NOT ACK returned
 			
@@ -65,22 +63,27 @@ ISR(TWI_vect){
 void TWISetup()
 {
 	//Set slave address and start TWI (including the TWI-interrupt)
-	TWAR = (1<<TWA6)|(1<<TWA5)|(0<<TWA4)|(0<<TWA3)|(1<<TWA2)|(0<<TWA1)|(0<<TWA0)|(0<<TWGCE);
+	TWAR = (1<<TWA6)|(1<<TWA5)|(0<<TWA4)|(0<<TWA3)|(1<<TWA2)|(0<<TWA1)|(1<<TWA0)|(0<<TWGCE);
 	TWCR |= (1<<TWEA)|(1<<TWEN)|(1<<TWIE);
 }
 
 int main(void)
 {
-	DDRA = 0xFF;
-	DDRD = 0xFF;
+	
 	TWISetup();
 	sei();
 	
-	for (int i = 0; i < 24; i++ ) {
+	//Kommunikations-ID
+	sensorData[ 0 ] = 0x02;
+	//Dummydata
+	for (int i = 1; i < 25; i++ ) {
 		sensorData[ i ] = i;
 	}
 	
-	while(1){
-		PORTA = (1<<PORTA0);
-	}
+	//while(1);
+	DDRD = (1<<PORTD0);
+	_delay_ms(3000);
+	PORTD = (1<<PORTD0);
+	_delay_ms(10);
+	PORTD = (0<<PORTD0);
 }
