@@ -10,7 +10,7 @@
 
 \vspace{5em}
 
-Version 1.0
+Version 1.1
 
 \vspace{5em}
 Grupp 4 \\
@@ -75,6 +75,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \pagebreak
 \textbf{Sammanfattning}
 
+Denna rapport undersöker dels hur intern kommunikation i en modulär robot kan ske, dels vad som är viktigt att tänka på i designen av modulerna och testerna av dem. I ett projket med begränsat antal moduler är I\textsuperscript{2}C ett alternativ för kommunikation. För att minska hårdvaruberoendet är C ett användbart programmeringsspråk. När tester ska designas är det viktigt att tänka på hela systemets funktionalitet. I modulbaserade projekt finns det en rad faktorer att ha i åtanke.
+
 \pagebreak
 
 \tableofcontents
@@ -86,7 +88,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & ET \\ \hline
-1.0 & 2016-04--- &  Andra utkastet & Grupp 4 & \\ \hline
+1.0 & 2016-04-07 &  Andra utkastet & Grupp 4 & LG \\ \hline
+1.1 & 2016-04-13 &  Tredje utkastet & Grupp 4 & ET \\ \hline
 \end{tabular}
 \end{table}
 
@@ -96,9 +99,9 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning}
-Vid utveckling av en robot som består av olika moduler med olika funktion är det viktigt att undersöka hur dessa moduler ska integreras på bästa sätt. Därför är det intressant att titta på hur de ska kommunicera med varandra och tillsammans funktionera som en robot och inte som delmoduler. 
+Vid utveckling av en robot som består av olika moduler med olika funktion är det viktigt att undersöka hur dessa moduler ska designas på bästa sätt. Därför är det intressant att titta på hur de ska kommunicera med varandra och tillsammans funktionera som en robot, inte som delmoduler. 
 
-Syftet med denna studie är att undersöka hur intern kommunikation och integration av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle vara lämpligt att använda i projektet som ska genomföras.
+Syftet med denna studie är att undersöka hur intern kommunikation och design av moduler kan ske vid utveckling av en modulär robot samt analysera vad som skulle vara lämpligt att använda i projektet som ska genomföras.
 
 \section{Problemformulering}
 För att besvara syftet med studien avses följande frågeställningar undersökas.
@@ -107,7 +110,7 @@ För att besvara syftet med studien avses följande frågeställningar undersök
 	\item Vilken busstyp är lämpligast, SPI eller I\textsuperscript{2}C, och hur ska den konfigureras?
 	\item Vilka för- och nackdelar finns med C repektive Assembler? 
 	\item Hur ska tester designas?
-	\item Vad är viktiga faktorer att ha i åtanke vid utveckling av modulbaserade projekt? (inte bra heller)
+	\item Vad är viktiga faktorer att ha i åtanke vid design av modulbaserade projekt?
 \end{itemize}
 
 \pagebreak
@@ -144,7 +147,7 @@ SPI är ett överföringsprotokoll som kan användas för dataöverföring mella
 	\item \textbf{SS:} Slavenheternas koppling till masterenheten
 \end{enumerate}
 
-Masterenheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till \textit{dataregistret}. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}, ske på positivt respektive negativ flank eller vice versa. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. Synkronisering av överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
+Masterenheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till \textit{dataregistret}. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}, ske på positiv respektive negativ flank eller vice versa. När överföringen är färdig sätts en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. Synkronisering av överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
 
 \subsection{Testning av system} 
 
@@ -158,7 +161,7 @@ JTAG är ett verktyg för att avlusa alla AVR 8-bitars mikrokontrollers som har 
 \subsubsection{Logikanalysator}
 %http://cp.literature.agilent.com/litweb/pdf/54684-97011.pdf
 
-Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet signaler samtidigt. Det finns 16  logiska kanaler och  två \textit{scope channels}. Analysatorn har en rad inställnings- och beräkningsfunktioner för avlusning. \cite{guideLogic}
+Logikanalysatorn är ett oscilloskop som har möjlighet att analysera flertalet signaler samtidigt. Det finns 16  logiska kanaler och  två analoga kanaler. Analysatorn har en rad inställnings- och beräkningsfunktioner för avlusning. \cite{guideLogic}
 
 \pagebreak
 
@@ -168,7 +171,7 @@ I detta avsnitt diskuteras möjliga lösningar till frågeställningarna.
 \subsection{Konfiguration av I\textsuperscript{2}C och SPI}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
-Vid användning av ATMega16 tillsammans med I\textsuperscript{2}C eller SPI är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C respektive SPI. Önskas parallella bussar behöver båda typerna användas. För repektive busstyp finns en rad konfigurationsmöjligheter. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
+Vid användning av ATMega16 tillsammans med I\textsuperscript{2}C eller SPI är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C respektive SPI. Med parallella bussar menas i detta fall att det finns två eller flera bussar av samma typ på samma processor men som är helt särskilda från varandra. Önskas denna funktionalitet, två separerade bussar, behöver båda typerna användas. För repektive busstyp finns en rad konfigurationsmöjligheter. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
 
 \begin{enumerate}
  \item Flera enheter kan konfigureras till att inneha en masterroll. Dessa kan, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data. Vid användning av I\textsuperscript{2}C används arbitrering för att hantera situationer då flera masterenheter vill använda bussen samtidigt för att säkerställa att enbart en når ut på bussen och att det meddelandet inte förstörs. \cite{guideI2C} Motsvarande system för att hantera flera masterenheter saknas för SPI.
@@ -187,41 +190,38 @@ Det är även möjligt att kombinera alternativ 2 och 3, det vill säga att någ
 %http://www.nxp.com/documents/user_manual/UM10204.pdf
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} \textit{Detta gör att enheterna på bussen inte behöver kolla den ingången regelbundet.} Över SPI sker istället ett informationsutbyte mellan master och slav, vilket gör att dataregistret kopplat till SPI:n kan uppdateras med ny information så länge det inte  pågår ett skifte. Detta gör att slavarna kan fortsätta med sitt tills masterenheten önskar kontakt. \cite{ATMega16}(VA?)
+Då initieringen på I\textsuperscript{2}C-bussen fungerar som ett avbrott behöver inte enheterna kopplade till bussen ligga och lyssna efter en startsignal. De blir istället avbrutna i det de håller på med.\cite{guideI2C} Över SPI sker istället ett informationsutbyte mellan master och slav, vilket gör att dataregistret kopplat till SPI:n kan uppdateras med ny information så länge det inte pågår en överföring. \cite{ATMega16}
 
 Generellt innebär avbrottsstyrning att CPU:n hålls fri eftersom enheten slipper ligga och lyssna efter en signal om att skicka eller ta emot data. Det ligger istället på varje del i systemet att tillkalla uppmärksamhet. Detta är fördelaktigt då det är kritiskt att något tas om hand precis när det sker. I polling är det upp till huvudmodulen att se till att tillfredsställa alla delar i systemet. Fördelen med detta är att den styrande enheten säger till när den har möjlighet att processa en förfrågan. \cite{interruptPoll}
 
-När projektet är beroende av bra tajming är avbrottsstyd buss att föredra då förfrågan kan hanteras på en gång. Eftersom  det beroende som finns mellan projektets olika moduler kan gå via en och samma modul, \textit{eller att informationen behövs hos alla}, är det möjligt att enbart använda en masterenhet.
+När projektet är beroende av bra tajming är avbrottsstyd buss att föredra då förfrågan kan hanteras på en gång. Eftersom det beroende som finns mellan projektets olika moduler kan styras via en och samma modul är det möjligt att enbart använda en masterenhet.
 
 \subsection{Jämförelse mellan SPI och I\textsuperscript{2}C}
 Både SPI och I\textsuperscript{2}C kommer med sina för- och nackdelar och har några väsentliga skillnader:
 
 \begin{enumerate}
-	\item På SPI behöver slavarna inte ha unika adresser, som de behöver ha på I\textsuperscript{2}C. Detta gör att för I\textsuperscript{2}C finns det ett begränsat antal slavadresser som kan användas och därmed ett begränsat antal enheter som kan kopplas till bussen.\textit{fortfarande väldigt många??} Däremot behöver SPI unika kopplingar mellan masterenheterna och slavenheterna, vilket kräver fler utgångar.
+	\item På SPI behöver slavarna inte ha unika adresser, som de behöver ha på I\textsuperscript{2}C. Detta gör att för I\textsuperscript{2}C finns det ett begränsat antal slavadresser som kan användas och därmed ett begränsat antal enheter som kan kopplas till bussen. Däremot behöver SPI unika kopplingar mellan masterenheterna och slavenheterna, vilket kräver fler utgångar.
 	\item I\textsuperscript{2}C använder sig av en acknowledge-signal för att försäkra sändaren om att mottagaren fått informationen, vilken saknas hos SPI. Detta gör det möjligt för masterenheten att skicka information till ingenting och inte veta om det. 
 	\item SPI använder fler antal portar än I\textsuperscript{2}C i grundutförandet.
 	\item I\textsuperscript{2}C har ett inbyggt system för att hantera flera masterenheter, vilket SPI inte har.
 \end{enumerate}
 
-Det som talar för SPI är kopplingen mellan de olika enheterna då den sker rent hårdvarumässigt och kräver ingen programmering av adresser. Dock tas fler portar i anspråk, vilket kan vara ett problem i vissa tillämpningar. Acknowledge-signalen som I\textsuperscript{2}C använder talar för användningen av den bussen då det går att försäkra sig om att information går fram. Vid mer komplexa system med behov av flera masterenheter är I\textsuperscript{2}C att föredra tack vare det inbyggda systemet. 
+Det som talar för SPI är kopplingen mellan de olika enheterna då den sker hårdvarumässigt och inte kräver programmering av adresser. Dock tas fler portar i anspråk, vilket kan vara ett problem i vissa tillämpningar. Acknowledge-signalen som I\textsuperscript{2}C använder talar för användningen av den bussen då det går att försäkra sig om att information går fram. Vid mer komplexa system med behov av flera masterenheter är I\textsuperscript{2}C att föredra tack vare det inbyggda systemet. 
 
-I ett projekt med ett tydligt begränsat antal moduler, och där portarna är en begränsning, faller därför valet i första hand på I\textsuperscript{2}C. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
+I ett projekt med ett tydligt begränsat antal moduler och där portarna är en begränsning faller valet i första hand på I\textsuperscript{2}C. Behövs det ytterligare en buss för informationsöverföring kan SPI användas för det syftet.
 
 \subsection{Assembler eller C}
 
-Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser speciellt vid avbrott och hur hårdvara med speciell funktion hanteras, så som statusregister och tillhörande avbrott.  
+Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmeringsspråk för inbyggda system. Dessa inkluderar bland annat hur väl det går att uttrycka händelser, speciellt vid avbrott, och hur hårdvara med speciell funktion hanteras, så som statusregister och tillhörande avbrott.  
 
-Det finns också möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En assemblerrutin kan bli synlig för en C-kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
-
-I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med Assembler är dock att koden blir svårare att läsa för framtida användare då dessa måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Detta gör Assembler mindre attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer. Koden blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
+I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med Assembler är dock att koden blir svårare att läsa för framtida användare då dessa måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Detta gör Assembler mindre attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer. Koden i C blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
 Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende användningen onödigt krånglig. En sådan detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till att projektet som ska utföras är så pass litet är det tveksamt om den snabbhet Assembler ger är av någon direkt betydelse. Dessutom finns det inte tid till att på detaljnivå förstå hårdvaran för att kunna skriva allt i Assembler. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programmera i. Är någon funktion tidskritisk kan det ändå vara en idé att överväga att skriva detta i Assembler. 
 
-Som nämnts går det också att mixa C och Assembler om så önskas. Då projektgruppen har tidigare erfarenhet av Assembler skulle detta kunna användas i vissa syften för att tydliggöra vissa steg i koden. 
-
+Det finns möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En assemblerrutin kan bli synlig för en C-kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
 \subsection{Design av tester}
-En simulator är ett enkelt val för testning av kod då de flesta mikroprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
+En simulator är ett enkelt val för testning av kod då de flesta mikroprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten, vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
 
 För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan exempelvis ske genom att enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är kritiska stängas av för att se om felet kvarstår och sedan aktiveras ett avbrott i taget för att hitta var felet är.
 
@@ -231,7 +231,7 @@ Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna p
 	\item \textbf{Enhetstest:} Testar en enskild enhet. Denna typ av test är viktigt då det är lättare att hitta fel när det är tydligt från vilken enhet felet kommer.
 	\item \textbf{Integrationstest:} Testar att interaktionen mellan olika enheter fungerar, med syfte att samanfoga enheter för att testa deras helhetsbeteende. Här ligger fokuset på att testa gränssnitt.
 	\item \textbf{Systemtest:} Testar hela systemet, och fokuserar på de egenskaper som enbart finns när systemet är komplett.
-	\item \textbf{Acceptanstest:} Test för att kunden ska godkänna systemet.  
+	\item \textbf{Acceptanstest:} Test för att kunden ska godkänna systemet. 
 \end{enumerate}
 
 I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
@@ -240,20 +240,15 @@ I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt 
 
 Nedan beskrivs fördelar med modulära system samt faktorer att tänka på vid utveckling av modulära system.
 
-\subsubsection{Modulär design(byt rubrik)}
+\subsubsection{Fördelar med modulär design}
 
 Vid arbete med modulär design av system kan de olika modulerna göras så de kan produceras oberoende av varandra och användas i olika system. Detta gör att kostnader minskar då modulerna ej behöver specialgöras vilket även medför flexibilitet vad gäller design och att systemet enkelt kan utökas med ytterligare moduler.\cite{ReMoRo} I case-studien \cite{MMPD} bekräftas att modulär design bidrar till ökad produktvariation då ett fåtal moduler kan kombineras på många olika sätt och på så sätt skapa olika produkter. Även en förbättrad kvalitet och ledtid kan fås genom modulär design. Enligt \cite{MRDCRD} är fördelarna med modulär design att tiden för designarbetet blir kortare, lägre priser och likt ovanstående ett ökat antal möjliga konfigurationer. 
 
 
 \subsubsection{Att tänka på vid design av modulära system}
+I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar.
 
-
-I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar. (under vilken rubrik?)
-
-\cite{IRS} beskriver bland annat följande faktorer att tänka på vid design av en ''open-architecture target environment''.  Det  måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens för olika uppgifter. Det kan även bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Dessutom bör ett helt set av data skickas vid kommunikation mellan två moduler, inte en del från den föregående cykeln och en del från den senaste.Det är även viktigt att kommunikationen mellan moduler är förutsägbar så att det kan förutspås hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge. På så sätt är det mer sannolikt att händelser sker i realtid.  
-
-
-Ett problem med integration av moduler är hur pålitligt och exakt det hela systemet egentligen blir. \cite{DIMRS}
+\cite{IRS} beskriver bland annat följande faktorer att tänka på vid design av en ''open-architecture target environment''.  Det  måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens för olika uppgifter. Det kan även bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Dessutom bör ett helt set av data skickas vid kommunikation mellan två moduler, inte en del från den föregående cykeln och en del från den senaste. Det är även viktigt att kommunikationen mellan moduler är förutsägbar så att det kan förutspås hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge. På så sätt är det mer sannolikt att händelser sker i realtid.  
 
 \pagebreak
 
@@ -269,17 +264,15 @@ Projektet har ett stort behov av tajming, att uppgifter utförs direkt när de b
 
 \subsection{Assembler eller C}
 
-För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor, vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det.
+För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor, vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god id\'{e} att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det. I projektet kommer därför C att användas i första hand.
 
 \subsection{Design av tester}
-I framtagningen av en testplan är det viktigt att se till att täcka alla fall av indata för att upptäcka alla eventuella fel så tidigt som möjligt i processen. Ju tidigare de upptäcks, desto lättare är det att identifiera dem och göra något åt dem. Därför kan en framgångsrikstrategi vara att designa test på olika nivåer för att stegvis lägga till mer och mer funktionalitet.
+I framtagningen av en testplan är det viktigt att se till att täcka alla fall av indata för att upptäcka alla eventuella fel så tidigt som möjligt i processen. Ju tidigare de upptäcks, desto lättare är det att identifiera dem och göra något åt dem. Därför kan en framgångsrik strategi vara att designa test på olika nivåer för att stegvis lägga till mer och mer funktionalitet.
 
-I debuggingen av koden finns tillgång till JTAG ICE, vilken är bättre än en simulator då den kör koden på den faktiska enheten. Dock kvarstår viss problematik med att hantera alla avbrott som systemet styrs via. För att testa hårdvaran är logikanalysatorn ett lämpligt verktyg.
+I avlusningen av koden finns tillgång till JTAG ICE, vilken är bättre än en simulator då den kör koden på den faktiska enheten. För att testa hårdvaran är logikanalysatorn ett lämpligt verktyg.
 
 \subsection{Att tänka på i modulbaserade projekt}
-
-
-Modulbaserade system  kan ge flertalet fördelar, bland annat en ökad produktvariation då moduler kan kombineras på flertalet olika sätt och minskade kostnader.Vid utveckling av dess system är det dock viktigt att inte bara dela upp efter funktion utan även tänka på systemet som helhet särkilt vad gäller stora system. Faktorer att tänka på vid utveckling av moduler är också hur de ska fungera tillsammans. Integrationen av moduler bör ej bero på frekvens eller systemklockor vid synkronisering. Det är även viktigt att ha tänkt igenom kommunikationen mellan moduler så att inte bussen blir uppehållen för länge och processer tar för lång tid och att det som kommuniceras är så uppdaterat som möjligt.
+Modulbaserade system  kan ge flertalet fördelar, bland annat en ökad produktvariation då moduler kan kombineras på flertalet olika sätt och minskade kostnader.Vid utveckling av dess system är det dock viktigt att inte bara dela upp efter funktion utan även tänka på systemet som helhet, särkilt vad gäller stora system. Faktorer att tänka på vid utveckling av moduler är också hur de ska fungera tillsammans. Integrationen av moduler bör ej bero på frekvens eller systemklockor vid synkronisering. Det är även viktigt att ha tänkt igenom kommunikationen mellan moduler så att inte bussen blir uppehållen för länge och processer tar för lång tid samt att det som kommuniceras är så uppdaterat som möjligt.
 
 
 
