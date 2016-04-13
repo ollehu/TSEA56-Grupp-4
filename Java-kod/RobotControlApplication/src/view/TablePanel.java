@@ -15,10 +15,12 @@ public class TablePanel extends JPanel{
 	private ArrayList<SensorLabel> sensorList;
 	
 	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
-									"IR B/L", "Lidar", "Angular vel"};
+									"IR B/L", "Lidar Lite", "Angular velocity",
+									"Angle to wall"};
 
 	private String[] sensorUnits = {"cm", "cm", "cm",
-									"cm", "cm", "deg/s"};
+									"cm", "cm", "deg/s",
+									"deg"};
 	
 	public TablePanel() {
 		sensorList = new ArrayList<>();
