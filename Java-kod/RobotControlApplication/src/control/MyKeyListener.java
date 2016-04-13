@@ -45,16 +45,24 @@ public class MyKeyListener implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		keysCurrentlyPressed[e.getKeyCode()] = true;
-		animator.updateKeys(keysCurrentlyPressed);
-		handler.respondsToKeyEvent(keysCurrentlyPressed);
+		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
+				e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			keysCurrentlyPressed[e.getKeyCode()] = true;
+			animator.updateKeys(keysCurrentlyPressed);
+			handler.respondsToKeyEvent(keysCurrentlyPressed);
+		}
+		
+		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		keysCurrentlyPressed[e.getKeyCode()] = false;
-		animator.updateKeys(keysCurrentlyPressed);
-		handler.respondsToKeyEvent(keysCurrentlyPressed);
+		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
+				e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+			keysCurrentlyPressed[e.getKeyCode()] = false;
+			animator.updateKeys(keysCurrentlyPressed);
+			handler.respondsToKeyEvent(keysCurrentlyPressed);
+		}
 	}
 
 }

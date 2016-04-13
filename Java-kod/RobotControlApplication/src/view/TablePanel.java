@@ -14,6 +14,8 @@ public class TablePanel extends JPanel{
 	
 	private ArrayList<SensorLabel> sensorList;
 	
+	private ArrayList<ControlCoefficientPanel> controlList;
+	
 	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
 									"IR B/L", "Lidar Lite", "Angular velocity",
 									"Angle to wall"};
@@ -22,8 +24,11 @@ public class TablePanel extends JPanel{
 									"cm", "cm", "deg/s",
 									"deg"};
 	
+	private String[] controlCoefficients = {"P", "I", "D"};
+	
 	public TablePanel() {
 		sensorList = new ArrayList<>();
+		controlList = new ArrayList<>();
 		
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -33,10 +38,17 @@ public class TablePanel extends JPanel{
 		constraints.gridx = 0;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
 		
+		// add sensors to sensor list
 		for(int index = 0; index < sensorNames.length; index++) {
 			sensorList.add(new SensorLabel(sensorNames[index], sensorUnits[index]));
 		}
 		
+		// add control coefficients to list
+		for(String coeff: controlCoefficients) {
+			controlList.add(new ControlCoefficientPanel(coeff));
+		}
+		
+		// add elements in lists to panel
 		int index = 0;
 		for(SensorLabel sensorLabel : sensorList) {
 			constraints.gridy = index;
@@ -44,6 +56,11 @@ public class TablePanel extends JPanel{
 			
 			index++;
 		}
-		
+		for(ControlCoefficientPanel controlPanel : controlList) {
+			constraints.gridy = index;
+			this.add(controlPanel, constraints);
+			
+			index++;
+		}
 	}
 }

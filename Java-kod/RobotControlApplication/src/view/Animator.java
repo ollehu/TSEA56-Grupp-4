@@ -59,17 +59,23 @@ public class Animator {
 		constraints.gridx = 0;
 		constraints.gridy = 0;
 		constraints.fill = GridBagConstraints.BOTH;
-		
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
 		frame.add(mapPanel, constraints);
 		
 		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.VERTICAL;
+		constraints.anchor = GridBagConstraints.FIRST_LINE_END;
 		frame.add(tablePanel, constraints);
 		
 		constraints.gridx = 0;
 		constraints.gridy = 1;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.anchor = GridBagConstraints.LAST_LINE_START;
 		frame.add(graphPanel, constraints);
 		
 		constraints.gridx = 1;
+		constraints.fill = GridBagConstraints.NONE;
+		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		frame.add(robotControlPanel, constraints);
 		
 //		topPanel.add(mapPanel);

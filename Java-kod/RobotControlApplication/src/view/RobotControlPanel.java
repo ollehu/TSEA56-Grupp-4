@@ -76,7 +76,7 @@ implements 	ChangeListener {
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
-		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.anchor = GridBagConstraints.PAGE_START;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 
 		// add selectCOMPortButton
@@ -96,6 +96,7 @@ implements 	ChangeListener {
 		statusPanel.add(controlStatusLabel, BorderLayout.WEST);
 		statusPanel.add(clawStatusLabel, BorderLayout.EAST);
 
+		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.gridy = 1;
 		add(statusPanel, constraints);
 
@@ -133,6 +134,7 @@ implements 	ChangeListener {
 		speedSlider.setPaintLabels(true);
 		speedSlider.setFocusable(false);
 
+		constraints.anchor = GridBagConstraints.PAGE_END;
 		constraints.gridy = 3;
 		add(speedSlider, constraints);
 	}
