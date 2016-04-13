@@ -58,6 +58,7 @@ public class Animator {
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
+		constraints.fill = GridBagConstraints.BOTH;
 		
 		frame.add(mapPanel, constraints);
 		

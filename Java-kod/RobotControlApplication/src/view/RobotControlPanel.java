@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -68,12 +69,20 @@ implements 	ChangeListener {
 		this.handler = handler;
 		this.animator = animator;
 
-		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+		constraints.insets = new Insets(2, 2, 2, 2);
+		constraints.weightx = 1.0;
+		constraints.weighty = 1.0;
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
 
 		// add selectCOMPortButton
 		selectCOMPortButton = new JButton("Select COM port");
 		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
-		add(selectCOMPortButton);
+		add(selectCOMPortButton, constraints);
 
 		// add labels 
 		statusPanel = new JPanel(new BorderLayout());
@@ -87,7 +96,8 @@ implements 	ChangeListener {
 		statusPanel.add(controlStatusLabel, BorderLayout.WEST);
 		statusPanel.add(clawStatusLabel, BorderLayout.EAST);
 
-		add(statusPanel);
+		constraints.gridy = 1;
+		add(statusPanel, constraints);
 
 		// create and add buttons
 		buttonPanel = new JPanel(new GridLayout(2, 3));
@@ -110,7 +120,8 @@ implements 	ChangeListener {
 		buttonPanel.add(downArrowKeyButton);
 		buttonPanel.add(rightArrowKeyButton);
 
-		add(buttonPanel);
+		constraints.gridy = 2;
+		add(buttonPanel, constraints);
 
 		// initialize and add slider
 		speedSlider = new JSlider(JSlider.HORIZONTAL, SPEED_MIN, SPEED_MAX, SPEED_INIT);
@@ -122,7 +133,8 @@ implements 	ChangeListener {
 		speedSlider.setPaintLabels(true);
 		speedSlider.setFocusable(false);
 
-		add(speedSlider);
+		constraints.gridy = 3;
+		add(speedSlider, constraints);
 	}
 
 
