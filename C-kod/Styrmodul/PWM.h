@@ -65,7 +65,7 @@ void leftWheelPair(uint8_t speed, uint8_t direction)
 	if (direction == 1){
 		PORTD |= (1<<PORTD1);
 		} else {
-		PORTD &= ~(0<<PORTD1);
+		PORTD &= ~(1<<PORTD1);
 	}
 	speedLeft = speed*(1024/100);
 }
@@ -83,7 +83,7 @@ void rightWheelPair(uint8_t speed, uint8_t direction)
 	if (direction == 1){
 		PORTD |= (1<<PORTD0);
 		} else {
-		PORTD &= ~(0<<PORTD0);
+		PORTD &= ~(1<<PORTD0);
 	}
 	speedRight = speed*(1024/100);
 }

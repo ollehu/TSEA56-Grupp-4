@@ -11,7 +11,7 @@
 
 \vspace{5em}
 
-Version 1.0
+Version 1.1
 
 \vspace{5em}
 Grupp 4 \\
@@ -29,7 +29,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & 2016-04-06 & IS \\ \hline
+Granskad & - & - \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -83,7 +83,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & 2016-04-06 & Andra utkastet & Grupp 4 & Isak Strömberg \\ \hline
+1.1 & - & Tredje utkastet & Grupp 4 & - \\ \hline
+1.0 & - & Andra utkastet & Grupp 4 & - \\ \hline
 0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & Isak Strömberg \\ \hline
 \end{tabular}
 \end{table}
@@ -94,7 +95,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 
 \section{Inledning} \label{inledning}
-Denna rapport kommer avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) är uppdelad i antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering} under vilken textmassan kopplad till respektive område och rubriken placerats.
+Denna rapport kommer att avhandla två olika, övergripande frågeställningar. Den har därför strukturerats så att varje huvudrubrik (\textit{Problemformulering, Kunskapsbas, etc.}) är uppdelad i antingen \textit{Reglering} eller \textit{Kartläggning och vägoptimering} under vilken textmassan kopplad till respektive område och rubriken placerats.
 
 \section{Problemformulering}
 Nedan presenteras de problemformuleringar som förstudien tar avstamp i.
@@ -428,7 +429,7 @@ Denna typ av regulator är lämplig att använda vid reglering av robotens rotat
 \section{Empiri -- kartläggning och vägoptimering}
 Autonom styrning av alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemenen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
 
-SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för problem av denna typ och saknar än så länge en optimal lösning. Flera SLAM-metoder har utvecklats för att lösa lokaliseringsproblemet där EKF-SLAM och Fast-SLAM utgör de mest populära enligt \cite{rat}, dessa utforskas vidare i avsnitt \ref{slam}.
+SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för problem av denna typ och saknar än så länge en optimal lösning. Flera SLAM-metoder har utvecklats för att lösa lokaliseringsproblemet där EKF-SLAM och Fast-SLAM utgör de mest populära enligt \cite{rat}. Dessa utforskas vidare i avsnitt \ref{slam}.
 
 Utöver att kunna kartlägga sin omgivning bör en robot även minimera sin färdsträcka genom att utnyttja en effektiv kartläggningsalgoritm. Robotens typ av omgivning ställer olika krav på komplexiteten av kartläggningsalgoritmen och i avsnitt \ref{mapping} diskuteras ett par av dessa.
 
@@ -503,7 +504,7 @@ där $\bfr{F}_{t} = \frac{\partial\,f}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{
 \end{align*}
 där $\bfr{H}_{t} = \frac{\partial\,h}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{t\vert t-1}}$ utgör jacobianen till $h$ och $\bfr{K}_{t}$ väljs till $\bfr{K}_{t} = \bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}}\left(\bfr{H}_{t}\bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}} + \bfr{Q}_{t}\right)^{-1}$ för att minimera spåret av $\bfr{P}_{t\vert t}$ med hänsyn till $\bfr{K}_{t}$.
 
-EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat beräkningskapaciteten som behövs. I komplexitet är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$ där n är antal lanmärken. En vidareutveckling av EKF finns i \cite{ordo} där komplexiteten har minskats till $\mathcal{O}\left(n\right)$.
+EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat beräkningskapaciteten som behövs. I komplexitet är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$ där n är antal landmärken. En vidareutveckling av EKF finns i \cite{ordo} där komplexiteten har minskats till $\mathcal{O}\left(n\right)$.
 
 \subsubsection{FastSLAM}
 FastSLAM är en alternativ lösning på SLAM-problemet som bygger på partikelfiltrering. Ett partikelfilter har inget krav på korrelation mellan landmärkena och behöver därför inte beräkna kovariansmatrisen vilket sänker beräkningskapaciteten för algoritmen. Istället utgör varje partikel en unik skattning av robotens position där de partiklar som anses ha en rimlig position omsamplas och de andra dör ut.
@@ -538,7 +539,7 @@ Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm fö
 Fördelar med algoritmen är att den är enkel att implementera. Men saknandet av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fasta i en oändlig loop.
 
 \subsubsection{\emph{Dead-end filling}}
-\emph{Dead-end filling} är en djup-först algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
+\emph{Dead-end filling} är en djup-först-algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
 
 En vidareutveckling av dessa algoritmer återfinns i \cite{flood} där mer komplexa labyrinter studeras.
 
@@ -554,7 +555,7 @@ Givet att vi har kartlagt labyrinten återstår uppgiften att finna den optimala
 \end{figure}
 
 \subsubsection{Dijkstras algoritm}
-Dijkstras algoritm är en girig, bäst-först algoritm. Genom algoritmen beräknar man den billigaste (kortaste) vägen från startnoden till samtliga noder och den fungerar på nätverk med icke-negativa bågkostnader. 
+Dijkstras algoritm är en girig, bäst-först-algoritm. Genom algoritmen beräknar man den billigaste (kortaste) vägen från startnoden till samtliga noder och den fungerar på nätverk med icke-negativa bågkostnader. 
 
 Vid starten definieras två mängder, en mängd som innehåller de avsökta noderna och en de oavsökta noderna. De oavsökta noderna får ett oändligt nodpris och startnoden nodpriset noll. Med ursprung i startnoden sökes alla grannar genom. Ifall det nuvarande nodpriset plus bågkostnaden understiger grannens nodpris så uppdateras nodpriset med den billigaste kostnaden.
 
@@ -578,7 +579,7 @@ Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills
 				\State $S \gets S +  \{ u\}$
 				\State $Q \gets Q - \{ u\}$
 				\ForAll {$v \in \textrm{neighbours}(u)$}
-				\Comment{Itererar över grannar till $u$}
+				\Comment{Iterera över grannar till $u$}
 					\If {$g(u) + w(u,v) < g(v)$}
 						\State $g(v) \gets g(u) + w(u,v)$
 					\EndIf
@@ -593,7 +594,7 @@ Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills
 Den kortaste vägen kan nästas upp om man även sparar vilken föregångare som bidrog till en kortare väg. I implementeringsväg är algoritmen enkel, dock kräver den mycket minne eftersom alla noder och dess nodpris behöver sparas. En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
 
 \subsubsection{A*}
-A* är ytterligare en bäst-först algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
 \begin{equation*}
 	f(n) = g(n) + h(n)
 \end{equation*}
