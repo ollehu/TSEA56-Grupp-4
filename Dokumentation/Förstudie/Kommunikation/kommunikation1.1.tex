@@ -10,7 +10,7 @@
 
 \vspace{5em}
 
-Version 1.0
+Version 1.1
 
 \vspace{5em}
 Grupp 4 \\
@@ -89,6 +89,7 @@ Denna rapport undersöker dels hur intern kommunikation i en modulär robot kan 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
 0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & ET \\ \hline
 1.0 & 2016-04-07 &  Andra utkastet & Grupp 4 & LG \\ \hline
+1.1 & 2016-04-13 &  Tredje utkastet & Grupp 4 & ET \\ \hline
 \end{tabular}
 \end{table}
 
@@ -120,7 +121,7 @@ I detta avsnitt behandlas den bakgrundsinformation som krävs för att besvara f
 \subsection{I\textsuperscript{2}C}
 %https://docs.isy.liu.se/twiki/pub/VanHeden/DataSheets/i2cspec2000.pdf
 
-I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enheter. Varje enhet har en unik adress och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss konfigureras till två olika roller, \textit{slave} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master}. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3,4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
+I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen mellan två eller fler enheter. Varje enhet har en unik adress och kan konfigureras till att agera både mottagare och sändare. Utöver detta kan enheter kopplade till samma buss konfigureras till två olika roller, \textit{slav} eller \textit{master}. De som kan initiera överföringar via bussen är de som innehar rollen \textit{master}. På varje buss kan det finnas flera masterenheter, likväl som flera slavenheter. Hastigheten med vilken data kan skickas är i standardläge 100 kbit/s. Vid High speed-mode kan den komma upp i 3,4 Mbit/s. Både SDA och SCL ligger höga när bussen är fri.
 
 Överföringsprocessen består av fem steg: 
 
@@ -132,7 +133,7 @@ I\textsuperscript{2}C-bussen är en tvåtrådad buss som sköter överföringen 
 	\item \textbf{Stop:} Triggas av positiv flank på SDA då SCL ligger hög.
 \end{enumerate}
 
-Ett alternativ till att trigga avslut är att trigga en ny start, det vill säga att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföringnär den blir kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
+Ett alternativ till att trigga avslut är att trigga en ny start, det vill säga att masterenheten har fortsatt kommunikation över bussen. Är inte slaven redo för överföring när den blir kallad på kan den sätta masterenheten i vänteläge. Efter att varje byte är överförd skickas en bit för att försäkra sändaren om att mottagaren lyckats ta emot den sända informationen, en acknowledge-signal. \cite{guideI2CPhilips}
 
 \subsection{SPI}
 SPI är ett överföringsprotokoll som kan användas för dataöverföring mellan två eller fler enheter. I konfigurationen finns det minst en masterenhet, vilken initierar all kommunikation, och resten är slavenheter. Som standard sker överföringen genom ett skifte där en bit i taget flyttas från slaven till mastern och vice versa. Hårdvarumässigt krävs minst fyra portar:
@@ -146,7 +147,7 @@ SPI är ett överföringsprotokoll som kan användas för dataöverföring mella
 	\item \textbf{SS:} Slavenheternas koppling till masterenheten
 \end{enumerate}
 
-Master-enheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till \textit{dataregistret}. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}. När överföringen är färdig tänds en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. Synkronisering av överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
+Masterenheten initierar kontakt genom att, på rätt SS-port, dra aktuell slav ur sitt idle-state. För att starta överföringen skrivs en byte till \textit{dataregistret}. Då startas klockgeneratorn och skiftet börjar. Beroende på konfiguration kan samplingen och iordninggörandet, \textit{setup}, ske på positiv respektive negativ flank eller vice versa. När överföringen är färdig sätts en flagga. För att fortsätta överföring kan en ny byte skickas till dataregistret, annars dras aktuell SS-lina tillbaka till idle. Synkronisering av överföringen kan ske genom att skifta SS-linan fram och tillbaka. Det finns en buffert som lagrar den senaste byten för framtida användning.\cite{ATMega16}
 
 \subsection{Testning av system} 
 
@@ -170,7 +171,7 @@ I detta avsnitt diskuteras möjliga lösningar till frågeställningarna.
 \subsection{Konfiguration av I\textsuperscript{2}C och SPI}
 %https://retrosnob.files.wordpress.com/2013/03/ib-cs-java-enabled.pdf 
 
-Vid användning av ATMega16 tillsammans med I\textsuperscript{2}C eller SPI är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C respektive SPI. Önskas parallella bussar behöver båda typerna användas. För repektive busstyp finns en rad konfigurationsmöjligheter. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
+Vid användning av ATMega16 tillsammans med I\textsuperscript{2}C eller SPI är det inte möjligt att använda parallella bussar, då processorn enbart har en uppsättning utgångar för att hantera I\textsuperscript{2}C respektive SPI. Med parallella bussar menas i detta fall att det finns två eller flera bussar av samma typ på samma processor men som är helt särskilda från varandra. Önskas denna funktionalitet, två separerade bussar, behöver båda typerna användas. För repektive busstyp finns en rad konfigurationsmöjligheter. Det sätt som passar bäst beror både av behovet av timing och vilket beroende varje enhet har av data från andra. Nedan listas tre sätt:
 
 \begin{enumerate}
  \item Flera enheter kan konfigureras till att inneha en masterroll. Dessa kan, när bussen är fri, initiera kontakt med vilken annan enhet den önskar. På så vis kan de i stor utsträckning styra själva när de vill skicka respektive ta emot data. Vid användning av I\textsuperscript{2}C används arbitrering för att hantera situationer då flera masterenheter vill använda bussen samtidigt för att säkerställa att enbart en når ut på bussen och att det meddelandet inte förstörs. \cite{guideI2C} Motsvarande system för att hantera flera masterenheter saknas för SPI.
@@ -215,14 +216,14 @@ Enligt \cite{CPC} finns det några faktorer att tänka på vid val av programmer
 
 I \cite{RWD} anses Assembler vara ett snabbare alternativ än högnivåspråk som C i enklare konstruktioner av realtidssystem. En nackdel med Assembler är dock att koden blir svårare att läsa för framtida användare då dessa måste sätta sig in i hur processorn fungerar. Assembler ser olika ut för olika processorer och att lära sig nytt språk till varje ny processor är inte optimalt.  Detta gör Assembler mindre attraktivt. Även \cite{CPM} säger att Assembler blir för knutet till den specifika hårdvaran som används medan C kan fungera på olika processorer. Koden i C blir även mer lättförståelig och visar koncepten av vad processorn ska göra på ett logiskt sätt. 
 
-Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende anvädningen onödigt krånglig. En sån detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till att projektet som ska utföras är så pass litet är det tveksamt om den snabbhet Assembler ger är av någon direkt betydelse. Dessutom finns det inte tid till att på detaljnivå förstå hårdvaran för att kunna skriva allt i Assembler. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programmera i. Är någon funktion tidskritisk kan det ändå vara en idé att överväga att skriva detta i Assembler. 
+Det finns alltså fördelar och nackdelar med båda språken. Även om Assembler ger snabbare utfall gör dess hårdvaruberoende användningen onödigt krånglig. En sådan detaljinsikt i hårdvaran är i många fall inte nödvändig. Sett till att projektet som ska utföras är så pass litet är det tveksamt om den snabbhet Assembler ger är av någon direkt betydelse. Dessutom finns det inte tid till att på detaljnivå förstå hårdvaran för att kunna skriva allt i Assembler. I det avseendet skulle C på grund av dess smidighet vara ett mer fördelaktigt språk att programmera i. Är någon funktion tidskritisk kan det ändå vara en idé att överväga att skriva detta i Assembler. 
 
 Det finns möjlighet att kombinera båda språken. I \cite{AssC} beskrivs hur Assembler kan användas i ett C-projekt i Atmel Studio 6. En assemblerrutin kan bli synlig för en C-kodad fil och de kan dela globala variabler. Detta kan vara användbart om vissa delar blir enklare eller tydligare att koda i Assembler.
 
 \subsection{Design av tester}
 En simulator är ett enkelt val för testning av kod då de flesta mikroprocesorerna har en egen sådan. Simulatorer brister dock i att det är svårt att förutse allt som kommer hända i verkligheten, vilket gör att den som programmerar måste vara extremt medveten om alla situationer som kan uppstå annars missas saker. Avbrott försvårar detta.\cite{RWD}
 
-För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan exempelvis ske genom att enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är kritiska stängas av för att se om felet kvarstår och sen aktiveras ett avbrott i taget för att hitta var felet är.
+För testning av system föreslår \cite{RWD} att testning av hårdvara och mjukvara sker var för sig för att sedan testas tillsammans. Hårdvarutestning kan exempelvis ske genom att enklare kod skrivas till en viss port för att på ett oscilloskop se vad utslaget blir. Mjukvarutestning görs bäst genom att dela upp koden och testa en liten bit i taget lämpligtvis med hjälp av breakpoints. Vad gäller test i realtidssystem blir det svårare då avbrott sker kontinuerligt vilket gör att breakpoints i koden inte är optimalt. För att underlätta då kan alla avbrott som inte är kritiska stängas av för att se om felet kvarstår och sedan aktiveras ett avbrott i taget för att hitta var felet är.
 
 \subsubsection{Olika typer av test}
 Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna på ett systematiskt sätt:
@@ -230,10 +231,10 @@ Nedan listas olika testfaser för att jobba sig igenom systemets olika delarna p
 	\item \textbf{Enhetstest:} Testar en enskild enhet. Denna typ av test är viktigt då det är lättare att hitta fel när det är tydligt från vilken enhet felet kommer.
 	\item \textbf{Integrationstest:} Testar att interaktionen mellan olika enheter fungerar, med syfte att samanfoga enheter för att testa deras helhetsbeteende. Här ligger fokuset på att testa gränssnitt.
 	\item \textbf{Systemtest:} Testar hela systemet, och fokuserar på de egenskaper som enbart finns när systemet är komplett.
-	\item \textbf{Acceptanstest:} Test för att kunden ska godkänna systemet  
+	\item \textbf{Acceptanstest:} Test för att kunden ska godkänna systemet. 
 \end{enumerate}
 
-I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning kan enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
+I varje specifik fas är det viktigt att ta fram testfall på ett sådant sätt att om testet godkänns går det att anta att programmet är korrekt då testning enbart kan påvisa att fel existerar, aldrig att de inte gör det. Detta kan göras genom att dela upp indata i olika ekvivaleskategorier, och testa så att programmet svarar på önskvärt sätt. Här är det viktigt att räkna med undantagsfall också.\cite{tester} Med hjälp av en bra kravspecifikation kan testerna lätt definieras då det tydligt framgår vad varje del, samt det totala systemet, ska klara av. 
 
 \subsection{Modulbaserade projekt}
 
@@ -247,7 +248,7 @@ Vid arbete med modulär design av system kan de olika modulerna göras så de ka
 \subsubsection{Att tänka på vid design av modulära system}
 I design av ett modulärt system är det viktigt att både bryta ned de funktionella kraven och modellera systemet. Genom att enbart titta på funktionerna går systemets dynamiska beteende förlorat. När det kommer till stora system blir kraven lätt många, och då är det viktigt att titta på helheten, annars finns det en risk att vissa delar optimeras på bekostnad av någon annan. Begränsande krav på systemets helhet minskar möjligheten för modulär design, vilket kan skapa intresse av att minska eller eliminera dessa. \cite{Modules} I \cite{MMPD} uppmärksammas även vikten av att systemintegration tas i beaktning vid modulär design, något som inte alla tillverkare tillämpar.
 
-\cite{IRS} beskriver bland annat följande faktorer att tänka på vid design av en ''open-architecture target environment''.  Det  måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens för olika uppgifter. Det kan även bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Dessutom bör ett helt set av data skickas vid kommunikation mellan två moduler, inte en del från den föregående cykeln och en del från den senaste. Det är även viktigt att kommunikationen mellan moduler är förutsägbar så att det kan förutspås hur lång tid utförandet som sämst kommer att ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge. På så sätt är det mer sannolikt att händelser sker i realtid.  
+\cite{IRS} beskriver bland annat följande faktorer att tänka på vid design av en ''open-architecture target environment''.  Det  måste finnas en synkronisering av uppgifter då det exempelvis inte är garanterat att alla sensorer jobbar i samma hastighet och därför behöver olika frekvens för olika uppgifter. Det kan även bli problem med förvrängning av signalen när två processorers systemklockor jobbar i något olika hastighet och två uppgifter har samma frekvens. Detta medför att integrationen av moduler ej bör bero på frekvens eller systemklockor vid synkronisering. Dessutom bör ett helt set av data skickas vid kommunikation mellan två moduler, inte en del från den föregående cykeln och en del från den senaste. Det är även viktigt att kommunikationen mellan moduler är förutsägbar så att det kan förutspås hur lång tid utförandet som sämst kommer ta så att hänsyn kan tas till det. Detta är särskilt viktigt i realtidssystem. När alla moduler delar databuss är det fördelaktigt att designa kommunikationen mellan dessa så att den tar så lite tid som möjligt för att inte trafikera bussen för länge. På så sätt är det mer sannolikt att händelser sker i realtid.  
 
 \pagebreak
 
@@ -263,7 +264,7 @@ Projektet har ett stort behov av tajming, att uppgifter utförs direkt när de b
 
 \subsection{Assembler eller C}
 
-För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor, vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god ide att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det. I projektet kommer därför C att användas i första hand.
+För programmering av processorer i ett litet realtidssystemsprojekt är C att föredra då det är smidigt, lättläst och enkelt kan appliceras på en annan processor än den som används. Förståelsen för hårdvaran behöver inte vara lika stor, vilket underlättar för programmeraren. Vid tidskritiska moment kan det vara en god id\'{e} att överväga att skriva koden i Assembler då det då utförs snabbare. Eftersom det går att blanda språken relativt enkelt är det inget större problem att göra det. I projektet kommer därför C att användas i första hand.
 
 \subsection{Design av tester}
 I framtagningen av en testplan är det viktigt att se till att täcka alla fall av indata för att upptäcka alla eventuella fel så tidigt som möjligt i processen. Ju tidigare de upptäcks, desto lättare är det att identifiera dem och göra något åt dem. Därför kan en framgångsrik strategi vara att designa test på olika nivåer för att stegvis lägga till mer och mer funktionalitet.
