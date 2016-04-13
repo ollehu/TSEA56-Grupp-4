@@ -21,7 +21,7 @@ public class Handler {
 	public Handler() {
 		animator = new Animator(this);
 		animator.showFrame();
-		
+
 		try {
 			serialPortCOM = new SerialPortCOM(this);
 		} catch (UnknownOperatingSystemException e) {
@@ -68,16 +68,35 @@ public class Handler {
 		}
 
 		// send if != last sent command
-		if(controlCommand != lastSentControlCommand) {
-			try {
+		try {
+			if(controlCommand != lastSentControlCommand) {
+
 				serialPortCOM.sendControlCommand(controlCommand);
 				lastSentControlCommand = controlCommand;
-			} catch (SerialPortException e) {
-				e.printStackTrace();
 			}
+		} catch (SerialPortException e) {
+			e.printStackTrace();
 		}
 	}
 	
+	public void setControlOn(boolean state) {
+		try {
+			serialPortCOM.setControlOn(state);
+		} catch (SerialPortException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void setClawOpen(boolean state) {
+		try {
+			serialPortCOM.setClawOpen(state);
+		} catch (SerialPortException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public int getSpeed() {
 		return animator.getRobotControlPanel().getSpeed();
 	}
