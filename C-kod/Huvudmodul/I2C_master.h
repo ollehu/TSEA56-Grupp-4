@@ -21,6 +21,19 @@ void TWIStop(void){
 	//|(1<<TWIE);
 }
 
+void TWISetup(){
+	//EICRA = (1<<ISC21)|(0<<ISC20)|(1<<ISC11)|(0<<ISC10);//Falling edge INT1 & INT2 (button)
+	EICRA = (1<<ISC21)|(1<<ISC20)|(1<<ISC11)|(1<<ISC10); //Rising edge INT1 & INT2
+	
+	//Enable interrupt INT1 & INT2
+	EIMSK = (1<<INT2)|(1<<INT1);
+	
+	//Enable global interrupts
+	sei();
+	//Enable TWI
+	TWCR = (1<<TWEA)|(1<<TWEN);
+}
+
 void Master(int times, uint8_t SLA, int data[]){
 	DDRA = 0xFF;
 	
