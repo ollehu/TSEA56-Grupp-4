@@ -11,6 +11,8 @@
 #define F_CPU 14745600UL
 #include <util/delay.h>
 
+
+int sensorData[8];
 int styrKommando[] = {0x00, 0x02};
 	
 int SLA_sensor_R = 0xCB;
