@@ -10,7 +10,7 @@
 #define F_CPU 14745600UL
 #include <util/delay.h>
 
-int sensorData[25];
+int sensorData[8];
 int styrKommando[] = {0x00, 0x02};
 	
 int SLA_sensor_R = 0xCB;
@@ -158,7 +158,7 @@ int main(void)
 {
 	_delay_ms(30);
 	DDRD = (1<<PORTD6);
-	for (int i = 0; i < 24; i++ ) {
+	for (int i = 0; i < 8; i++ ) {
 		sensorData[ i ] = i+2;
 	}
 	
