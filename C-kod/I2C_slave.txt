@@ -1,0 +1,7 @@
+== I2C ==
+
+TWISetup(int SlaveAddress)
+
+Initierar I2C.
+
+@param slaveAddress - Den adress som enheten har i kommunikationen över I2C
