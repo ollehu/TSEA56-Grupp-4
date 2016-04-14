@@ -10,6 +10,8 @@
 #define MOSI PORTB5
 #define SS PORTB4
 
+int sensorData[8];
+
 volatile const uint8_t adc0 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(0<<MUX0);
 volatile const uint8_t adc1 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc2 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(0<<MUX0);
@@ -76,6 +78,8 @@ void initIC(void);
 void initADC(void);
 unsigned short AR_read(void);
 
+
+
 ISR (TIMER1_CAPT_vect)
 {
 
@@ -112,7 +116,6 @@ ISR(ADC_vect){ //IR-SENSOR
 	else if(ADMUX == adc1){
 		Distance_1 = ADCH;
 		ADMUX = adc2;
-				
 		
 	}
 	else if(ADMUX == adc2){
@@ -194,7 +197,7 @@ unsigned char SPI_send(unsigned char output)
 	return SPDR;
 }
 
-void converionStart(void)
+void conversionStart(void)
 {
 	PORTB &= ~(1<<PORTB4);
 	SPI_send(0x94);
@@ -205,7 +208,7 @@ void converionStart(void)
 
 unsigned short AR_read(void){
 	
-	converionStart();
+	conversionStart();
 	
 	_delay_us(150);
 	unsigned char low, high;
@@ -258,96 +261,48 @@ int main (void)
 			
 					if(count_1 == 0){
 						SI_IR11 = SI_IR1;
+						SI_IR21 = SI_IR2;
+						SI_IR31 = SI_IR3;
+						SI_IR41 = SI_IR4;
+
 						count_1 = count_1+1;
 					}
 					
 					else if(count_1 == 1){
 						SI_IR12 = SI_IR1;
+						SI_IR22 = SI_IR2;
+						SI_IR32 = SI_IR3;
+						SI_IR42 = SI_IR4;
+
 						count_1 = count_1 + 1;
 					}
 					else if(count_1 == 2){
 						SI_IR13 = SI_IR1;
+						SI_IR23 = SI_IR2;
+						SI_IR33 = SI_IR3;
+						SI_IR43 = SI_IR4;
+
 						count_1 = count_1 + 1;
 					}
 					else if(count_1 == 3){
 						SI_IR14 = SI_IR1;
+						SI_IR24 = SI_IR2;
+						SI_IR34 = SI_IR3;
+						SI_IR44 = SI_IR4;
+
 						count_1 = count_1 + 1;
 					}
 					else if(count_1 == 4){
 						SI_IR15 = SI_IR1;
+						SI_IR25 = SI_IR2;
+						SI_IR35 = SI_IR3;
+						SI_IR45 = SI_IR4;
+
 						count_1 = 0;
 					}
 					SI_IR1_Final = SI_IR11/5 + SI_IR12/5 + SI_IR13/5 + SI_IR14/5 + SI_IR15/5;
-					
-					
-					if(count_1 == 0){
-						SI_IR21 = SI_IR2;
-						count_1 = count_1+1;
-					}
-					
-					else if(count_1 == 1){
-						SI_IR22 = SI_IR2;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 2){
-						SI_IR23 = SI_IR2;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 3){
-						SI_IR24 = SI_IR2;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 4){
-						SI_IR25 = SI_IR2;
-						count_1 = 0;
-					}
 					SI_IR2_Final = SI_IR21/5 + SI_IR22/5 + SI_IR23/5 + SI_IR24/5 + SI_IR25/5;
-					
-					if(count_1 == 0){
-						SI_IR31 = SI_IR3;
-						count_1 = count_1+1;
-					}
-					
-					else if(count_1 == 1){
-						SI_IR32 = SI_IR3;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 2){
-						SI_IR33 = SI_IR3;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 3){
-						SI_IR34 = SI_IR3;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 4){
-						SI_IR35 = SI_IR3;
-						count_1 = 0;
-					}
 					SI_IR3_Final = SI_IR31/5 + SI_IR32/5 + SI_IR33/5 + SI_IR34/5 + SI_IR35/5;
-					
-					
-					if(count_1 == 0){
-						SI_IR41 = SI_IR4;
-						count_1 = count_1+1;
-					}
-					
-					else if(count_1 == 1){
-						SI_IR42 = SI_IR4;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 2){
-						SI_IR43 = SI_IR4;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 3){
-						SI_IR44 = SI_IR4;
-						count_1 = count_1 + 1;
-					}
-					else if(count_1 == 4){
-						SI_IR45 = SI_IR4;
-						count_1 = 0;
-					}
 					SI_IR4_Final = SI_IR41/5 + SI_IR42/5 + SI_IR43/5 + SI_IR44/5 + SI_IR45/5;
 					
 					
@@ -355,8 +310,8 @@ int main (void)
 
 			
 				//Receive start signal
-						answer = AR_read();
-						total = total + answer - 1996.5;
+						/*answer = AR_read();
+						total = total + answer - 1996.5;*/
 			
 				//When 90* rotation -> send stop signal
 						/*if(total < -18300){ //Left

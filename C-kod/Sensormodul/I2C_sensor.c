@@ -11,7 +11,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 	
-int sensorData[25];
+int sensorData[8];
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
@@ -76,7 +76,7 @@ int main(void)
 	//Kommunikations-ID
 	sensorData[ 0 ] = 0x02;
 	//Dummydata
-	for (int i = 1; i < 25; i++ ) {
+	for (int i = 1; i < 8; i++ ) {
 		sensorData[ i ] = i;
 	}
 	
