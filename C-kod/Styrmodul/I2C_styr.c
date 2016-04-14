@@ -18,8 +18,10 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "LCD.h"
+#include "I2C_slave.h"
 
-int sensorData[25];
+int slaveAddress = 0xCC;
+int sensorData[8];
 int styrKommando;
 
 ISR(TWI_vect){
@@ -83,18 +85,11 @@ ISR(TWI_vect){
 	}
 }
 
-void TWISetup()
-{
-	//Set slave address and start TWI (including the TWI-interrupt)
-	TWAR = (1<<TWA6)|(1<<TWA5)|(0<<TWA4)|(0<<TWA3)|(1<<TWA2)|(1<<TWA1)|(0<<TWA0)|(0<<TWGCE);
-	TWCR |= (1<<TWEA)|(1<<TWEN)|(1<<TWIE);
-}
-
 int main(void)
 {
 	initLCD();
 	lcdWriteTopRow("Hej hopp");
-	TWISetup();
+	TWISetup(slaveAddress);
 	sei();
 	//while(1);
 	DDRB = (1<<PORTB4);

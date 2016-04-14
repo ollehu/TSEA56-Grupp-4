@@ -10,8 +10,10 @@
 #define F_CPU 16000000UL
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include "I2C_slave.h"
 	
-int sensorData[25];
+int slaveAddress = 0xCA;
+int sensorData[8];
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
@@ -60,23 +62,16 @@ ISR(TWI_vect){
 	}
 }
 
-void TWISetup()
-{
-	//Set slave address and start TWI (including the TWI-interrupt)
-	TWAR = (1<<TWA6)|(1<<TWA5)|(0<<TWA4)|(0<<TWA3)|(1<<TWA2)|(0<<TWA1)|(1<<TWA0)|(0<<TWGCE);
-	TWCR |= (1<<TWEA)|(1<<TWEN)|(1<<TWIE);
-}
-
 int main(void)
 {
 	
-	TWISetup();
+	TWISetup(slaveAddress);
 	sei();
 	
 	//Kommunikations-ID
 	sensorData[ 0 ] = 0x02;
 	//Dummydata
-	for (int i = 1; i < 25; i++ ) {
+	for (int i = 1; i < 8; i++ ) {
 		sensorData[ i ] = i;
 	}
 	
