@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -35,7 +37,6 @@ public class Animator {
 		this.handler = handler;
 		
 		frame = new JFrame("Robot remote control");
-//		frame.setLayout(new BorderLayout());
 		frame.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,9 +44,6 @@ public class Animator {
 		// create and add layout panels
 		topPanel = new JPanel();
 		bottomPanel = new JPanel();
-		
-//		frame.add(topPanel, BorderLayout.NORTH);
-//		frame.add(bottomPanel, BorderLayout.SOUTH);
 		
 		// create and add content panels
 		robotControlPanel = new RobotControlPanel(handler, this);
@@ -78,10 +76,12 @@ public class Animator {
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		frame.add(robotControlPanel, constraints);
 		
-//		topPanel.add(mapPanel);
-//		topPanel.add(tablePanel);
-//		bottomPanel.add(graphPanel);
-//		bottomPanel.add(robotControlPanel);
+		// close serial port on window close
+		frame.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				handler.closeSerialPort();
+			}
+		});
 	}
 	
 	public void showFrame() {

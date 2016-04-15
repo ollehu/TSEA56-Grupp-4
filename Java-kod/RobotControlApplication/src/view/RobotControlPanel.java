@@ -242,6 +242,8 @@ implements 	ChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			
 			String osName = System.getProperty("os.name");
 			String[] portNames = {"port 1", "port 2", "port 3"};
 
@@ -271,6 +273,7 @@ implements 	ChangeListener {
 				if(selectedPort != null) {
 					handler.connectToSerialPort(selectedPort);
 				}
+				
 			}
 			
 			

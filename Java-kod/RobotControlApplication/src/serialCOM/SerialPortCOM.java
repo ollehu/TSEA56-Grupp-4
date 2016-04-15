@@ -1,5 +1,6 @@
 package serialCOM;
 
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import control.Handler;
@@ -13,8 +14,8 @@ public class SerialPortCOM {
 
 	private Handler handler;
 
-	private SerialPort serialPort;
-
+	private static SerialPort serialPort;
+	
 	// standard port settings for firefly
 	private int baudRate = 115200;
 	private int numberOfDataBits = 8;
@@ -37,6 +38,18 @@ public class SerialPortCOM {
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
 		// add port listener
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		
+	}
+	
+	public void closeSerialPort() {
+		if(serialPort != null) {
+			try {
+				serialPort.closePort();
+				System.out.println("Closing port");
+			} catch (SerialPortException e) {
+
+			}
+		}
 	}
 
 	public void sendControlCommand(int controlCommand) throws SerialPortException {
@@ -81,12 +94,10 @@ public class SerialPortCOM {
 	}
 	
 	private byte convertIntToByte(int data) {
-		// TODO test if this works properly
 		return (byte) data;
 	}
 	
 	private void sendData(byte data) throws SerialPortException {
-		// TODO test if this works properly
 		serialPort.writeByte(data);
 		System.out.println("Data sent: " + data);
 	}
@@ -101,17 +112,25 @@ public class SerialPortCOM {
 
 		@Override
 		public void serialEvent(SerialPortEvent event) {
-			// TODO add event handling
+			if(event.isRXCHAR() && event.getEventValue() > 0) {
+				try {
+//					byte[] receivedData = serialPort.readBytes();
 
-			//			if(event.isRXCHAR() && event.getEventValue() > 0) {
-			//				try {
-			//					String receivedData = serialPort.readString(event.getEventValue());
-			//					System.out.println("Received response: " + receivedData);
-			//				}
-			//				catch (SerialPortException ex) {
-			//					System.out.println("Error in receiving string from COM-port: " + ex);
-			//				}
-			//			}
+					String receivedData = serialPort.readString();
+					
+					// TODO handle event depending on if it's sensor or map data
+//					if(receivedData[0] == 0xFF) {
+//						
+//					} else if(receivedData[0] == 0xFE) {
+//						
+//					}
+					
+					System.out.println("Received response: " + receivedData);
+				}
+				catch (SerialPortException ex) {
+					System.out.println("Error in receiving string from COM-port: " + ex);
+				}
+			}
 		}
 
 	}

@@ -2,6 +2,8 @@ package control;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
+
 import jssc.SerialPortException;
 import serialCOM.ControlID;
 import serialCOM.SerialPortCOM;
@@ -30,10 +32,21 @@ public class Handler {
 	public void connectToSerialPort(String portName) {
 		try {
 			serialPortCOM.connectToSerialPort(portName);
+			
+			JOptionPane.showMessageDialog(animator.getFrame(),
+				    "Port connected",
+				    portName,
+				    JOptionPane.INFORMATION_MESSAGE);
 		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(animator.getFrame(),
+					e.getExceptionType(),
+				    e.getPortName(),
+				    JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public void closeSerialPort() {
+		serialPortCOM.closeSerialPort();
 	}
 
 	public void respondsToKeyEvent(boolean[] keysCurrentlyPressed) {
