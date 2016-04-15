@@ -63,7 +63,7 @@ implements 	ChangeListener {
 	static final int SPEED_MAX = 100;
 	static final int SPEED_INIT = 50;
 
-	private int speed;
+	private int speed = 50;
 
 	public RobotControlPanel(Handler handler, Animator animator) {
 		this.handler = handler;

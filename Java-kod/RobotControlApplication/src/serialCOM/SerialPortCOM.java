@@ -13,7 +13,7 @@ public class SerialPortCOM {
 
 	private Handler handler;
 
-	private static SerialPort serialPort;
+	private SerialPort serialPort;
 
 	// standard port settings for firefly
 	private int baudRate = 115200;
@@ -40,14 +40,20 @@ public class SerialPortCOM {
 	}
 
 	public void sendControlCommand(int controlCommand) throws SerialPortException {
+		// send control byte
+		sendData(convertIntToByte(0));
+		
 		// send control command (1 byte)
 		sendData(convertIntToByte(controlCommand));
 		
-		// send speed (1 (2?) bytes)
+		// send speed (1 bytes)
 		sendData(convertIntToByte(handler.getSpeed()));
 	}
 	
 	public void setClawOpen(boolean state) throws SerialPortException {
+		// send control byte
+		sendData(convertIntToByte(0));
+				
 		// send control command
 		sendData(convertIntToByte(ControlID.CLAW_SETTING));
 		
@@ -60,6 +66,9 @@ public class SerialPortCOM {
 	}
 	
 	public void setControlOn(boolean state) throws SerialPortException {
+		// send control byte
+		sendData(convertIntToByte(0));
+		
 		// send control command
 		sendData(convertIntToByte(ControlID.CONTROL_SETTING));
 		
@@ -106,4 +115,9 @@ public class SerialPortCOM {
 		}
 
 	}
+
+	public SerialPort getSerialPort() {
+		return serialPort;
+	}
+	
 }
