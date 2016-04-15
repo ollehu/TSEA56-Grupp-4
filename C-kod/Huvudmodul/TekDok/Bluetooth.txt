@@ -1,0 +1,16 @@
+BT:n kommunicerar seriellt med ATMegan via USART.
+
+Konfiguration: 8 bitar data, 1 stop bit, ingen paritet och en baud rate på 115.2 kbps
+
+Metoder:
+
+-- void btInit(void) --
+Initierar kopplingen till BT-modulen enligt ovanstående konfiguration. OBS: "unsigned char baud = 7" <=> Baud rate på 115.2 kbps
+
+-- void btSend(unsigned char data) --
+Skickar en byte till andra parten. För att skriva ett meddelande ska byten vara ASCII-kodad, t.ex. btSend('A');
+
+-- ISR(USART_RX_vect) --
+Den avbrottsvektorn som aktiveras då data finns i bufferten. Läser av en byte från registret UDR0 (dataregister).
+
+
