@@ -353,10 +353,10 @@ int main (void)
 
 						count_1 = 0;
 					}
-					SI_IR1_Final = SI_IR11/5 + SI_IR12/5 + SI_IR13/5 + SI_IR14/5 + SI_IR15/5;
-					SI_IR2_Final = SI_IR21/5 + SI_IR22/5 + SI_IR23/5 + SI_IR24/5 + SI_IR25/5;
-					SI_IR3_Final = SI_IR31/5 + SI_IR32/5 + SI_IR33/5 + SI_IR34/5 + SI_IR35/5;
-					SI_IR4_Final = SI_IR41/5 + SI_IR42/5 + SI_IR43/5 + SI_IR44/5 + SI_IR45/5;
+					sensorData[1] = SI_IR11/5 + SI_IR12/5 + SI_IR13/5 + SI_IR14/5 + SI_IR15/5; //SI_IR1_Final
+					sensorData[3] = SI_IR21/5 + SI_IR22/5 + SI_IR23/5 + SI_IR24/5 + SI_IR25/5; //SI_IR2_Final
+					sensorData[2] = SI_IR31/5 + SI_IR32/5 + SI_IR33/5 + SI_IR34/5 + SI_IR35/5; //SI_IR3_Final
+					sensorData[4] = SI_IR41/5 + SI_IR42/5 + SI_IR43/5 + SI_IR44/5 + SI_IR45/5; //SI_IR4_Final
 					
 					
 			
