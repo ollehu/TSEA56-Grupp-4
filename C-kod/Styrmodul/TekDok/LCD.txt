@@ -3,6 +3,8 @@
 !!!Det tar lång tid att skriva ut saker på dispalyen, gör det så lite som möjligt 
 (speciellt inte i avbrott)!!!
 
+OBS: För att få LCD:n att fungera MÅSTE F_CPU definieras. Gör det i headern av class/header filen ("#define F_CPU 16000000UL" om klockan går i 16Mhz). 
+
 - Innehåll - 
 lcdFlipEN()
 lcdCommand()

@@ -11,8 +11,8 @@ import javax.swing.UIManager;
 
 public class Tile extends JComponent{
 	
-	private int width = 40;
-	private int height = 40;
+	private int width = 15;
+	private int height = 15;
 	
 	private Color unexploredBackgroundColor = new Color(200, 0, 0);
 	private Color exploredBackgroundColor = UIManager.getColor("Panel.background");

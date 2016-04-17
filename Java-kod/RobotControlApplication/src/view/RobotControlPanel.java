@@ -63,7 +63,7 @@ implements 	ChangeListener {
 	static final int SPEED_MAX = 100;
 	static final int SPEED_INIT = 50;
 
-	private int speed;
+	private int speed = 50;
 
 	public RobotControlPanel(Handler handler, Animator animator) {
 		this.handler = handler;
@@ -242,6 +242,8 @@ implements 	ChangeListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			
+			
 			String osName = System.getProperty("os.name");
 			String[] portNames = {"port 1", "port 2", "port 3"};
 
@@ -271,6 +273,7 @@ implements 	ChangeListener {
 				if(selectedPort != null) {
 					handler.connectToSerialPort(selectedPort);
 				}
+				
 			}
 			
 			
