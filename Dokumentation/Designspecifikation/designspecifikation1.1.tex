@@ -602,13 +602,13 @@ För dataöverföring via Bluetooth\textsuperscript{\circledR} kommer FireFly-mo
 
 
 \subsection{Informationsflöde}
-Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inleds kommunikationen med ett kommunikations-ID som betecknar vilken typ av data som kommer skickas. Varje datatyps respektive ID finns i tabellen nedan:
+Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inleds kommunikationen med ett kommunikations-ID som betecknar vilken typ av data som kommer skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden $>250$. Varje datatyps respektive ID finns i tabellen nedan:
 
 \begin{longtable}[l]{| l | l |} \hline
 \textbf{ID} & \textbf{Datatyp} \\ \hline 
-0 & Styrkommando \\ \hline
-1 & Kartinformation \\ \hline
-2 & Sensordata \\ \hline
+255 & Styrkommando \\ \hline
+254 & Kartinformation \\ \hline
+253 & Sensordata \\ \hline
 
 \caption{Tabell över kommunikations-ID}\label{kommunikationstab}
 \end{longtable}
@@ -634,9 +634,9 @@ Följande protokoll används för att skicka styrkommandon (gäller både för d
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A (1 byte) - Kommunikations-ID
-	\item B(1 byte) - Definierar vilket kommando eller vilken typ av värde som skickas, se tabell \ref{sensortab} och tabell \ref{styrtab} för specifika värden.
-	\item C (2 byte) - Hastighet (om körkommando och inte reglering), sträcka/vinkel (om körkommando och reglering) eller värde (om sensorvärde).
+	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
+	\item B (1 byte) - Definierar vilket kommando som skickas, se tabell \ref{styrtab}.
+	\item C (1 byte) - Hastighet (om manuellt läge), sträcka/vinkel (om autonomt läge)(tillåtna värden: 0-250).
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - kartinformation}
@@ -653,9 +653,9 @@ Varje korsning kommer att representeras som en nod och vägarna däremellan som 
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
-	\item A (1 byte) - Kommunikations-ID
-	\item B (1 byte) - Motsvarar nodens x-koordinat (tillåtna värden: 0-15)
-	\item C (1 byte) - Motsvarar nodens y-koordinat (tillåtna värden: 0-15)
+	\item A (1 byte) - Kommunikations-ID.
+	\item B (1 byte) - Motsvarar nodens x-koordinat (tillåtna värden: 0-15).
+	\item C (1 byte) - Motsvarar nodens y-koordinat (tillåtna värden: 0-15).
 	\item D (1 byte) - Representerar väggar kring noden (11 = vägg, 00 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b0-1 = N, b2-3 = W, b4-5 = S, b6-7 = E).
 \end{itemize}
 
@@ -673,20 +673,11 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A - Kommunikations-ID
 	\item B - Sensordatapaket
+	\begin{itemize}
+	\item ID (1 byte) - identifierar sensorn, se tabell \ref{sensortab}.
+	\item Data (1 byte) - sensorns värde (tillåtna värden: 0-250).
+	\end{itemize}
 \end{itemize}
-
-Sensordatapaketet består av ett antal sensorvärden som skickas tillsammans med ett ID, för att identifiera vilken sensor värdet tillhör. Beroende på vilken styrmod roboten befinner sig i skickas olika sensorvärden. En tabell över vilka sensorvärden som skickas i respektive styrmod och en över de olika sensorernas ID finns nedan.
-
-%\begin{table}
-\begin{longtable}[l]{| l | p{0.7\linewidth} |} \hline
-\textbf{Styrmod} & \textbf{Skickade sensordata} \\ \hline 
-Körning rakt fram i korridor & Avstånd till främre väggen $s$, avstånd till sidoväggen $z$, vinkelhastighet $\omega$, vinkel i förhållande till väggen $(\theta-\gamma)$ \\ \hline
-Rotation & Vinkelhastighet $\omega$ \\ \hline
-%Körning i öppen yta & \textit{fylls på efter förstudien} \\ \hline
-\caption{Tabell över de olika styrmoderna. För förtydligande av variabler, se figur \ref{robotwall}}
-\end{longtable}
-%\end{table}
-
 
 \begin{longtable}[l]{| l | l | c |} \hline
 \textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
