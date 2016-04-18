@@ -5,12 +5,14 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#include "initiation_ceremony.h"
+
+
 #define SCK PORTB7
 #define MISO PORTB6
 #define MOSI PORTB5
 #define SS PORTB4
 
-volatile const uint8_t adc0 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(0<<MUX0);
 volatile const uint8_t adc1 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc2 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(0<<MUX0);
 volatile const uint8_t adc3 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(1<<MUX0);
@@ -18,7 +20,6 @@ volatile const uint8_t adc4 = (1<<ADLAR) | (1<<MUX2)|(0<<MUX1)|(0<<MUX0);
 
 int state = 0;
 int ADC_conversion = 0;
-int IRM_value = 0;
 int detected = 0;
 volatile unsigned int counter = 0; 
 double total = 0;
@@ -99,20 +100,6 @@ ISR (TIMER1_CAPT_vect)
 	}
 }
 
-void init_counter(void)
-{
-	DDRB |= (1<<DDB3);
-	TCCR0A |= (1<<COM0A0)|(1<<WGM01);
-	
-	TCCR0B &= ~(1<<CS00);
-	TCCR0B &= ~(1<<CS01);
-	TCCR0B &= ~(1<<CS02);
-	OCR0A = 0xFF;
-	
-	TIMSK0 |= (1<<OCIE0A);
-	
-}
-
 
 ISR (INT0_vect)
 {
@@ -153,15 +140,10 @@ ISR(ADC_vect){ //IR-SENSOR
 	
 	CLKPR = 0x06;
 	
-	if(ADMUX == adc0){
-		IRM_value = ADCH;
-		ADMUX = adc1;
 
-	}
-	else if(ADMUX == adc1){
+	if(ADMUX == adc1){
 		Distance_1 = ADCH;
 		ADMUX = adc2;
-		
 		
 	}
 	else if(ADMUX == adc2){
@@ -174,87 +156,11 @@ ISR(ADC_vect){ //IR-SENSOR
 	}
 	else{
 		Distance_4 = ADCH;
-		ADMUX = adc0;
+		ADMUX = adc1;
 	}
 	
-	
-	
-	ADCSRA |= (1<<ADSC);
-	
+	ADCSRA |= (1<<ADSC);	
 }
-
-
-void initIC(void)
-{
-	TIMSK1 |= (1<<ICIE1)|(1<<TOIE1);
-	TCCR1B |= (1<<ICES1);
-	TCCR1B |= (1<<CS10);
-}
-
-void SPI_MasterInit(void)
-{
-	
-
-	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-	DDRB |= (1<<DDB7)|(1<<DDB5)|(1<<DDB4);
-	DDRB &= ~(1<<DDB6);
-	PORTB |= (1<<PORTB4);
-	
-	PORTB &= ~(1<<PORTB4);
-	SPI_send(0x94);
-	SPI_send(0x00);
-	SPI_send(0x00);
-	PORTB |= (1<<PORTB4);
-	
-}
-
-void initADC(void)
-{
-	DDRA = 0xE0; // Pin 0-4 input for ADC conversion
-	DDRD = 0xBB; // Pin 2 input for INT0
-	
-	//SPSR = 0x80;
-	ADCSRA = 0xCB; // Enables ADC, ADC Start conversion and ADC interrupt enable
-	ADMUX = 0x20; // Left adjusted ADC data register (ADLAR = 1)
-	EIMSK = (1<<INT0); // Enables interrupt INT0
-	EICRA = (1<<ISC01); //Interrupt at low edge
-}
-
-unsigned char SPI_send(unsigned char output)
-{
-	SPDR = output;
-	/* Wait for transmission complete */
-	while(!(SPSR & (1<<SPIF)));
-	return SPDR;
-}
-
-void converionStart(void)
-{
-	PORTB &= ~(1<<PORTB4);
-	SPI_send(0x94);
-	SPI_send(0x00);
-	SPI_send(0x00);
-	PORTB |= (1<<PORTB4);
-}
-
-unsigned short AR_read(void){
-	
-	converionStart();
-	
-	_delay_us(150);
-	unsigned char low, high;
-	PORTB &= ~(1<<PORTB4);
-	SPI_send(0x80);
-	high = SPI_send(0x00);
-	low = SPI_send(0x00);
-	PORTB |= (1<<PORTB4);
-	
-	return ((high & 0x0F) << 8) + low;
-}
-
-
-
-
 
 int main (void)
 {
@@ -269,23 +175,11 @@ int main (void)
 	
 	
 	sei(); // Enables global interrupt
-	//_delay_ms(1);
-	
-
-
-	//_delay_ms(0.5);
-
-	
-	
-	//_delay_ms(1);
-	//AR_read();
-	
 
 	SPI_MasterInit();
 	sei();
-	while(1) { 	//waiting for INT0
+	while(1) { 
 		PORTB |= (1<<PORTB0);
-		PORTB |= (1<<PORTB1);
 		
 		answer = AR_read();
 		total = total + answer - 1996.5;
@@ -303,104 +197,92 @@ int main (void)
 			detected = 0;
 		}
 		
-		
-		
 		if(count_1 == 0){
 			SI_IR11 = SI_IR1;
-			count_1 = count_1+1;
-		}
-		
-		
-		else if(count_1 == 1){
-			SI_IR12 = SI_IR1;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 2){
-			SI_IR13 = SI_IR1;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 3){
-			SI_IR14 = SI_IR1;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 4){
-			SI_IR15 = SI_IR1;
-			count_1 = 0;
-		}
-		SI_IR1_Final = SI_IR11/5 + SI_IR12/5 + SI_IR13/5 + SI_IR14/5 + SI_IR15/5; //Höger fram
-		
-		
-		if(count_1 == 0){
 			SI_IR21 = SI_IR2;
-			count_1 = count_1+1;
-		}
-		
-		else if(count_1 == 1){
-			SI_IR22 = SI_IR2;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 2){
-			SI_IR23 = SI_IR2;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 3){
-			SI_IR24 = SI_IR2;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 4){
-			SI_IR25 = SI_IR2;
-			count_1 = 0;
-		}
-		SI_IR2_Final = SI_IR21/5 + SI_IR22/5 + SI_IR23/5 + SI_IR24/5 + SI_IR25/5; //Höger bak
-		
-		if(count_1 == 0){
 			SI_IR31 = SI_IR3;
-			count_1 = count_1+1;
-		}
-		
-		else if(count_1 == 1){
-			SI_IR32 = SI_IR3;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 2){
-			SI_IR33 = SI_IR3;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 3){
-			SI_IR34 = SI_IR3;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 4){
-			SI_IR35 = SI_IR3;
-			count_1 = 0;
-		}
-		SI_IR3_Final = SI_IR31/5 + SI_IR32/5 + SI_IR33/5 + SI_IR34/5 + SI_IR35/5; //Vänster fram
-		
-		
-		if(count_1 == 0){
 			SI_IR41 = SI_IR4;
 			count_1 = count_1+1;
 		}
-		
 		else if(count_1 == 1){
+			SI_IR12 = SI_IR1;
+			SI_IR22 = SI_IR2;
+			SI_IR32 = SI_IR3;
 			SI_IR42 = SI_IR4;
 			count_1 = count_1 + 1;
 		}
 		else if(count_1 == 2){
+			SI_IR13 = SI_IR1;
+			SI_IR23 = SI_IR2;
+			SI_IR33 = SI_IR3;
 			SI_IR43 = SI_IR4;
 			count_1 = count_1 + 1;
 		}
 		else if(count_1 == 3){
+			SI_IR14 = SI_IR1;
+			SI_IR24 = SI_IR2;
+			SI_IR34 = SI_IR3;
 			SI_IR44 = SI_IR4;
 			count_1 = count_1 + 1;
 		}
 		else if(count_1 == 4){
+			SI_IR15 = SI_IR1;
+			SI_IR25 = SI_IR2;
+			SI_IR35 = SI_IR3;
 			SI_IR45 = SI_IR4;
 			count_1 = 0;
 		}
+		
+		
+		SI_IR1_Final = SI_IR11/5 + SI_IR12/5 + SI_IR13/5 + SI_IR14/5 + SI_IR15/5; //Höger fram
+		SI_IR2_Final = SI_IR21/5 + SI_IR22/5 + SI_IR23/5 + SI_IR24/5 + SI_IR25/5; //Höger bak
+		SI_IR3_Final = SI_IR31/5 + SI_IR32/5 + SI_IR33/5 + SI_IR34/5 + SI_IR35/5; //Vänster fram
 		SI_IR4_Final = SI_IR41/5 + SI_IR42/5 + SI_IR43/5 + SI_IR44/5 + SI_IR45/5; // Vänster bak
 		
+		if (SI_IR1_Final > 230)
+		{
+			SI_IR1_Final = 245;
+		} else if (SI_IR1_Final < 40)
+		{
+			SI_IR1_Final = 0;
+		}
 		
+		
+		if (SI_IR2_Final > 230)
+		{
+			SI_IR2_Final = 245;
+		} else if (SI_IR2_Final < 40)
+		{
+			SI_IR2_Final = 0;
+		}
+		
+				
+		if (SI_IR3_Final > 230)
+		{
+			SI_IR3_Final = 245;
+		} else if (SI_IR3_Final < 40)
+		{
+			SI_IR3_Final = 0;
+		}
+			
+						
+		if (SI_IR4_Final > 230)
+		{
+			SI_IR4_Final = 245;
+		} else if (SI_IR4_Final < 40)
+		{
+			SI_IR4_Final = 0;
+		}
+								
+		if (SI_IR4_Final > 230)
+		{
+			SI_IR4_Final = 245;
+		} else if (SI_IR4_Final < 40)
+		{
+			SI_IR4_Final = 0;
+		}
+		
+
 		
 
 		
@@ -430,8 +312,6 @@ int main (void)
 		} */
 		
 		
-		
-		PORTB &= ~(1<<PORTB1);	
 
 	}
 
