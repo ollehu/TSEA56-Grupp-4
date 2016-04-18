@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+/**
+ * Panel containing all SensorLabels and ControlCoefficientPanels
+ * @author isak
+ *
+ */
 public class TablePanel extends JPanel{
 
 	private Animator animator;
@@ -63,6 +68,12 @@ public class TablePanel extends JPanel{
 			this.add(controlPanel, constraints);
 			
 			index++;
+		}
+	}
+	
+	public void setAutonomousMode(boolean isAutonomousModeOn) {
+		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
+			controlCoefficientPanel.setAutonomousMode(isAutonomousModeOn);
 		}
 	}
 }

@@ -21,6 +21,11 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import control.Handler;
 import jssc.SerialPortList;
 
+/**
+ * Panel containing robot controls
+ * @author isak
+ *
+ */
 public class RobotControlPanel extends JPanel 
 implements 	ChangeListener {
 
@@ -129,7 +134,6 @@ implements 	ChangeListener {
 		}
 
 	}
-
 
 	@Override
 	public void stateChanged(ChangeEvent e) {

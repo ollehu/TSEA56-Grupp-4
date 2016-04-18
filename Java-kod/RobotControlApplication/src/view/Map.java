@@ -4,6 +4,11 @@ import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 
+/**
+ * Component containing the map
+ * @author isak
+ *
+ */
 public class Map extends JPanel{
 
 	Tile[][] mapTiles;

@@ -12,6 +12,11 @@ import javax.swing.JPanel;
 
 import control.*;
 
+/**
+ * Handles the GUI
+ * @author isak
+ *
+ */
 public class Animator {
 	
 	private Handler handler;
@@ -61,6 +66,7 @@ public class Animator {
 		constraints.fill = GridBagConstraints.VERTICAL;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_END;
 		frame.add(tablePanel, constraints);
+		tablePanel.setAutonomousMode(false);
 		
 		constraints.gridx = 0;
 		constraints.gridy = 1;
@@ -94,4 +100,7 @@ public class Animator {
 		return frame;
 	}
 	
+	public void setAutonomousMode(boolean isAutonomousModeOn) {
+		tablePanel.setAutonomousMode(isAutonomousModeOn);
+	}
 }

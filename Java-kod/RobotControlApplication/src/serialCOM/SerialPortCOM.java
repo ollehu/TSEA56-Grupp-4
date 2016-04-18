@@ -10,6 +10,11 @@ import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
+/**
+ * Handles bluetooth communication
+ * @author isak
+ *
+ */
 public class SerialPortCOM {
 
 	private Handler handler;
@@ -26,6 +31,12 @@ public class SerialPortCOM {
 		this.handler = handler;
 	}
 	
+	/**
+	 * Connects to the selected port
+	 * 
+	 * @param portName port selected by user through GUI
+	 * @throws SerialPortException
+	 */
 	public void connectToSerialPort(String portName) throws SerialPortException {
 		serialPort = new SerialPort(portName);
 
@@ -41,6 +52,9 @@ public class SerialPortCOM {
 		
 	}
 	
+	/**
+	 * Closes port on program exit
+	 */
 	public void closeSerialPort() {
 		if(serialPort != null) {
 			try {
@@ -52,6 +66,14 @@ public class SerialPortCOM {
 		}
 	}
 
+	/**
+	 * Sends a command to the robot
+	 * 
+	 * @param dataID "Kommunikations-ID"
+	 * @param commandID individual ID
+	 * @param value value being sent (0-245)
+	 * @throws SerialPortException
+	 */
 	public void sendToRobot(int dataID, int commandID, int value) throws SerialPortException {
 		// send dataID byte
 		sendData(convertIntToByte(dataID));
@@ -73,7 +95,7 @@ public class SerialPortCOM {
 	}
 	
 	/**
-	 * Lyssnar efter event på serieporten och skriver, vid event, ut det mottagna data.
+	 * Listens for port events
 	 * 
 	 * @author Isak
 	 *

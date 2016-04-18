@@ -5,10 +5,13 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+/**
+ * Panel containing map
+ * @author isak
+ *
+ */
 public class MapPanel extends JPanel{
 
-	private JTextArea mapPlaceHolder;
-	
 	private Map map;
 	
 	public MapPanel() {

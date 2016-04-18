@@ -6,27 +6,23 @@ import java.awt.event.KeyListener;
 
 import view.Animator;
 
+/**
+ * Handles key presses
+ * @author isak
+ *
+ */
 public class MyKeyListener implements KeyListener{
-	
-	private class MyDispatcher implements KeyEventDispatcher {
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent e) {
-            if (e.getID() == KeyEvent.KEY_PRESSED) {
-                keyPressed(e);
-            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                keyReleased(e);
-            } else if (e.getID() == KeyEvent.KEY_TYPED) {
-                keyTyped(e);
-            }
-            return false;
-        }
-    }
 
+	/**
+	 * Stores each key's current state (i.e. is key #i currently pressed)
+	 */
 	private boolean[] keysCurrentlyPressed;
 	
 	private Animator animator;
 	
 	private Handler handler;
+	
+	private boolean isAutonomousModeOn;
 	
 	public MyKeyListener(Animator animator, Handler handler) {
 		this.animator = animator;
@@ -45,24 +41,51 @@ public class MyKeyListener implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
-				e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-			keysCurrentlyPressed[e.getKeyCode()] = true;
-			animator.updateKeys(keysCurrentlyPressed);
-			handler.respondsToKeyEvent(keysCurrentlyPressed);
+		if(!isAutonomousModeOn){
+			if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
+					e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+				keysCurrentlyPressed[e.getKeyCode()] = true;
+				animator.updateKeys(keysCurrentlyPressed);
+				handler.respondsToKeyEvent(keysCurrentlyPressed);
+			}
 		}
-		
-		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
-				e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-			keysCurrentlyPressed[e.getKeyCode()] = false;
-			animator.updateKeys(keysCurrentlyPressed);
-			handler.respondsToKeyEvent(keysCurrentlyPressed);
+		if(!isAutonomousModeOn) {
+			if(e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() ==  KeyEvent.VK_DOWN || 
+					e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
+				keysCurrentlyPressed[e.getKeyCode()] = false;
+				animator.updateKeys(keysCurrentlyPressed);
+				handler.respondsToKeyEvent(keysCurrentlyPressed);
+			}
 		}
 	}
+
+	
+	void setAutonomousMode(boolean isAutonomousModeOn) {
+		this.isAutonomousModeOn = isAutonomousModeOn;
+	}
+	
+	/**
+	 * Dispatches key events. Used to allow user to control robot even if focus is changed
+	 * @author isak
+	 *
+	 */
+	private class MyDispatcher implements KeyEventDispatcher {
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+                keyPressed(e);
+            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+                keyReleased(e);
+            } else if (e.getID() == KeyEvent.KEY_TYPED) {
+                keyTyped(e);
+            }
+            return false;
+        }
+    }
+
 
 }

@@ -9,6 +9,11 @@ import java.awt.Graphics2D;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 
+/**
+ * Element containing one map section
+ * @author isak
+ *
+ */
 public class Tile extends JComponent{
 	
 	private int width = 15;

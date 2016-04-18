@@ -18,6 +18,11 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+/**
+ * Panel containing all the graphs
+ * @author isak
+ *
+ */
 public class GraphPanel extends JPanel{
 
 	private JTextArea graphPlaceHolder;

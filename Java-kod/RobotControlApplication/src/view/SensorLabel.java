@@ -2,6 +2,11 @@ package view;
 
 import javax.swing.JLabel;
 
+/**
+ * Element containing one sensor data 
+ * @author isak
+ *
+ */
 public class SensorLabel extends JLabel{
 
 	private String name;

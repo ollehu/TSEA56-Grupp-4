@@ -8,6 +8,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+/**
+ * Element containing one control coefficient
+ * @author isak
+ *
+ */
 public class ControlCoefficientPanel extends JPanel{
 
 	private JLabel nameLabel;
@@ -30,5 +35,9 @@ public class ControlCoefficientPanel extends JPanel{
 	public void updatePanel(){
 		nameLabel.setText(name + ": ");
 		valueField.setText("" + value);
+	}
+	
+	void setAutonomousMode(boolean isAutonomousModeOn) {
+		valueField.setEditable(isAutonomousModeOn);
 	}
 }

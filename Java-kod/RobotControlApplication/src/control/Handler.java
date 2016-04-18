@@ -8,9 +8,13 @@ import jssc.SerialPortException;
 import serialCOM.ControlID;
 import serialCOM.DataID;
 import serialCOM.SerialPortCOM;
-import serialCOM.UnknownOperatingSystemException;
 import view.*;
 
+/**
+ * Handles the animator, the key listener and the serial port
+ * @author isak
+ *
+ */
 public class Handler {
 
 	private Animator animator;
@@ -19,9 +23,7 @@ public class Handler {
 
 	private SerialPortCOM serialPortCOM;
 
-	
 	private int lastSentControlCommand;
-	private boolean autonomousModeOn = false;
 
 	public Handler() {
 		animator = new Animator(this);
@@ -31,8 +33,14 @@ public class Handler {
 
 		myKeyListener = new MyKeyListener(animator, this);
 		
+		setAutomousMode(false);
+		
 	}
 
+	/**
+	 * Connects to serial port
+	 * @param portName
+	 */
 	public void connectToSerialPort(String portName) {
 		try {
 			serialPortCOM.connectToSerialPort(portName);
@@ -53,6 +61,11 @@ public class Handler {
 		serialPortCOM.closeSerialPort();
 	}
 
+	/**
+	 * Sends the appropriate control command based on keys currently pressed
+	 * 
+	 * @param keysCurrentlyPressed the keys currently held down
+	 */
 	public void respondsToKeyEvent(boolean[] keysCurrentlyPressed) {
 		int controlCommand = ControlID.STOP;
 
@@ -113,13 +126,10 @@ public class Handler {
 		return animator.getRobotControlPanel().getSpeed();
 	}
 	
-	public void setAutonomousMode(boolean autonomousModeOn) {
-		this.autonomousModeOn = autonomousModeOn;
+	void setAutomousMode(boolean isAutonomousModeOn) {
+		myKeyListener.setAutonomousMode(isAutonomousModeOn);
 		
-		if(autonomousModeOn) {
-			//TODO disable buttons and enable P,D,K
-		} else {
-			//TODO enable buttons and diable P,D,K
-		}
+		animator.setAutonomousMode(isAutonomousModeOn);
 	}
+
 }
