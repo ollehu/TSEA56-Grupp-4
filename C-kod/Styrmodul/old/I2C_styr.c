@@ -92,13 +92,21 @@ int main(void)
 	TWISetup(slaveAddress);
 	sei();
 	//while(1);
-	DDRB = (1<<PORTB4);
+	/*DDRB = (1<<PORTB4);
 	_delay_ms(3000);
 	PORTB = (1<<PORTB4);
 	_delay_ms(10);
 	PORTB = (0<<PORTB4);
+	_delay_ms(10);*/
+	
+	_delay_ms(5000);
+	
+	for(int i = 0; i < 8; i++){
+		lcdWriteTopRow(sensorData[i]);
+		_delay_ms(2000);
+	}
 		
-	switch (styrKommando)
+	/*switch (styrKommando)
 	{
 	case 0:
 		//Reglering av/på
@@ -126,5 +134,6 @@ int main(void)
 		//Gripklo öppna/stänga
 		lcdWriteTopRow("Gripklo");
 		break;
-	}
+	}*/
+	
 }
