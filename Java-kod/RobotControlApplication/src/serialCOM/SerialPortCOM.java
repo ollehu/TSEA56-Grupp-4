@@ -86,12 +86,15 @@ public class SerialPortCOM {
 	}
 	
 	private byte convertIntToByte(int data) {
-		return (byte) data;
+		byte binaryByte = (byte) (data & (0xFF));
+		return binaryByte;
 	}
 	
 	private void sendData(byte data) throws SerialPortException {
-		serialPort.writeByte(data);
-		System.out.println("Data sent: " + data);
+		if(serialPort != null) {
+			serialPort.writeByte(data);
+		}
+		System.out.println("Data sent: " + (data & 0xFF));
 	}
 	
 	/**

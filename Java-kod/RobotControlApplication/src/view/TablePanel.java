@@ -29,7 +29,7 @@ public class TablePanel extends JPanel{
 									"cm", "cm", "deg/s",
 									"deg"};
 	
-	private String[] controlCoefficients = {"P", "I", "D"};
+	private String[] controlCoefficients = {"P", "D", "K"};
 	
 	public TablePanel(Animator animator) {
 		this.animator = animator;
@@ -52,7 +52,7 @@ public class TablePanel extends JPanel{
 		
 		// add control coefficients to list
 		for(String coeff: controlCoefficients) {
-			controlList.add(new ControlCoefficientPanel(coeff));
+			controlList.add(new ControlCoefficientPanel(coeff, animator));
 		}
 		
 		// add elements in lists to panel

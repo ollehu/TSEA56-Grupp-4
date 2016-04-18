@@ -103,4 +103,9 @@ public class Animator {
 	public void setAutonomousMode(boolean isAutonomousModeOn) {
 		tablePanel.setAutonomousMode(isAutonomousModeOn);
 	}
+
+	public Handler getHandler() {
+		return handler;
+	}
+	
 }

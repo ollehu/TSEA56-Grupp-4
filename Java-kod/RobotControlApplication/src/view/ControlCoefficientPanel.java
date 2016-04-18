@@ -8,6 +8,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import jssc.SerialPortException;
+import serialCOM.ControlSettingID;
+import serialCOM.DataID;
+
 /**
  * Element containing one control coefficient
  * @author isak
@@ -15,13 +19,15 @@ import javax.swing.JTextField;
  */
 public class ControlCoefficientPanel extends JPanel{
 
+	private Animator animator;
+	
 	private JLabel nameLabel;
 	private JTextField valueField;
 	
 	private String name;
 	private double value = -1;
 	
-	public ControlCoefficientPanel(String name) {
+	public ControlCoefficientPanel(String name, Animator animator) {
 		this.name = name;
 		
 		nameLabel = new JLabel(name + ": ");
@@ -30,6 +36,21 @@ public class ControlCoefficientPanel extends JPanel{
 		valueField = new JTextField("" + value);
 		add(valueField);
 		
+		javax.swing.Action action = new AbstractAction() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				value = Double.parseDouble(valueField.getText());
+				
+				try {
+					animator.getHandler().getSerialPortCOM().sendToRobot(DataID.CONTROL_SETTING, getControlSettingID(), getControlValue());
+				} catch (SerialPortException e1) {
+					e1.printStackTrace();
+				}
+			}
+		};
+		
+		valueField.addActionListener(action);
 	}
 	
 	public void updatePanel(){
@@ -39,5 +60,29 @@ public class ControlCoefficientPanel extends JPanel{
 	
 	void setAutonomousMode(boolean isAutonomousModeOn) {
 		valueField.setEditable(isAutonomousModeOn);
+	}
+	
+	private int getControlSettingID() {
+		if(name.equals("P")) {
+			return ControlSettingID.PROPORTIONAL;
+		} else if(name.equals("D")) {
+			return ControlSettingID.DERIVATIVE;
+		} else if(name.equals("K")) {
+			return ControlSettingID.KONSTANT;
+		} else {
+			return -1;
+		}
+	}
+	
+	private int getControlValue() {
+		if(name == "P") {
+			return (int) (value * 100);
+		} else if(name == "D") {
+			return (int) (value * 100);
+		} else if(name == "K") {
+			return (int) (value * 10);
+		} else {
+			return -1;
+		}
 	}
 }
