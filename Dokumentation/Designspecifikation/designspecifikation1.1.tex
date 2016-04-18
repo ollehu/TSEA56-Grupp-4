@@ -609,6 +609,7 @@ Eftersom flera olika typer av data kommer skickas mellan de olika enheterna inle
 255 & Styrkommando \\ \hline
 254 & Kartinformation \\ \hline
 253 & Sensordata \\ \hline
+252 & Styrinställning \\ \hline
 
 \caption{Tabell över kommunikations-ID}\label{kommunikationstab}
 \end{longtable}
@@ -679,6 +680,25 @@ Respektive segment motsvarar följande:
 	\end{itemize}
 \end{itemize}
 
+\subsubsection{Kommunikationsprotokoll - styrinställningar}
+Följande protokoll används för att skicka styrinställningar (gäller både för datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul):
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för överföring av styrkommandon\label{styrdata}}	
+\end{figure}
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
+	\item B (1 byte) - Definierar vilken styrinställning som skickas, se tabell \ref{styrinsttab}.
+	\item C (4 byte) - 0/1 om av/på. Annars flyttal (C float).
+\end{itemize}
+
+\subsection{Tabeller}
+
 \begin{longtable}[l]{| l | l | c |} \hline
 \textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
 1 & IR-sensor höger-fram & cm \\ \hline
@@ -693,7 +713,6 @@ Respektive segment motsvarar följande:
 
 \begin{longtable}[l]{| l | l |} \hline
 \textbf{ID} & \textbf{Styrkommando} \\ \hline 
-0 & Reglering av/på \\ \hline
 1 & Kör fram \\ \hline
 2 & Kör bak \\ \hline
 3 & Rotera åt höger \\ \hline
@@ -705,6 +724,16 @@ Respektive segment motsvarar följande:
 9 & Gripklo öppna/stäng \\ \hline
 
 \caption{Tabell över styrkommandon}\label{styrtab}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Styrinställning} \\ \hline 
+1 & Reglering av/på \\ \hline
+2 & P-värde \\ \hline
+3 & D-värde \\ \hline
+4 & K-värde \\ \hline
+
+\caption{Tabell över styrinställningar}\label{styrinsttab}
 \end{longtable}
 
 \pagebreak
