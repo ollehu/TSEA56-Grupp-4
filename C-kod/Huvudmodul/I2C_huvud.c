@@ -20,7 +20,31 @@ int SLA_sensor_W = 0xCA;
 int SLA_styr_R = 0xCD;
 int SLA_styr_W = 0xCC;
 
+int counterComputer = 0;
+int sendToComputer = 10;
 
+void btSend(unsigned char data)
+{
+	// Wait for empty transmit buffer
+	while ( !( UCSR0A & (1<<UDRE0)) );
+	// Put data into buffer, sends the data
+	UDR0 = data;
+}
+
+void btInit(void){
+	//16Mhz, Baud rate = 115.2kbps
+	unsigned char baud = 7;
+
+	UBRR0H = (unsigned char)(baud >> 8);
+	UBRR0L = (unsigned char)(baud);
+	
+	// Enable reciever, transmitter and interrupt
+	UCSR0B = (1<<RXEN0)|(1<<TXEN0)|(1<<RXCIE0);
+	
+	//8 bit data, no parity and 1 stop bit
+	UCSR0C = (1<<UCSZ01)|(1<<UCSZ00)|(0<<USBS0);
+	sei();	
+}
 
 ISR(INT1_vect){ //Avbrott styr
 	//1. Välj ny modul att utforska
@@ -34,29 +58,31 @@ ISR(INT1_vect){ //Avbrott styr
 }
 
 ISR(INT2_vect){ //Avbrott sensor
-	PORTD = (0<<PORTD6);
-	
-	
+	counterComputer = counterComputer + 1;
+
 	//1. Hämta sensordata från sensormodulen
 	Master(8,SLA_sensor_R,sensorData);
 	
 	//2. Skicka sensordata till styrmodulen
-	//Master(8,SLA_styr_W,sensorData);
+	Master(8,SLA_styr_W,sensorData);
 	
-	//(3. Ev skicka sensordata till datormodulen (var tionde gång?))
+	//3. Skicka sensordata till datormodulen
+	if(counterComputer = sendToComputer){
+		for(int i = 0; i < 8; i++){
+			btSend(sensorData[i]);
+		}
+		counterComputer = 0;
+	}
 }
 
 int main(void)
 {
-	_delay_ms(30);
-	DDRD = (1<<PORTD6);
 	for (int i = 0; i < 8; i++ ) {
 		sensorData[ i ] = i+2;
 	}
 	
 	TWISetup();
+	btInit();
 	
-	while(1){
-		PORTD = (1<<PORTD6);
-	}
+	while(1);
 }

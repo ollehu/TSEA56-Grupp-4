@@ -280,7 +280,7 @@ int main (void)
 		//Set port as output
 		DDRD = (1<<PORTD0);
 		//Kommunikations-ID
-		sensorData[ 0 ] = 0x02;
+		sensorData[ 0 ] = 0xFF;
 		
 		initADC();
 		initIC();
@@ -375,7 +375,6 @@ int main (void)
 						} */
 						
 		//Trigger data transfer	
-		_delay_ms(3000);
 		PORTD = (1<<PORTD0);
 		_delay_ms(10);
 		PORTD = (0<<PORTD0);
