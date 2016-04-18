@@ -44,8 +44,8 @@ public class GraphPanel extends JPanel{
 
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
-		chartList.add(new ChartPanel(angVelXYChart));
-		chartList.add(new ChartPanel(angXYChart));
+		//chartList.add(new ChartPanel(angVelXYChart));
+		//chartList.add(new ChartPanel(angXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));

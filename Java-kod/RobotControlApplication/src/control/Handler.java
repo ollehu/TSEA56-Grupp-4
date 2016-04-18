@@ -2,6 +2,8 @@ package control;
 
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
+
 import jssc.SerialPortException;
 import serialCOM.ControlID;
 import serialCOM.SerialPortCOM;
@@ -26,54 +28,68 @@ public class Handler {
 
 		myKeyListener = new MyKeyListener(animator, this);
 	}
-	
+
 	public void connectToSerialPort(String portName) {
 		try {
 			serialPortCOM.connectToSerialPort(portName);
+			
+			JOptionPane.showMessageDialog(animator.getFrame(),
+				    "Port connected",
+				    portName,
+				    JOptionPane.INFORMATION_MESSAGE);
 		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(animator.getFrame(),
+					e.getExceptionType(),
+				    e.getPortName(),
+				    JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public void closeSerialPort() {
+		serialPortCOM.closeSerialPort();
 	}
 
 	public void respondsToKeyEvent(boolean[] keysCurrentlyPressed) {
 		int controlCommand = ControlID.STOP;
 
 		// get control command
-		if(keysCurrentlyPressed[KeyEvent.VK_UP]) {
-			if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
-				controlCommand = ControlID.FORWARDS_LEFT;
-			} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]){
-				controlCommand = ControlID.FORWARDS_RIGHT;
-			} else {
-				controlCommand = ControlID.FORWARDS;
+		if(serialPortCOM.getSerialPort() != null) {
+			if(keysCurrentlyPressed[KeyEvent.VK_UP]) {
+				if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
+					controlCommand = ControlID.FORWARDS_LEFT;
+				} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]){
+					controlCommand = ControlID.FORWARDS_RIGHT;
+				} else {
+					controlCommand = ControlID.FORWARDS;
+				}
+			} else if (keysCurrentlyPressed[KeyEvent.VK_DOWN]) {
+				if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
+					controlCommand = ControlID.BACKWARDS_LEFT;
+				} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]){
+					controlCommand = ControlID.BACKWARDS_RIGHT;
+				} else {
+					controlCommand = ControlID.BACKWARDS;
+				}
+			} else if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
+				controlCommand = ControlID.ROTATE_LEFT;
+			} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]) {
+				controlCommand = ControlID.ROTATE_RIGHT;
 			}
-		} else if (keysCurrentlyPressed[KeyEvent.VK_DOWN]) {
-			if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
-				controlCommand = ControlID.BACKWARDS_LEFT;
-			} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]){
-				controlCommand = ControlID.BACKWARDS_RIGHT;
-			} else {
-				controlCommand = ControlID.BACKWARDS;
-			}
-		} else if (keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
-			controlCommand = ControlID.ROTATE_LEFT;
-		} else if (keysCurrentlyPressed[KeyEvent.VK_RIGHT]) {
-			controlCommand = ControlID.ROTATE_RIGHT;
-		}
 
-		// send if != last sent command
-		try {
-			if(controlCommand != lastSentControlCommand) {
 
-				serialPortCOM.sendControlCommand(controlCommand);
-				lastSentControlCommand = controlCommand;
+			// send if != last sent command
+			try {
+				if(controlCommand != lastSentControlCommand) {
+
+					serialPortCOM.sendControlCommand(controlCommand);
+					lastSentControlCommand = controlCommand;
+				}
+			} catch (SerialPortException e) {
+				e.printStackTrace();
 			}
-		} catch (SerialPortException e) {
-			e.printStackTrace();
 		}
 	}
-	
+
 	public void setControlOn(boolean state) {
 		try {
 			serialPortCOM.setControlOn(state);
@@ -82,7 +98,7 @@ public class Handler {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setClawOpen(boolean state) {
 		try {
 			serialPortCOM.setClawOpen(state);
@@ -91,7 +107,7 @@ public class Handler {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public int getSpeed() {
 		return animator.getRobotControlPanel().getSpeed();
 	}

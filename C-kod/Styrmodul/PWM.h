@@ -102,7 +102,8 @@ void stopWheels(void)
 */
 void openPicker(void)
 {
-	speedPicker = 400;
+	speedPicker = 400; //ändrat från 125. Fungerar lite bättre
+
 }
 
 /**
