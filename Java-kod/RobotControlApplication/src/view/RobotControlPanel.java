@@ -1,9 +1,5 @@
 package view;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -11,10 +7,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowListener;
 import java.util.regex.Pattern;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,7 +20,6 @@ import javax.swing.plaf.basic.BasicArrowButton;
 
 import control.Handler;
 import jssc.SerialPortList;
-import serialCOM.UnknownOperatingSystemException;
 
 public class RobotControlPanel extends JPanel 
 implements 	ChangeListener {
@@ -35,7 +28,6 @@ implements 	ChangeListener {
 	private Animator animator;
 
 	private JPanel buttonPanel;
-	private JPanel statusPanel;
 
 	private BasicArrowButton upArrowKeyButton;
 	private BasicArrowButton downArrowKeyButton;
@@ -44,18 +36,10 @@ implements 	ChangeListener {
 
 	private JButton selectCOMPortButton;
 
-	private JButton clawButton;
-	private JButton controlButton;
-
-	private JLabel controlStatusLabel;
+	private JLabel autonomousModeLabel;
 	private JLabel clawStatusLabel;
 
-	private boolean isControlOn = false;
 	private boolean isClawOpen = true;
-
-	private Color pressedBackgroundColor = new Color(40, 40, 40);
-	private Color trueColor = new Color(40, 200, 40);
-	private Color falseColor = new Color(200, 40, 40);
 
 	private JSlider speedSlider;
 
@@ -84,39 +68,25 @@ implements 	ChangeListener {
 		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
 		add(selectCOMPortButton, constraints);
 
-		// add labels 
-		statusPanel = new JPanel(new BorderLayout());
-
-		controlStatusLabel = new JLabel("Control: off");
-		controlStatusLabel.setForeground(falseColor);
+		// create labels 
+		autonomousModeLabel = new JLabel("Control: off");
+		autonomousModeLabel.setForeground(Colors.FALSE_COLOR);
 
 		clawStatusLabel = new JLabel("Claw: open");
-		clawStatusLabel.setForeground(trueColor);
+		clawStatusLabel.setForeground(Colors.TRUE_COLOR);
 
-		statusPanel.add(controlStatusLabel, BorderLayout.WEST);
-		statusPanel.add(clawStatusLabel, BorderLayout.EAST);
-
-		constraints.anchor = GridBagConstraints.CENTER;
-		constraints.gridy = 1;
-		add(statusPanel, constraints);
-
-		// create and add buttons
+		// create buttons
 		buttonPanel = new JPanel(new GridLayout(2, 3));
-
-		controlButton = new JButton("Control");
-		controlButton.addActionListener(new ControlListener());
-
+		
 		upArrowKeyButton = new BasicArrowButton(BasicArrowButton.NORTH);
 		downArrowKeyButton = new BasicArrowButton(BasicArrowButton.SOUTH);
 		leftArrowKeyButton = new BasicArrowButton(BasicArrowButton.WEST);
 		rightArrowKeyButton = new BasicArrowButton(BasicArrowButton.EAST);
 
-		clawButton = new JButton("Claw");
-		clawButton.addActionListener(new ClawListener());
-
-		buttonPanel.add(controlButton);
+		// add buttons and labels
+		buttonPanel.add(autonomousModeLabel);
 		buttonPanel.add(upArrowKeyButton);
-		buttonPanel.add(clawButton);
+		buttonPanel.add(clawStatusLabel);
 		buttonPanel.add(leftArrowKeyButton);
 		buttonPanel.add(downArrowKeyButton);
 		buttonPanel.add(rightArrowKeyButton);
@@ -139,7 +109,6 @@ implements 	ChangeListener {
 		add(speedSlider, constraints);
 	}
 
-
 	public void updateKeys(boolean[] keysCurrentlyPressed) {
 		upArrowKeyButton.setBackground(null);
 		downArrowKeyButton.setBackground(null);
@@ -147,16 +116,16 @@ implements 	ChangeListener {
 		rightArrowKeyButton.setBackground(null);
 
 		if(keysCurrentlyPressed[KeyEvent.VK_UP]) {
-			upArrowKeyButton.setBackground(pressedBackgroundColor);
+			upArrowKeyButton.setBackground(Colors.PRESSED_BACKGROUND_COLOR);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_DOWN]) {
-			downArrowKeyButton.setBackground(pressedBackgroundColor);
+			downArrowKeyButton.setBackground(Colors.PRESSED_BACKGROUND_COLOR);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_LEFT]) {
-			leftArrowKeyButton.setBackground(pressedBackgroundColor);
+			leftArrowKeyButton.setBackground(Colors.PRESSED_BACKGROUND_COLOR);
 		}
 		if(keysCurrentlyPressed[KeyEvent.VK_RIGHT]) {
-			rightArrowKeyButton.setBackground(pressedBackgroundColor);
+			rightArrowKeyButton.setBackground(Colors.PRESSED_BACKGROUND_COLOR);
 		}
 
 	}
@@ -176,66 +145,12 @@ implements 	ChangeListener {
 		return speed;
 	}
 
-	public boolean isControlOn() {
-		return isControlOn;
-	}
-
-
 	public boolean isClawOpen() {
 		return isClawOpen;
 	}
 
-	public void setControlOn(boolean isControlOn) {
-		this.isControlOn = isControlOn;
-	}
-
-
 	public void setClawOpen(boolean isClawOpen) {
 		this.isClawOpen = isClawOpen;
-	}
-
-	private class ControlListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// toggle isControlOn
-			isControlOn = !isControlOn;
-
-			// send command to robot
-			handler.setControlOn(isControlOn);
-
-			// change label and send control command
-			if(isControlOn) {
-				controlStatusLabel.setText("Control: on");
-				controlStatusLabel.setForeground(trueColor);
-			} else {
-				controlStatusLabel.setText("Control: off");
-				controlStatusLabel.setForeground(falseColor);
-			}
-		}
-
-	}
-
-	private class ClawListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// toggle isClawOpen
-			isClawOpen = !isClawOpen;
-
-			// send command to robot
-			handler.setClawOpen(isClawOpen);
-
-			// change label
-			if(isClawOpen) {
-				clawStatusLabel.setText("Claw: open");
-				clawStatusLabel.setForeground(trueColor);
-			} else {
-				clawStatusLabel.setText("Claw: closed");
-				clawStatusLabel.setForeground(falseColor);
-			}
-		}
-
 	}
 
 	private class SelectCOMPortListener implements ActionListener {

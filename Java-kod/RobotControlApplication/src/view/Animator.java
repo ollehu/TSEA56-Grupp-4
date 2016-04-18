@@ -1,15 +1,12 @@
 package view;
 
-import java.awt.BorderLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -49,7 +46,7 @@ public class Animator {
 		robotControlPanel = new RobotControlPanel(handler, this);
 		mapPanel = new MapPanel();
 		graphPanel = new GraphPanel();
-		tablePanel = new TablePanel();
+		tablePanel = new TablePanel(this);
 		
 		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
@@ -96,8 +93,5 @@ public class Animator {
 	public JFrame getFrame() {
 		return frame;
 	}
-	
-	
-	
 	
 }

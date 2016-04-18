@@ -10,7 +10,7 @@ import javax.swing.JTextArea;
 
 public class TablePanel extends JPanel{
 
-	private JTextArea tablePlaceHolder;
+	private Animator animator;
 	
 	private ArrayList<SensorLabel> sensorList;
 	
@@ -26,7 +26,9 @@ public class TablePanel extends JPanel{
 	
 	private String[] controlCoefficients = {"P", "I", "D"};
 	
-	public TablePanel() {
+	public TablePanel(Animator animator) {
+		this.animator = animator;
+		
 		sensorList = new ArrayList<>();
 		controlList = new ArrayList<>();
 		

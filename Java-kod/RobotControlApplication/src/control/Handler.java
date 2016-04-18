@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import jssc.SerialPortException;
 import serialCOM.ControlID;
+import serialCOM.DataID;
 import serialCOM.SerialPortCOM;
 import serialCOM.UnknownOperatingSystemException;
 import view.*;
@@ -18,7 +19,9 @@ public class Handler {
 
 	private SerialPortCOM serialPortCOM;
 
+	
 	private int lastSentControlCommand;
+	private boolean autonomousModeOn = false;
 
 	public Handler() {
 		animator = new Animator(this);
@@ -27,6 +30,7 @@ public class Handler {
 		serialPortCOM = new SerialPortCOM(this);
 
 		myKeyListener = new MyKeyListener(animator, this);
+		
 	}
 
 	public void connectToSerialPort(String portName) {
@@ -81,7 +85,7 @@ public class Handler {
 			try {
 				if(controlCommand != lastSentControlCommand) {
 
-					serialPortCOM.sendControlCommand(controlCommand);
+					serialPortCOM.sendToRobot(DataID.CONTROL_DATA, controlCommand, getSpeed());
 					lastSentControlCommand = controlCommand;
 				}
 			} catch (SerialPortException e) {
@@ -90,18 +94,15 @@ public class Handler {
 		}
 	}
 
-	public void setControlOn(boolean state) {
+	public void setClawOpen(boolean open) {
 		try {
-			serialPortCOM.setControlOn(state);
-		} catch (SerialPortException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public void setClawOpen(boolean state) {
-		try {
-			serialPortCOM.setClawOpen(state);
+			if(open) {
+				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
+			} else {
+				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
+			}
+			
+			
 		} catch (SerialPortException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,5 +111,15 @@ public class Handler {
 
 	public int getSpeed() {
 		return animator.getRobotControlPanel().getSpeed();
+	}
+	
+	public void setAutonomousMode(boolean autonomousModeOn) {
+		this.autonomousModeOn = autonomousModeOn;
+		
+		if(autonomousModeOn) {
+			//TODO disable buttons and enable P,D,K
+		} else {
+			//TODO enable buttons and diable P,D,K
+		}
 	}
 }

@@ -52,45 +52,15 @@ public class SerialPortCOM {
 		}
 	}
 
-	public void sendControlCommand(int controlCommand) throws SerialPortException {
-		// send control byte
-		sendData(convertIntToByte(0));
+	public void sendToRobot(int dataID, int commandID, int value) throws SerialPortException {
+		// send dataID byte
+		sendData(convertIntToByte(dataID));
 		
-		// send control command (1 byte)
-		sendData(convertIntToByte(controlCommand));
-		
-		// send speed (1 bytes)
-		sendData(convertIntToByte(handler.getSpeed()));
-	}
-	
-	public void setClawOpen(boolean state) throws SerialPortException {
-		// send control byte
-		sendData(convertIntToByte(0));
-				
-		// send control command
-		sendData(convertIntToByte(ControlID.CLAW_SETTING));
-		
-		// send state (0 = closed, 1 = open)
-		if(state) {
-			sendData(convertIntToByte(1));
-		} else {
-			sendData(convertIntToByte(0));
-		}
-	}
-	
-	public void setControlOn(boolean state) throws SerialPortException {
-		// send control byte
-		sendData(convertIntToByte(0));
-		
-		// send control command
-		//sendData(convertIntToByte(ControlID.CONTROL_SETTING));
-		
-		// send state (0 = off, 1 = on)
-		if(state) {
-			sendData(convertIntToByte(1));
-		} else {
-			sendData(convertIntToByte(0));
-		}
+		// send command byte
+		sendData(convertIntToByte(commandID));
+
+		// send value byte
+		sendData(convertIntToByte(value));
 	}
 	
 	private byte convertIntToByte(int data) {

@@ -1,5 +1,9 @@
 package view;
 
+import java.awt.Desktop.Action;
+import java.awt.event.ActionEvent;
+
+import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -20,6 +24,7 @@ public class ControlCoefficientPanel extends JPanel{
 		
 		valueField = new JTextField("" + value);
 		add(valueField);
+		
 	}
 	
 	public void updatePanel(){
