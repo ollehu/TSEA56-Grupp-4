@@ -2,8 +2,6 @@ package serialCOM;
 
 public class ControlID {
 
-	public static final int CONTROL_SETTING = 0;
-	
 	public static final int FORWARDS = 1;
 	
 	public static final int BACKWARDS = 2;

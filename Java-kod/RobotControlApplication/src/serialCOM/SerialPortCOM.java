@@ -83,7 +83,7 @@ public class SerialPortCOM {
 		sendData(convertIntToByte(0));
 		
 		// send control command
-		sendData(convertIntToByte(ControlID.CONTROL_SETTING));
+		//sendData(convertIntToByte(ControlID.CONTROL_SETTING));
 		
 		// send state (0 = off, 1 = on)
 		if(state) {
