@@ -48,7 +48,7 @@ void lcdCommand(unsigned char command)
 	//RS = 0, R/W = 0
 	lcdControl &= ~(1<<RS);
 	lcdControl &= ~(1<<RW);
-	_delay_us(100);
+	_delay_us(1);
 	
 	lcdData = command;
 	lcdFlipEN();
@@ -75,7 +75,6 @@ void lcdWriteChar(char data)
 	lcdControl &= ~(1<<RW);
 	lcdData = data;
 	lcdFlipEN();
-	//_delay_us(100);
 }
 
 /**

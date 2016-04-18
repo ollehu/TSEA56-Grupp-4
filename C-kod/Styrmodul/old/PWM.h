@@ -46,7 +46,7 @@ void initPWM(void)
 		
 		//Prescale settings
 		TCCR3B |= (0<<CS02)|(1<<CS01)|(1<<CS00);
-		TCCR1B |= (0<<CS12)|(1<<CS11)|(1<<CS10);
+		TCCR1B |= (0<<CS12)|(0<<CS11)|(1<<CS10);
 		
 		//Top value for picker => 20ms duty cycle
 		ICR3 = 5000;
@@ -102,7 +102,7 @@ void stopWheels(void)
 */
 void openPicker(void)
 {
-	speedPicker = 400;
+	speedPicker = 125;
 }
 
 /**
