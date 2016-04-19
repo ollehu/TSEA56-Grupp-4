@@ -18,6 +18,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import control.Handler;
+
 /**
  * Panel containing all the graphs
  * @author isak
@@ -26,8 +28,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class GraphPanel extends JPanel{
 
 	private JTextArea graphPlaceHolder;
+	
+	private Animator animator;
+	
 
 	private ArrayList<ChartPanel> chartList;
+	
+	private ArrayList<XYSeries> dataSeriesList;
 
 	private String[] chartNames = {"IR F/R", "IR F/L", "IR B/R",
 			"IR B/L", "Lidar Lite", "Angular velocity",
@@ -37,20 +44,56 @@ public class GraphPanel extends JPanel{
 	private String[] chartUnits = {"cm", "cm", "cm",
 			"cm", "cm", "deg/s",
 	"deg"};
+	
+	private String[] controllerNames = {"P", "D", "K"};
 
-	public GraphPanel() {
+	private long startTime;
+	private boolean firstTime = true;
+	
+	public GraphPanel(Animator animator) {
+		this.animator = animator;
+		
 		chartList = new ArrayList<>();
+		dataSeriesList = new ArrayList<>();
 
-		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", createRandomDataset(4, 4, 30));
-		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", createRandomDataset(1, 0, 600));
-		JFreeChart angVelXYChart = ChartFactory.createXYLineChart("Angular velocity", "Time [s]", "Ang.vel [deg/s]", createRandomDataset(1, 0, 300));
-		JFreeChart angXYChart = ChartFactory.createXYLineChart("Angle to wall", "Time [s]", "Angle [deg]", createRandomDataset(1, 0, 15));
+		// create data sets
+		XYSeriesCollection iRXYDataset = new XYSeriesCollection();
+		XYSeriesCollection lidarXYDataset = new XYSeriesCollection();
+		XYSeriesCollection controllerXYDataset = new XYSeriesCollection();
+		
+		XYSeries series;
+		for(int i = 0; i < 4; i++) {
+			series = new XYSeries(chartNames[chartNameCounter++]);
+			series.setMaximumItemCount(100);
+			
+			dataSeriesList.add(series);
+			iRXYDataset.addSeries(series);
+		}
 
+		//
+		series = new XYSeries(chartNames[chartNameCounter++]);
+		series.setMaximumItemCount(100);
+		
+		dataSeriesList.add(series);
+		lidarXYDataset.addSeries(series);
+		
+		//
+		for(String controllerName : controllerNames) {
+			series = new XYSeries(controllerName);
+			series.setMaximumItemCount(100);
+			
+			dataSeriesList.add(series);
+			controllerXYDataset.addSeries(series);
+		}
+		
+		// create JCharts
+		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", iRXYDataset);
+		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", lidarXYDataset);
+		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
 
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
-		//chartList.add(new ChartPanel(angVelXYChart));
-		//chartList.add(new ChartPanel(angXYChart));
+		chartList.add(new ChartPanel(controllerXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));
@@ -59,38 +102,9 @@ public class GraphPanel extends JPanel{
 		}
 	}
 
-	// dummy procedure for creating dataset
-	private XYDataset createRandomDataset(int numberOfSets, double min, double max) {
-		XYSeriesCollection dataset = new XYSeriesCollection();
-
-		for(int i = 0; i < numberOfSets; i++) {
-			XYSeries series = new XYSeries(chartNames[chartNameCounter++]);
-
-			for(int j = 0; j < 10; j++) {
-				series.add(j, ThreadLocalRandom.current().nextDouble(min, max));
-			}
-
-			dataset.addSeries(series);
-		}
-
-		return dataset;
-
-	}
-
 	private void changeFontSize(JFreeChart chart, double fontSizePercentage) {
-		//		Font oldTitleFont = chart.getTitle().getFont();
-		//		Font oldLegendFont = chart.getLegend().getItemFont();
-		//		chart.getXYPlot().get
-		//		
-		//		Font titleFont = new Font(oldTitleFont.getFontName(), oldTitleFont.getStyle(), (int) (oldTitleFont.getSize() * fontSizePercentage)); 
-		//		Font legendFont = new Font(oldLegendFont.getFontName(), oldLegendFont.getStyle(), (int) (oldLegendFont.getSize() * fontSizePercentage)); 
-		//		
-		//		chart.getTitle().setFont(titleFont);
-		//		chart.getLegend().setItemFont(legendFont);
 		final StandardChartTheme chartTheme = (StandardChartTheme)org.jfree.chart.StandardChartTheme.createJFreeTheme();
 
-		// The default font used by JFreeChart unable to render Chinese properly.
-		// We need to provide font which is able to support Chinese rendering.
 		final Font oldExtraLargeFont = chartTheme.getExtraLargeFont();
 		final Font oldLargeFont = chartTheme.getLargeFont();
 		final Font oldRegularFont = chartTheme.getRegularFont();
@@ -111,5 +125,74 @@ public class GraphPanel extends JPanel{
 		chartTheme.setSmallFont(smallFont);
 
 		chartTheme.apply(chart);
+	}
+	
+	public void updateSensorValues(int[] sensorValues) {
+		double timeStamp = getTimeStamp();
+		
+		// add sensor values
+		for(int index = 0; index < 5; index++) {
+			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+		}
+		
+		// add controller values
+		int[] controllerValues = calculateControllerValue(sensorValues);
+		int index = 5;
+		for(int controllerValue : controllerValues) {
+			dataSeriesList.get(index).add(timeStamp, controllerValue);
+			index++;
+		}
+	}
+	
+	private double getTimeStamp() {
+		if(firstTime) {
+			firstTime = !firstTime;
+			startTime = System.currentTimeMillis();
+			return 0.0;
+		} else {
+			double elapsedTimeMillis = System.currentTimeMillis() - startTime;
+			
+			return elapsedTimeMillis / 1000;
+		}
+	}
+	
+	private int[] calculateControllerValue(int[] sensorValues) {
+		int[] controllerValues = new int [3];
+
+		int[] oldDistance = new int[20];
+		int preferredDistance = 100;
+
+		double period = 0.2;
+		int index = 5;
+		
+		// calculate distance to wall
+		int distance = 10;
+		
+		if(sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[0] + sensorValues[1]) / 2;
+		} else if (sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[2] + sensorValues[3]) / 2;
+		} else {
+			//TODO handle crossroads
+		}
+		
+		// get controller coefficients P (*100), D (*100), K (*10)
+		int[] controllerCoefficients = animator.getTablePanel().getControllerCoefficients();
+		
+		// calculate P, D, K
+		double P = ((double) controllerCoefficients[0]) / 100;
+		double D = ((double) controllerCoefficients[1]) / 100;
+		double K = ((double) controllerCoefficients[2]) / 10;
+		
+		double p_out = P * (distance - preferredDistance);
+		double d_out = D * (distance - oldDistance[index]) / (index * period);
+		
+		int y_out = (int) (K *(p_out + d_out));
+		
+		controllerValues[0] = (int) p_out;
+		controllerValues[1] = (int) d_out;
+		controllerValues[2] = y_out;
+		
+		return controllerValues;
 	}
 }

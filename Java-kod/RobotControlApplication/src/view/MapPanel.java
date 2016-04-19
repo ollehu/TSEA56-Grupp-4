@@ -20,9 +20,6 @@ public class MapPanel extends JPanel{
 		add(map);
 		
 		boolean[] hasWalls = {true,true,false,false};
-		map.explore(1, 1, hasWalls);
-		map.explore(1, 3, hasWalls);
-		map.explore(4, 1, hasWalls);
 		
 //		mapPlaceHolder = new JTextArea(20,40);
 //		mapPlaceHolder.setEditable(false);
@@ -30,5 +27,10 @@ public class MapPanel extends JPanel{
 //		
 //		add(mapPlaceHolder);
 	}
+
+	public Map getMap() {
+		return map;
+	}
+	
 	
 }

@@ -9,6 +9,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import jssc.SerialPortTimeoutException;
 
 /**
  * Handles bluetooth communication
@@ -103,16 +104,19 @@ public class SerialPortCOM {
 	 * @author Isak
 	 *
 	 */
-	private static class PortReader implements SerialPortEventListener {
+	private class PortReader implements SerialPortEventListener {
 
 		@Override
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
-					byte[] receivedData = serialPort.readBytes();
-
-					String receivedDataString = serialPort.readString();
-
+					byte[] receivedData = new byte[15];
+					try {
+						receivedData = serialPort.readBytes(15, 70);
+					} catch (SerialPortTimeoutException e) {
+						e.printStackTrace();
+					}
+					
 					if(Byte.toUnsignedInt(receivedData[0]) == DataID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
 						switchMode(receivedData);
@@ -123,8 +127,7 @@ public class SerialPortCOM {
 						//TODO handle map data
 						updateMap(receivedData);
 					}
-
-					System.out.println("Received response: " + receivedData);
+					
 				}
 				catch (SerialPortException ex) {
 					System.out.println("Error in receiving string from COM-port: " + ex);
@@ -134,11 +137,13 @@ public class SerialPortCOM {
 
 	}
 
-	private static void switchMode(byte[] receivedData) throws CommunicationFormatException{
-		if(receivedData.length != 3) {
-			throw new CommunicationFormatException();
-		}
+	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
+		// throw error if wrong format
+//		if(receivedData.length != 3) {
+//			throw new CommunicationFormatException();
+//		}
 		
+		// activate or deactivate autonomous mode
 		if(Byte.toUnsignedInt(receivedData[1]) == ControlSettingID.CONTROLLER) {
 			if(Byte.toUnsignedInt(receivedData[3]) == 1) {
 				// auto mode on
@@ -152,18 +157,37 @@ public class SerialPortCOM {
 		}
 	}
 
-	private static void updateSensorValues(byte[] receivedData) {
-		if(receivedData.length != 3) {
-			throw new CommunicationFormatException();
+	private void updateSensorValues(byte[] receivedData) {
+		// throw error if wrong format
+//		if(receivedData.length != 15) {
+//			throw new CommunicationFormatException();
+//		}
+		
+		// convert byte to unsigned ints
+		int[] sensorValues = new int[7];
+		int j = 0;
+		for(int i = 2; i < receivedData.length; i+=2) {
+			sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
+			j++;
 		}
 		
-		
+		// update graph panel
+		handler.getAnimator().getGraphPanel().updateSensorValues(sensorValues);
+		handler.getAnimator().getTablePanel().updateSensorValues(sensorValues);
 	}
 
-	private static void updateMap(byte[] receivedData) {
-		if(receivedData.length != 4) {
-			throw new CommunicationFormatException();
-		}
+	private void updateMap(byte[] receivedData) {
+		// throw error if wrong format
+//		if(receivedData.length != 4) {
+//			throw new CommunicationFormatException();
+//		}
+		
+		// get x- and y-coordinate
+		int xCoordinate = Byte.toUnsignedInt(receivedData[1]);
+		int yCoordinate = Byte.toUnsignedInt(receivedData[2]);
+	
+		// update map
+		handler.getAnimator().getMapPanel().getMap().updateMap(xCoordinate, yCoordinate, receivedData[3]);
 		
 	}
 
