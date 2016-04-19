@@ -1,10 +1,3 @@
-/*
-* Master.c
-*
-* Created: 4/8/2016 9:28:26 AM
-*  Author: eletr654
-*/
-
 #include "I2C_master.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -12,7 +5,7 @@
 #include <util/delay.h>
 
 
-int sensorData[8];
+
 int styrAutonomt[] = {0x00, 0x02}; //Kommunikations-ID, styrkommando
 int styrManuellt[] = {0x00, 0x02, 0x00}; //Kommunikations-ID, styrkommando, hastighet
 
@@ -89,14 +82,14 @@ ISR(INT2_vect){ //Avbrott sensor
 	counterComputer = counterComputer + 1;
 
 	//1. Hämta sensordata från sensormodulen
-	Master(8,SLA_sensor_R,sensorData);
+	Master(15,SLA_sensor_R,sensorData);
 	
 	//2. Skicka sensordata till styrmodulen
-	Master(8,SLA_styr_W,sensorData);
+	Master(15,SLA_styr_W,sensorData);
 	
 	//3. Skicka sensordata till datormodulen
 	if(counterComputer == sendToComputer){
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 15; i++){
 			btSend(sensorData[i]);
 		}
 		counterComputer = 0;
@@ -110,7 +103,7 @@ int main(void)
 	}
 	
 	TWISetup();
-	//interruptSetup();
+	interruptSetup();
 	btInit();
 	
 	sei();
