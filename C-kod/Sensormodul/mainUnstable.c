@@ -137,11 +137,13 @@ ISR (TIMER1_CAPT_vect)
 	}
 }
 
-ISR(TIMER2_OVF_vect)
+/*ISR(TIMER2_COMPA_vect)
 {
 	// keep a track of number of overflows
 	tot_overflow++;
-}
+	PORTD ^= (1 << PORTD0);
+	//PORTD &= ~(1 << PORTD0);
+}*/
 
 
 ISR (INT0_vect)
@@ -243,7 +245,7 @@ int main (void)
 	initADC();
 	initIC();
 	init_counter();
-	
+	timer2_init();
 	
 	// Enables global interrupt
 
@@ -256,7 +258,7 @@ int main (void)
 		total = total + answer - 1996.5;
 		
 		sensorData[9] = 5;
-		sensorData[10] = 10*(0.0127*forward_distance - 4.3678); //SI_lidar
+		sensorData[10] = (0.0127*forward_distance - 4.3678); //SI_lidar
 		SI_IR1 = 10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016);
 		SI_IR2 = 10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363);
 		SI_IR3 = 10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186);
@@ -319,25 +321,25 @@ int main (void)
 		/*for(int i = 1;i<15;i++){
 			sensorData[i] = i;
 		}*/
-		/*sei();
-		DDRD = (1<<PORTD0);
-		//_delay_ms(2000);
+		sei();
+		/*DDRD = (1<<PORTD0);
+		_delay_ms(50);
 		PORTD |= (1<<PORTD0);
 		//_delay_ms(10);
 		PORTD &= ~(1<<PORTD0);*/
 		
 
-	  if (tot_overflow >= 11)  // NOTE: '>=' is used
+	  /*if (tot_overflow >= 11)  // NOTE: '>=' is used
 	        {
 		        // check if the timer count reaches 53
 		        if (TCNT2 >= 53) // 47155)
 		        {
-			        PORTD |= (1 << 0);     // send interrupt
+			             // send interrupt
 			        TCNT2 = 0;            // reset counter
 			        tot_overflow = 0;     // reset overflow counter'
-					PORTD &= ~(1 << 0);
+					
 		        }
-	        }
+	        }*/
 	
 
 		

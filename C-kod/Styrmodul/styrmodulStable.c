@@ -50,10 +50,13 @@ void updateSetting(int setting, int newValue);
 //////////////////////////////////////////////////////////////////////////
 
 char mes[16] = "";
+char mes2[16] = "";
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	PORTA = (0<<PORTA0);
+
+	
 
 	while(1){
 		//SLAVE RECEIVER
@@ -91,6 +94,10 @@ ISR(TWI_vect){
 				
 				tempArray[tempCount] = TWDR;
 				tempCount = tempCount + 1;
+				
+				if (tempCount == 14){
+					tempCount = 0;
+				}
 				
 				/*if (dataOrder == 1){
 					commandSubType = TWDR;
@@ -316,13 +323,20 @@ int main(void)
 	sei();
 	sprintf(mes, "%d %d %d", 10, 20, 200);
 	lcdWriteBottomRow(mes);
+	uint8_t itsTime = 10;
 	while(1)
 	{
 		if (madeChange == 1){
-			
-			sprintf(mes, "%d - %d - %d", commandType, tempArray[0], tempArray[13]);
-			lcdWriteBottomRow(mes);
+			if (itsTime == 0){
+			sprintf(mes, "%d - %d", tempArray[1], tempArray[3]);
+			lcdWriteTopRow(mes);
+			sprintf(mes2, "%d - %d - %d", tempArray[5], tempArray[9], tempArray[7]);
+			lcdWriteBottomRow(mes2);
 			madeChange = 0;
-		}
+			itsTime = 10;
+			} else {
+				itsTime = itsTime - 1;
+			}
+		} 
 	}
 }

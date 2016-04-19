@@ -88,24 +88,23 @@ unsigned short AR_read(void){
 
 void timer2_init()
 {
+	// 30 Hz
+	TCCR2A |= (1<<COM2A0)|(1<<WGM21);
 	// set up timer with prescaler = 256
-	TCCR2B |= (1 << CS22)|(1 << CS21);
-	
+	TCCR2B |= (1 << CS22)|(1 << CS21)|(1<<CS20);
+	OCR2A = 0xFF;
 	// initialize counter
-	TCNT2 = 0;
+	//TCNT2 = 0;
 	
 	// enable overflow interrupt
-	TIMSK2 |= (1 << TOIE2);
+	//TIMSK2 |= (1 << OCIE2A);
 	
 	// enable global interrupts
 	sei();
 	
 	// initialize overflow counter variable
 	//tot_overflow = 0;
-	
-	
-	
-	
+
 	// connect interrupt in main module
-	DDRD |= (1 << 0);
+	DDRD |= (1<<PORTD7);
 }

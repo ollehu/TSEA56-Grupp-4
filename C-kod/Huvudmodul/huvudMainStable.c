@@ -15,7 +15,7 @@ int SLA_styr_R = 0xCD;
 int SLA_styr_W = 0xCC;
 
 int counterComputer = 0;
-int sendToComputer = 10; //Hur ofta sensordata ska skickas till datorn
+int sendToComputer = 1; //Hur ofta sensordata ska skickas till datorn
 
 int data = 0;
 int recieved;
@@ -88,12 +88,12 @@ ISR(INT2_vect){ //Avbrott sensor
 	Master(15,SLA_styr_W,sensorData);
 	
 	//3. Skicka sensordata till datormodulen
-	if(counterComputer == sendToComputer){
+
 		for(int i = 0; i < 15; i++){
 			btSend(sensorData[i]);
 		}
-		counterComputer = 0;
-	}
+
+	
 }
 
 int main(void)
