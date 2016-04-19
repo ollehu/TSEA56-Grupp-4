@@ -25,8 +25,10 @@ public class Map extends JPanel{
 		}
 	}
 	
-	public void explore(int x, int y, boolean[] hasWalls) {
-		mapTiles[x][y].explore(hasWalls);
+	public void updateMap(int x, int y, byte hasWallsByte) {
+		boolean[] hasWallsBoolean = new boolean[4];
+		
+		mapTiles[x][y].explore(hasWallsBoolean);
 	}
 	
 }

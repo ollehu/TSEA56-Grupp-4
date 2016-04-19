@@ -134,6 +134,10 @@ public class Handler {
 		return serialPortCOM;
 	}
 
+	public Animator getAnimator() {
+		return animator;
+	}
 
+	
 
 }

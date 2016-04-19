@@ -38,6 +38,9 @@ public class GraphPanel extends JPanel{
 			"cm", "cm", "deg/s",
 	"deg"};
 
+	private long startTime;
+	private boolean firstTime = true;
+	
 	public GraphPanel() {
 		chartList = new ArrayList<>();
 
@@ -111,5 +114,19 @@ public class GraphPanel extends JPanel{
 		chartTheme.setSmallFont(smallFont);
 
 		chartTheme.apply(chart);
+	}
+	
+	public void updateSensorValues(int[] sensorValues) {
+		
+	}
+	
+	private double getTimeStamp() {
+		if(firstTime) {
+			firstTime = !firstTime;
+			startTime = System.currentTimeMillis();
+			return 0.0;
+		} else {
+			return System.currentTimeMillis() - startTime;
+		}
 	}
 }
