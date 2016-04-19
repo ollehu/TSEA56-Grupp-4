@@ -20,7 +20,7 @@ public class SerialPortCOM {
 	private Handler handler;
 
 	private static SerialPort serialPort;
-	
+
 	// standard port settings for firefly
 	private int baudRate = 115200;
 	private int numberOfDataBits = 8;
@@ -30,7 +30,7 @@ public class SerialPortCOM {
 	public SerialPortCOM(Handler handler) {
 		this.handler = handler;
 	}
-	
+
 	/**
 	 * Connects to the selected port
 	 * 
@@ -49,9 +49,9 @@ public class SerialPortCOM {
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
 		// add port listener
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-		
+
 	}
-	
+
 	/**
 	 * Closes port on program exit
 	 */
@@ -77,26 +77,26 @@ public class SerialPortCOM {
 	public void sendToRobot(int dataID, int commandID, int value) throws SerialPortException {
 		// send dataID byte
 		sendData(convertIntToByte(dataID));
-		
+
 		// send command byte
 		sendData(convertIntToByte(commandID));
 
 		// send value byte
 		sendData(convertIntToByte(value));
 	}
-	
+
 	private byte convertIntToByte(int data) {
 		byte binaryByte = (byte) (data & (0xFF));
 		return binaryByte;
 	}
-	
+
 	private void sendData(byte data) throws SerialPortException {
 		if(serialPort != null) {
 			serialPort.writeByte(data);
 		}
 		System.out.println("Data sent: " + (data & 0xFF));
 	}
-	
+
 	/**
 	 * Listens for port events
 	 * 
@@ -109,17 +109,21 @@ public class SerialPortCOM {
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
-//					byte[] receivedData = serialPort.readBytes();
+					byte[] receivedData = serialPort.readBytes();
 
-					String receivedData = serialPort.readString();
-					
-					// TODO handle event depending on if it's sensor or map data
-//					if(receivedData[0] == 0xFF) {
-//						
-//					} else if(receivedData[0] == 0xFE) {
-//						
-//					}
-					
+					String receivedDataString = serialPort.readString();
+
+					if(Byte.toUnsignedInt(receivedData[0]) == DataID.CONTROL_SETTING) {
+						//TODO handle switch from auto/man
+						switchMode(receivedData);
+					} else if(Byte.toUnsignedInt(receivedData[0]) == DataID.SENSOR_DATA) {
+						//TODO handle sensor array
+						updateSensorValues(receivedData);
+					} else if(Byte.toUnsignedInt(receivedData[0]) == DataID.MAP_DATA) {
+						//TODO handle map data
+						updateMap(receivedData);
+					}
+
 					System.out.println("Received response: " + receivedData);
 				}
 				catch (SerialPortException ex) {
@@ -130,8 +134,41 @@ public class SerialPortCOM {
 
 	}
 
+	private static void switchMode(byte[] receivedData) throws CommunicationFormatException{
+		if(receivedData.length != 3) {
+			throw new CommunicationFormatException();
+		}
+		
+		if(Byte.toUnsignedInt(receivedData[1]) == ControlSettingID.CONTROLLER) {
+			if(Byte.toUnsignedInt(receivedData[3]) == 1) {
+				// auto mode on
+			} else if(Byte.toUnsignedInt(receivedData[3]) == 0) {
+				// auto mode off
+			} else {
+				throw new CommunicationFormatException();
+			}
+		} else {
+			throw new CommunicationFormatException();
+		}
+	}
+
+	private static void updateSensorValues(byte[] receivedData) {
+		if(receivedData.length != 3) {
+			throw new CommunicationFormatException();
+		}
+		
+		
+	}
+
+	private static void updateMap(byte[] receivedData) {
+		if(receivedData.length != 4) {
+			throw new CommunicationFormatException();
+		}
+		
+	}
+
 	public SerialPort getSerialPort() {
 		return serialPort;
 	}
-	
+
 }
