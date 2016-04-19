@@ -9,6 +9,7 @@ import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
+import jssc.SerialPortTimeoutException;
 
 /**
  * Handles bluetooth communication
@@ -109,10 +110,13 @@ public class SerialPortCOM {
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
-					byte[] receivedData = serialPort.readBytes();
-
-					//String receivedDataString = serialPort.readString();
-
+					byte[] receivedData = new byte[15];
+					try {
+						receivedData = serialPort.readBytes(15, 70);
+					} catch (SerialPortTimeoutException e) {
+						e.printStackTrace();
+					}
+					
 					if(Byte.toUnsignedInt(receivedData[0]) == DataID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
 						switchMode(receivedData);
@@ -123,10 +127,7 @@ public class SerialPortCOM {
 						//TODO handle map data
 						updateMap(receivedData);
 					}
-
-					for(byte dataByte : receivedData) {
-						System.out.println("Received response: " + Byte.toUnsignedInt(dataByte));
-					}
+					
 				}
 				catch (SerialPortException ex) {
 					System.out.println("Error in receiving string from COM-port: " + ex);
@@ -138,9 +139,9 @@ public class SerialPortCOM {
 
 	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
 		// throw error if wrong format
-		if(receivedData.length != 3) {
-			throw new CommunicationFormatException();
-		}
+//		if(receivedData.length != 3) {
+//			throw new CommunicationFormatException();
+//		}
 		
 		// activate or deactivate autonomous mode
 		if(Byte.toUnsignedInt(receivedData[1]) == ControlSettingID.CONTROLLER) {
@@ -158,9 +159,9 @@ public class SerialPortCOM {
 
 	private void updateSensorValues(byte[] receivedData) {
 		// throw error if wrong format
-		if(receivedData.length != 15) {
-			throw new CommunicationFormatException();
-		}
+//		if(receivedData.length != 15) {
+//			throw new CommunicationFormatException();
+//		}
 		
 		// convert byte to unsigned ints
 		int[] sensorValues = new int[7];
@@ -172,13 +173,14 @@ public class SerialPortCOM {
 		
 		// update graph panel
 		handler.getAnimator().getGraphPanel().updateSensorValues(sensorValues);
+		handler.getAnimator().getTablePanel().updateSensorValues(sensorValues);
 	}
 
 	private void updateMap(byte[] receivedData) {
 		// throw error if wrong format
-		if(receivedData.length != 4) {
-			throw new CommunicationFormatException();
-		}
+//		if(receivedData.length != 4) {
+//			throw new CommunicationFormatException();
+//		}
 		
 		// get x- and y-coordinate
 		int xCoordinate = Byte.toUnsignedInt(receivedData[1]);

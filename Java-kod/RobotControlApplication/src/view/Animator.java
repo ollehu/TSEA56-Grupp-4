@@ -115,6 +115,10 @@ public class Animator {
 	public MapPanel getMapPanel() {
 		return mapPanel;
 	}
+
+	public TablePanel getTablePanel() {
+		return tablePanel;
+	}
 	
 	
 }

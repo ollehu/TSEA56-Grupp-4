@@ -28,6 +28,8 @@ public class GraphPanel extends JPanel{
 	private JTextArea graphPlaceHolder;
 
 	private ArrayList<ChartPanel> chartList;
+	
+	private ArrayList<XYSeries> dataSeriesList;
 
 	private String[] chartNames = {"IR F/R", "IR F/L", "IR B/R",
 			"IR B/L", "Lidar Lite", "Angular velocity",
@@ -43,17 +45,34 @@ public class GraphPanel extends JPanel{
 	
 	public GraphPanel() {
 		chartList = new ArrayList<>();
+		dataSeriesList = new ArrayList<>();
 
-		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", createRandomDataset(4, 4, 30));
-		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", createRandomDataset(1, 0, 600));
-		JFreeChart angVelXYChart = ChartFactory.createXYLineChart("Angular velocity", "Time [s]", "Ang.vel [deg/s]", createRandomDataset(1, 0, 300));
-		JFreeChart angXYChart = ChartFactory.createXYLineChart("Angle to wall", "Time [s]", "Angle [deg]", createRandomDataset(1, 0, 15));
+		// create data sets
+		XYSeriesCollection iRXYDataset = new XYSeriesCollection();
+		XYSeriesCollection lidarXYDataset = new XYSeriesCollection();
+		
+		XYSeries series;
+		for(int i = 0; i < 4; i++) {
+			series = new XYSeries(chartNames[chartNameCounter++]);
+			series.setMaximumItemCount(100);
+			
+			dataSeriesList.add(series);
+			iRXYDataset.addSeries(series);
+		}
+		
+		series = new XYSeries(chartNames[chartNameCounter++]);
+		series.setMaximumItemCount(100);
+
+		dataSeriesList.add(series);
+		lidarXYDataset.addSeries(series);
+		
+		// create JCharts
+		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", iRXYDataset);
+		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", lidarXYDataset);
 
 
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
-		//chartList.add(new ChartPanel(angVelXYChart));
-		//chartList.add(new ChartPanel(angXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));
@@ -62,38 +81,9 @@ public class GraphPanel extends JPanel{
 		}
 	}
 
-	// dummy procedure for creating dataset
-	private XYDataset createRandomDataset(int numberOfSets, double min, double max) {
-		XYSeriesCollection dataset = new XYSeriesCollection();
-
-		for(int i = 0; i < numberOfSets; i++) {
-			XYSeries series = new XYSeries(chartNames[chartNameCounter++]);
-
-			for(int j = 0; j < 10; j++) {
-				series.add(j, ThreadLocalRandom.current().nextDouble(min, max));
-			}
-
-			dataset.addSeries(series);
-		}
-
-		return dataset;
-
-	}
-
 	private void changeFontSize(JFreeChart chart, double fontSizePercentage) {
-		//		Font oldTitleFont = chart.getTitle().getFont();
-		//		Font oldLegendFont = chart.getLegend().getItemFont();
-		//		chart.getXYPlot().get
-		//		
-		//		Font titleFont = new Font(oldTitleFont.getFontName(), oldTitleFont.getStyle(), (int) (oldTitleFont.getSize() * fontSizePercentage)); 
-		//		Font legendFont = new Font(oldLegendFont.getFontName(), oldLegendFont.getStyle(), (int) (oldLegendFont.getSize() * fontSizePercentage)); 
-		//		
-		//		chart.getTitle().setFont(titleFont);
-		//		chart.getLegend().setItemFont(legendFont);
 		final StandardChartTheme chartTheme = (StandardChartTheme)org.jfree.chart.StandardChartTheme.createJFreeTheme();
 
-		// The default font used by JFreeChart unable to render Chinese properly.
-		// We need to provide font which is able to support Chinese rendering.
 		final Font oldExtraLargeFont = chartTheme.getExtraLargeFont();
 		final Font oldLargeFont = chartTheme.getLargeFont();
 		final Font oldRegularFont = chartTheme.getRegularFont();
@@ -117,6 +107,12 @@ public class GraphPanel extends JPanel{
 	}
 	
 	public void updateSensorValues(int[] sensorValues) {
+		double timeStamp = getTimeStamp();
+		
+		for(int index = 0; index < 5; index++) {
+			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+		}
+		
 		
 	}
 	
@@ -126,7 +122,9 @@ public class GraphPanel extends JPanel{
 			startTime = System.currentTimeMillis();
 			return 0.0;
 		} else {
-			return System.currentTimeMillis() - startTime;
+			double elapsedTimeMillis = System.currentTimeMillis() - startTime;
+			
+			return elapsedTimeMillis / 1000;
 		}
 	}
 }
