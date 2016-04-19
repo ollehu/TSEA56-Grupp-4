@@ -13,7 +13,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "initSensor.h"
+#include "initiation_ceremony.h"
 #include "I2C_slave.h"
 
 #define SCK PORTB7
@@ -40,7 +40,9 @@ int SI_IR2;
 int SI_IR3;
 int SI_IR4;
 
-volatile uint8_t Distance_1 = 0;
+volatile uint8_t tot_overflow = 0;
+
+double Distance_1 = 0;
 double Distance_2 = 0;
 double Distance_3 = 0;
 double Distance_4 = 0;
@@ -49,17 +51,6 @@ int SI_IR1_array[5];
 int SI_IR2_array[5];
 int SI_IR3_array[5];
 int SI_IR4_array[5];
-
-
-int SI_IR1_Final = 0;
-
-
-int SI_IR2_Final = 0;
-
-
-int SI_IR3_Final = 0;
-
-int SI_IR4_Final = 0;
 
 
 //int angular_velocity = 0;
@@ -317,53 +308,30 @@ int main (void)
 		sensorData[7] = 4;
 		sensorData[8] = getMedian(SI_IR4_array); // Vänster bak
 		
-		//////////////////////////////////////////////////////////////////////////
-		if (sensorData[2] > 230)
-		{
-			sensorData[2] = 245;
-		} else if (sensorData[2] < 40)
-		{
-			sensorData[2] = 0;
-		}
-		
-		
-		if (sensorData[6] > 230)
-		{
-			sensorData[6] = 245;
-		} else if (sensorData[6] < 40)
-		{
-			sensorData[6] = 0;
-		}
-		
-				
-		if (sensorData[4] > 230)
-		{
-			sensorData[4] = 245;
-		} else if (sensorData[4] < 40)
-		{
-			sensorData[4] = 0;
-		}
-			
-						
-		if (sensorData[8] > 230)
-		{
-			sensorData[8] = 245;
-		} else if (sensorData[8] < 40)
-		{
-			sensorData[8] = 0;
-		}
-		//////////////////////////////////////////////////////////////////////////
+
 		
 		/*for(int i = 1;i<15;i++){
 			sensorData[i] = i;
 		}*/
-		sei();
+		/*sei();
 		DDRD = (1<<PORTD0);
 		//_delay_ms(2000);
 		PORTD |= (1<<PORTD0);
 		//_delay_ms(10);
-		PORTD &= ~(1<<PORTD0);
+		PORTD &= ~(1<<PORTD0);*/
 		
+
+	  if (tot_overflow >= 11)  // NOTE: '>=' is used
+	        {
+		        // check if the timer count reaches 53
+		        if (TCNT2 >= 53) // 47155)
+		        {
+			        PORTD |= (1 << 0);     // send interrupt
+			        TCNT2 = 0;            // reset counter
+			        tot_overflow = 0;     // reset overflow counter'
+					PORTD &= ~(1 << 0);
+		        }
+	        }
 	
 
 		
