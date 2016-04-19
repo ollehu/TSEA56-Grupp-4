@@ -107,5 +107,18 @@ public class Animator {
 	public Handler getHandler() {
 		return handler;
 	}
+
+	public GraphPanel getGraphPanel() {
+		return graphPanel;
+	}
+
+	public MapPanel getMapPanel() {
+		return mapPanel;
+	}
+
+	public TablePanel getTablePanel() {
+		return tablePanel;
+	}
+	
 	
 }

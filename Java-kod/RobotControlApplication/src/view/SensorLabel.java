@@ -12,7 +12,7 @@ public class SensorLabel extends JLabel{
 	private String name;
 	private String unit;
 	
-	private double value = -1;
+	private int value = -1;
 	
 	public SensorLabel(String name, String unit) {
 		super();
@@ -27,7 +27,7 @@ public class SensorLabel extends JLabel{
 		setText(name + ": " + value + " " + unit);
 	}
 
-	public void setValue(double value) {
+	public void setValue(int value) {
 		this.value = value;
 		updateText();
 	}
