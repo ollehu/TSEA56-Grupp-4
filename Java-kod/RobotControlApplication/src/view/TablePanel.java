@@ -84,4 +84,16 @@ public class TablePanel extends JPanel{
 			index++;
 		}
 	}
+	
+	public int[] getControllerCoefficients() {
+		int[] controllerCoefficients = new int[3];
+		
+		int index = 0;
+		for(ControlCoefficientPanel coefficientPanel : controlList) {
+			controllerCoefficients[index] = coefficientPanel.getControlValue();
+			index++;
+		}
+		
+		return controllerCoefficients;
+	}
 }

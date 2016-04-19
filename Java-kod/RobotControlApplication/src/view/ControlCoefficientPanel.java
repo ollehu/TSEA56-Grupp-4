@@ -74,7 +74,7 @@ public class ControlCoefficientPanel extends JPanel{
 		}
 	}
 	
-	private int getControlValue() {
+	public int getControlValue() {
 		if(name == "P") {
 			return (int) (value * 100);
 		} else if(name == "D") {
@@ -85,4 +85,6 @@ public class ControlCoefficientPanel extends JPanel{
 			return -1;
 		}
 	}
+	
+	
 }

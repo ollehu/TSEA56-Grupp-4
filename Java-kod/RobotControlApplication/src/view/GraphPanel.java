@@ -18,6 +18,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import control.Handler;
+
 /**
  * Panel containing all the graphs
  * @author isak
@@ -26,6 +28,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 public class GraphPanel extends JPanel{
 
 	private JTextArea graphPlaceHolder;
+	
+	private Animator animator;
+	
 
 	private ArrayList<ChartPanel> chartList;
 	
@@ -39,17 +44,22 @@ public class GraphPanel extends JPanel{
 	private String[] chartUnits = {"cm", "cm", "cm",
 			"cm", "cm", "deg/s",
 	"deg"};
+	
+	private String[] controllerNames = {"P", "D", "K"};
 
 	private long startTime;
 	private boolean firstTime = true;
 	
-	public GraphPanel() {
+	public GraphPanel(Animator animator) {
+		this.animator = animator;
+		
 		chartList = new ArrayList<>();
 		dataSeriesList = new ArrayList<>();
 
 		// create data sets
 		XYSeriesCollection iRXYDataset = new XYSeriesCollection();
 		XYSeriesCollection lidarXYDataset = new XYSeriesCollection();
+		XYSeriesCollection controllerXYDataset = new XYSeriesCollection();
 		
 		XYSeries series;
 		for(int i = 0; i < 4; i++) {
@@ -59,20 +69,31 @@ public class GraphPanel extends JPanel{
 			dataSeriesList.add(series);
 			iRXYDataset.addSeries(series);
 		}
-		
+
+		//
 		series = new XYSeries(chartNames[chartNameCounter++]);
 		series.setMaximumItemCount(100);
-
+		
 		dataSeriesList.add(series);
 		lidarXYDataset.addSeries(series);
+		
+		//
+		for(String controllerName : controllerNames) {
+			series = new XYSeries(controllerName);
+			series.setMaximumItemCount(100);
+			
+			dataSeriesList.add(series);
+			controllerXYDataset.addSeries(series);
+		}
 		
 		// create JCharts
 		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", iRXYDataset);
 		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", lidarXYDataset);
-
+		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
 
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
+		chartList.add(new ChartPanel(controllerXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));
@@ -109,11 +130,18 @@ public class GraphPanel extends JPanel{
 	public void updateSensorValues(int[] sensorValues) {
 		double timeStamp = getTimeStamp();
 		
+		// add sensor values
 		for(int index = 0; index < 5; index++) {
 			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
 		}
 		
-		
+		// add controller values
+		int[] controllerValues = calculateControllerValue(sensorValues);
+		int index = 5;
+		for(int controllerValue : controllerValues) {
+			dataSeriesList.get(index).add(timeStamp, controllerValue);
+			index++;
+		}
 	}
 	
 	private double getTimeStamp() {
@@ -126,5 +154,45 @@ public class GraphPanel extends JPanel{
 			
 			return elapsedTimeMillis / 1000;
 		}
+	}
+	
+	private int[] calculateControllerValue(int[] sensorValues) {
+		int[] controllerValues = new int [3];
+
+		int[] oldDistance = new int[20];
+		int preferredDistance = 100;
+
+		double period = 0.2;
+		int index = 5;
+		
+		// calculate distance to wall
+		int distance = 10;
+		
+		if(sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[0] + sensorValues[1]) / 2;
+		} else if (sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[2] + sensorValues[3]) / 2;
+		} else {
+			//TODO handle crossroads
+		}
+		
+		// get controller coefficients P (*100), D (*100), K (*10)
+		int[] controllerCoefficients = animator.getTablePanel().getControllerCoefficients();
+		
+		// calculate P, D, K
+		double P = ((double) controllerCoefficients[0]) / 100;
+		double D = ((double) controllerCoefficients[1]) / 100;
+		double K = ((double) controllerCoefficients[2]) / 10;
+		
+		double p_out = P * (distance - preferredDistance);
+		double d_out = D * (distance - oldDistance[index]) / (index * period);
+		
+		int y_out = (int) (K *(p_out + d_out));
+		
+		controllerValues[0] = (int) p_out;
+		controllerValues[1] = (int) d_out;
+		controllerValues[2] = y_out;
+		
+		return controllerValues;
 	}
 }

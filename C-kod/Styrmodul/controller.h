@@ -8,7 +8,7 @@ int[] oldDistance;
 int preferredDistance = 10;
 
 double period = 0.2;
-int index = 5
+int index = 5;
 
 int velocity = 100;
 
@@ -16,8 +16,8 @@ void StraightLineController(int frontDistance, int backDistance)
 {
 	int distance = (frontDistance + backDistance) / 2;
 
-	double p_out = P * (distance - preferredDistance)
-	double d_out = D * (distance - oldDistance[index]) / (index * period)
+	double p_out = P * (distance - preferredDistance);
+	double d_out = D * (distance - oldDistance[index]) / (index * period);
 
 	int y_out = K * (p_out + d_out);
 
@@ -30,5 +30,7 @@ void StraightLineController(int frontDistance, int backDistance)
 		leftWheelPair(100 - y, 1);
 
 	}
+
+	//TODO shift oldDistance;
 	
 }
