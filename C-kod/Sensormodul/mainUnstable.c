@@ -137,6 +137,12 @@ ISR (TIMER1_CAPT_vect)
 	}
 }
 
+ISR(TIMER2_OVF_vect)
+{
+	// keep a track of number of overflows
+	tot_overflow++;
+}
+
 
 ISR (INT0_vect)
 {
