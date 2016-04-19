@@ -1,4 +1,13 @@
+/*
+ * I2C_master.h
+ *
+ * Created: 4/19/2016 8:46:29 AM
+ *  Author: lovgu777
+ */ 
+
 #include <avr/io.h>
+
+volatile int sensorData[15];
 
 void TWIStart(void){
 	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWSTA)|(1<<TWEN);
@@ -11,7 +20,8 @@ void TWIChooseSlave(void){
 }
 
 void TWISendData(void){
-
+	TWCR &= ~(1<<TWSTA);
+	TWCR &= ~(1<<TWSTO);
 	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);
 	//|(1<<TWIE);
 }
@@ -28,19 +38,19 @@ void TWISetup(){
 
 void interruptSetup(){
 	//Rising edge INT1 & INT2
-	EICRA = (1<<ISC21)|(1<<ISC20)|(1<<ISC11)|(1<<ISC10); 
+	EICRA = (1<<ISC21)|(1<<ISC20)|(1<<ISC11)|(1<<ISC10);
 	
 	//Enable interrupt INT1 & INT2
 	EIMSK = (1<<INT2)|(1<<INT1);
 }
 
-void Master(int times, uint8_t SLA, int data[]){
+void Master(int times, uint8_t SLA, int *data){
 	DDRA = 0xFF;
 	
 	int counter = 0;
 	
 	//Set clock frequency for SCL
-	TWBR = (1<<TWBR6)|(1<<TWBR1);
+	TWBR = (1<<TWBR6)|(1<<TWBR1);//Varför här?
 	
 	//Send START condition
 	TWIStart();
@@ -55,7 +65,7 @@ void Master(int times, uint8_t SLA, int data[]){
 			TWIChooseSlave();
 			
 			
-		//MASTER TRANSMITTER
+			//MASTER TRANSMITTER
 		} else if((TWSR & 0xF8) == 0x18){
 			//SLA_W transmitted with ACK, load data
 			times = times - 1;
@@ -64,7 +74,7 @@ void Master(int times, uint8_t SLA, int data[]){
 			TWISendData();
 		} else if ((TWSR & 0xF8) == 0x20){
 			//Not able to connect to slave
-			
+
 			//What happens here?
 			PORTA = (1<<PORTA0);
 			
@@ -85,20 +95,20 @@ void Master(int times, uint8_t SLA, int data[]){
 			
 			//What happens here?
 			
-		
-		//MASTER RECEIVER
+			
+			//MASTER RECEIVER
 		} else if((TWSR & 0xF8) == 0x40){
 			//SLA_R transmitted with ACK, wait for data
 			if(times == 1){
 				TWCR = (1<<TWINT)|(1<<TWEN);
 			} else {
-				times = times - 1;
+				//times = times - 1;
 				TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 				PORTA = (1<<PORTA1);
 			}
 		} else if((TWSR & 0xF8) == 0x48){
 			//SLA_R transmitted with NOT ACK
-		
+			
 			//What happens here?
 			
 			
@@ -112,12 +122,16 @@ void Master(int times, uint8_t SLA, int data[]){
 			} else {
 				//PORTA = TWDR;
 				times = times - 1;
+				//////////////////////////////////////////////////////////////////////////
+				sensorData[counter] = TWDR;
+				counter = counter + 1;
+				//////////////////////////////////////////////////////////////////////////
 				TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 			}
 		} else if((TWSR & 0xF8) == 0x58){
 			//Data byte received, NOT ACK returned, stop transmission
 			TWIStop();
 			break;
-		} 
+		}
 	}
 }

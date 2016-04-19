@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include "constants.h"
 
-int commandType;
+uint8_t commandType;
 int commandSubType;
 int commandValue;
 
@@ -33,6 +33,11 @@ int autonomousMode = 0;
 volatile int madeChange = 0;
 int dataOrder = 0;
 
+//////////////////////////////////////////////////////////////////////////
+int tempCount = 0;
+uint8_t tempArray[14];
+//////////////////////////////////////////////////////////////////////////
+
 
 //////////////////////////////////////////////////////////////////////////
 ////////////////////////////////HEADER////////////////////////////////////
@@ -44,9 +49,14 @@ void autonomousRotate(int direction);
 void updateSetting(int setting, int newValue);
 //////////////////////////////////////////////////////////////////////////
 
+char mes[16] = "";
+char mes2[16] = "";
+
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	PORTA = (0<<PORTA0);
+
+	
 
 	while(1){
 		//SLAVE RECEIVER
@@ -65,9 +75,7 @@ ISR(TWI_vect){
 				
 			} else if (commandType == controlCommand){
 
-				//////////////////////////////////////////////////////////////////////////
-				madeChange = 1;
-				//////////////////////////////////////////////////////////////////////////				
+						
 
 				if (dataOrder == 1){
 					commandSubType = TWDR;
@@ -80,16 +88,25 @@ ISR(TWI_vect){
 				
 			} else if (commandType == sensorCommand){
 				
-
+				//////////////////////////////////////////////////////////////////////////
+				madeChange = 1;
+				//////////////////////////////////////////////////////////////////////////
 				
-				if (dataOrder == 1){
+				tempArray[tempCount] = TWDR;
+				tempCount = tempCount + 1;
+				
+				if (tempCount == 14){
+					tempCount = 0;
+				}
+				
+				/*if (dataOrder == 1){
 					commandSubType = TWDR;
 					dataOrder = 2;
 				} else if (dataOrder == 2){
 					commandValue = TWDR;
 					updateSensorData(commandSubType, commandValue);
 					dataOrder = 1;	
-				}
+				}*/
 				
 			} else if (commandType == settingCommand){
 				
@@ -296,7 +313,7 @@ void updateSetting(int setting, int newValue)
 
 int main(void)
 {
-	char *mes = "";
+	
 
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
@@ -304,14 +321,22 @@ int main(void)
 	initLCD();
 	writeTempMessage("Hej hej :)","//Styrmodul");
 	sei();
-	sprintf(mes, "%d %d %d", commandType, commandSubType, commandValue);
+	sprintf(mes, "%d %d %d", 10, 20, 200);
 	lcdWriteBottomRow(mes);
+	uint8_t itsTime = 10;
 	while(1)
 	{
 		if (madeChange == 1){
-			sprintf(mes, "%d %d %d", commandType, commandSubType, commandValue);
-			lcdWriteBottomRow(mes);
+			if (itsTime == 0){
+			sprintf(mes, "%d - %d", tempArray[1], tempArray[3]);
+			lcdWriteTopRow(mes);
+			sprintf(mes2, "%d - %d - %d", tempArray[5], tempArray[9], tempArray[7]);
+			lcdWriteBottomRow(mes2);
 			madeChange = 0;
-		}
+			itsTime = 10;
+			} else {
+				itsTime = itsTime - 1;
+			}
+		} 
 	}
 }
