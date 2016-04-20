@@ -20,24 +20,30 @@ int commandSubType;
 int commandValue;
 
 int forwardSensor;
-int sideSensors[4][5];
+uint8_t sideSensors[4][5];
 
-//PD-contorller
-float P;
-float D;
-float K;
+//PD-controller
+float P = 1;
+float D = 1;
+float K = 0.1;
+
+int distance;
+int oldDistance;
 
 //Control mode (0 = manual control, 1 = autonomous mode)
-int autonomousMode = 0;
+int autonomousMode = 1;
 
-volatile int madeChange = 0;
-int dataOrder = 0;
+volatile int madeChange = 1;
+volatile uint8_t dataOrder;
 
 //////////////////////////////////////////////////////////////////////////
 int tempCount = 0;
 uint8_t tempArray[14];
 //////////////////////////////////////////////////////////////////////////
 
+int y_out;
+float p_out;
+float d_out;
 
 //////////////////////////////////////////////////////////////////////////
 ////////////////////////////////HEADER////////////////////////////////////
@@ -83,30 +89,37 @@ ISR(TWI_vect){
 				} else if (dataOrder == 2){
 					commandValue = TWDR;
 					updateControl(commandSubType, commandValue);
-					dataOrder = 1;
 				}
 				
 			} else if (commandType == sensorCommand){
 				
 				//////////////////////////////////////////////////////////////////////////
-				madeChange = 1;
+				
+				
 				//////////////////////////////////////////////////////////////////////////
 				
-				tempArray[tempCount] = TWDR;
+				/*tempArray[tempCount] = TWDR;
 				tempCount = tempCount + 1;
 				
 				if (tempCount == 14){
 					tempCount = 0;
-				}
+				}*/
 				
-				/*if (dataOrder == 1){
+				 //Should be working:
+				if (dataOrder % 2 == 1){
 					commandSubType = TWDR;
-					dataOrder = 2;
-				} else if (dataOrder == 2){
+					dataOrder =  dataOrder + 1;
+				} else {
 					commandValue = TWDR;
 					updateSensorData(commandSubType, commandValue);
-					dataOrder = 1;	
-				}*/
+					dataOrder = dataOrder + 1;	
+					if (dataOrder == 15){
+						dataOrder = 0;
+						updateControl(1,50);
+					
+					}
+				}
+				
 				
 			} else if (commandType == settingCommand){
 				
@@ -155,15 +168,20 @@ void updateSensorData(int sensor, int data)
 {
 	int i;
 	if (sensor <= 4){
-
-		for(i = 0; i < 4; ++i){
-			sideSensors[sensor][i + 1] = sideSensors[sensor][i];
+		
+		//Shift down...
+		for(i = 3; i >= 0; --i){
+			sideSensors[sensor - 1][i + 1] = sideSensors[sensor - 1][i];
 		}
-		sideSensors[sensor][0] = data;
+		
+		sideSensors[sensor - 1][0] = data;
 		
 	} else if (sensor == 5){
 		forwardSensor = data;
 	}
+	
+	//TODO: Other sensors
+	
 }
 
 void updateControl(int direction, int controlSetting)
@@ -275,7 +293,26 @@ void updateControl(int direction, int controlSetting)
 */
 void autonomousForward(void)
 {
-	//TODO: code
+	distance = (sideSensors[1][0] + sideSensors[3][0])/2;
+	oldDistance = (sideSensors[1][4] + sideSensors[3][4])/2;
+	
+
+	p_out = P * (distance - 100);
+	d_out = D * (distance - oldDistance);
+
+	 y_out = K * (p_out + d_out);
+
+	if(y_out < 0) {
+		rightWheelPair(40, 1);
+		leftWheelPair(40 - y_out, 1);
+
+	} else {
+		rightWheelPair(40 + y_out, 1);
+		leftWheelPair(40, 1);
+
+	}
+	
+	madeChange = 1;
 }
 
 /**
@@ -298,13 +335,13 @@ void updateSetting(int setting, int newValue)
 			autonomousMode = newValue;
 			break;
 		case 2:
-			P = newValue/100.0;
+			P = ((double) newValue)/100.0;
 			break;
 		case 3:
-			D = newValue/100.0;
+			D = ((double) newValue)/100.0;
 			break;
 		case 4:
-			K = newValue/10.0;
+			K = ((double) newValue)/10.0;
 			break;
 		default:
 			break;
@@ -313,30 +350,27 @@ void updateSetting(int setting, int newValue)
 
 int main(void)
 {
+	int lCDCounter = 0;
 	
-
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
 	initPWM();
 	initLCD();
-	writeTempMessage("Hej hej :)","//Styrmodul");
+	//writeTempMessage("Hej hej :)","//Styrmodul");
 	sei();
 	sprintf(mes, "%d %d %d", 10, 20, 200);
 	lcdWriteBottomRow(mes);
-	uint8_t itsTime = 10;
+	
+	autonomousMode = 1;
+	//updateControl(1,50);
 	while(1)
 	{
 		if (madeChange == 1){
-			if (itsTime == 0){
-			sprintf(mes, "%d - %d", tempArray[1], tempArray[3]);
+			sprintf(mes, "y: %d", y_out);
 			lcdWriteTopRow(mes);
-			sprintf(mes2, "%d - %d - %d", tempArray[5], tempArray[9], tempArray[7]);
+			sprintf(mes2, "%d - %d", (uint8_t) d_out, (uint8_t) p_out);
 			lcdWriteBottomRow(mes2);
 			madeChange = 0;
-			itsTime = 10;
-			} else {
-				itsTime = itsTime - 1;
-			}
 		} 
 	}
 }
