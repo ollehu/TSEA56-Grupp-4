@@ -6,7 +6,7 @@
 
 
 
-int styrAutonomt[] = {0x00, 0x02}; //Kommunikations-ID, styrkommando
+int styrAutonomt[] = {0x00, 0x02}; //Kommunikations-ID, styrkommando, vinkel/sträcka(1)
 int styrManuellt[] = {0x00, 0x02, 0x00}; //Kommunikations-ID, styrkommando, hastighet
 
 int SLA_sensor_R = 0xCB;
@@ -15,7 +15,7 @@ int SLA_styr_R = 0xCD;
 int SLA_styr_W = 0xCC;
 
 int counterComputer = 0;
-int sendToComputer = 1; //Hur ofta sensordata ska skickas till datorn
+int sendToComputer = 1; //How often sensoredata is sent to the computer
 
 int data = 0;
 int recieved;
@@ -69,7 +69,7 @@ ISR(USART0_RX_vect){
 	}
 }
 
-ISR(INT1_vect){ //Avbrott styr
+ISR(INT1_vect){ //Interrupt from controller module
 	//1. Välj ny modul att utforska
 	
 	//2. Skicka styrkommando till styrmodulen enligt beslut i 1.
@@ -78,16 +78,16 @@ ISR(INT1_vect){ //Avbrott styr
 	//SENSORDATA KOMMER I AVBROTTET FRÅN SENSORMODULEN!
 }
 
-ISR(INT2_vect){ //Avbrott sensor
+ISR(INT2_vect){ //Interrupt from sensor module
 	counterComputer = counterComputer + 1;
 
-	//1. Hämta sensordata från sensormodulen
+	//Get data from module
 	Master(15,SLA_sensor_R,sensorData);
 	
-	//2. Skicka sensordata till styrmodulen
+	//send the collected data to styr module
 	Master(15,SLA_styr_W,sensorData);
 	
-	//3. Skicka sensordata till datormodulen
+	//send the collected data to the computer
 
 		for(int i = 0; i < 15; i++){
 			btSend(sensorData[i]);
@@ -122,7 +122,7 @@ int main(void)
 					btSend(switchMode[i]);
 				}
 				
-				//Meddela styrmodulen
+				//Notify controller module
 				Master(3,SLA_styr_W,switchMode);
 			}
 		} else {
@@ -136,14 +136,14 @@ int main(void)
 					btSend(switchMode[i]);
 				}
 				
-				//Meddela styrmodulen
+				//Notify controller module
 				Master(3,SLA_styr_W,switchMode);
 			}
 		}
 		
 		
 		if (autodrive == 0) { // Manual mode
-			//Do nothing...?
+			//Do nothing
 			} else if (autodrive == 1) { // Autonomous mode
 			//Send map to computer
 		}

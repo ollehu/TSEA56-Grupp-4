@@ -11,29 +11,28 @@ volatile int sensorData[15];
 
 void TWIStart(void){
 	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWSTA)|(1<<TWEN);
-	//|(1<<TWIE);
 }
 
 void TWIChooseSlave(void){
 	TWCR = (1<<TWINT)|(1<<TWEA)|(0<<TWSTA)|(1<<TWEN);
-	//|(1<<TWIE);
 }
 
 void TWISendData(void){
 	TWCR &= ~(1<<TWSTA);
 	TWCR &= ~(1<<TWSTO);
 	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWEN);
-	//|(1<<TWIE);
 }
 
 void TWIStop(void){
 	TWCR = (0<<TWSTA)|(1<<TWINT)|(1<<TWEA)|(1<<TWSTO)|(1<<TWEN);
-	//|(1<<TWIE);
 }
 
 void TWISetup(){
 	//Enable TWI
 	TWCR = (1<<TWEA)|(1<<TWEN);
+	
+	//Set clock frequency for SCL
+	TWBR = (1<<TWBR6)|(1<<TWBR1);
 }
 
 void interruptSetup(){
@@ -45,12 +44,9 @@ void interruptSetup(){
 }
 
 void Master(int times, uint8_t SLA, int *data){
-	DDRA = 0xFF;
 	
 	int counter = 0;
 	
-	//Set clock frequency for SCL
-	TWBR = (1<<TWBR6)|(1<<TWBR1);//Varför här?
 	
 	//Send START condition
 	TWIStart();
@@ -76,7 +72,7 @@ void Master(int times, uint8_t SLA, int *data){
 			//Not able to connect to slave
 
 			//What happens here?
-			PORTA = (1<<PORTA0);
+			
 			
 			
 		} else if((TWSR & 0xF8) == 0x28){
@@ -104,7 +100,6 @@ void Master(int times, uint8_t SLA, int *data){
 			} else {
 				//times = times - 1;
 				TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
-				PORTA = (1<<PORTA1);
 			}
 		} else if((TWSR & 0xF8) == 0x48){
 			//SLA_R transmitted with NOT ACK
@@ -116,11 +111,9 @@ void Master(int times, uint8_t SLA, int *data){
 			//Data byte received, ACK returned, wait for data
 			if(times == 1){
 				sensorData[counter] = TWDR;
-				//PORTA = sensorData[counter];
 				counter = counter + 1;
 				TWCR = (1<<TWINT)|(1<<TWEN);
 			} else {
-				//PORTA = TWDR;
 				times = times - 1;
 				//////////////////////////////////////////////////////////////////////////
 				sensorData[counter] = TWDR;

@@ -8,20 +8,20 @@
 
 #include <avr/io.h>
 
-int direction = 0;// 0: norrut, 1: österut, 2: söderut, 3: västerut
+int direction = 0;// 0: north, 1: east, 2: south, 3: west
 int map[28][28] = {{0}};
 int path[28][28] = {{0xFF}}};
 int position[2] = {14,14};
 int walls[3];
 
-void readSensors()
+void readSensors() //In which directions are there walls?
 {
 	walls[3] = {0, 0, 0};
 	map[position[0]][position[1]] = 0;
 	
-	//Väderstreck: norrut, österut, söderut, västerut
+	//Cardinal direction: north, east, south, west
 	if(direction == 0){
-		//Rakt fram, höger, !!öppet söderut!!, vänster		
+		//Straight ahead, right, !!south!!, left		
 		if (sensorData[5] ger vägg){
 			map[position[0]][position[1]+1] = 1;
 			walls[1] = 1;
@@ -38,7 +38,7 @@ void readSensors()
 		}
 		
 	} else if(direction == 1) {
-		//Vänster, rakt fram, höger, !!öppet västerut!!
+		//Left, straight ahead, right, !!west!!
 		if (Vägg åt vänster){
 			map[position[0]][position[1]+1] = 1;
 			walls[2] = 1;
@@ -54,7 +54,7 @@ void readSensors()
 			walls[0] = 1;
 		}		
 	} else if(direction == 2) {
-		//!!öppet norrut!!, vänster, rakt fram, höger
+		//!!north!!, left, straight ahead, right
 		if (Vägg åt vänster){
 			map[position[0]+1][position[1]] = 1;
 			walls[2] = 1;
@@ -72,7 +72,7 @@ void readSensors()
 		
 		
 	} else if (direction == 3){
-		//Höger, !!öppet österut!!, vänster, rakt fram
+		//Right, !!east!!, left, straight ahead
 		if (Vägg åt höger){
 			map[position[0]][position[1]+1] = 1;
 			walls[0] = 1;
@@ -154,18 +154,18 @@ void chooseDirection()
 
 void newDirection(int direction, int rotation){
 	if(((direction == 0) & (rotation == 0x03)) | ((direction == 2) & (rotation == 0x04))){
-		direction = 1; //österut
+		direction = 1; //east
 	} else if (((direction == 0) & (rotation == 0x04)) | ((direction == 2) & (rotation == 0x03))){
-		direction = 3; //västerut
+		direction = 3; //west
 	} else if(((direction == 1) & (rotation == 0x03)) | ((direction == 3) & (rotation == 0x04))){
-		direction = 2; //söderut
+		direction = 2; //south
 	} else {
-		direction = 0; //norrut
+		direction = 0; //north
 	}
 }
 
 int main(void)
 {
-	readSensors(); //Måste fixas
+	readSensors(); //Sensor values to compare with?
 	chooseDirection();
 }

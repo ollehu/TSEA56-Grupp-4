@@ -1,0 +1,23 @@
+== Karta & Avsökning==
+
+Map
+
+Oavsökt modul = 0
+Vägg = 1
+Avsökt modul = 2
+
+Kartan representeras av en 28x28 array som vid start är fylld med nollor. I varje ny modul utvärderas antal väggar som uppdateras med 1 i Map på rätt position
+Varje avsökt modul uppdateras på rätt position i Map till 2. Först när alla värden runt nuvarande position är 1 eller 2 åker roboten tillbaka längs vägen den kom ifrån från början.
+
+
+
+Path
+
+
+En annan 28x28 array fylls med värden under tiden som roboten utforskar för att sedan kunna användas för att beräkna kortaste väg.
+Denna är fylld med 255 från början. Startpositionen blir i denna 0. När roboten åker till en ny modul räknas den nya positionen i arrayen upp med ett från föregående position. 
+Vid händelse av återvändsgränd åker roboten tillbaka till närmsta modul som har oavsökta vägar, det vill säga följer path nedåtgående tills en position där map har oavsökta vägar har hittats.  
+
+Målet får i Path ett värde och om målet hittas via annan väg får målet om denna väg är bättre ett nytt värde. 
+
+Kortaste väg kan sedan enkelt fås fram ur Path.
