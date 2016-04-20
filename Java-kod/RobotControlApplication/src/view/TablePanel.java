@@ -16,27 +16,27 @@ import javax.swing.JTextArea;
 public class TablePanel extends JPanel{
 
 	private Animator animator;
-	
-	private ArrayList<SensorLabel> sensorList;
-	
-	private ArrayList<ControlCoefficientPanel> controlList;
-	
-	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
-									"IR B/L", "Lidar Lite", "Angular velocity",
-									"Angle to wall"};
 
-	private String[] sensorUnits = {"cm", "cm", "cm",
-									"cm", "cm", "deg/s",
-									"deg"};
-	
+	private ArrayList<SensorLabel> sensorList;
+
+	private ArrayList<ControlCoefficientPanel> controlList;
+
+	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
+			"IR B/L", "Lidar Lite", "Angular velocity",
+	"Angle to wall"};
+
+	private String[] sensorUnits = {"mm", "mm", "mm",
+			"mm", "cm", "deg/s",
+	"deg"};
+
 	private String[] controlCoefficients = {"P", "D", "K"};
-	
+
 	public TablePanel(Animator animator) {
 		this.animator = animator;
-		
+
 		sensorList = new ArrayList<>();
 		controlList = new ArrayList<>();
-		
+
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.insets = new Insets(2, 2, 2, 2);
@@ -44,36 +44,56 @@ public class TablePanel extends JPanel{
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
-		
+
 		// add sensors to sensor list
 		for(int index = 0; index < sensorNames.length; index++) {
 			sensorList.add(new SensorLabel(sensorNames[index], sensorUnits[index]));
 		}
-		
+
 		// add control coefficients to list
 		for(String coeff: controlCoefficients) {
 			controlList.add(new ControlCoefficientPanel(coeff, animator));
 		}
-		
+
 		// add elements in lists to panel
 		int index = 0;
 		for(SensorLabel sensorLabel : sensorList) {
 			constraints.gridy = index;
 			this.add(sensorLabel, constraints);
-			
+
 			index++;
 		}
 		for(ControlCoefficientPanel controlPanel : controlList) {
 			constraints.gridy = index;
 			this.add(controlPanel, constraints);
-			
+
 			index++;
 		}
 	}
-	
+
 	public void setAutonomousMode(boolean isAutonomousModeOn) {
 		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
 			controlCoefficientPanel.setAutonomousMode(isAutonomousModeOn);
 		}
+	}
+
+	public void updateSensorValues(int[] sensorValues) {
+		int index = 0;
+		for(SensorLabel sensor : sensorList) {
+			sensor.setValue(sensorValues[index]);
+			index++;
+		}
+	}
+	
+	public int[] getControllerCoefficients() {
+		int[] controllerCoefficients = new int[3];
+		
+		int index = 0;
+		for(ControlCoefficientPanel coefficientPanel : controlList) {
+			controllerCoefficients[index] = coefficientPanel.getControlValue();
+			index++;
+		}
+		
+		return controllerCoefficients;
 	}
 }

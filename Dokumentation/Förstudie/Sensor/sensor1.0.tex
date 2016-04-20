@@ -202,14 +202,29 @@ Vissa IR-sensorer går även att använda som vinkelmätningssensor, genom att s
 Ytterligare en möjlighet med en IR-sensor är att mäta ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt. \cite{website:cmu}
 
 \subsection{Lasersensor}
-Det finns olika typer av lasersensorer som använder olika teknikerfoch har olika funktioner. En typ är den avståndsmätande elektrooptiska sensorn som sänder ut en laserstråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) är räknas fram enligt ekvation \ref{laser_eq}, där c står för ljusets hastighet i luft. \cite{website:mti}
+Det finns olika typer av lasersensorer som använder olika tekniker och har olika funktioner. En typ är den elektrooptiska sensorn. Den har flera användningsområden, bland annat kan den anpassa ljuset av till exempel en lampa beroende av omgivningens ljus samt mäta avstånd till olika objekt. Avstånd mäts genom att sensorn sänder ut en laserstråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) är räknas fram enligt ekvation \ref{laser_eq}, där c står för ljusets hastighet i luft. \cite{website:mti}
 
 
 \begin{equation}\label{laser_eq}
-	\textrm{D} = \frac {c \times t}{2}						
+\textrm{D} = \frac {c \times t}{2} 
 \end{equation}
 
-En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. \cite{website:mti}
+En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. Genom att sända två laserstrålar från två olika positioner erhålls två vinklar enligt figur \ref{Triangulation}. 
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/Triangulation}
+	\caption{\textit{Illustration av triangulering.} \label{Triangulation}}
+\end{figure}
+
+Med hjälp av beräkningar enligt ekvation \ref{triangulation} fås avståndet till objektet. \cite{website:triangulation} \cite{website:mti}
+
+\begin{equation}\label{triangulation}
+\textrm{D} = l\times\frac {sin\alpha sin\beta}{sin(\alpha + \beta)} 
+\end{equation}
+
+
+
 
 \subsection{Gyroskop}
 För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyroskop användas. Genom att mäta vinkelhastigheten på rotationen (\textomega) kan storleken på rotationen (\straightphi) uppskattas genom integrering, enligt ekvation \ref{gyro}, där t står för tiden som rotationen har pågått. \cite{Gyroscope}

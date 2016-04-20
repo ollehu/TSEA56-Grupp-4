@@ -35,6 +35,7 @@
 # Eclipse-filer
 .metadata/
 .recommenders/
+Java-kod/Testenvironment/
 
 # Mac IDE files
 *.swp

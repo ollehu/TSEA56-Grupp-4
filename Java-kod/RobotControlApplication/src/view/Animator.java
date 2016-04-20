@@ -50,7 +50,7 @@ public class Animator {
 		// create and add content panels
 		robotControlPanel = new RobotControlPanel(handler, this);
 		mapPanel = new MapPanel();
-		graphPanel = new GraphPanel();
+		graphPanel = new GraphPanel(this);
 		tablePanel = new TablePanel(this);
 		
 		constraints.insets = new Insets(2, 2, 2, 2);
@@ -107,5 +107,18 @@ public class Animator {
 	public Handler getHandler() {
 		return handler;
 	}
+
+	public GraphPanel getGraphPanel() {
+		return graphPanel;
+	}
+
+	public MapPanel getMapPanel() {
+		return mapPanel;
+	}
+
+	public TablePanel getTablePanel() {
+		return tablePanel;
+	}
+	
 	
 }

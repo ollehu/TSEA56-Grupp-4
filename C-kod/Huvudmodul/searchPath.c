@@ -10,6 +10,7 @@
 
 int direction = 0;// 0: norrut, 1: österut, 2: söderut, 3: västerut
 int map[28][28] = {{0}};
+int path[28][28] = {{0xFF}}};
 int position[2] = {14,14};
 int walls[3];
 
@@ -92,14 +93,28 @@ void readSensors()
 void updateCoordinates()
 {
 	if (direction == 0){
+		if (path[position[0]][position[1]+1] == 0xFF){
+			path[position[0]][position[1]+1] = path[position[0]][position[1]] + 1;
+		}
 		position[1] = position[1] + 1;
 	} else if (direction == 1){
+		if (path[position[0]+1][position[1]] == 0xFF){
+			path[position[0]+1][position[1]] = path[position[0]][position[1]] + 1;
+		}
 		position[0] = position[0] + 1;
 	} else if (direction == 2){
+		if (path[position[0]][position[1]-1] == 0xFF){
+			path[position[0]][position[1]-1] = path[position[0]][position[1]] + 1;
+		}
 		position[1] = position[1] - 1;
 	} else {
+		if (path[position[0]-1][position[1]] == 0xFF){
+			path[position[0]-1][position[1]] = path[position[0]][position[1]] + 1;
+		}
 		position[0] = position[0] - 1;
 	}
+	
+	map[position[0]][position[1]] = 2;
 }
 
 void chooseDirection()

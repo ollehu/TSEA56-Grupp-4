@@ -83,7 +83,7 @@ ISR(TWI_vect){
 				} else if (dataOrder == 2){
 					commandValue = TWDR;
 					updateControl(commandSubType, commandValue);
-					dataOrder = 1;
+					dataOrder = 0;
 				}
 				
 			} else if (commandType == sensorCommand){
@@ -99,13 +99,16 @@ ISR(TWI_vect){
 					tempCount = 0;
 				}
 				
-				/*if (dataOrder == 1){
+				/* //Should be working:
+				if (dataOrder == 15){
+					dataOrder = 0;
+				} else if (dataOrder % 2 == 1){
 					commandSubType = TWDR;
-					dataOrder = 2;
-				} else if (dataOrder == 2){
+					dataOrder =  dataOrder + 1;
+				} else {
 					commandValue = TWDR;
 					updateSensorData(commandSubType, commandValue);
-					dataOrder = 1;	
+					dataOrder = dataOrder + 1;	
 				}*/
 				
 			} else if (commandType == settingCommand){
@@ -155,15 +158,20 @@ void updateSensorData(int sensor, int data)
 {
 	int i;
 	if (sensor <= 4){
-
+		
+		//Shift down...
 		for(i = 0; i < 4; ++i){
 			sideSensors[sensor][i + 1] = sideSensors[sensor][i];
 		}
+		
 		sideSensors[sensor][0] = data;
 		
 	} else if (sensor == 5){
 		forwardSensor = data;
 	}
+	
+	//TODO: Other sensors
+	
 }
 
 void updateControl(int direction, int controlSetting)
@@ -314,7 +322,6 @@ void updateSetting(int setting, int newValue)
 int main(void)
 {
 	
-
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
 	initPWM();
