@@ -1,6 +1,18 @@
 #include <avr/io.h>
 
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+unsigned char SPI_send(unsigned char output);
+void SPI_MasterInit(void);
+void initIC(void);
+void initADC(void);
+unsigned short AR_read(void);
+void timer2_init();
+void converionStart(void);
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
+
 void init_counter(void)
 {
 	DDRB |= (1<<DDB3);
@@ -85,7 +97,7 @@ unsigned short AR_read(void){
 	
 	return ((high & 0x0F) << 8) + low;
 }
-
+/*
 void timer2_init()
 {
 	// 30 Hz
@@ -105,6 +117,27 @@ void timer2_init()
 	// initialize overflow counter variable
 	//tot_overflow = 0;
 
+	// connect interrupt in main module
+	DDRD |= (1<<PORTD0);
+}*/
+
+void timer2_init()
+{
+    // set up timer with prescaler = 256
+    TCCR2B |= (1 << CS22)|(1 << CS21);
+  
+    // initialize counter
+    TCNT2 = 0;
+  
+    // enable overflow interrupt
+    TIMSK2 |= (1 << TOIE2);
+  
+    // enable global interrupts
+    sei();
+  
+    // initialize overflow counter variable
+    tot_overflow = 0;
+	
 	// connect interrupt in main module
 	DDRD |= (1<<PORTD7);
 }

@@ -2,7 +2,7 @@
  * Sensormodul.c
  *
  * Created: 4/19/2016 8:43:09 AM
- *  Author: lovgu777
+ *  Author: zimin415
  */ 
 
 
@@ -59,17 +59,22 @@ uint16_t forward_distance;
 uint16_t up_value, down_value;
 uint16_t pwm16bit = 65535;
 int overflow_count = 0;
-int count_1 = 0;
+volatile int count_1 = 0;
 
 uint32_t answer;
 
 int firstRun = 0;
 
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 unsigned char SPI_send(unsigned char output);
 void SPI_MasterInit(void);
 void initIC(void);
 void initADC(void);
 unsigned short AR_read(void);
+int getMedian(int arr[]);
+//////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
@@ -137,13 +142,13 @@ ISR (TIMER1_CAPT_vect)
 	}
 }
 
-/*ISR(TIMER2_COMPA_vect)
+ISR(TIMER2_OVF_vect)
 {
 	// keep a track of number of overflows
 	tot_overflow++;
-	PORTD ^= (1 << PORTD0);
+	//PORTD ^= (1 << PORTD0);
 	//PORTD &= ~(1 << PORTD0);
-}*/
+}
 
 
 ISR (INT0_vect)
@@ -233,6 +238,7 @@ int getMedian(int arr[])
 }
 
 
+
 int main (void)
 {
 	
@@ -247,9 +253,10 @@ int main (void)
 	init_counter();
 	timer2_init();
 	
-	// Enables global interrupt
+	sei();// Enables global interrupt
 
 	SPI_MasterInit();
+	
 	
 	while(1) { 
 		PORTB |= (1<<PORTB0);
@@ -259,7 +266,7 @@ int main (void)
 		
 		sensorData[9] = 5;
 		sensorData[10] = (0.0127*forward_distance - 4.3678); //SI_lidar
-		SI_IR1 = 10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016);
+		SI_IR1 = (10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
 		SI_IR2 = 10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363);
 		SI_IR3 = 10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186);
 		SI_IR4 = 10*(-0.00002338455*Distance_4*Distance_4*Distance_4+0.0071*Distance_4*Distance_4 -0.786*Distance_4 + 37.0525);
@@ -271,45 +278,20 @@ int main (void)
 			detected = 0;
 		}
 		
-		if(count_1 == 0){
-			SI_IR1_array[0] = SI_IR1;
-			SI_IR2_array[0] = SI_IR2;
-			SI_IR3_array[0] = SI_IR3;
-			SI_IR4_array[0] = SI_IR4;
-			count_1 = count_1+1;
-		}
-		else if(count_1 == 1){
-			SI_IR1_array[1] = SI_IR1;
-			SI_IR2_array[1] = SI_IR2;
-			SI_IR3_array[1] = SI_IR3;
-			SI_IR4_array[1] = SI_IR4;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 2){
-			SI_IR1_array[2] = SI_IR1;
-			SI_IR2_array[2] = SI_IR2;
-			SI_IR3_array[2] = SI_IR3;
-			SI_IR4_array[2] = SI_IR4;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 3){
-			SI_IR1_array[3] = SI_IR1;
-			SI_IR2_array[3] = SI_IR2;
-			SI_IR3_array[3] = SI_IR3;
-			SI_IR4_array[3] = SI_IR4;
-			count_1 = count_1 + 1;
-		}
-		else if(count_1 == 4){
-			SI_IR1_array[4] = SI_IR1;
-			SI_IR2_array[4] = SI_IR2;
-			SI_IR3_array[4] = SI_IR3;
-			SI_IR4_array[4] = SI_IR4;
-			count_1 = 0;
-		}
+				
+			SI_IR1_array[count_1] = SI_IR1;
+			SI_IR2_array[count_1] = SI_IR2;
+			SI_IR3_array[count_1] = SI_IR3;
+			SI_IR4_array[count_1] = SI_IR4;
+			count_1++;
+			
+			if (count_1 == 5){
+				count_1 = 0;
+			}
 		
-		sensorData[1] = 1;
+		sensorData[1] = 1; 
 		sensorData[2] = getMedian(SI_IR1_array); //Höger fram
-		sensorData[3] = 2;
+		sensorData[3] = 2; 
 		sensorData[4] = getMedian(SI_IR3_array); //Vänster fram
 		sensorData[5] = 3;
 		sensorData[6] = getMedian(SI_IR2_array); //Höger bak
@@ -321,7 +303,7 @@ int main (void)
 		/*for(int i = 1;i<15;i++){
 			sensorData[i] = i;
 		}*/
-		sei();
+		//sei();
 		/*DDRD = (1<<PORTD0);
 		_delay_ms(50);
 		PORTD |= (1<<PORTD0);
@@ -329,17 +311,19 @@ int main (void)
 		PORTD &= ~(1<<PORTD0);*/
 		
 
-	  /*if (tot_overflow >= 11)  // NOTE: '>=' is used
+	  if (tot_overflow >= 11)  // NOTE: '>=' is used
 	        {
 		        // check if the timer count reaches 53
 		        if (TCNT2 >= 53) // 47155)
 		        {
 			             // send interrupt
+						 PORTD |= (1<<PORTD7);
 			        TCNT2 = 0;            // reset counter
-			        tot_overflow = 0;     // reset overflow counter'
+			        tot_overflow = 0;     // reset overflow counter
+						PORTD &= ~(1<<PORTD7);
 					
 		        }
-	        }*/
+	        }
 	
 
 		
