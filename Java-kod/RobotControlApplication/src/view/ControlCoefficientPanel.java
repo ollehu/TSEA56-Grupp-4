@@ -25,7 +25,7 @@ public class ControlCoefficientPanel extends JPanel{
 	private JTextField valueField;
 	
 	private String name;
-	private double value = -1;
+	private double value = 1;
 	
 	public ControlCoefficientPanel(String name, Animator animator) {
 		this.name = name;
