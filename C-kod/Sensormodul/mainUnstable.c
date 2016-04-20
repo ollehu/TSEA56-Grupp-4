@@ -13,7 +13,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#include "initiation_ceremony.h"
+#include "sensorInit.h"
 #include "I2C_slave.h"
 
 #define SCK PORTB7
@@ -40,7 +40,7 @@ int SI_IR2;
 int SI_IR3;
 int SI_IR4;
 
-volatile uint8_t tot_overflow = 0;
+//volatile uint8_t tot_overflow = 0;
 
 double Distance_1 = 0;
 double Distance_2 = 0;
@@ -72,6 +72,7 @@ void SPI_MasterInit(void);
 void initIC(void);
 void initADC(void);
 unsigned short AR_read(void);
+int processLidar(double lidarValue);
 int getMedian(int arr[]);
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
@@ -212,6 +213,18 @@ ISR(ADC_vect){ //IR-SENSOR
 	ADCSRA |= (1<<ADSC);	
 }
 
+int processLidar(double lidarValue)
+{
+	int lidarValueInt = (int) lidarValue;
+	
+	if(lidarValueInt > 245)
+	{
+		return 245;
+	} else {
+		return lidarValueInt;
+	}
+}
+
 int getMedian(int arr[])
 {
 		int i, j, swap;
@@ -265,7 +278,9 @@ int main (void)
 		total = total + answer - 1996.5;
 		
 		sensorData[9] = 5;
-		sensorData[10] = (0.0127*forward_distance - 4.3678); //SI_lidar
+		//sensorData[10] = processLidar(0.0127*forward_distance - 4.3678); //SI_lidar
+		//TODO fixa lidar
+		sensorData[10] = 40;
 		SI_IR1 = (10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
 		SI_IR2 = 10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363);
 		SI_IR3 = 10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186);
@@ -290,11 +305,11 @@ int main (void)
 			}
 		
 		sensorData[1] = 1; 
-		sensorData[2] = getMedian(SI_IR1_array); //Höger fram
+		sensorData[2] = getMedian(SI_IR2_array); //Höger fram
 		sensorData[3] = 2; 
 		sensorData[4] = getMedian(SI_IR3_array); //Vänster fram
 		sensorData[5] = 3;
-		sensorData[6] = getMedian(SI_IR2_array); //Höger bak
+		sensorData[6] = getMedian(SI_IR1_array); //Höger bak
 		sensorData[7] = 4;
 		sensorData[8] = getMedian(SI_IR4_array); // Vänster bak
 		
