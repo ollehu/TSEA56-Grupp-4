@@ -22,6 +22,13 @@ int commandValue;
 int forwardSensor;
 uint8_t sideSensors[4][5];
 
+/////////////////////////////REGLERING/////////////////////////////////////////////
+uint8_t wallLeft = 1;
+uint8_t wallRight = 1;
+
+uint8_t frontIndex = 1;
+uint8_t backIndex = 3;
+
 //PD-controller
 float P = 1;
 float D = 1;
@@ -29,6 +36,11 @@ float K = 0.1;
 
 int distance;
 int oldDistance;
+
+
+volatile uint8_t preferredSpeed = 40;
+volatile uint8_t preferredDistance = 100;
+
 
 //Control mode (0 = manual control, 1 = autonomous mode)
 int autonomousMode = 1;
@@ -293,25 +305,72 @@ void updateControl(int direction, int controlSetting)
 */
 void autonomousForward(void)
 {
-	distance = (sideSensors[1][0] + sideSensors[3][0])/2;
-	oldDistance = (sideSensors[1][4] + sideSensors[3][4])/2;
-	
-
-	p_out = P * (distance - 100);
-	d_out = D * (distance - oldDistance);
-
-	 y_out = K * (p_out + d_out);
-
-	if(y_out < 0) {
-		rightWheelPair(40, 1);
-		leftWheelPair(40 - y_out, 1);
-
+	if (sideSensors[1][0] == 245){
+		wallLeft = 0;
 	} else {
-		rightWheelPair(40 + y_out, 1);
-		leftWheelPair(40, 1);
-
+		wallLeft = 1;
+		frontIndex = 1;
+		backIndex = 3;
 	}
 	
+	if (sideSensors[2][0] == 245){
+		wallRight = 0;
+	} else {
+		wallRight = 1;
+		
+		if (wallLeft == 0){
+			frontIndex = 0;
+			backIndex = 2;
+		}
+	}
+	
+	if (wallRight == 0 && wallLeft == 0){
+		
+		rightWheelPair(preferredSpeed, 1);
+		leftWheelPair(preferredSpeed, 1);
+		
+	} else {
+		if (wallRight == 1 && wallLeft == 1){
+			preferredDistance = (sideSensors[frontIndex][0] + sideSensors[backIndex][0] + sideSensors[frontIndex - 1][0] + sideSensors[backIndex - 1][0])/4;
+		}
+	
+		distance = (sideSensors[frontIndex][0] + sideSensors[backIndex][0])/2;
+		oldDistance = (sideSensors[frontIndex][4] + sideSensors[backIndex][4])/2;
+	
+
+		p_out = P * (distance - 100);
+		d_out = D * (sideSensors[frontIndex][0] - sideSensors[backIndex][0]);
+
+		y_out = K * (p_out + d_out);
+
+		if (frontIndex == 0){
+			y_out = -y_out;
+		}
+	
+		if(y_out < 0) {
+		
+			if (preferredSpeed - y_out > 100){
+				rightWheelPair(100 + y_out, 1);
+				leftWheelPair(100, 1);
+			} else {
+				rightWheelPair(preferredSpeed + y_out/2, 1);
+				leftWheelPair(preferredSpeed - y_out/2, 1);
+			}
+		
+
+		} else {
+		
+			if (preferredSpeed + y_out > 100){
+				rightWheelPair(100, 1);
+				leftWheelPair(100 - y_out, 1);
+			} else {
+				rightWheelPair(preferredSpeed + y_out/2, 1);
+				leftWheelPair(preferredSpeed - y_out/2, 1);
+			}
+		}
+	
+	
+	}
 	madeChange = 1;
 }
 
@@ -343,6 +402,9 @@ void updateSetting(int setting, int newValue)
 		case 4:
 			K = ((double) newValue)/10.0;
 			break;
+		case 5:
+			preferredSpeed = newValue;
+			break;
 		default:
 			break;
 	}
@@ -350,7 +412,6 @@ void updateSetting(int setting, int newValue)
 
 int main(void)
 {
-	int lCDCounter = 0;
 	
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
@@ -366,9 +427,9 @@ int main(void)
 	while(1)
 	{
 		if (madeChange == 1){
-			sprintf(mes, "y: %d", y_out);
+			sprintf(mes, "F:%d B:%d", frontIndex, backIndex);
 			lcdWriteTopRow(mes);
-			sprintf(mes2, "%d - %d", (uint8_t) d_out, (uint8_t) p_out);
+			sprintf(mes2, "D:%d - S:%d", preferredDistance, preferredSpeed);
 			lcdWriteBottomRow(mes2);
 			madeChange = 0;
 		} 

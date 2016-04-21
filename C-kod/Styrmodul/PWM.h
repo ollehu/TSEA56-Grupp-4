@@ -62,12 +62,20 @@ void initPWM(void)
 */
 void leftWheelPair(uint8_t speed, uint8_t direction)
 {
-	if (direction == 1){
-		PORTD |= (1<<PORTD1);
+	if (speed >= 0){
+		if (direction == 1){
+			PORTD |= (1<<PORTD1);
 		} else {
-		PORTD &= ~(1<<PORTD1);
+			PORTD &= ~(1<<PORTD1);
+		}
+		if (speed >= 100){
+			speedLeft = 1000;	
+		} else {
+			speedLeft = speed*(1000/100);
+		}
+	} else {
+		speedLeft = 0;
 	}
-	speedLeft = speed*(1024/100);
 }
 
 /**
@@ -80,12 +88,20 @@ void leftWheelPair(uint8_t speed, uint8_t direction)
 */
 void rightWheelPair(uint8_t speed, uint8_t direction)
 {
-	if (direction == 1){
-		PORTD |= (1<<PORTD0);
+	if (speed >= 0){
+		if (direction == 1){
+			PORTD |= (1<<PORTD0);
 		} else {
-		PORTD &= ~(1<<PORTD0);
+			PORTD &= ~(1<<PORTD0);
+		}
+		if (speed >= 100){
+			speedRight = 1000;
+		} else {
+			speedRight = speed*(1000/100);
+		}
+	} else {
+		speedRight = 0;
 	}
-	speedRight = speed*(1024/100);
 }
 
 /**
