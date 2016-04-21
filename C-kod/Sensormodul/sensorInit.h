@@ -27,11 +27,12 @@ void init_counter(void)
 	
 }
 
-void initIC(void)
-{
-	TIMSK1 |= (1<<ICIE1)|(1<<TOIE1);
-	TCCR1B |= (1<<ICES1);
+void initTimer(void){
+	TIMSK1 |= (1<<ICIE1)|(1<<OCIE1A);
+	TCCR1A |= (1<<COM1A0);
+	TCCR1B |= (1<<ICNC1)|(1<<ICES1)|(1<<WGM12);
 	TCCR1B |= (1<<CS10);
+	OCR1A = 0x009F;
 }
 
 void SPI_MasterInit(void)

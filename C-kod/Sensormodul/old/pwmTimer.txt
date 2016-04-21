@@ -1,0 +1,49 @@
+/*
+ * pwmTimer.c
+ *
+ * Created: 4/21/2016 2:34:35 PM
+ *  Author: emiwa068
+ */ 
+
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+
+int pwmCount;
+int forwardDistance;
+
+ISR(TIMER1_CAPT_vect){
+	if (TCCR1B & (1<<ICES1)){
+		//Rising edge
+		pwmCount = 0;
+		TCCR1B &= ~(1<<ICES1);
+	} else {
+		//Falling edge
+		forwardDistance = pwmCount;
+		TCCR1B |= (1<<ICES1);
+	}
+}
+
+ISR(TIMER1_COMPA_vect){
+	PORTB ^= (1<<PORTB0);
+	pwmCount = pwmCount + 1;
+}
+
+void initTimer(void){
+	TIMSK1 |= (1<<ICIE1)|(1<<OCIE1A);
+	TCCR1A |= (1<<COM1A0);
+	TCCR1B |= (1<<ICNC1)|(1<<ICES1)|(1<<WGM12);
+	TCCR1B |= (1<<CS10);
+	OCR1A = 0x009F;
+}
+
+int main(void)
+{
+	initTimer();
+	DDRB |= (1<<DDB0);
+	sei();
+    while(1)
+    {
+        //TODO:: Please write your application code 
+    }
+}

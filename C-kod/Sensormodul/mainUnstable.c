@@ -55,6 +55,7 @@ int SI_IR4_array[5];
 
 //int angular_velocity = 0;
 int SI_lidar;
+
 uint16_t forward_distance;
 uint16_t up_value, down_value;
 uint16_t pwm16bit = 65535;
@@ -124,31 +125,22 @@ ISR(TWI_vect){
 	}
 }
 
-ISR (TIMER1_CAPT_vect)
-{
-
-	
+ISR(TIMER1_CAPT_vect){
 	if (TCCR1B & (1<<ICES1)){
 		//Rising edge
-		up_value = ICR1;
+		pwmCount = 0;
 		TCCR1B &= ~(1<<ICES1);
-		overflow_count = 0;
-		} else {
+	} else {
 		//Falling edge
-		down_value = ICR1;
+		forwardDistance = pwmCount;
 		TCCR1B |= (1<<ICES1);
-		forward_distance = down_value - up_value; //+ pwm16bit*overflow_count;
-		
-		
 	}
 }
 
-ISR(TIMER2_OVF_vect)
-{
-	// keep a track of number of overflows
-	tot_overflow++;
-	//PORTD ^= (1 << PORTD0);
-	//PORTD &= ~(1 << PORTD0);
+
+ISR(TIMER1_COMPA_vect){
+	PORTB ^= (1<<PORTB0);
+	pwmCount = pwmCount + 1;
 }
 
 
@@ -262,7 +254,7 @@ int main (void)
 
 	TWISetup(slaveAddress);
 	initADC();
-	initIC();
+	initTimer();
 	init_counter();
 	timer2_init();
 	
