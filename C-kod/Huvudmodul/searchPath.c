@@ -12,11 +12,11 @@ int direction = 0;// 0: north, 1: east, 2: south, 3: west
 int map[28][28]; //0: initial value, 1: wall, 2: visited, 3: target, 4: the starting point
 int path[28][28]; //FF initial value, AA blocked way, >0 steps from start
 int position[2] = {14,14};
-int walls[3];
+int walls[3]; //[0] = Right side, [1]: forward, [2]: right
 int target[2] = {0xFF,0xFF}; //Coordinates for target
 int z[2] = {0xFF,0xFF}; //Estimations of shortest path
 
-int *lastCommand; //Last send controller command
+int lastCommand[3]; //Last send controller command
 
 //Controller commands
 int oneForward[3] = {0xFF, 0x01, 0x01}; 
@@ -25,8 +25,12 @@ int rotateLeft[3] = {0xFF, 0x04, 0x5A};
 int rotate180[3] = {0xFF, 0x03, 0xB4};
 int falseCommand[3] = {0,0,0};
 
+uint8_t hasFoundWayBack = 0;
+int testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,1,1},{0,0,1}};
 
-void readSensors() //In which directions are there walls? 
+
+
+/*void readSensors() //In which directions are there walls? 
 {
 	walls[0] = 0;
 	walls[1] = 0;
@@ -103,7 +107,7 @@ void readSensors() //In which directions are there walls?
 		}
 	}
 }
-
+*/
 void redoPath()//Do we need this one...??? 
 {
 	switch(direction){
@@ -337,11 +341,12 @@ void searchPathInit() //Fills map and path, sets initial values
 int hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
 {
 	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
-	if((target[0] != 0xFF) && (target[1] != 0xFF)){
+	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
 		//
 	} else {
 		//Check sensors to see if target is found
-	}
+	}*/
+	return 0;
 }
 
 void updateTargetFound()//Updates map, path and position variables when target is found
@@ -441,37 +446,123 @@ void ruleOutPath() //Rules out map modules for easier calculation of shortest pa
 	}
 }
 
+void tempUpdateWalls()
+{
+	switch(direction){
+		case 0:
+			if(walls[0] == 1){
+				map[position[0]+1][position[1]] = 1;
+			} 
+			
+			if(walls[1] == 1){
+				map[position[0]][position[1]+1] = 1;
+			} 
+			
+			if (walls[2] == 1){
+				map[position[0]-1][position[1]] = 1;
+			}
+			break;
+		case 1:
+			if(walls[0] == 1){
+				map[position[0]][position[1]-1] = 1;
+			} 
+			
+			if(walls[1] == 1){
+				map[position[0]+1][position[1]] = 1;
+			} 
+			
+			if (walls[2] == 1){
+				map[position[0]][position[1]+1] = 1;
+			}
+			break;
+		case 2:
+			if(walls[0] == 1){
+				map[position[0]-1][position[1]] = 1;
+			} 
+			
+			if(walls[1] == 1){
+				map[position[0]][position[1]-1] = 1;
+			} 
+			
+			if (walls[2] == 1){
+				map[position[0]+1][position[1]] = 1;
+			}
+			break;
+		case 3:
+			if(walls[0] == 1){
+				map[position[0]][position[1]+1] = 1;
+			} 
+			
+			if(walls[1] == 1){
+				map[position[0]-1][position[1]] = 1;
+			} 
+			
+			if (walls[2] == 1){
+				map[position[0]][position[1]-1] = 1;
+			}
+			
+			break;
+	}
+}
+
 int main(void)
 {
 	searchPathInit();
 	
-	if(hasFoundTarget()){
-		//Update map with the right number and target with the right coordinates
-		updateTargetFound();
-
-		//Continue to explore
-		lastCommand = exploreTargetFound();		
-		//Master(3,...,lastCommand);
-	} else if((lastCommand[2] == 0x03) || (lastCommand[2] == 0x04)) {
-		lastCommand[2] = 0x01;
-		//Master(3,...,lastCommand);
-	} else if (unexploredPaths()) {
-		ruleOutPath();
-		readSensors();
-		lastCommand = findTarget();
-		if(lastCommand[1] != 0){
-			//Master(3,...,lastCommand);
-		}
-	} else {
-		lastCommand = findWayBack();
-		if(lastCommand[1] != 0){
-			//Master(3,...,lastCommand);
-		}
-	}
+	int i = 0;
 	
-	if((lastCommand[2] == 0x03) || (lastCommand[2] == 0x04)) {
-		newDirection(lastCommand[2],lastCommand[3]);
-	} else {
-		updateCoordinates();
+	while(1){
+		if(hasFoundTarget()){
+			//Update map with the right number and target with the right coordinates
+			updateTargetFound();
+
+			//Continue to explore
+			///////////////////////////////////////////////////////////
+			//lastCommand = exploreTargetFound();		
+			//////////////////////////////////////////////////////
+			//Master(3,...,lastCommand);
+		} else if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
+			lastCommand[1] = 0x01;
+			//Master(3,...,lastCommand);
+		} else if (unexploredPaths()) {
+			
+			if(hasFoundWayBack || ((lastCommand[1] == 0x01) && (lastCommand[2] == 0xB4))){
+				hasFoundWayBack = 0;
+				ruleOutPath();
+			}			
+			
+			/////////////////////////////////////////////
+			//readSensors();
+			walls[0] = testWalls[i][0];
+			walls[1] = testWalls[i][1];
+			walls[2] = testWalls[i][2];
+			i++;
+			tempUpdateWalls();
+			/////////////////////////////////////////////
+			int * temp = findTarget();
+			lastCommand[0] = temp[0];
+			lastCommand[1] = temp[1];
+			lastCommand[2] = temp[2];
+			if(lastCommand[1] != 0){
+				//Master(3,...,lastCommand);
+			}
+		} else {
+			///////////////////////////////////////////////
+			hasFoundWayBack = 1;
+			int * temp = findWayBack();
+			lastCommand[0] = temp[0];
+			lastCommand[1] = temp[1];
+			lastCommand[2] = temp[2];
+			///////////////////////////////////////////////
+			if(lastCommand[1] != 0){
+				//Master(3,...,lastCommand);
+			}
+		}
+	
+		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
+			newDirection(lastCommand[1],lastCommand[2]);
+		} else {
+			updateCoordinates();
+		}
 	}
 }
