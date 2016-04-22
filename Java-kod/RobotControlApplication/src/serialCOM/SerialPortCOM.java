@@ -166,8 +166,17 @@ public class SerialPortCOM {
 		int[] sensorValues = new int[7];
 		int j = 0;
 		for(int i = 2; i < receivedData.length; i+=2) {
-			sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
-			j++;
+			if(i == 10) {
+				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 256;
+			} else if(i == 12) {
+				sensorValues[j] += Byte.toUnsignedInt(receivedData[i]);
+				j++;
+			} else {
+				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
+				j++;
+			}
+			
+			
 		}
 		
 		// update graph panel
