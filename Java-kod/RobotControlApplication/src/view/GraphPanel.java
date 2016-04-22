@@ -143,6 +143,20 @@ public class GraphPanel extends JPanel{
 	public void updateSensorValues(int[] sensorValues) {
 		double timeStamp = getTimeStamp();
 		
+		// add IR sensor values
+		for(int index = 0; index < 4; index++) {
+			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+		}
+		
+		// add Lidar sensor
+		byte[] lidarBytes = new byte[2];
+		
+		for(int index = 4; index < 6; index++) {
+			lidarBytes[index - 4] = (byte) sensorValues[index];
+		}
+		int lidarInt = (lidarBytes[0] << 8 | lidarBytes[1]);
+		dataSeriesList.get(4).add(timeStamp, lidarInt);
+		
 		// add IR sensor and Lidar values
 		for(int index = 0; index < 5; index++) {
 			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
