@@ -39,6 +39,8 @@ implements 	ChangeListener {
 	private BasicArrowButton leftArrowKeyButton;
 	private BasicArrowButton rightArrowKeyButton;
 
+	private JButton saveLogButton;
+	private JButton commentLogButton;
 	private JButton selectCOMPortButton;
 
 	private JLabel autonomousModeLabel;
@@ -68,7 +70,19 @@ implements 	ChangeListener {
 		constraints.anchor = GridBagConstraints.PAGE_START;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 
+		// add saveLogButton
+		saveLogButton = new JButton("Save log");
+		saveLogButton.addActionListener(new SaveLogListener());
+		add(saveLogButton, constraints);
+		
+		// add commentLogButton
+		constraints.gridy++;
+		commentLogButton = new JButton("Comment log");
+		commentLogButton.addActionListener(new CommentLogListener());
+		add(commentLogButton, constraints);
+		
 		// add selectCOMPortButton
+		constraints.gridy++;
 		selectCOMPortButton = new JButton("Select COM port");
 		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
 		add(selectCOMPortButton, constraints);
@@ -96,7 +110,7 @@ implements 	ChangeListener {
 		buttonPanel.add(downArrowKeyButton);
 		buttonPanel.add(rightArrowKeyButton);
 
-		constraints.gridy = 2;
+		constraints.gridy++;
 		add(buttonPanel, constraints);
 
 		// initialize and add slider
@@ -110,7 +124,7 @@ implements 	ChangeListener {
 		speedSlider.setFocusable(false);
 
 		constraints.anchor = GridBagConstraints.PAGE_END;
-		constraints.gridy = 3;
+		constraints.gridy++;
 		add(speedSlider, constraints);
 	}
 
@@ -157,6 +171,28 @@ implements 	ChangeListener {
 		this.isClawOpen = isClawOpen;
 	}
 
+	private class SaveLogListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String comment = JOptionPane.showInputDialog("Write a log comment");
+			
+			animator.getHandler().getLogWriter().closeLog(comment, true);
+		}
+		
+	}
+	
+	private class CommentLogListener implements ActionListener {
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			String comment = JOptionPane.showInputDialog("Write a log comment");
+			
+			animator.getHandler().getLogWriter().appendToLog(comment);
+		}
+		
+	}
+	
 	private class SelectCOMPortListener implements ActionListener {
 
 		@Override

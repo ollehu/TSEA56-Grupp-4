@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -20,6 +21,8 @@ public class TablePanel extends JPanel{
 	private ArrayList<SensorLabel> sensorList;
 
 	private ArrayList<ControlCoefficientPanel> controlList;
+	
+	private ControlCoefficientPanel speedPanel;
 
 	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
 			"IR B/L", "Lidar Lite", "Angular velocity",
@@ -39,7 +42,7 @@ public class TablePanel extends JPanel{
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(2, 2, 2, 2);
+		//constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
@@ -54,6 +57,10 @@ public class TablePanel extends JPanel{
 		for(String coeff: controlCoefficients) {
 			controlList.add(new ControlCoefficientPanel(coeff, animator));
 		}
+		
+		// add speed panel
+		speedPanel = new ControlCoefficientPanel("Speed", animator);
+	
 
 		// add elements in lists to panel
 		int index = 0;
@@ -69,6 +76,9 @@ public class TablePanel extends JPanel{
 
 			index++;
 		}
+		
+		constraints.gridy++;
+		add(speedPanel, constraints);
 	}
 
 	public void setAutonomousMode(boolean isAutonomousModeOn) {
@@ -89,8 +99,8 @@ public class TablePanel extends JPanel{
 		int[] controllerCoefficients = new int[3];
 		
 		int index = 0;
-		for(ControlCoefficientPanel coefficientPanel : controlList) {
-			controllerCoefficients[index] = coefficientPanel.getControlValue();
+		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
+			controllerCoefficients[index] = controlCoefficientPanel.getControlValue();
 			index++;
 		}
 		

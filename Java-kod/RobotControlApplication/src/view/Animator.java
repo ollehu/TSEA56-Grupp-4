@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import control.*;
@@ -41,7 +42,14 @@ public class Animator {
 		frame = new JFrame("Robot remote control");
 		frame.setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		frame.addWindowListener(new WindowAdapter()
+		{
+		    public void windowClosing(WindowEvent e)
+		    {
+		        exitProgram();
+		    }
+		});
 		
 		// create and add layout panels
 		topPanel = new JPanel();
@@ -78,18 +86,31 @@ public class Animator {
 		constraints.fill = GridBagConstraints.NONE;
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		frame.add(robotControlPanel, constraints);
-		
-		// close serial port on window close
-		frame.addWindowListener(new WindowAdapter() {
-			public void windowClosing(WindowEvent e) {
-				handler.closeSerialPort();
-			}
-		});
 	}
 	
 	public void showFrame() {
 		frame.pack();
 		frame.setVisible(true);
+	}
+	
+	private void exitProgram() {
+		// write comment to log file
+		String comment = JOptionPane.showInputDialog("Write a log comment");
+		
+		// if cancel is NOT pressed
+		if(comment != null) {
+			// close serial port
+			handler.closeSerialPort();
+			
+			// delete or close log
+			if(comment.equals("")) {
+				 handler.getLogWriter().deleteLog();
+			} else {
+				handler.getLogWriter().closeLog(comment, false);
+			}
+			
+			System.exit(0);
+		} 	
 	}
 
 	public RobotControlPanel getRobotControlPanel() {
