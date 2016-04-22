@@ -35,7 +35,7 @@ public class Handler {
 
 		myKeyListener = new MyKeyListener(animator, this);
 
-		setAutomousMode(true);
+		setAutomousMode(false);
 		
 		logWriter = new LogWriter();
 		logWriter.createNewLog();
