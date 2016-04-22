@@ -74,13 +74,13 @@ implements 	ChangeListener {
 		saveLogButton = new JButton("Save log");
 		saveLogButton.addActionListener(new SaveLogListener());
 		add(saveLogButton, constraints);
-		
+
 		// add commentLogButton
 		constraints.gridy++;
 		commentLogButton = new JButton("Comment log");
 		commentLogButton.addActionListener(new CommentLogListener());
 		add(commentLogButton, constraints);
-		
+
 		// add selectCOMPortButton
 		constraints.gridy++;
 		selectCOMPortButton = new JButton("Select COM port");
@@ -96,7 +96,7 @@ implements 	ChangeListener {
 
 		// create buttons
 		buttonPanel = new JPanel(new GridLayout(2, 3));
-		
+
 		upArrowKeyButton = new BasicArrowButton(BasicArrowButton.NORTH);
 		downArrowKeyButton = new BasicArrowButton(BasicArrowButton.SOUTH);
 		leftArrowKeyButton = new BasicArrowButton(BasicArrowButton.WEST);
@@ -171,34 +171,47 @@ implements 	ChangeListener {
 		this.isClawOpen = isClawOpen;
 	}
 
+	public void toggleClaw() {
+		isClawOpen = !isClawOpen;
+
+		// change label
+		if(isClawOpen) {
+			clawStatusLabel.setText("Claw: open");
+			clawStatusLabel.setForeground(Colors.TRUE_COLOR);
+		} else {
+			clawStatusLabel.setText("Claw: closed");
+			clawStatusLabel.setForeground(Colors.FALSE_COLOR);
+		}
+	}
+
 	private class SaveLogListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String comment = JOptionPane.showInputDialog("Write a log comment");
-			
+
 			animator.getHandler().getLogWriter().closeLog(comment, true);
 		}
-		
+
 	}
-	
+
 	private class CommentLogListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String comment = JOptionPane.showInputDialog("Write a log comment");
-			
+
 			animator.getHandler().getLogWriter().appendToLog(comment);
 		}
-		
+
 	}
-	
+
 	private class SelectCOMPortListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			
-			
+
+
 			String osName = System.getProperty("os.name");
 			String[] portNames = {"port 1", "port 2", "port 3"};
 
@@ -213,9 +226,9 @@ implements 	ChangeListener {
 
 			if(portNames.length == 0) {
 				JOptionPane.showMessageDialog(animator.getFrame(),
-					    "No ports available!",
-					    "Port error",
-					    JOptionPane.ERROR_MESSAGE);
+						"No ports available!",
+						"Port error",
+						JOptionPane.ERROR_MESSAGE);
 			} else {
 				String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
 						"Select COM port", 
@@ -224,15 +237,15 @@ implements 	ChangeListener {
 						null,
 						portNames,
 						portNames[0]);
-				
+
 				if(selectedPort != null) {
 					handler.connectToSerialPort(selectedPort);
 				}
-				
+
 			}
-			
-			
-			
+
+
+
 		}
 
 	}

@@ -36,7 +36,9 @@ public class MyKeyListener implements KeyListener{
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getKeyChar() == 'c') {
+			handler.toggleClaw();
+		}
 	}
 
 	@Override

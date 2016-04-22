@@ -44,7 +44,7 @@ public class TablePanel extends JPanel{
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
-		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.anchor = GridBagConstraints.LINE_START;
 
 		// add sensors to sensor list
 		for(int index = 0; index < sensorNames.length; index++) {
