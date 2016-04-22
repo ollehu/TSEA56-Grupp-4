@@ -138,17 +138,16 @@ public class SerialPortCOM {
 	}
 
 	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
-		// throw error if wrong format
-//		if(receivedData.length != 3) {
-//			throw new CommunicationFormatException();
-//		}
-		
-		// activate or deactivate autonomous mode
+
 		if(Byte.toUnsignedInt(receivedData[1]) == ControlSettingID.CONTROLLER) {
 			if(Byte.toUnsignedInt(receivedData[3]) == 1) {
-				// auto mode on
+				// set auto mode on and write to log
+				handler.setAutomousMode(true);
+				handler.getLogWriter().appendToLog("Autonomous mode on");
 			} else if(Byte.toUnsignedInt(receivedData[3]) == 0) {
-				// auto mode off
+				// set auto mode on and write to log
+				handler.setAutomousMode(true);
+				handler.getLogWriter().appendToLog("Autonomous mode on");
 			} else {
 				throw new CommunicationFormatException();
 			}
@@ -167,8 +166,17 @@ public class SerialPortCOM {
 		int[] sensorValues = new int[7];
 		int j = 0;
 		for(int i = 2; i < receivedData.length; i+=2) {
-			sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
-			j++;
+			if(i == 10) {
+				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 256;
+			} else if(i == 12) {
+				sensorValues[j] += Byte.toUnsignedInt(receivedData[i]);
+				j++;
+			} else {
+				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
+				j++;
+			}
+			
+			
 		}
 		
 		// update graph panel

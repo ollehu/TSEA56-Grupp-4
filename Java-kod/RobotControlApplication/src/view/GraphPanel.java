@@ -2,6 +2,8 @@ package view;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,6 +14,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.labels.IntervalCategoryItemLabelGenerator;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
@@ -59,6 +62,7 @@ public class GraphPanel extends JPanel{
 		// create data sets
 		XYSeriesCollection iRXYDataset = new XYSeriesCollection();
 		XYSeriesCollection lidarXYDataset = new XYSeriesCollection();
+		XYSeriesCollection angularVelocityXYDataset = new XYSeriesCollection();
 		XYSeriesCollection controllerXYDataset = new XYSeriesCollection();
 		
 		XYSeries series;
@@ -70,14 +74,21 @@ public class GraphPanel extends JPanel{
 			iRXYDataset.addSeries(series);
 		}
 
-		//
+		// add lidar chart
 		series = new XYSeries(chartNames[chartNameCounter++]);
 		series.setMaximumItemCount(100);
 		
 		dataSeriesList.add(series);
 		lidarXYDataset.addSeries(series);
 		
-		//
+		// add ang.vel. chart
+		series = new XYSeries(chartNames[chartNameCounter++]);
+		series.setMaximumItemCount(100);
+		
+		dataSeriesList.add(series);
+		angularVelocityXYDataset.addSeries(series);
+		
+		// add controller chart
 		for(String controllerName : controllerNames) {
 			series = new XYSeries(controllerName);
 			series.setMaximumItemCount(100);
@@ -89,11 +100,13 @@ public class GraphPanel extends JPanel{
 		// create JCharts
 		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", iRXYDataset);
 		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", lidarXYDataset);
-		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
+		JFreeChart angularVelocityChart = ChartFactory.createXYLineChart("Angular velocity", "Time [s]", "Velocity [deg/s]", angularVelocityXYDataset);
+//		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
 
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
-		chartList.add(new ChartPanel(controllerXYChart));
+		chartList.add(new ChartPanel(angularVelocityChart));
+//		chartList.add(new ChartPanel(controllerXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));
@@ -130,18 +143,32 @@ public class GraphPanel extends JPanel{
 	public void updateSensorValues(int[] sensorValues) {
 		double timeStamp = getTimeStamp();
 		
-		// add sensor values
+		// add IR sensor values
+		for(int index = 0; index < 4; index++) {
+			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+		}
+		
+		// add Lidar sensor
+		byte[] lidarBytes = new byte[2];
+		
+		for(int index = 4; index < 6; index++) {
+			lidarBytes[index - 4] = (byte) sensorValues[index];
+		}
+		int lidarInt = (lidarBytes[0] << 8 | lidarBytes[1]);
+		dataSeriesList.get(4).add(timeStamp, lidarInt);
+		
+		// add IR sensor and Lidar values
 		for(int index = 0; index < 5; index++) {
 			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
 		}
 		
 		// add controller values
-		int[] controllerValues = calculateControllerValue(sensorValues);
-		int index = 5;
-		for(int controllerValue : controllerValues) {
-			dataSeriesList.get(index).add(timeStamp, controllerValue);
-			index++;
-		}
+//		int[] controllerValues = calculateControllerValue(sensorValues);
+//		int index = 5;
+//		for(int controllerValue : controllerValues) {
+//			dataSeriesList.get(index).add(timeStamp, controllerValue);
+//			index++;
+//		}
 	}
 	
 	private double getTimeStamp() {

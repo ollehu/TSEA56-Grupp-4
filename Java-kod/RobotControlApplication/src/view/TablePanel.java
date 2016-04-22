@@ -4,6 +4,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -20,14 +21,14 @@ public class TablePanel extends JPanel{
 	private ArrayList<SensorLabel> sensorList;
 
 	private ArrayList<ControlCoefficientPanel> controlList;
+	
+	private ControlCoefficientPanel speedPanel;
 
 	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
-			"IR B/L", "Lidar Lite", "Angular velocity",
-	"Angle to wall"};
+			"IR B/L", "Lidar Lite", "Angular velocity"};
 
 	private String[] sensorUnits = {"mm", "mm", "mm",
-			"mm", "cm", "deg/s",
-	"deg"};
+			"mm", "cm", "deg/s"};
 
 	private String[] controlCoefficients = {"P", "D", "K"};
 
@@ -39,11 +40,11 @@ public class TablePanel extends JPanel{
 
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(2, 2, 2, 2);
+		//constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
-		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+		constraints.anchor = GridBagConstraints.LINE_START;
 
 		// add sensors to sensor list
 		for(int index = 0; index < sensorNames.length; index++) {
@@ -54,6 +55,10 @@ public class TablePanel extends JPanel{
 		for(String coeff: controlCoefficients) {
 			controlList.add(new ControlCoefficientPanel(coeff, animator));
 		}
+		
+		// add speed panel
+		speedPanel = new ControlCoefficientPanel("Speed", animator);
+	
 
 		// add elements in lists to panel
 		int index = 0;
@@ -69,6 +74,9 @@ public class TablePanel extends JPanel{
 
 			index++;
 		}
+		
+		constraints.gridy++;
+		add(speedPanel, constraints);
 	}
 
 	public void setAutonomousMode(boolean isAutonomousModeOn) {
@@ -80,7 +88,7 @@ public class TablePanel extends JPanel{
 	public void updateSensorValues(int[] sensorValues) {
 		int index = 0;
 		for(SensorLabel sensor : sensorList) {
-			sensor.setValue(sensorValues[index]);
+				sensor.setValue(sensorValues[index]);
 			index++;
 		}
 	}
@@ -89,8 +97,8 @@ public class TablePanel extends JPanel{
 		int[] controllerCoefficients = new int[3];
 		
 		int index = 0;
-		for(ControlCoefficientPanel coefficientPanel : controlList) {
-			controllerCoefficients[index] = coefficientPanel.getControlValue();
+		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
+			controllerCoefficients[index] = controlCoefficientPanel.getControlValue();
 			index++;
 		}
 		
