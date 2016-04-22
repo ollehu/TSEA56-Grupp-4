@@ -8,25 +8,25 @@
 #include <avr/io.h>
 #include <stdlib.h> //For use of abs()
 
-int direction = 0;// 0: north, 1: east, 2: south, 3: west
-int map[28][28]; //0: initial value, 1: wall, 2: visited, 3: target, 4: the starting point
-int path[28][28]; //FF initial value, AA blocked way, >0 steps from start
-int position[2] = {14,14};
-int walls[3]; //[0] = Right side, [1]: forward, [2]: right
-int target[2] = {0xFF,0xFF}; //Coordinates for target
-int z[2] = {0xFF,0xFF}; //Estimations of shortest path
+uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
+uint8_t map[28][28]; //0: initial value, 1: wall, 2: visited, 3: target, 4: the starting point
+uint8_t path[28][28]; //FF initial value, AA blocked way, >0 steps from start
+uint8_t position[2] = {14,14};
+uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side
+uint8_t target[2] = {0xFF,0xFF}; //Coordinates for target
+uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path
 
-int lastCommand[3]; //Last send controller command
+uint8_t lastCommand[3]; //Last send controller command
 
 //Controller commands
-int oneForward[3] = {0xFF, 0x01, 0x01}; 
-int rotateRight[3] = {0xFF, 0x03, 0x5A};
-int rotateLeft[3] = {0xFF, 0x04, 0x5A};
-int rotate180[3] = {0xFF, 0x03, 0xB4};
-int falseCommand[3] = {0,0,0};
+uint8_t oneForward[3] = {0xFF, 0x01, 0x01}; 
+uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
+uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
+uint8_t rotate180[3] = {0xFF, 0x03, 0xB4};
+uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t hasFoundWayBack = 0;
-int testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,1,1},{0,0,1}};
+uint8_t testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,1,1},{0,0,1}};
 
 
 
@@ -135,12 +135,12 @@ void redoPath()//Do we need this one...???
 	}
 }
 
-int distanceToStart(int x, int y) //Returns the Manhattan distance from (x,y) to start
+uint8_t distanceToStart(uint8_t x, uint8_t y) //Returns the Manhattan distance from (x,y) to start
 {
 	return abs(x-14)+abs(y-14);
 }
 
-int distanceToTarget(int x, int y) //Returns the walking distance from (x,y) to target
+uint8_t distanceToTarget(uint8_t x, uint8_t y) //Returns the walking distance from (x,y) to target
 {
 	return path[x][y]-path[target[0]][target[1]];
 }
@@ -177,7 +177,7 @@ void updateCoordinates() //Updates map, path and position variables
 	map[position[0]][position[1]] = 2;
 }
 
-void newDirection(int rotation, int degrees)//Updates direction
+void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
 {
 	if(degrees == 0x5A){
 		if(((direction == 0) && (rotation == 0x03)) || ((direction == 2) && (rotation == 0x04))){
@@ -207,7 +207,7 @@ void newDirection(int rotation, int degrees)//Updates direction
 	}
 }
 
-int * findTarget() //Search for target
+uint8_t * findTarget() //Search for target
 {	
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
 		return rotateRight;
@@ -220,7 +220,7 @@ int * findTarget() //Search for target
 	}
 }
 
-int unexploredPaths() //Are there any unexplored paths from current position?
+uint8_t unexploredPaths() //Are there any unexplored paths from current position?
 {
 	if(map[position[0]+1][position[1]] == 0){
 		return 1;
@@ -235,7 +235,7 @@ int unexploredPaths() //Are there any unexplored paths from current position?
 	}
 }
 
-int * findWayBack() //Where to go to get closer to the start 
+uint8_t * findWayBack() //Where to go to get closer to the start 
 {
 	if(path[position[0]+1][position[1]] == path[position[0]][position[1]] - 1){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
@@ -338,7 +338,7 @@ void searchPathInit() //Fills map and path, sets initial values
 	map[14][14] = 3;
 }
 
-int hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
+uint8_t hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
 {
 	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
 	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
@@ -346,7 +346,14 @@ int hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
 	} else {
 		//Check sensors to see if target is found
 	}*/
-	return 0;
+	
+	if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
+		return 1;
+	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 void updateTargetFound()//Updates map, path and position variables when target is found
@@ -390,37 +397,37 @@ void updateTargetFound()//Updates map, path and position variables when target i
 	z[1] = path[target[0]][target[1]]; //Pessimistic value
 }
 
-int * exploreTargetFound() //Decides where to go when target is found
+uint8_t * exploreTargetFound() //Decides where to go when target is found
 {
 	switch(direction){
 		case 0:
-			if((map[position[0]+1][position[1]] == 0) && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1]) < z[1])) {
+			if(unexploredPaths() && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1]) < z[1])) { //(map[position[0]+1][position[1]] == 0)
 				return rotateRight;
-			} else if((map[position[0]-1][position[1]] == 0) && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1])< z[1])){
+			} else if(unexploredPaths() && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1])< z[1])){ //(map[position[0]-1][position[1]] == 0)
 				return rotateLeft;
 			} else {
 				return rotate180;
 			}
 		case 1:
-			if((map[position[0]][position[1]-1] == 0) && (distanceToStart(position[0],position[1]-1) + distanceToTarget(position[0],position[1]-1)< z[1])){
+			if(unexploredPaths() && (distanceToStart(position[0],position[1]-1) + distanceToTarget(position[0],position[1]-1)< z[1])){ //(map[position[0]][position[1]-1] == 0)
 				return rotateRight;
-			} else if((map[position[0]][position[1]+1] == 0) && (distanceToStart(position[0],position[1]+1) + distanceToTarget(position[0],position[1]+1) < z[1])){
+			} else if(unexploredPaths() && (distanceToStart(position[0],position[1]+1) + distanceToTarget(position[0],position[1]+1) < z[1])){ //(map[position[0]][position[1]+1] == 0)
 				return rotateLeft;
 			} else {
 				return rotate180;
 			}
 		case 2:
-			if((map[position[0]-1][position[1]] == 0) && (distanceToStart(position[0]-1,position[1]) + distanceToTarget(position[0]-1,position[1]) < z[1])){
+			if(unexploredPaths() && (distanceToStart(position[0]-1,position[1]) + distanceToTarget(position[0]-1,position[1]) < z[1])){ //(map[position[0]-1][position[1]] == 0)
 				return rotateRight;
-			} else if((map[position[0]+1][position[1]] == 0) && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1])< z[1])){
+			} else if(unexploredPaths() && (distanceToStart(position[0]+1,position[1]) + distanceToTarget(position[0]+1,position[1])< z[1])){ //(map[position[0]+1][position[1]] == 0)
 				return rotateLeft;
 			} else {
 				return rotate180;
 			}
 		case 3:
-			if((map[position[0]][position[1]+1] == 0) && (distanceToStart(position[0],position[1]+1) + distanceToTarget(position[0],position[1]+1) < z[1])){
+			if(unexploredPaths() && (distanceToStart(position[0],position[1]+1) + distanceToTarget(position[0],position[1]+1) < z[1])){ //(map[position[0]][position[1]+1] == 0)
 				return rotateRight;
-			} else if((map[position[0]][position[1]-1] == 0) && (distanceToStart(position[0],position[1]-1) + distanceToTarget(position[0],position[1]-1) < z[1])){ 
+			} else if(unexploredPaths() && (distanceToStart(position[0],position[1]-1) + distanceToTarget(position[0],position[1]-1) < z[1])){ //(map[position[0]][position[1]-1] == 0)
 				return rotateLeft;
 			} else {
 				return rotate180;
@@ -512,13 +519,14 @@ int main(void)
 	int i = 0;
 	
 	while(1){
-		if(hasFoundTarget()){
+		if(hasFoundTarget()){ 
 			//Update map with the right number and target with the right coordinates
 			updateTargetFound();
 
 			//Continue to explore
 			///////////////////////////////////////////////////////////
-			//lastCommand = exploreTargetFound();		
+			uint8_t * temp = exploreTargetFound();
+					
 			//////////////////////////////////////////////////////
 			//Master(3,...,lastCommand);
 		} else if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
@@ -539,7 +547,7 @@ int main(void)
 			i++;
 			tempUpdateWalls();
 			/////////////////////////////////////////////
-			int * temp = findTarget();
+			uint8_t * temp = findTarget();
 			lastCommand[0] = temp[0];
 			lastCommand[1] = temp[1];
 			lastCommand[2] = temp[2];
@@ -549,7 +557,7 @@ int main(void)
 		} else {
 			///////////////////////////////////////////////
 			hasFoundWayBack = 1;
-			int * temp = findWayBack();
+			uint8_t * temp = findWayBack();
 			lastCommand[0] = temp[0];
 			lastCommand[1] = temp[1];
 			lastCommand[2] = temp[2];
