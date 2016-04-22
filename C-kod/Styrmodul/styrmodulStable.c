@@ -14,6 +14,7 @@
 #include "LCD.h"
 #include <stdio.h>
 #include "constants.h"
+#include <stdlib.h>
 
 uint8_t commandType;
 int commandSubType;
@@ -43,7 +44,7 @@ volatile uint8_t preferredDistance = 100;
 
 
 //Control mode (0 = manual control, 1 = autonomous mode)
-int autonomousMode = 1;
+int autonomousMode = 0;
 
 volatile int madeChange = 1;
 volatile uint8_t dataOrder;
@@ -69,6 +70,12 @@ void updateSetting(int setting, int newValue);
 
 char mes[16] = "";
 char mes2[16] = "";
+
+uint16_t tempForward;
+int8_t angVelocity;
+int64_t ackAngVelocity;
+
+int currentVelocity;
 
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
@@ -127,7 +134,7 @@ ISR(TWI_vect){
 					dataOrder = dataOrder + 1;	
 					if (dataOrder == 15){
 						dataOrder = 0;
-						updateControl(1,50);
+						//updateControl(1,50);
 					
 					}
 				}
@@ -179,6 +186,7 @@ ISR(TWI_vect){
 void updateSensorData(int sensor, int data)
 {
 	int i;
+	
 	if (sensor <= 4){
 		
 		//Shift down...
@@ -189,7 +197,23 @@ void updateSensorData(int sensor, int data)
 		sideSensors[sensor - 1][0] = data;
 		
 	} else if (sensor == 5){
-		forwardSensor = data;
+		tempForward = data*256;
+	} else if (sensor == 6){
+		forwardSensor = tempForward + data;
+		madeChange = 1; 
+	} else if (sensor == 7){
+		
+		if(ackAngVelocity > (-3.4*currentVelocity + 841))
+		{
+			stopWheels();
+		}
+		
+		if (abs(data) > 1){
+			angVelocity = data;
+			ackAngVelocity = ackAngVelocity + angVelocity;
+		} else {
+			angVelocity = 0;
+		}
 	}
 	
 	//TODO: Other sensors
@@ -209,12 +233,14 @@ void updateControl(int direction, int controlSetting)
 				rightWheelPair(controlSetting, 0);
 				break;
 			case 3:
-				leftWheelPair(controlSetting, 1);
-				rightWheelPair(controlSetting, 0);
+				//leftWheelPair(controlSetting, 0);
+				//rightWheelPair(controlSetting, 1);
+				currentVelocity = controlSetting;
+				autonomousRotate(controlSetting);
 				break;
 			case 4:
-				leftWheelPair(controlSetting, 0);
-				rightWheelPair(controlSetting, 1);
+				leftWheelPair(controlSetting, 1);
+				rightWheelPair(controlSetting, 0);
 				break;
 			case 5:
 				rightWheelPair(controlSetting*0.6, 1);
@@ -240,7 +266,8 @@ void updateControl(int direction, int controlSetting)
 				}
 				break;
 			default:
-				stopWheels();
+				break;
+					//stopWheels();
 		} 
 			
 	} else if (autonomousMode == 1){
@@ -382,7 +409,11 @@ void autonomousForward(void)
 */
 void autonomousRotate(int direction)
 {
-	//TODO: code
+	ackAngVelocity = 0;
+	
+	leftWheelPair(direction, 0);
+	rightWheelPair(direction, 1);
+	
 }
 
 
@@ -422,14 +453,15 @@ int main(void)
 	sprintf(mes, "%d %d %d", 10, 20, 200);
 	lcdWriteBottomRow(mes);
 	
-	autonomousMode = 1;
+	autonomousMode = 0;
+	ackAngVelocity = 0;
 	//updateControl(1,50);
 	while(1)
 	{
 		if (madeChange == 1){
-			sprintf(mes, "F:%d B:%d", frontIndex, backIndex);
+			sprintf(mes, "Dist:%d", forwardSensor);
 			lcdWriteTopRow(mes);
-			sprintf(mes2, "D:%d - S:%d", preferredDistance, preferredSpeed);
+			sprintf(mes2, "R:%d A:%d", angVelocity, ackAngVelocity);
 			lcdWriteBottomRow(mes2);
 			madeChange = 0;
 		} 

@@ -3,13 +3,16 @@
 //volatile uint8_t tot_overflow;
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
-unsigned char SPI_send(unsigned char output);
+void init_counter(void);
+int8_t SPI_send(unsigned char output);
 void SPI_MasterInit(void);
 void initTimer(void);
 void initADC(void);
-unsigned short AR_read(void);
-void timer2_init();
+int8_t AR_read(void);
+void timer2_init(void);
 void converionStart(void);
+
+int sum;
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
@@ -30,15 +33,14 @@ void init_counter(void)
 void initTimer(void){
 	TIMSK1 |= (1<<ICIE1);//|(1<<OCIE1A)|(1<<TOIE1);
 	//TCCR1A |= (1<<COM1A0);
-	TCCR1B |= (1<<ICES1)|(1<<WGM12);
-	TCCR1B |= (1<<CS10);
-	OCR1A = 0x009F;
+	TCCR1B |= (1<<ICES1);//|(1<<WGM12);
+	TCCR1B |= (1<<CS10)|(1<<CS11);//(1<<CS10);
+	//OCR1A = 0x009F;
 }
 
 void SPI_MasterInit(void)
 {
 	
-	unsigned char SPI_send(unsigned char output);
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 	DDRB |= (1<<DDB7)|(1<<DDB5)|(1<<DDB4);
 	DDRB &= ~(1<<DDB6);
@@ -53,7 +55,7 @@ void SPI_MasterInit(void)
 }
 
 
-unsigned char SPI_send(unsigned char output)
+int8_t SPI_send(unsigned char output)
 {
 	SPDR = output;
 	/* Wait for transmission complete */
@@ -84,19 +86,20 @@ void converionStart(void)
 	PORTB |= (1<<PORTB4);
 }
 
-unsigned short AR_read(void){
+int8_t AR_read(void){
 	
 	converionStart();
 	
 	_delay_us(150);
-	unsigned char low, high;
+	uint8_t low, high;
 	PORTB &= ~(1<<PORTB4);
 	SPI_send(0x80);
 	high = SPI_send(0x00);
 	low = SPI_send(0x00);
 	PORTB |= (1<<PORTB4);
+	sum  = ((high & 0x0F) << 8) + low;
 	
-	return ((high & 0x0F) << 8) + low;
+	return (((high & 0x0F) << 4) + ((low & 0xF0) >> 4) - 126);
 }
 /*
 void timer2_init()
@@ -122,7 +125,7 @@ void timer2_init()
 	DDRD |= (1<<PORTD0);
 }*/
 
-void timer2_init()
+void timer2_init(void)
 {
     // set up timer with prescaler = 256
     TCCR2B |= (1 << CS22)|(1 << CS21);
