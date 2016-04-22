@@ -34,31 +34,41 @@ int ADC_conversion = 0;
 int detected = 0;
 volatile unsigned int counter = 0; 
 double total = 0;
+int pwmCount;
+int forwardDistance;
+
+volatile uint8_t nextDown = 10;
+
+
 
 int SI_IR1;
 int SI_IR2;
 int SI_IR3;
 int SI_IR4;
 
-//volatile uint8_t tot_overflow = 0;
+volatile uint8_t tot_overflow = 2;
 
 double Distance_1 = 0;
 double Distance_2 = 0;
 double Distance_3 = 0;
 double Distance_4 = 0;
 
-int SI_IR1_array[5];
-int SI_IR2_array[5];
-int SI_IR3_array[5];
-int SI_IR4_array[5];
+uint8_t SI_IR1_array[5];
+uint8_t SI_IR2_array[5];
+uint8_t SI_IR3_array[5];
+uint8_t SI_IR4_array[5];
+uint16_t SI_LIDAR_array[5];
 
 
 //int angular_velocity = 0;
 int SI_lidar;
+
 uint16_t forward_distance;
+uint8_t forward_distanceLOW;
+uint8_t forward_distanceHIGH;
 uint16_t up_value, down_value;
-uint16_t pwm16bit = 65535;
-int overflow_count = 0;
+//uint16_t pwm16bit = 65535;
+//int overflow_count = 0;
 volatile int count_1 = 0;
 
 uint32_t answer;
@@ -69,14 +79,16 @@ int firstRun = 0;
 //////////////////////////////////////////////////////////////////////////
 unsigned char SPI_send(unsigned char output);
 void SPI_MasterInit(void);
-void initIC(void);
+void initTimer(void);
 void initADC(void);
 unsigned short AR_read(void);
 int processLidar(double lidarValue);
-int getMedian(int arr[]);
+uint8_t getMedian(uint8_t arr[]);
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
+
+uint8_t adcCounter;
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	//PORTA = (0<<PORTA0);
@@ -124,32 +136,33 @@ ISR(TWI_vect){
 	}
 }
 
-ISR (TIMER1_CAPT_vect)
-{
-
+ISR(TIMER1_CAPT_vect){
 	
 	if (TCCR1B & (1<<ICES1)){
 		//Rising edge
+		
 		up_value = ICR1;
+		//pwmCount = 0;
 		TCCR1B &= ~(1<<ICES1);
-		overflow_count = 0;
-		} else {
+		PORTB |= (1<<PORTB0);
+	} else {
 		//Falling edge
 		down_value = ICR1;
+		forwardDistance = down_value - up_value;
 		TCCR1B |= (1<<ICES1);
-		forward_distance = down_value - up_value; //+ pwm16bit*overflow_count;
-		
-		
+		PORTB &= ~(1<<PORTB0);
 	}
+		
+	
+	
+	
 }
 
-ISR(TIMER2_OVF_vect)
-{
-	// keep a track of number of overflows
-	tot_overflow++;
-	//PORTD ^= (1 << PORTD0);
-	//PORTD &= ~(1 << PORTD0);
-}
+
+/*ISR(TIMER1_COMPA_vect){
+	PORTB ^= (1<<PORTB0);
+	pwmCount = pwmCount + 1;
+}*/
 
 
 ISR (INT0_vect)
@@ -174,21 +187,22 @@ ISR (INT0_vect)
 
 }
 
-ISR (TIMER0_COMPA_vect)
+/*ISR (TIMER0_COMPA_vect)
 {
 	PORTB ^= (1<<PORTB1);
 	counter = counter + 1;
 	//PORTB &= ~(1<<PORTB1);
 	
-}
+}*/
 
-ISR (TIMER1_OVF_vect)
+ISR(TIMER2_OVF_vect)
 {
-	overflow_count++;
+	// keep a track of number of overflows
+	tot_overflow++;
 }
 
 ISR(ADC_vect){ //IR-SENSOR
-	
+	//PORTB |= (1<<PORTB0);
 	CLKPR = 0x06;
 	
 
@@ -208,9 +222,9 @@ ISR(ADC_vect){ //IR-SENSOR
 	else{
 		Distance_4 = ADCH;
 		ADMUX = adc1;
+		
 	}
-	
-	ADCSRA |= (1<<ADSC);	
+	ADCSRA |= (1<<ADSC);
 }
 
 int processLidar(double lidarValue)
@@ -225,9 +239,9 @@ int processLidar(double lidarValue)
 	}
 }
 
-int getMedian(int arr[])
+uint8_t getMedian(uint8_t arr[])
 {
-		int i, j, swap;
+		uint8_t i, j, swap;
 
 		for (i=0; i<4; i++) 
 		{
@@ -255,14 +269,14 @@ int getMedian(int arr[])
 int main (void)
 {
 	
-	DDRB = (1<<PORTB0);
+	DDRB |= (1<<PORTB0);
 	DDRB |= (1<<PORTB1);
 	
 	sensorData[0] = 253;
 
 	TWISetup(slaveAddress);
 	initADC();
-	initIC();
+	//initTimer();
 	init_counter();
 	timer2_init();
 	
@@ -272,15 +286,17 @@ int main (void)
 	
 	
 	while(1) { 
-		PORTB |= (1<<PORTB0);
+		//PORTB |= (1<<PORTB0);
+		
 		
 		answer = AR_read();
 		total = total + answer - 1996.5;
+		adcCounter = 1;
 		
-		sensorData[9] = 5;
+		//sensorData[9] = 5;
 		//sensorData[10] = processLidar(0.0127*forward_distance - 4.3678); //SI_lidar
 		//TODO fixa lidar
-		sensorData[10] = 40;
+		//sensorData[10] = 40;
 		SI_IR1 = (10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
 		SI_IR2 = 10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363);
 		SI_IR3 = 10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186);
@@ -298,11 +314,15 @@ int main (void)
 			SI_IR2_array[count_1] = SI_IR2;
 			SI_IR3_array[count_1] = SI_IR3;
 			SI_IR4_array[count_1] = SI_IR4;
+			SI_LIDAR_array[count_1] = forwardDistance;
+			
 			count_1++;
 			
 			if (count_1 == 5){
 				count_1 = 0;
-			}
+			
+		
+		
 		
 		sensorData[1] = 1; 
 		sensorData[2] = getMedian(SI_IR2_array); //Höger fram
@@ -312,8 +332,12 @@ int main (void)
 		sensorData[6] = getMedian(SI_IR1_array); //Höger bak
 		sensorData[7] = 4;
 		sensorData[8] = getMedian(SI_IR4_array); // Vänster bak
+		sensorData[9] = 5;
+		sensorData[10] = (getMedian(SI_LIDAR_array) >> 8); // LIDAR
+		sensorData[11] = 6;
+		sensorData[12] = (getMedian(SI_LIDAR_array) & 0xFF); // LIDAR
 		
-
+			}
 		
 		/*for(int i = 1;i<15;i++){
 			sensorData[i] = i;

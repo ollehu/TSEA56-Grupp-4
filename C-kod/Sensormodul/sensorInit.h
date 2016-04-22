@@ -1,11 +1,11 @@
 #include <avr/io.h>
 
-
+//volatile uint8_t tot_overflow;
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 unsigned char SPI_send(unsigned char output);
 void SPI_MasterInit(void);
-void initIC(void);
+void initTimer(void);
 void initADC(void);
 unsigned short AR_read(void);
 void timer2_init();
@@ -27,11 +27,12 @@ void init_counter(void)
 	
 }
 
-void initIC(void)
-{
-	TIMSK1 |= (1<<ICIE1)|(1<<TOIE1);
-	TCCR1B |= (1<<ICES1);
+void initTimer(void){
+	TIMSK1 |= (1<<ICIE1);//|(1<<OCIE1A)|(1<<TOIE1);
+	//TCCR1A |= (1<<COM1A0);
+	TCCR1B |= (1<<ICES1)|(1<<WGM12);
 	TCCR1B |= (1<<CS10);
+	OCR1A = 0x009F;
 }
 
 void SPI_MasterInit(void)
@@ -136,7 +137,7 @@ void timer2_init()
     sei();
   
     // initialize overflow counter variable
-    tot_overflow = 0;
+   // tot_overflow = 0;
 	
 	// connect interrupt in main module
 	DDRD |= (1<<PORTD7);
