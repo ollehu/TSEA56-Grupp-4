@@ -22,6 +22,8 @@ public class Handler {
 	private MyKeyListener myKeyListener;
 
 	private SerialPortCOM serialPortCOM;
+	
+	private LogWriter logWriter;
 
 	private int lastSentControlCommand;
 
@@ -34,7 +36,9 @@ public class Handler {
 		myKeyListener = new MyKeyListener(animator, this);
 
 		setAutomousMode(true);
-
+		
+		logWriter = new LogWriter();
+		logWriter.createNewLog();
 	}
 
 	/**
@@ -131,7 +135,7 @@ public class Handler {
 		return animator.getRobotControlPanel().getSpeed();
 	}
 
-	void setAutomousMode(boolean isAutonomousModeOn) {
+	public void setAutomousMode(boolean isAutonomousModeOn) {
 		myKeyListener.setAutonomousMode(isAutonomousModeOn);
 
 		animator.setAutonomousMode(isAutonomousModeOn);
@@ -145,6 +149,9 @@ public class Handler {
 		return animator;
 	}
 
-	
+	public LogWriter getLogWriter() {
+		return logWriter;
+	}
+
 
 }

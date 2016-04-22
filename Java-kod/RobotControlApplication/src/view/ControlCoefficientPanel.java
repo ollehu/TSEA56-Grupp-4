@@ -42,8 +42,10 @@ public class ControlCoefficientPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				value = Double.parseDouble(valueField.getText());
 				
+				// send new value to robot and write to log
 				try {
 					animator.getHandler().getSerialPortCOM().sendToRobot(DataID.CONTROL_SETTING, getControlSettingID(), getControlValue());
+					animator.getHandler().getLogWriter().appendToLog(name + ": " + value);
 				} catch (SerialPortException e1) {
 					e1.printStackTrace();
 				}
@@ -69,8 +71,11 @@ public class ControlCoefficientPanel extends JPanel{
 			return ControlSettingID.DERIVATIVE;
 		} else if(name.equals("K")) {
 			return ControlSettingID.KONSTANT;
+		} else if(name.equals("Speed")){
+			return ControlSettingID.SPEED;
 		} else {
 			return -1;
+
 		}
 	}
 	
@@ -81,6 +86,8 @@ public class ControlCoefficientPanel extends JPanel{
 			return (int) (value * 100);
 		} else if(name == "K") {
 			return (int) (value * 10);
+		} else if(name == "Speed"){
+			return (int) value;
 		} else {
 			return -1;
 		}

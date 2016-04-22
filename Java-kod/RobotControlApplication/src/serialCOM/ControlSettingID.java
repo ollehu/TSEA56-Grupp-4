@@ -9,4 +9,6 @@ public class ControlSettingID {
 	public static final int DERIVATIVE = 3;
 	
 	public static final int KONSTANT = 4;
+	
+	public static final int SPEED = 5;
 }
