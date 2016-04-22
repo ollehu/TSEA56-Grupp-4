@@ -25,12 +25,10 @@ public class TablePanel extends JPanel{
 	private ControlCoefficientPanel speedPanel;
 
 	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
-			"IR B/L", "Lidar Lite", "Angular velocity",
-	"Angle to wall"};
+			"IR B/L", "Lidar Lite", "Angular velocity"};
 
 	private String[] sensorUnits = {"mm", "mm", "mm",
-			"mm", "cm", "deg/s",
-	"deg"};
+			"mm", "cm", "deg/s"};
 
 	private String[] controlCoefficients = {"P", "D", "K"};
 
@@ -90,7 +88,7 @@ public class TablePanel extends JPanel{
 	public void updateSensorValues(int[] sensorValues) {
 		int index = 0;
 		for(SensorLabel sensor : sensorList) {
-			sensor.setValue(sensorValues[index]);
+				sensor.setValue(sensorValues[index]);
 			index++;
 		}
 	}
