@@ -26,6 +26,7 @@ public class Handler {
 	private LogWriter logWriter;
 
 	private int lastSentControlCommand;
+	private boolean isClawOpen = true;
 
 	public Handler() {
 		animator = new Animator(this);
@@ -116,12 +117,14 @@ public class Handler {
 		}
 	}
 
-	public void setClawOpen(boolean open) {
+	public void toggleClaw() {
+		isClawOpen = !isClawOpen;
+		
 		try {
-			if(open) {
+			if(isClawOpen) {
 				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
 			} else {
-				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
+				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 0);
 			}
 
 
@@ -129,6 +132,8 @@ public class Handler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		animator.getRobotControlPanel().toggleClaw();
 	}
 
 	public int getSpeed() {
