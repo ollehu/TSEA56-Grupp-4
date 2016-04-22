@@ -1,36 +1,37 @@
+uint8_t rotationSpeed = 0;
+uint8_t noRotation = 127;
 
+uint8_t rotationWheelSpeed;
 
-double p = 0.0;
-double d = 0.0;
-double K = 0.0;
+int rotationSpeedInt = 0;
+int oldRotationSpeedInt = 0;
 
-int[] oldDistance;
-int preferredDistance = 10;
+double rotationSum = 0.0;
+double oldRotationSum = 0.0;
+double preferredRotation = 90.0;
 
-double period = 0.2;
-int index = 5;
+double P_rotation = 0.0;
+double D_rotation = 0.0;
+double K_rotation = 0.0;
 
-int velocity = 100;
+double sampleFrequency = 20.3;
 
-void StraightLineController(int frontDistance, int backDistance) 
-{
-	int distance = (frontDistance + backDistance) / 2;
+void rotationController() {
 
-	double p_out = P * (distance - preferredDistance);
-	double d_out = D * (distance - oldDistance[index]) / (index * period);
+	rotationSpeedInt = rotationSpeed - noRotation;
 
-	int y_out = K * (p_out + d_out);
+	rotationSum = rotationSum + (rotationSpeedInt + oldRotationSpeedInt) / 2 * 1 / sampleFrequency;
 
-	if(y < 0) {
-		rightWheelPair(100 - y, 1);
-		leftWheelPair(100, 1);
+	double p_out_rotation = P_rotation * (rotationSum - preferredRotation);
+	double d_out_rotation = D_rotation * rotationSpeedInt;
 
+	rotationWheelSpeed = K_rotation * (p_out_rotation + d_out_rotation);
+
+	if(rotationWheelSpeed < 0) {
+		rightWheelPWM(rotationWheelSpeed, 1);
+		leftWheelPWM(rotationWheelSpeed, 0);
 	} else {
-		rightWheelPair(100, 1);
-		leftWheelPair(100 - y, 1);
-
+		rightWheelPWM(rotationWheelSpeed, 0);
+		leftWheelPWM(rotationWheelSpeed, 1);
 	}
-
-	//TODO shift oldDistance;
-	
 }
