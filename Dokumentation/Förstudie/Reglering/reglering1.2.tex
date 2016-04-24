@@ -111,7 +111,7 @@ De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 \end{itemize}
 
 \subsubsection{Avgränsning}
-Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i appendix C utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
+Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen, i appendix C, utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
 
 \subsection{Kartläggning och vägoptimering}
 Simultan lokalisering och kartläggning anses av \cite{grail} vara en av de större utmaningarna med att bygga en autonom robot. Att kunna navigera och kartlägga en okänd omgivning ställer höga krav på både mjukvara och hårdvara. Förutsatt att sensorerna kan mäta med godkänd upplösning behöver roboten intelligent kunna tolka mätvärdena och översätta dessa till en karta och position. 
@@ -131,7 +131,7 @@ De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation
 \section{Kunskapsbas -- reglering}
 Nedan presenteras en kunskapsbas för regleringen.
 \subsection{Icke-holonom robot}
-En robot anses vara holonom om alla dess frihetsgrader går att styra. En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan förflytta sig i alla dessa riktningar för att den ska vara holonom. Roboten som kommer användas i detta project är icke-holonom, eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
+En robot anses vara holonom om alla dess frihetsgrader går att styra. En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan förflytta sig i alla dessa riktningar för att den ska vara holonom. Roboten som kommer att användas i detta project är icke-holonom, eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
 
 \subsection{Väggföljning}\label{väggföljning}
 Betrakta en icke-holonom, differentiellt driven robot vars koordinater (\(x, y, \theta\)) är relaterade enligt
@@ -149,7 +149,7 @@ där \(x\) och \(y\) representerar positionen i ett Kartesiskt koordinatsystem, 
 	r\omega_2 = v - e\omega \\
 	\end{aligned}
 \end{equation}
-där \(r\) är radien på robotens hjul och \(e\) är halva bredden mellan hjulen.
+där \(r\) är radien på robotens hjul och \(e\) är halva robotens bredd.
 
 \begin{figure}[H] %Figurplacering?
 \centering
@@ -170,7 +170,7 @@ bestäm en regulator sådan att en mobil robot \eqref{robotekv} rör sig med en 
 I representerar \eqref{väggfölj} \((x_m, y_m)\) och \(\gamma\) en punkt och väggens orientering, uttryckt i samma koordinatsystem som robotens position.
 
 \subsubsection{Ideala väggföljarproblemet (IWFP)}
-Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens fysikaliska egenskaper är försumbara, det vill säga att insignaler kan ges i form av hastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
+Bemporad et al. föreslår i \cite{wfp} en lösning på det ideala väggföljarproblemet. Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens dynamiska olinjäriteter är försumbar, det vill säga att insignaler kan ges i form av hastighet och vinkelhastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
 \begin{equation}\label{idealåterkoppling}
 	\begin{cases}
 	v = v_{des} \\
@@ -178,7 +178,7 @@ Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robote
 	\end{cases}
 \end{equation}
 
-där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Inför vi sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}
+där \(k\) och \(\beta\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Inför vi sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}, tillsammans med antagandena ovan, följande ekvationssystem:
 
 \begin{equation}
 	\begin{cases}
@@ -187,10 +187,10 @@ där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd frå
 	\end{cases}
 \end{equation}
 
-Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då \(t \to \infty\).
+Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då $t \to \infty$ för alla positiva $k$ och $\beta$.
 
 \subsubsection{Verkliga väggföljarproblemet (RWFP)}\label{rwfp}
-Betrakta vårt fall (Figur \ref{robot}), med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
+Betrakta vårt fall (figur \ref{robot}), med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
 
 För att nå fram till en tillfredställande formulering av RWFP måste alltså även de ovanstående kraven tas med i beaktning, och översättas till lämpliga relationer mellan systemvariablerna. IR-sensorernas begränsning leder till följande begränsning
 
@@ -203,7 +203,7 @@ där vanligen \(\sigma_{max} \in [10\degree,15\degree]\). Om $\Omega_{max}$ är 
 	|v \pm e\omega| \leq r\Omega_{max}
 \end{equation}
 
-På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Dessa skattningar fås genom användning av ett utökat kalmanfilter (EKF), som beskrivs mer ingående i avsnitt \ref{EKF}. Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
+På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Dessa skattningar fås genom användning av ett utökat Kalmanfilter (EKF), som beskrivs mer ingående i avsnitt \ref{EKF}. Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
 
 \begin{equation}\label{rwfpåterkoppling}
 	\begin{cases}
@@ -273,7 +273,7 @@ En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till vara
 
 
 \pagebreak
-\section{Empiri -- Reglering}
+\section{Empiri -- reglering}
 För differentiellt driven robot av det slag som redan introducerats i den här rapporten är reglerad körning i en rak korridor en betydlig större utmaning än reglering av rotation. Förutsatt att de fyra motorernas egenskaper är relativt likvärdiga, vilket de antas vara, kan förflyttningen i x- och y-led vid rotation försummas. Detta leder till att reglerproblemet för rotation enbart innefattar vinkel och vinkelhastighet, varför det kan lösas med enkel PD-reglering.
 
 Med detta i åtanke kommer detta avsnitt främst behandla problemet med reglerad körning i en rak korridor. 
@@ -290,7 +290,7 @@ Som nämnt i avsnitt \ref{rwfp} ger IR-sensorerna endast signifikanta mätvärde
 
 där $\beta_0$, $\beta_1$ är skalärer.
 	
-\paragraph{Theorem 1} \textit{Betrakta det slutna systemet \eqref{robotekv}, \eqref{IRåterkoppling} och låt} $\beta_0 \geq 0$,
+\paragraph{Sats 1} \textit{Betrakta det slutna systemet \eqref{robotekv}, \eqref{IRåterkoppling} och låt} $\beta_0 \geq 0$,
 
 \begin{equation}
 	\beta_1 \triangleq \frac {k} {v_{des} \tan \sigma_{max}}
@@ -316,7 +316,7 @@ där $\beta_0$, $\beta_1$ är skalärer.
 
 \paragraph{Bevis 1} Se avsnitt 3.1 i \cite{wfp}.
 
-\paragraph{Kommentar 1} Theorem 1 ger inget specifikt värde på $\beta_0$. Bemporad et al. skriver i \cite{wfp} att för små värden på $\beta_0$ är vinkelhastighetens storlek tillräckligt liten för att undvika plötsliga rotationer både i stabila tillstånd och övergångstillstånd. Större värden på $\beta_0$ ger dock större robusthet mot brus och modellfel. Parametern måste således justeras experimentiellt för den specifika applikationen. I \cite{wfp} användes formeln $\beta_0 = \alpha \beta_1$ med $\alpha \in [0.05,0.1]$.
+\paragraph{Kommentar 1} Sats 1 ger inget specifikt värde på $\beta_0$. Bemporad et al. skriver i \cite{wfp} att för små värden på $\beta_0$ är vinkelhastighetens storlek tillräckligt liten för att undvika plötsliga rotationer både i stabila tillstånd och transienter. Större värden på $\beta_0$ ger dock större robusthet mot brus och modellfel. Parametern måste således justeras experimentiellt för den specifika applikationen. I \cite{wfp} användes formeln $\beta_0 = \alpha \beta_1$ med $\alpha \in [0.05,0.1]$.
 
 \subsection{Hastighetskrav}
 Återkopplingen \eqref{IRåterkoppling} betraktar inte de fysiska begränsningarna på hjulens vinkelhastighet (och därmed robotens hastighet) som visas i \eqref{hastbegr}. Dessa krav kan emellertid uppfyllas genom att direkt skala av utsignalen enligt
@@ -337,7 +337,7 @@ där $\omega_\gamma$ ges av högerledet i \eqref{IRåterkoppling} och $v_{des} <
 vilket uppfyller kraven i \eqref{hastbegr} utan att påverka regleringens asymptotiska egenskaper \cite{wfp}.
 
 \subsection{Utökat Kalmanfilter}\label{EKF}
-I \cite{wfp} föreslår Bemporad et al. användningen av ett utökat kalmanfilter (EKF) för att skatta robotens koordinater $(x,y,\theta)$. Låt oss införa vektorerna 
+I \cite{wfp} föreslår Bemporad et al. användningen av ett utökat Kalmanfilter (EKF) för att skatta robotens koordinater $(x,y,\theta)$. Låt oss införa vektorerna 
 
 \begin{equation*}
 	\begin{aligned}
@@ -354,7 +354,7 @@ and definiera $r(X(k))$ som avståndet från IR-sensorn till väggen, det vill s
 
 Vidare, låt $E_x(k)$ vara en stokastisk vektor (med medelvärde noll och kovariansmatris $Q_x(k)$) som tar brus och modellfel i beaktning och $\xi(k)$ en stokastisk variabel (med medelvärde noll och kovarians $\sigma_r^2$) som modellerar bruset som påverkar avståndsmätningen.
 
-Den resulterande icke-linjära modellen 
+Baserat på den icke-linjära modellen 
 
 \begin{equation}
 	\begin{cases}
@@ -363,7 +363,7 @@ Den resulterande icke-linjära modellen
 	\end{cases}
 \end{equation}
 
-har följande EKF-ekvationer
+ges uppdateringsekvationerna för det tillhörandet EKF:et av
 
 \begin{equation*}
 	\begin{aligned}
@@ -386,7 +386,7 @@ där $P_{v_r}(i|j)$ är den skattade kovariansmatrisen för $V(k)$ vid tiden $i$
 	\end{aligned}
 \end{equation*}
 
-FIltret initieras genom att låta 
+Filtret initieras genom att låta 
 
 \begin{equation*}
 	\begin{aligned}
@@ -407,10 +407,10 @@ Avstånd- och hastighetsmätningar matas in i återkopplingen \eqref{IRåterkopp
 	\end{cases}
 \end{equation}
 
-där $z$ är avståndet mätt med hjälp av IR-sensorn och $\hat{\theta}$ ges av EKF. Bemporad et al. skriver i \cite{wfp} att trots att skattningarna $\hat{x}$ och $\hat{y}$ inte används i \eqref{återkoppling} kan de komma till användning vid utförandet av den högre uppgift som kan tänkas kräva den förslagna återkopplingen.
+där $z$ är avståndet mätt med hjälp av IR-sensorn och $\hat{\theta}$ ges av EKF. Bemporad et al. skriver i \cite{wfp} att trots att skattningarna $\hat{x}$ och $\hat{y}$ inte används i \eqref{återkoppling} kan de komma till nytta för att lösa andra av robotens uppgifter.
 
 \subsection{PID-regulator}
-I \cite{PID1}, \cite{PID2}, \cite{PID3} presenterar författarna en PID-regulator för reglering av en robot i en rak korridor. De stora fördelarna med en regulator av den här typen, jämfört med den som presenterats ovan, är att den är enklare att implementera och kräver betydligt mindre beräkningskraft.
+I \cite{PID1}, \cite{PID2}, \cite{PID3} presenterar författarna en PID-regulator för reglering av en robot i en rak korridor. De stora fördelarna med en regulator av den här typen, jämfört med den som presenterats ovan, är att den är enklare att implementera och kräver betydligt mindre beräkningskraft. Regulatorns nackdelar är att den, jämfört med återkoppling med EKF, i regel ger sämre reglering (långsammare stegsvar, mindre robust etc.).
 
 Betrakta roboten i avsnitt \ref{väggföljning}. Inför konstanterna $Kp$, $Ki$ och $Kd$ och reglerfelet $e_t = d^0 - d_t$. Den diskreta PID regulatorn ges då av följande ekvation
 
@@ -643,11 +643,11 @@ Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. E
 \section{Resultat och slutsatser}
 Nedan presenteras förstudiens resultat och slutsatser.
 \subsection{Reglering}
-Som nämnt tidigare finns det ingen anledning använda något annat än en PID-regulator för att reglera rotationen av roboten. Robotens vinkelhastighet enkelt kan mätas av gyrot och genom att driva motorerna med samma hastighet, i motsatt riktning, kan vinkelhastigheten även styras utan att påverka robotens läge i x- eller y-led. Därför räcker en PID-regulator.
+Som nämnts tidigare finns det ingen anledning använda något annat än en PID-regulator för att reglera rotationen av roboten. Robotens vinkelhastighet kan enkelt mätas av gyrot och genom att driva motorerna med samma hastighet, i motsatt riktning, kan vinkelhastigheten även styras utan att påverka robotens läge i x- eller y-led. Därför räcker en PID-regulator.
 
-Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel en bättre återkoppling än en PID-regulator, men är svårare att modellera. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn, därför kan den integrerande delen av regulatorn tas bort ($Ki = 0$).
+Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel bättre reglering än en PID-regulator, men är svårare att implementera. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn och därför kan den integrerande delen av regulatorn tas bort ($K_i = 0$).
 
-Även i frågan om att minska risken för mätstörningar prioriteras enkelhet över robusthet. De sensorer som ska användas är relativt pålitliga och den miljö roboten kommer befinnas sig i bör inte ge upphov till några extraordinära störningar. Därför anses ett EKF vara överflödigt och ersätts med ett glidande medelvärde.
+Även i frågan om att minska risken för mätstörningar prioriteras enkelhet över robusthet. De sensorer som ska användas är relativt pålitliga och den miljö roboten kommer att befinna sig i bör inte ge upphov till några extraordinära störningar. Därför anses ett EKF vara överflödigt och ersätts med ett glidande medelvärde.
 
 % översättning d_t till motorstyrning
 
