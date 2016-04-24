@@ -234,14 +234,16 @@ För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyrosko
 	\phi = \int_{t}^{ }\omega dt 						
 \end{equation}
 
-Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas. \cite{Gyro}
+%Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas. \cite{Gyro}
+
+Den gyroskopiska sensorn kan detektera vinkelhastighet genom att mäta förändringar i Corioliseffekten. Denna effekt uppstår då ett föremål gör en förflyttning på en roterande kropp under påverkan av gravitationen, där ett exempel på roterande kropp skulle kunna vara jordklotet. I enighet med Corioliseffekten så påverkas följaktligen ett föremål av en sidoacceleration då detta förflyttas längs rotationsaxeln på en roterande sfär. \cite{Coriolis} \cite{MEMS_gyro}
 
 För ett flertal mycket små elektromekaniska system används idag så kallade MEMS-gyroskop (MEMS är en förkortning för micro-electro-mechanical system). Denna typ av gyroskop är kapacitivt, vilket innebär att sensorn kapacitivt kan detektera hur ett föremål roterar. Gyroskopet är dessutom analogt där vinkelhastigeten för rotationsaxeln bestäms med hjälp av en inbyggd A/D-omvandlare varpå vinkelhastighet för ett föremål kan detekteras. \cite{MEMS_gyro}
 
 \subsection{Accelerometer}
 En accelerometer är en typ av sensor som används för att detektera ett föremåls acceleration. När ett föremål går från stillastående till någon hastighet så börjar mycket små kristaller (piezoelektriska kristaller) inuti sensorn att vibrera. Beroende på intensiteten av kristallernas vibration alstras en spänning vilken är proportionerlig mot föremålets acceleration, varpå densamma kan bestämmas. \cite{Accelerometer}
 
-För små elektromekaniska system används vanligen MEMS-accelerometer. I likhet med MEMS-gyroskopet är även denna typ av accelerometer kapacitiv, och liksom ett gyroskop har accelerometern har en massa upphängd i en konstruktion. Förändringar sensors kapacitans kan sedermera detekteras vid ändringar av föremålets hastighet. \cite{MEMS_acc}
+För små elektromekaniska system används vanligen en MEMS-accelerometer. I likhet med MEMS-gyroskopet är även denna typ av accelerometer kapacitiv, och liksom ett gyroskop har accelerometern en massa upphängd i en konstruktion. Förändringar sensors kapacitans kan sedermera detekteras vid ändringar av föremålets hastighet. \cite{MEMS_acc}
 
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/MPU-6050.pdf (4)
