@@ -170,7 +170,7 @@ bestäm en regulator sådan att en mobil robot \eqref{robotekv} rör sig med en 
 I representerar \eqref{väggfölj} \((x_m, y_m)\) och \(\gamma\) en punkt och väggens orientering, uttryckt i samma koordinatsystem som robotens position.
 
 \subsubsection{Ideala väggföljarproblemet (IWFP)}
-Bemporad et al. föreslår i \cite{wfp} en lösning på det ideala väggföljarproblemet. Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens dynamiska olinjäriteter är försumbar, det vill säga att insignaler kan ges i form av hastighet och vinkelhastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
+Bemporad et al. föreslår i \cite{wfp} en lösning på det ideala väggföljarproblemet. Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och robotens dynamik är försumbar, det vill säga att insignaler kan ges i form av hastighet och vinkelhastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
 \begin{equation}\label{idealåterkoppling}
 	\begin{cases}
 	v = v_{des} \\
@@ -178,7 +178,7 @@ Bemporad et al. föreslår i \cite{wfp} en lösning på det ideala väggföljarp
 	\end{cases}
 \end{equation}
 
-där \(k\) och \(\beta\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Inför vi sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}, tillsammans med antagandena ovan, följande ekvationssystem:
+där \(k\) och \(\beta\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Författarna inför sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\).  Det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}, tillsammans med antagandena ovan, kan då skrivas dom
 
 \begin{equation}
 	\begin{cases}
@@ -645,7 +645,7 @@ Nedan presenteras förstudiens resultat och slutsatser.
 \subsection{Reglering}
 Som nämnts tidigare finns det ingen anledning använda något annat än en PID-regulator för att reglera rotationen av roboten. Robotens vinkelhastighet kan enkelt mätas av gyrot och genom att driva motorerna med samma hastighet, i motsatt riktning, kan vinkelhastigheten även styras utan att påverka robotens läge i x- eller y-led. Därför räcker en PID-regulator.
 
-Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel bättre reglering än en PID-regulator, men är svårare att implementera. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn och därför kan den integrerande delen av regulatorn tas bort ($K_i = 0$).
+Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel bättre reglering än en PID-regulator, men är svårare att implementera och mer beräkningstung. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn och därför kan den integrerande delen av regulatorn tas bort ($K_i = 0$).
 
 Även i frågan om att minska risken för mätstörningar prioriteras enkelhet över robusthet. De sensorer som ska användas är relativt pålitliga och den miljö roboten kommer att befinna sig i bör inte ge upphov till några extraordinära störningar. Därför anses ett EKF vara överflödigt och ersätts med ett glidande medelvärde.
 
