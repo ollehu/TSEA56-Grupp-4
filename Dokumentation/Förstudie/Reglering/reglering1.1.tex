@@ -29,7 +29,7 @@ Strömberg, Isak&\verb+isast763+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & OHU & 24 april 2016 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -83,8 +83,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.1 & - & Tredje utkastet & Grupp 4 & - \\ \hline
-1.0 & - & Andra utkastet & Grupp 4 & - \\ \hline
+1.1 & 2016-04-24 & Tredje utkastet & Grupp 4 & - \\ \hline
+1.0 & 2016-04-06 & Andra utkastet & Grupp 4 & - \\ \hline
 0.1 & 2016-03-03 &  Första utkastet & Grupp 4 & Isak Strömberg \\ \hline
 \end{tabular}
 \end{table}
@@ -111,7 +111,7 @@ De frågeställningar som behandlas i rapportens huvuddel återfinns nedan.
 \end{itemize}
 
 \subsubsection{Avgränsning}
-Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen i appendix C utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
+Rapporten kommer enbart behandla de reglertekniska problem och frågeställningar som kan kopplas till autonom navigation av en labyrint enligt banspecifikationen, i appendix C, utan öppna rum. Reglerad körning på öppna ytor kommer alltså inte behandlas.
 
 \subsection{Kartläggning och vägoptimering}
 Simultan lokalisering och kartläggning anses av \cite{grail} vara en av de större utmaningarna med att bygga en autonom robot. Att kunna navigera och kartlägga en okänd omgivning ställer höga krav på både mjukvara och hårdvara. Förutsatt att sensorerna kan mäta med godkänd upplösning behöver roboten intelligent kunna tolka mätvärdena och översätta dessa till en karta och position. 
@@ -129,27 +129,27 @@ De labyrinter som beaktas i förstudien är utformade enligt en banspecifikation
 
 \pagebreak
 \section{Kunskapsbas -- reglering}
-Nedan presenteras en kunspasbas för regleringen.
+Nedan presenteras en kunskapsbas för regleringen.
 \subsection{Icke-holonom robot}
-En robot anses vara holonom om alla dess frihetsgrader går att styra. En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan förflytta sig i alla dessa riktningar för att den ska vara holonom. Roboten som kommer användas i detta project är icke-holonom, eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
+En robot anses vara holonom om alla dess frihetsgrader går att styra. En landgående robot (i xy-planet) har tre frihetsgrader: förflyttning i x- och y-led samt rotation kring z-axeln. Det krävs alltså att roboten direkt kan förflytta sig i alla dessa riktningar för att den ska vara holonom. Roboten som kommer att användas i detta project är icke-holonom, eftersom den inte kan förflytta sig ortogonalt mot hjulens rotationsriktning utan att först rotera. För att den här typen av robot ska vara holonom krävs det att den är utrustad med så kallade omnihjul.
 
 \subsection{Väggföljning}\label{väggföljning}
 Betrakta en icke-holonom, differentiellt driven robot vars koordinater (\(x, y, \theta\)) är relaterade enligt
 \begin{equation}\label{robotekv}
 	\begin{cases}
-  	\dot{x} = v * \cos \theta \\
-  	\dot{y} = v * \sin \theta \\
+  	\dot{x} = v\cos \theta \\
+  	\dot{y} = v\sin \theta \\
    	 \dot{\theta} = \omega \\
   	\end{cases}
 \end{equation}
-där \(x\) och \(y\) representerar positionen i ett Kartesiskt koordinatsystem, \(\theta\) vinkeln mellan roboten och x-axeln, \(v\) hastigheten och \(\omega\) vinkelhastigheten. Dessa beror i sin tur på vinkelhastigheterna \(\omega_1, \omega_2\) enligt
+där \(x\) och \(y\) representerar positionen i ett kartesiskt koordinatsystem, \(\theta\) vinkeln mellan roboten och x-axeln, \(v\) hastigheten och \(\omega\) vinkelhastigheten. Dessa beror i sin tur på vinkelhastigheterna \(\omega_1, \omega_2\) enligt
 \begin{equation}\label{hjulekv}
 	\begin{aligned}
 	r\omega_1 = v + e\omega \\
 	r\omega_2 = v - e\omega \\
 	\end{aligned}
 \end{equation}
-där \(r\) är radien på robotens hjul och \(e\) är halva bredden mellan hjulen.
+där \(r\) är radien på robotens hjul och \(e\) är halva robotens bredd.
 
 \begin{figure}[H] %Figurplacering?
 \centering
@@ -167,10 +167,10 @@ För en perfekt rak och oändligt lång vägg beskriven i det Kartesiska planet 
 bestäm en regulator sådan att en mobil robot \eqref{robotekv} rör sig med en konstant hastighet \(v_{des}\) längs väggen och på konstant avstånd \(d^0\) från den.
 \end{it}
 
-I representerar \eqref{väggfölj} \((x_m, y_m)\) och \(\gamma\) en punkt och väggens orientering, uttryckt i samma koordinatsystem som robotens position.
+I ekvation \eqref{väggfölj} representerar $(x_m, y_m)$ en punkt längs väggen och $\gamma$ väggens orientering i samma kartesiska plan som robotens position är angiven i.
 
 \subsubsection{Ideala väggföljarproblemet (IWFP)}
-Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robotens fysikaliska egenskaper är försumbara, det vill säga att insignaler kan ges i form av hastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
+Bemporad et al. föreslår i \cite{wfp} en lösning på det ideala väggföljarproblemet. Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och robotens dynamik är försumbar, det vill säga att insignaler kan ges i form av hastighet och vinkelhastighet. En lösning till väggföljningsproblemet ges i detta idealfall av återkopplingen
 \begin{equation}\label{idealåterkoppling}
 	\begin{cases}
 	v = v_{des} \\
@@ -178,19 +178,19 @@ Antag att  koordinaterna (\(x, y, \theta\)) är mätbara utan fel och att robote
 	\end{cases}
 \end{equation}
 
-där \(k\) och \(b\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)cos\gamma - (x - x_m)sin\gamma\). Inför vi sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\) får vi av det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}
+där \(k\) och \(\beta\) är positiva skalärer och \(d\) är robotens avstånd från väggen, det vill säga \(d = (y - y_m)\cos\gamma - (x - x_m)\sin\gamma\). Författarna inför sedan tillstånden \(x_1 \triangleq d - d^0\) och \(x_2 \triangleq \dot{d}\).  Det återkopplade ekvationssystemet \eqref{robotekv}-\eqref{idealåterkoppling}, tillsammans med antagandena ovan, kan då skrivas dom
 
 \begin{equation}
 	\begin{cases}
 	\dot{x_1} = x_2 \\
-	\dot{x_2} = -kx_1 - \beta x_2
+	\dot{x_2} = -kx_1 - \beta x_2.
 	\end{cases}
 \end{equation}
 
-Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då \(t \to \infty\).
+Detta ger att \(d(t) \to d^0\), \(\dot{d}(t) \to 0\) och \(\sin (\theta(t) - \gamma) \to 0\) då $t \to \infty$ för alla positiva $k$ och $\beta$.
 
 \subsubsection{Verkliga väggföljarproblemet (RWFP)}\label{rwfp}
-Betrakta vårt fall (Figur \ref{robot}), med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
+Betrakta vårt fall, figur \ref{robot}, med en robotplattform där spänningen till DC-motorer på vardera sida av roboten är insignalen, en främre avståndssensor ger hastigheten, ett gyro ger vinkelhastigheten och IR-sensorer på sidorna ger avståndet till väggen. I det fallet finns ett antal, ytterligare begränsningar på systemet. Bland annat så begränsar motorernas egenskaper den maximala hastigheten och den maximala accelerationen. Vidare kommer data från sensorerna oundvikligen innehålla en viss andel brus. Slutligen är IR-sensorerna enbart verksamma då  väggens normal ligger inom deras strålkon.
 
 För att nå fram till en tillfredställande formulering av RWFP måste alltså även de ovanstående kraven tas med i beaktning, och översättas till lämpliga relationer mellan systemvariablerna. IR-sensorernas begränsning leder till följande begränsning
 
@@ -200,16 +200,16 @@ För att nå fram till en tillfredställande formulering av RWFP måste alltså 
 där vanligen \(\sigma_{max} \in [10\degree,15\degree]\). Om $\Omega_{max}$ är hjulens maximala tillåtna vinkelhastighet, det vill säga \(|\omega_1|,|\omega_2| \leq \Omega_{max}\), så fås tillsammans med \eqref{hjulekv} följande begränsning
 
 \begin{equation}\label{hastbegr}
-	|v \pm e\omega| \leq r\Omega_{max}
+	|v \pm e\omega| \leq r\Omega_{max}.
 \end{equation}
 
-På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Dessa skattningar fås genom användning av ett utökat kalmanfilter (EKF), som beskrivs mer ingående i avsnitt \ref{EKF}. Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
+På grund av mätfel kan koordinaterna \((x,y,\theta)\) endast fås som skattningarna \((\hat{x},\hat{y},\hat{\theta})\). Dessa skattningar fås genom användning av ett utökat \emph{Kalmanfilter} (EKF), som beskrivs mer ingående i avsnitt \ref{EKF}. Antag att mätvärden samplas varje $T_c$ sekunder och låt $\omega(k)$ och $v(k)$ vara vinkelhastigheten och hastigheten vid tiden $kT_c$ och $z(k)$ avståndet till väggen vid samma tidpunkt. Då fås en skattning av $(\hat{x},\hat{y},\hat{\theta})$ genom integration av \eqref{robotekv} enligt Simpsons regel
 
 \begin{equation}\label{rwfpåterkoppling}
 	\begin{cases}
 	\hat{x}(k) \approx \hat{x}(k-1) + \frac{T_c}{2} (v(k) \cos \theta(k) + v(k-1)\cos \theta(k-1)) \\
 	\hat{y}(k) \approx \hat{y}(k-1) + \frac{T_c}{2} (v(k) \sin \theta(k) + v(k-1)\sin \theta(k-1)) \\
-	\hat{\theta}(k) \approx \hat{\theta}(k-1) + \frac{T_c}{2} (\omega(k) + \omega(k-1)) \\
+	\hat{\theta}(k) \approx \hat{\theta}(k-1) + \frac{T_c}{2} (\omega(k) + \omega(k-1)). \\
 	\end{cases}
 \end{equation}
 
@@ -225,11 +225,11 @@ Definierar vi $D_x$ och $D_y$ som komponenterna av avståndet mellan robotens mi
 fås följande uttryck för $z(k)$
 
 \begin{equation}
-	z(k) \approx |(x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |
+	z(k) \approx |(x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |.
 \end{equation}
 
 \section{Kunskapsbas -- kartläggning och vägoptimering}
-Nedan presenteras en kunspasbas för optimeringen.
+Nedan presenteras en kunskapsbas för optimeringen.
 \subsection{Jacobianen}
 Låt $\bfr{f}(\bfr{x}):\mathbb{R}^{n}\rightarrow\mathbb{R}^{m}$ vara en vektorvärd funktion där $\bfr{f}=\left(f_1,\ldots,f_m\right)$ och $\bfr{x}=\left(x_1,\ldots,x_n\right)$. Jacobimatrisen till $\bfr{f}$ är av storlek $m\times n$ och definieras enligt
 \begin{equation*}
@@ -273,12 +273,12 @@ En labyrint kallas enkelt sammanhängande om alla väggar är kopplade till vara
 
 
 \pagebreak
-\section{Empiri -- Reglering}
-För differentiellt driven robot av det slag som redan introducerats i den här rapporten är reglerad körning i en rak korridor en betydlig större utmaning än reglering av rotation. Förutsatt att de fyra motorernas egenskaper är relativt likvärdiga, vilket de antas vara, kan föflyttningen i x- och y-led vid rotation försummas. Detta leder till att reglerproblemet för rotation enbart innefattar vinkel och vinkelhastighet, varför det kan lösas med en enkel PD-reglering.
+\section{Empiri -- reglering}
+För differentiellt driven robot av det slag som redan introducerats i den här rapporten är reglerad körning i en rak korridor en betydlig större utmaning än reglering av rotation. Förutsatt att de fyra motorernas egenskaper är relativt likvärdiga, vilket de antas vara, kan förflyttningen i x- och y-led vid rotation försummas. Detta leder till att reglerproblemet för rotation enbart innefattar vinkel och vinkelhastighet, varför det kan lösas med enkel PD-reglering.
 
 Med detta i åtanke kommer detta avsnitt främst behandla problemet med reglerad körning i en rak korridor. 
 
-\subsection{Återkopplning med riktningskrav}
+\subsection{Återkoppling med riktningskrav}
 Som nämnt i avsnitt \ref{rwfp} ger IR-sensorerna endast signifikanta mätvärden då deras riktning uppfyller kravet i \eqref{IRkrav}. En ändring av återkopplingen \eqref{idealåterkoppling} ger
 
 \begin{equation}\label{IRåterkoppling}
@@ -290,7 +290,7 @@ Som nämnt i avsnitt \ref{rwfp} ger IR-sensorerna endast signifikanta mätvärde
 
 där $\beta_0$, $\beta_1$ är skalärer.
 	
-\paragraph{Theorem 1} \textit{Betrakta det slutna systemet \eqref{robotekv}, \eqref{IRåterkoppling} och låt} $\beta_0 \geq 0$,
+\paragraph{Sats 1} \textit{Betrakta det slutna systemet \eqref{robotekv}, \eqref{IRåterkoppling} och låt} $\beta_0 \geq 0$,
 
 \begin{equation}
 	\beta_1 \triangleq \frac {k} {v_{des} \tan \sigma_{max}}
@@ -312,14 +312,14 @@ där $\beta_0$, $\beta_1$ är skalärer.
 \end{aligned}
 \end{equation}
 
-\textit{då $t \to \infty$}
+\textit{då $t \to \infty$.}
 
 \paragraph{Bevis 1} Se avsnitt 3.1 i \cite{wfp}.
 
-\paragraph{Kommentar 1} Theorem 1 ger inget specifikt värde på $\beta_0$. Bemporad et al. skriver i \cite{wfp} att för små värden på $\beta_0$ är vinkelhastighetens storlek tillräckligt liten för att undvika plötsliga rotationer både i stabila tillstånd och övergångstillstånd. Större värden på $\beta_0$ ger dock större robusthet mot brus och modellfel. Parametern måste således justeras experimentiellt för den specifika applikationen. I \cite{wfp} användes formeln $\beta_0 = \alpha \beta_1$ med $\alpha \in [0.05,0.1]$.
+\paragraph{Kommentar 1} Sats 1 ger inget specifikt värde på $\beta_0$. Bemporad et al. skriver i \cite{wfp} att för små värden på $\beta_0$ är vinkelhastighetens storlek tillräckligt liten för att undvika plötsliga rotationer både i stabila tillstånd och transienter. Större värden på $\beta_0$ ger dock större robusthet mot brus och modellfel. Parametern måste således justeras experimentiellt för den specifika applikationen. I \cite{wfp} användes formeln $\beta_0 = \alpha \beta_1$ med $\alpha \in [0.05,0.1]$.
 
 \subsection{Hastighetskrav}
-Återkopplingen \eqref{IRåterkoppling} betraktar inte de fysiska begränsningarna på hjulens vinkelhastighet (och därmed robotens hastighet) som visas i \eqref{hastbegr}. Dessa krav kan emellertid uppfyllas genom att direkt skala av utsignalen enligt
+Återkopplingen i \eqref{IRåterkoppling} betraktar inte de fysiska begränsningarna på hjulens vinkelhastighet (och därmed robotens hastighet) som visas i \eqref{hastbegr}. Dessa krav kan emellertid uppfyllas genom att direkt skala av utsignalen enligt
 
 \begin{equation}
 	\omega = \lambda \omega_\gamma
@@ -336,25 +336,25 @@ där $\omega_\gamma$ ges av högerledet i \eqref{IRåterkoppling} och $v_{des} <
 
 vilket uppfyller kraven i \eqref{hastbegr} utan att påverka regleringens asymptotiska egenskaper \cite{wfp}.
 
-\subsection{Utökat Kalmanfilter}\label{EKF}
-I \cite{wfp} föreslår Bemporad et al. användningen av ett utökat kalmanfilter (EKF) för att skatta robotens koordinater $(x,y,\theta)$. Låt oss införa vektorerna 
+\subsection{Utökat \emph{Kalmanfilter}}\label{EKF}
+I \cite{wfp} föreslår Bemporad et al. användningen av ett utökat \emph{Kalmanfilter} (EKF) för att skatta robotens koordinater $(x,y,\theta)$. Låt oss införa vektorerna 
 
 \begin{equation*}
 	\begin{aligned}
-	&X(k) \triangleq [x(k), y(k), \theta(k)]' \\
-	&V(k) \triangleq [v(k), \omega(k)]'
+	&X(k) \triangleq [x(k), y(k), \theta(k)]^{\textrm{T}} \\
+	&V(k) \triangleq [v(k), \omega(k)]^{\textrm{T}}
 	\end{aligned}
 \end{equation*}
 
 and definiera $r(X(k))$ som avståndet från IR-sensorn till väggen, det vill säga
 
 \begin{equation*}
-	r(X(k)) \triangleq | (x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |
+	r(X(k)) \triangleq | (x(k) + D_x - x_m) \sin \gamma - (y(k) + D_y - y_m) \cos \gamma |.
 \end{equation*}
 
-Vidare, låt $E_x(k)$ vara en stokastisk vektor (med medelvärde noll och kovariansmatris $Q_x(k)$) som tar brus och modellfel i beaktning och $\xi(k)$ en stokastisk variabel (med medelvärde noll och kovarians $\sigma_r^2$) som modellerar bruset som påverkar avståndsmätningen.
+Vidare, låt $E_x(k)$ vara en stokastisk vektor (med väntevärde noll och kovariansmatris $Q_x(k)$) som tar brus och modellfel i beaktning och $\xi(k)$ en stokastisk variabel (med väntevärde noll och kovarians $\sigma_r^2$) som modellerar bruset som påverkar avståndsmätningen.
 
-Den resulterande icke-linjära modellen 
+Baserat på den icke-linjära modellen 
 
 \begin{equation}
 	\begin{cases}
@@ -363,7 +363,7 @@ Den resulterande icke-linjära modellen
 	\end{cases}
 \end{equation}
 
-har följande EKF-ekvationer
+ges uppdateringsekvationerna för det tillhörandet EKF:et av
 
 \begin{equation*}
 	\begin{aligned}
@@ -376,17 +376,17 @@ har följande EKF-ekvationer
 	\end{aligned}
 \end{equation*}
 
-där $P_{v_r}(i|j)$ är den skattade kovariansmatrisen för $V(k)$ vid tiden $i$ baserat på information tillgänglig vid tiden $j$, $P_x(i|j)$ den skattade kovariansmatrisen för $X(k)$, $\hat{X}(i|j)$ skattningen av vektorn $X$, kalmanförstärkningen $G_x(k)$ och Jacobimatriserna till ekvation \eqref{rwfpåterkoppling} $J_V(k)$, $J_X(k)$ och $H(k)$
+där $P_{v_r}(i|j)$ är den skattade kovariansmatrisen för $V(k)$ vid tiden $i$ baserat på information tillgänglig vid tiden $j$, $P_x(i|j)$ den skattade kovariansmatrisen för $X(k)$, $\hat{X}(i|j)$ skattningen av vektorn $X$, kalmanförstärkningen $G_x(k)$ och jacobianen till ekvation \eqref{rwfpåterkoppling} $J_V(k)$, $J_X(k)$ och $H(k)$
 
 \begin{equation*}
 	\begin{aligned}
 	J_X(k-1) &= \frac {\partial F(X,V)} {\partial X} \Big|_{X=X(k-1),V=V(k)} \\
 	J_V(k) &=  \frac {\partial F(X,V)} {\partial V} \Big|_{X=X(k-1),V=V(k)} \\
-	H(k) &=  \frac {\partial r (X(k))} {\partial X}
+	H(k) &=  \frac {\partial r (X(k))} {\partial X}.
 	\end{aligned}
 \end{equation*}
 
-FIltret initieras genom att låta 
+Filtret initieras genom att låta 
 
 \begin{equation*}
 	\begin{aligned}
@@ -407,27 +407,27 @@ Avstånd- och hastighetsmätningar matas in i återkopplingen \eqref{IRåterkopp
 	\end{cases}
 \end{equation}
 
-där $z$ är avståndet mätt med hjälp av IR-sensorn och $\hat{\theta}$ ges av EKF. Bemporad et al. skriver i \cite{wfp} att trots att skattningarna $\hat{x}$ och $\hat{y}$ inte används i \eqref{återkoppling} kan de komma till användning vid utförandet av den högre uppgift som kan tänkas kräva den förslagna återkopplingen.
+där $z$ är avståndet mätt med hjälp av IR-sensorn och $\hat{\theta}$ ges av EKF. Bemporad et al. skriver i \cite{wfp} att trots att skattningarna $\hat{x}$ och $\hat{y}$ inte används i \eqref{återkoppling} kan de komma till nytta för att lösa andra av robotens uppgifter.
 
 \subsection{PID-regulator}
-I \cite{PID1}, \cite{PID2}, \cite{PID3} presenterar författarna en PID-regulator för reglering av en robot i en rak korridor. De stora fördelarna med en regulator av den här typen, jämfört med den som presenterats ovan, är att den är enklare att implementera och kräver betydligt mindre beräkningskraft.
+I \cite{PID1}, \cite{PID2}, \cite{PID3} presenterar författarna en PID-regulator för reglering av en robot i en rak korridor. De stora fördelarna med en regulator av den här typen, jämfört med den som presenterats ovan, är att den är enklare att implementera och kräver betydligt mindre beräkningskraft. Regulatorns nackdelar är att den, jämfört med återkoppling med EKF, i regel ger sämre reglering (långsammare stegsvar, mindre robust etc.).
 
-Betrakta roboten i avsnitt \ref{väggföljning}. Inför konstanterna $Kp$, $Ki$ och $Kd$ och reglerfelet $e_t = d^0 - d_t$. Den diskreta PID regulatorn ges då av följande ekvation
+Betrakta roboten i avsnitt \ref{väggföljning}. Inför konstanterna $K_p$, $K_i$ och $K_d$ och reglerfelet $e_t = d^0 - d_t$. Den diskreta PID regulatorn ges då av följande ekvation
 
 \begin{equation}
-	d_t = Kp_t e_t + Ki_t T_s \displaystyle\sum_{k=0}^{t} e_k + Kd \frac {e_t - e_{t-1}}{T_s}
+	d_t = K_p e_t + K_i T_s \displaystyle\sum_{k=0}^{t} e_k + K_d \frac {e_t - e_{t-1}}{T_s}
 \end{equation}
 
 Denna typ av regulator är lämplig att använda vid reglering av robotens rotationer. Vi inför i så fall vinkel $\gamma^0$ som är den önskade vinkeln efter rotationen och $e_t = \gamma^0 - \gamma_t$. Då ges regulatorn av ekvationen 
 
 \begin{equation}
-	\gamma_t = Kp_t e_t + Ki_t T_s \displaystyle\sum_{k=0}^{t} e_k + Kd \frac {e_t - e_{t-1}}{T_s}
+	\gamma_t = K_p e_t + K_i T_s \displaystyle\sum_{k=0}^{t} e_k + K_d \frac {e_t - e_{t-1}}{T_s}
 \end{equation}
 
 \pagebreak
 %Olles del:
 \section{Empiri -- kartläggning och vägoptimering}
-Autonom styrning av alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemenen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
+Autonom styrning av alla dess slag medför flera problemställningar att ta hänsyn till. Den algoritm som styr en robotgräsklippare kan exempelvis inte styra en drönare inom försvarsindustrin eller \emph{Curiosity} som navigerar Mars. Problemen i dess grundformer handlar om att effektivt kunna tolka och kartlägga sin omgivning enbart utgående från sensorvärden.
 
 SLAM (\emph{Simultaneous Localization and Mapping}) är samlingsnamnet för problem av denna typ och saknar än så länge en optimal lösning. Flera SLAM-metoder har utvecklats för att lösa lokaliseringsproblemet där EKF-SLAM och Fast-SLAM utgör de mest populära enligt \cite{rat}. Dessa utforskas vidare i avsnitt \ref{slam}.
 
@@ -437,7 +437,7 @@ Den sista utmaningen som roboten ställs inför är att finna en optimal väg me
 
 \subsection{SLAM}
 \label{slam}
-Enligt \cite{ekf} är implementeringen av en SLAM-algoritm utmanande. Problemet ligger i att sensorerna som undersöker omgivningen är mottagliga för störningar och har fysiska begränsningar. En IR-sensor som fungerar på korta avstånd blir obrukbar på långa avstånd och en ultraljuds-sensor som är exakt under rätt förhållanden blir känslig för störningar. Därför, för att kompensera för dessa avvikelser, gäller att både aktuella och historiska mätningar viktas och kombineras så att omgivningen presenteras med minsta möjliga felmarginal. 
+Enligt \cite{ekf} är implementeringen av en SLAM-algoritm utmanande. Ett av problemen ligger i att sensorerna som undersöker omgivningen är mottagliga för störningar och har fysiska begränsningar. En IR-sensor som fungerar på korta avstånd blir obrukbar på långa avstånd och en ultraljuds-sensor som är exakt under rätt förhållanden blir känslig för störningar. Därför, för att kompensera för dessa avvikelser, gäller att både aktuella och historiska mätningar viktas och kombineras så att omgivningen presenteras med minsta möjliga felmarginal. 
 
 En SLAM-algoritms mål är att beräkna (approximera) sannolikhetsfördelningen
 \begin{equation*}
@@ -455,7 +455,7 @@ Det ursprungliga \emph{Kalmanfiltret} bygger på en linjär övergångs- och obs
 \end{align*}
 där $\bfr{x}_t$ är det nuvarande tillståndet, $\bfr{A}_t$ en matris, $\bfr{x}_{t-1}$ det föregående tillståndet, $\bfr{B}_t$ en matris, $\bfr{u}_t$ nuvarande styrsignal, $\boldsymbol{\epsilon}_t$ en brusterm, $\bfr{z}_t$ nuvarande observation, $\bfr{C}_t$ en matris och $\boldsymbol{\delta}_t$ en brusterm. Brusen $\boldsymbol{\epsilon}_t$ och $\boldsymbol{\delta}_t$ är oberoende, normalfördelade, vita och  med väntevärde noll samt kovarians $\bfr{R}_t$ respektive $\bfr{Q}_t$, det vill säga $\boldsymbol{\epsilon}_t \sim \mathcal{N}\left(0,\bfr{R}_t\right)$ och $\boldsymbol{\delta}_t \sim \mathcal{N}\left(0,\bfr{Q}_t\right)$.
 
-Eftersom \emph{Kalmanfiltret} är en rekursiv estimator skattar den nästkommande tillstånd genom att bygga vidare på information från föregående tillstånd. Låt $\hat{\bfr{x}}_{t\vert \tilde{t}}$ vara skattningen av tillståndet $\bfr{x}$ och $\bfr{P}_{t\vert \tilde{t}}$ vara kovariansmatrisen för felet i skattningen av tillståndet vid tiden $t$ givet observeringar upp till och med tiden $\tilde{t}\leq t$. Då ges skattningen av dessa variabler i tidpunkt $t$ av
+Eftersom \emph{Kalmanfiltret} är en rekursiv estimator skattar den nästkommande tillstånd genom att bygga vidare på information från föregående tillstånd. Låt $\hat{\bfr{x}}_{t\vert \tilde{t}}$ vara skattningen av tillståndet $\bfr{x}$ och $\bfr{P}_{t\vert \tilde{t}}$ vara kovariansmatrisen för felet i skattningen av tillståndet vid tiden $t$ givet ovservationer upp till och med tiden $\tilde{t}\leq t$. Då ges skattningen av dessa variabler i tidpunkt $t$ av
 \begin{align*}
 	\hat{\bfr{x}}_{t\vert t-1} &= \bfr{A}_{t}\hat{\bfr{x}}_{t-1\vert t-1} + \bfr{B}_{t}\bfr{u}_{t} \\
 	\bfr{P}_{t\vert t-1} & = \bfr{A}_{t}\bfr{P}_{t-1\vert t-1}\bfr{A}_{t}^{\mathrm{T}} + \bfr{R}_t
@@ -504,10 +504,10 @@ där $\bfr{F}_{t} = \frac{\partial\,f}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{
 \end{align*}
 där $\bfr{H}_{t} = \frac{\partial\,h}{\partial\,\bfr{x}}\rvert_{\hat{\bfr{x}}_{t\vert t-1}}$ utgör jacobianen till $h$ och $\bfr{K}_{t}$ väljs till $\bfr{K}_{t} = \bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}}\left(\bfr{H}_{t}\bfr{P}_{t\vert t-1}\bfr{H}_{t}^{\mathrm{T}} + \bfr{Q}_{t}\right)^{-1}$ för att minimera spåret av $\bfr{P}_{t\vert t}$ med hänsyn till $\bfr{K}_{t}$.
 
-EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat beräkningskapaciteten som behövs. I komplexitet är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$ där n är antal landmärken. En vidareutveckling av EKF finns i \cite{ordo} där komplexiteten har minskats till $\mathcal{O}\left(n\right)$.
+EKF har fått sin populäritet från att den passar i sammanhang då modellen, mätningar eller bådadera är icke-linjära och appliceras exempelvis i navigationssystem (GPS) enligt \cite{ekfINaction}. Nackdelar med algoritmen är bland annat beräkningskapaciteten som behövs. I komplexitet är algoritmen av storlek $\mathcal{O}\left(n^{2}\right)$ där $n$ är antal landmärken. En vidareutveckling av EKF finns i \cite{ordo} där komplexiteten har minskats till $\mathcal{O}\left(n\right)$.
 
 \subsubsection{FastSLAM}
-FastSLAM är en alternativ lösning på SLAM-problemet som bygger på partikelfiltrering. Ett partikelfilter har inget krav på korrelation mellan landmärkena och behöver därför inte beräkna kovariansmatrisen vilket sänker beräkningskapaciteten för algoritmen. Istället utgör varje partikel en unik skattning av robotens position där de partiklar som anses ha en rimlig position omsamplas och de andra dör ut.
+FastSLAM är en alternativ lösning på SLAM-problemet som bygger på partikelfiltrering. Ett partikelfilter har inget krav på korrelation mellan landmärkena och behöver därför inte beräkna kovariansmatrisen vilket sänker beräkningskapaciteten för algoritmen då SLAM-problemet ska lösas. Istället utgör varje partikel en unik skattning av robotens position där de partiklar som anses ha en rimlig position omsamplas och de andra dör ut.
 
 Precis som EKF-SLAM så använder FastSLAM ett \emph{Extended Kalman filter} för att skatta landmärkenas position. För att minska matrisernas dimension och därmed algoritmens beräkningskapacitet använder FastSLAM istället ett filter per landmärke. Kartläggningen består med andra ord av en mängd oberoende fördelningar med linjär komplexitet istället för en kovarierande karta med kvadratisk komplexitet.
 
@@ -525,18 +525,18 @@ Av komplexitetsskäl gör sig FastSLAM bättre på stora system jämfört med EK
 \subsubsection{En jämförelse mellan EKF-SLAM och FastSLAM}
 EKF-SLAM bygger på en tillståndsvektor som innehar information om robotens position och alla landmärken. FastSLAM betraktar istället en mängd partiklar där varje partikel har en egen uppsättning med position och landmärken. EKF-SLAM behöver uppdatera sin vektor i varje tidssteg medan FastSLAM endast behöver sampla om de partiklar som algoritmen anser korrekta. 
 
-För EKF-SLAM utgörs alla skattningar av normalfördelningar. FastSLAM delar upp skattningsproblemet i $n + 1$ subproblem och löser dessa individuellt. EKF-SLAM förutsätter med andra ord att bruset är normalfördelat medan FastSLAM inte gör något antagande om bruset utseende.
+För EKF-SLAM utgörs alla skattningar av normalfördelningar. FastSLAM delar upp skattningsproblemet i $n + 1$ subproblem och löser dessa individuellt. EKF-SLAM förutsätter med andra ord att bruset är normalfördelat medan FastSLAM inte gör något antagande om brusets fördelning.
 
 \subsection{Labyrintnavigering}
 \label{mapping}
-Att autonomnt navigera en labyrint kräver någon typ av smart algoritm. Vilken typ av algoritm som platsar sig beror på både labyrintens komplexitet och robotens målsättning. Den typ av labyrint som studeras i detta avsnitt har inga öppna rum, en ingång och en markering istället för utgång. Alla korsningar och svängar är ortogonala och det kan finnas mer än en väg mellan ingång och markering. Robotens målsättning är att ta sig från början av labyrinten och åtminstone kartlägga den kortaste vägen till markeringen.
+Att autonomnt navigera en labyrint kräver någon typ av smart algoritm. Vilken typ av algoritm som passar sig beror på både labyrintens komplexitet och robotens målsättning. Den typ av labyrint som studeras i detta avsnitt har inga öppna rum, en ingång och en markering istället för utgång. Alla korsningar och svängar är ortogonala och det kan finnas mer än en väg mellan ingång och markering. Robotens målsättning är att ta sig från början av labyrinten och åtminstone kartlägga den kortaste vägen till markeringen.
 
 I detta avsnitt behandlas algoritmer för hur en robot kan fatta beslut under kartläggning. Beräkning av den optimala vägen återfinns i  avsnitt \ref{optimalvag}.
 
 \subsubsection{Väggföljare}
 Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att man alltid följer en sida av korridoren. Ifall algoritmen är av högertyp följer man höger sida av korridoren och svänger höger där det är möjligt, vice versa för vänstertyp.
 
-Fördelar med algoritmen är att den är enkel att implementera. Men saknandet av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fasta i en oändlig loop.
+Fördelar med algoritmen är att den är enkel att implementera. Men saknandet av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fastna i en oändlig loop.
 
 \subsubsection{\emph{Dead-end filling}}
 \emph{Dead-end filling} är en djup-först-algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
@@ -600,7 +600,7 @@ A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste 
 \end{equation*}
 där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
 
-Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. Men i fallet av en labyrint med ortogonala korsningar platsar sig det så kallade \emph{Manhattan}-avståndet bättre.
+Vilken heuristik som är optimal beror på vilket typ av problem som lösas. \cite{aStar} föreslår att det euklidiska avståndet mellan noden och slutnoden ska utgöra den optimala skattningen. Men i fallet av en labyrint med ortogonala korsningar passar \emph{Manhattan}-avståndet bättre, det vill säga summan av de ortogonala avstånden.
 
 $h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras. Låt $V$ vara mängden av samtliga noder, $S$ mängden av avsökta noder och $Q$ mängden av oavsökta noder. Då ges algoritmens pseudokod av algoritm \ref{astar}.
 
@@ -643,11 +643,11 @@ Sammanfattningsvis utgör A* en mer optimal algoritm för en navigeringsrobot. E
 \section{Resultat och slutsatser}
 Nedan presenteras förstudiens resultat och slutsatser.
 \subsection{Reglering}
-Som nämnt tidigare finns det ingen anledning använda något annat än en PID-regulator för att reglera rotationen av roboten. Robotens vinkelhastighet enkelt kan mätas av gyrot och genom att driva motorerna med samma hastighet, i motsatt riktning, kan vinkelhastigheten även styras utan att påverka robotens läge i x- eller y-led. Därför räcker en PID-regulator.
+Som nämnts tidigare finns det ingen anledning använda något annat än en PID-regulator för att reglera rotationen av roboten. Robotens vinkelhastighet kan enkelt mätas av gyrot och genom att driva motorerna med samma hastighet, i motsatt riktning, kan vinkelhastigheten även styras utan att påverka robotens läge i x- eller y-led. Därför räcker en PID-regulator.
 
-Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel en bättre återkoppling än en PID-regulator, men är svårare att modellera. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn, därför kan den integrerande delen av regulatorn tas bort ($Ki = 0$).
+Gällande reglering av rak körning är inte valet lika självklart. Tillståndsåterkoppling ger i regel bättre reglering än en PID-regulator, men är svårare att implementera och mer beräkningstung. Erfarenheter från tidigare år talar för att prestandan från en PID-regulator är tillräcklig för en robot av den här typen, varför den är att föredra. Både i fallet med rak körning och rotation är elimineringen av statiska reglerfel inte en särskilt högt prioriterad egenskap hos regulatorn och därför kan den integrerande delen av regulatorn tas bort ($K_i = 0$).
 
-Även i frågan om att minska risken för mätstörningar prioriteras enkelhet över robusthet. De sensorer som ska användas är relativt pålitliga och den miljö roboten kommer befinnas sig i bör inte ge upphov till några extraordinära störningar. Därför anses ett EKF vara överflödigt och ersätts med ett glidande medelvärde.
+Även i frågan om att minska risken för mätstörningar prioriteras enkelhet över robusthet. De sensorer som ska användas är relativt pålitliga och den miljö roboten kommer att befinna sig i bör inte ge upphov till några extraordinära störningar. Därför anses ett EKF vara överflödigt och ersätts med ett glidande medelvärde.
 
 % översättning d_t till motorstyrning
 
