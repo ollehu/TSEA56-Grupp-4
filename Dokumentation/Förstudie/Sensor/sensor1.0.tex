@@ -43,7 +43,7 @@ Wasteson, Emil&\verb+emiwa068+
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & Zimon Inge & 2016-04-23 \\ \hline
+Granskad & Zimon Inge & 2016-04-25 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -98,7 +98,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & 2016/04/23 & Tredje utkastet & Grupp 4 & ZI \\ \hline
+1.0 & 2016/04/25 & Tredje utkastet & Grupp 4 & ZI \\ \hline
 0.2 & 2016/04/08 & Andra utkastet & Grupp 4 & ZI \\ \hline
 0.1 & 2016/03/03 & Första utkastet & Grupp 4 & ZI \\ \hline
 
@@ -115,6 +115,7 @@ I dagsläget finns det en mängd olika sensorer, alla med för- respektive nackd
 
 
 \section{Problemformulering}
+I detta kapitel presenteras det syfte samt de frågeställningar som ligger till grund för denna förstudie.
 
 \subsection{Syfte}
 Syftet med denna rapport är att undersöka vilka sensorer som är relevanta för undsättningsroboten i sitt uppdrag. Syftet är fortsättningsvis att redogöra för en implementation av de sensorer som finnes intressanta för undsättningsrobotens ändamål.
@@ -136,10 +137,10 @@ Nedan följer de huvudsakliga frågeställningar vilka har för avsikt att behan
 
 \pagebreak
 \section{Kunskapsbas}
-För att kunna avgöra vilka sensorer som är ändamålsenliga för en undsättningsrobotot så krävs en redogörelse av vad som finns att tillgå. I följande avsnitt följer således en beskrivning av olika typer av sensorer.
+För att kunna avgöra vilka sensorer som är ändamålsenliga för en undsättningsrobot så krävs en redogörelse av vad som finns att tillgå. I följande avsnitt följer således en beskrivning av olika typer av sensorer.
 
 \subsection{Kapacitiv sensor}
-En kapacitiv sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation \ref{kapacitiv}, där er är en konstant som beror av materialets relativa kapacivitet och eo är en permitiviteten i luften.\cite{website:capacative}
+En kapacitiv sensor är en sensor som använder sig av kapacitans (C) för att identifiera ett önskat material. Sensorn består av en platta med arean A och kan detektera alla objekt som har en relativ kapacivitet som skiljer sig från luft, bland annat plast, olika metaller, vätskor och hud. Det finns olika typer av kapacativa sensorer, en del kräver kontakt mellan sensorn och ett objekt medan andra har högre känslighet och kan känna av kapacitansändringar på avstånd upp till 70 cm. När avståndet (d) mellan objektet och en sensorn minskar så ökar kapacitansen enligt ekvation \ref{kapacitiv}, där \texorpdfstring{e\textsubscript{r}}{e r} är en konstant som beror av materialets relativa kapacivitet och \texorpdfstring{e\textsubscript{o}}{e o} är en permitiviteten i luften.\cite{website:capacative}
 
 
 \begin{equation}\label{kapacitiv}
@@ -154,7 +155,7 @@ I figur \ref{capacative} illustreras hur kapacitansen ändras när objektet (fin
 	\caption{\textit{Ett fingers påverkan på kapacitans.}\label{capacative}}
 \end{figure}
 
-En kapacitiv sensor har många fördelar när ett objekt ska detekteras. Det som utmärker denna typen av sensor mest jämfört med övriga detektorer är att den kan detektera de flesta typer av objekt, alltfrån metaller och plast till hud och vatten. Det gör att samma sensor kan användas i flera typer av projekt och miljöer. Sensor behöver dock komma nära objekten som ska detekteras, vilket innebär att en bra uppfattning om var objektet krävs innan avsökning påbörjas. \cite{website:capacative}
+En kapacitiv sensor har många fördelar när ett objekt ska detekteras. Det som utmärker denna typen av sensor mest jämfört med övriga detektorer är att den kan detektera de flesta typer av objekt, alltifrån metaller och plast till hud och vatten. Det gör att samma sensor kan användas i flera typer av projekt och miljöer. Sensor behöver dock komma nära objekten som ska detekteras, vilket innebär att en bra uppfattning om var objektet krävs innan avsökning påbörjas. \cite{website:capacative}
 
 %Förhållandet mellan kapacitans och spänning visas i figur 2.
 
@@ -165,7 +166,7 @@ En kapacitiv sensor har många fördelar när ett objekt ska detekteras. Det som
 %\end{figure}
 
 \subsection{Ultraljudssensorer}
-För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (t) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (vluft) i luft är känd, utifrån det enligt ekvation \ref{ultra} räkna ut avståndet (s) till det objekt som gav upphov till ekot. \cite{Ultraljud}
+För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skickar ut en puls av ljud, utanför det intervall människan kan uppfatta, för att sedan invänta ett eventuellt eko. Om inget eko detekteras finns det inget objekt inom sensorns avkänningsområde i den riktning som ljudpulsen skickades ut i. Uppfattas däremot ett eko registrerar sensorn hur lång tid (\texorpdfstring{t\textsubscript{tot}}{t tot}) det tog för ljudet att studsa tillbaka och kan, eftersom ljudhastigheten (\texorpdfstring{v\textsubscript{luft}}{v luft}) i luft är känd, utifrån det enligt ekvation \ref{ultra} räkna ut avståndet (s) till det objekt som gav upphov till ekot. \cite{Ultraljud}
 
 \begin{equation}\label{ultra}
 	\textrm{s} = \dfrac{v_{luft} \times t_{tot}}2				
@@ -173,10 +174,10 @@ För att mäta avstånd till objekt kan en ultraljudssensor användas. Den skick
 
 En ultraljudssensor passar bra i miljöer med skiftande omgivning. Den påverkas inte av vilka färger eller material som ljudvågorna studsar emot och den kan användas problemfritt i dammiga och smutsiga miljöer. Att mäta avstånd till små objekt på stora avstånd är inte heller någon begränsning då ljudvågorna breder ut sig på ett stabilt sätt. \cite{Ultraljud}
 
-Exempel på miljöer som begränsar ultralljudssensorer är omgivningar av höga tryck, vakuum samt hög värme. Den största begränsningen med denna sensor är emellertid att den agerar förhållandevis långsamt. Ljudet utbereder sig med en hastighet på 340 m/s i luft, vilket innebär vissa fördröjningar för sensorn att förmedla avstånd. Detta i jämförelse med sensorer som arbetar med detektering av ljus, då ljus har en betydligt högre utbredningshastighet i luft och vakuum. \cite{Ultraljud}
+Exempel på miljöer som begränsar ultraljudssensorer är omgivningar av höga tryck, vakuum samt hög värme. Den största begränsningen med denna sensor är emellertid att den agerar förhållandevis långsamt. Ljudet utbreder sig med en hastighet på 340 m/s i luft, vilket innebär vissa fördröjningar för sensorn att förmedla avstånd. Detta i jämförelse med sensorer som arbetar med detektering av ljus, då ljus har en betydligt högre utbredningshastighet i luft och vakuum. \cite{Ultraljud}
 
 \subsection{Ljussensor}
-En ljussensor (även kallad fotocell) består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektrisitet leds,  vilket i sin tur resulterar i att variaritioner i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
+En ljussensor (även kallad fotocell) består av en högresistiv halvledare vilken absorberar fotoner. Baserat på mängden fotoner sensorn absorberar och frekvensen på dessa så ges det halvledande materialets bundna elektroner tillräckligt med energi för att göra en förflyttning till ledningsbandet. De fria elektronerna medför sedermera att elektricitet leds,  vilket i sin tur resulterar i variationer i ljussensorns motstånd. Detta innebär att motståndet hos en ljussensor är högt i mörker, för att sedan minska i ljusare miljöer. \cite{612896}
 
 Ljussensorn omvandlar följaktligen infallande ljus till elektrisk ström där strömstyrkan varierar beroende på ljusets styrka. Av denna anledning är en ljussensor användbar vid detektering av konstraster på exempelvis en yta. \cite{612896}
 
@@ -192,7 +193,7 @@ En IR-sensor är en tillämpning av en ljussensor som endast registrerar önskad
 	\caption{\textit{Illustration av lasersensor.} \label{Laser}}
 \end{figure}
 
-Vissa IR-sensorer går även att använda som vinkelmätningssensor, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED-lampan ger upphov till. Detta illustreras nedan i figur \ref{laser_angle}. Vinkelmätning ställer emellertid högre krav på sensorn, eftersom strålningen som sänds ut från sensorn behöver vara skarpare.
+Vissa IR-sensorer går även att använda som vinkelmätningssensor, genom att sensorn mäter vinkeln av det reflekterade ljuset som strålningen av LED:en ger upphov till. Detta illustreras nedan i figur \ref{laser_angle}. Vinkelmätning ställer emellertid högre krav på sensorn, eftersom strålningen som sänds ut från sensorn behöver vara skarpare.
 
 \begin{figure}[htbp]
 	\centering
@@ -203,14 +204,14 @@ Vissa IR-sensorer går även att använda som vinkelmätningssensor, genom att s
 Ytterligare en möjlighet med en IR-sensor är att mäta ljusskillnader. Eftersom ljusa objekt reflekterar mer ljus än vad mörka gör kan sensorn reagera på reflektioner mot ett ljust objekt, men inte mot ett mörkt. \cite{website:cmu}
 
 \subsection{Lasersensor}
-Det finns olika typer av lasersensorer som använder olika tekniker och har olika funktioner. En typ är den elektrooptiska sensorn. Den har flera användningsområden, bland annat kan den anpassa ljuset av till exempel en lampa beroende av omgivningens ljus samt mäta avstånd till olika objekt. Avstånd mäts genom att sensorn sänder ut en laserstråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) är räknas fram enligt ekvation \ref{laser_eq}, där c står för ljusets hastighet i luft. \cite{website:mti}
+Det finns olika typer av lasersensorer som använder olika tekniker och har olika funktioner. En typ är den elektrooptiska sensorn. Den har flera användningsområden, bland annat kan den anpassa ljuset av till exempel en lampa beroende av omgivningens ljus samt mäta avstånd till olika objekt. Avstånd mäts genom att sensorn sänder ut en laserstråle och mäter hur lång tid (t) det tar innan den reflekteras och detekteras av sensorn. Avståndet (D) räknas fram enligt ekvation \ref{laser_eq}, där c står för ljusets hastighet i luft. \cite{website:mti}
 
 
 \begin{equation}\label{laser_eq}
 \textrm{D} = \frac {c \times t}{2} 
 \end{equation}
 
-En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. Genom att sända ut en laserstråle från en punkt (A) och detektera den i en annan (B) erhålls två vinklar, (\textalpha) och (\textbeta), enligt figur \ref{Triangulation}. 
+En annan typ av lasersensor är den triangulerande sensorn. De är mer komplex och kan mäta avstånd på ett mer precist sätt än den elektrooptiska. Genom att sända ut en laserstråle från en punkt (A) och detektera den i en annan (B) erhålls två vinklar, (\textalpha) och (\textbeta), enligt figur \ref{Triangulation}. 
 
 \begin{figure}[htbp]
 	\centering
@@ -218,7 +219,7 @@ En annan typ av lasersensor är den triangulerade sensorn. De är mer komplex oc
 	\caption{\textit{Illustration av triangulering.} \label{Triangulation}}
 \end{figure}
 
-Med hjälp av beräkningar enligt ekvation \ref{triangulation}, där \textit{l} är avståndet mellan A och B, fås det kortaste avståndet från sträckan AB till objektet C. \cite{website:triangulation} \cite{website:mti}
+Med hjälp av beräkningar enligt ekvation \ref{triangulation}, där \textit{l} är avståndet mellan A och B, fås det kortaste avståndet från sträckan AB till objektet C. \cite{website:mti}, \cite{website:triangulation}
 
 \begin{equation}\label{triangulation}
 \textrm{D} = l\times\frac {sin\alpha sin\beta}{sin(\alpha + \beta)} 
@@ -236,9 +237,9 @@ För att mäta hur mycket rotation som sker gentemot omgivningen kan ett gyrosko
 
 %Den gyroskopiska sensorn använder jordens gravitation för att avgöra ett föremåls position. Inuti sensorn finns en fritt roterande skiva kallad rotor. Rotorn är monterad på en snurrande axel som i sin tur sitter på ett större och mer stabilt hjul. För ett rotationsfritt föremål så snurrar axeln medan rotorn ligger stilla, detta eftersom rotorn alltid har en konstant vinkel gentemont jordaxeln. Vid rotation av föremålet kommer emellertid rotorskivan att tvingas rotera för att bibehålla den konstanta vinkeln, varpå en vinkel kan detekteras och vinkelhastighet bestämmas. \cite{Gyro}
 
-Den gyroskopiska sensorn kan detektera vinkelhastighet genom att mäta förändringar i Corioliseffekten. Denna effekt uppstår då ett föremål gör en förflyttning på en roterande kropp under påverkan av gravitationen, där ett exempel på roterande kropp skulle kunna vara jordklotet. I enighet med Corioliseffekten så påverkas följaktligen ett föremål av en sidoacceleration då detta förflyttas längs rotationsaxeln på en roterande sfär. \cite{Coriolis} \cite{MEMS_gyro}
+Den gyroskopiska sensorn kan detektera vinkelhastighet genom att mäta förändringar i Corioliseffekten. Denna effekt uppstår då ett föremål gör en förflyttning på en roterande kropp under påverkan av gravitationen, där ett exempel på roterande kropp skulle kunna vara jordklotet. I enighet med Corioliseffekten så påverkas följaktligen ett föremål av en sidoacceleration då detta förflyttas längs rotationsaxeln på en roterande sfär. \cite{Coriolis}, \cite{MEMS_gyro}
 
-För ett flertal mycket små elektromekaniska system används idag så kallade MEMS-gyroskop (MEMS är en förkortning för micro-electro-mechanical system). Denna typ av gyroskop är kapacitivt, vilket innebär att sensorn kapacitivt kan detektera hur ett föremål roterar. Gyroskopet är dessutom analogt där vinkelhastigeten för rotationsaxeln bestäms med hjälp av en inbyggd A/D-omvandlare varpå vinkelhastighet för ett föremål kan detekteras. \cite{MEMS_gyro}
+För ett flertal mycket små elektromekaniska system används idag så kallade MEMS-gyroskop (MEMS är en förkortning för micro-electro-mechanical system). Denna typ av gyroskop är kapacitivt, vilket innebär att sensorn kapacitivt kan detektera hur ett föremål roterar. Gyroskopet är dessutom analogt där vinkelhastigeten för rotationsaxeln bestäms med hjälp av en inbyggd A/D-omvandlare, varpå en vinkelhastighet för ett föremål kan detekteras. \cite{MEMS_gyro}
 
 \subsection{Accelerometer}
 En accelerometer är en typ av sensor som används för att detektera ett föremåls acceleration. När ett föremål går från stillastående till någon hastighet så börjar mycket små kristaller (piezoelektriska kristaller) inuti sensorn att vibrera. Beroende på intensiteten av kristallernas vibration alstras en spänning vilken är proportionerlig mot föremålets acceleration, varpå densamma kan bestämmas. \cite{Accelerometer}
@@ -259,24 +260,24 @@ Då det finns ett flertal olika typer av sensorer erfordras en god uppfattning o
 Det finns flera olika sensorer som klarar av att mäta avstånd till omgivande objekt. Här följer en beskrivning vilken typ av sensor som passar bäst till just en undsättningsrobot. 
 
 \subsubsection{SRF04} %%ULTRALJUD
-Ultraljudssensorn SRF04 mäter avstånd från 3 centimeter till 300 centimeter med hjälp av ultraljud. Den har en detektionskon på cirka 30 grader, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. \cite{Devantech}
+Ultraljudssensorn SRF04 mäter avstånd från 3 cm till 300 cm med hjälp av ultraljud. Den har en detektionskon på cirka 30$^{\circ}$, vilket gör att den kan upptäcka objekt trots att ekot inte studsar optimalt (vinkelrätt) mot ett objekt och den implementeras enkelt med en I\textsuperscript{2}C-buss. \cite{Devantech}
 
 \subsubsection{GP2D120} %IR-SENSOR
-IR-sensorn GP2D120 är en enkelt utformad sensor som tillverkas för att precisionsmäta avstånd på kortare avstånd, typiskt mellan 4 centimeter och 30 centimeter. Att mätintervallet är jämförelsevis litet är en begränsning, men det gör samtidigt att kvaliteten av mätningar inom intevallet kan göras mer precist. \cite{website:cmu}, \cite{Sharp}
+IR-sensorn GP2D120 är en enkelt utformad sensor som tillverkas för att precisionsmäta avstånd på kortare avstånd, typiskt mellan 4 cm och 30 cm. Att mätintervallet är jämförelsevis litet är en begränsning, men det gör samtidigt att kvaliteten av mätningar inom intervallet kan göras mer precist. \cite{website:cmu}, \cite{Sharp}
 
-För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med cirka 40 centimeters bredd och roboten själv är ungefär 20 centimeter bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 centimeter vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den precist kan mäta avstånd till objekt som befinner sig på ungefär 10- till 20 centimeters avstånd.
+För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med cirka 40 cm bredd och roboten själv är ungefär 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den precist kan mäta avstånd till objekt som befinner sig på ungefär 10- till 20 cm avstånd.
 
 Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras. \cite{Sharp}
 
 En svaghet hos sensorn är att den enbart kan användas inom ett litet intervall, vilket gör den till ett dåligt alternativ i en osäker omgivning eller där avstånd som ska mätas inte inkluderas i intervallet. Sensorn är även känslig för högfrekvent brus, vilket ofta existerar i omgivningen. Detta kan dock förebyggas genom att använda sig av lågpassfilter. \cite{Sharp}
 
 \subsubsection{LIDAR-Lite v2}
-Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner, till exempel avstånds- och hastighetsmätning av objekt. Den har en räckvidd på drygt 40 meter med en felmarignal på $\pm 0,025$ meter och klarar även av att mäta signalstyrka på detta avstånd. \cite{Lidar}
+Lidar-Lite v2 är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner, till exempel avstånds- och hastighetsmätning av objekt. Den har en räckvidd på drygt 40 m med en felmarginal på $\pm 0,025$ m och klarar även av att mäta signalstyrka på detta avstånd. \cite{Lidar}
 
 %https://docs.isy.liu.se/pub/VanHeden/DataSheets/lidarlite2DS.pdf (2)
-Denna lasersensor kan mäta avstånd till objekt med hög precision. Eftersom laser rör sig med ljusets hastighet och sensorn kan implementeras med avbrottshantering så sker mätningarna snabbt. Det är en stor fördel om flera sensorer delar på samma processor, eftersom endast en operation kan ske i taget. LIDAR-Lite v2 är mer avancerad och därmed dyrare än till exempel GP2D120, vilket gör att den inte bör användas om hög kvalitet efterfrågas. På en undsättningsrobot kan sensorn användas för att mäta avstånd framåt till nästa objekt. Den kan även fästas på ett servo och kan på så sätt scanna av 360 grader av ett rum. \cite{Lidar}
+Denna lasersensor kan mäta avstånd till objekt med hög precision. Eftersom laser rör sig med ljusets hastighet och sensorn kan implementeras med avbrottshantering så sker mätningarna snabbt. Det är en stor fördel om flera sensorer delar på samma processor, eftersom endast en operation kan ske i taget. LIDAR-Lite v2 är mer avancerad och därmed dyrare än till exempel GP2D120, vilket gör att den inte bör användas om hög kvalitet efterfrågas. På en undsättningsrobot kan sensorn användas för att mäta avstånd framåt till nästa objekt. Den kan även fästas på ett servo och kan på så sätt scanna av 360$^{\circ}$ av ett rum. \cite{Lidar}
 
-Med hjälp av pulsbreddsmodulering kan förhållandet mellan en hög signal (en etta) och en låg signal (en nolla) bestämmas. Utifrån denna kvot kan sensorn kalibreras och en förhållande mellan en kvot och ett avstånd kan tas fram. Alternativt går det att mäta tiden för en hög signal och använda sig av att LIDAR-Lite är förprogrammerat på så sätt att en mikrosekund motsvarar en centimeter. \cite{Lidar}
+Med hjälp av pulsbreddsmodulering kan förhållandet mellan en hög signal (en etta) och en låg signal (en nolla) bestämmas. Utifrån denna kvot kan sensorn kalibreras och en förhållande mellan en kvot och ett avstånd kan tas fram. Alternativt går det att mäta tiden för en hög signal och använda sig av att LIDAR-Lite v2 är förprogrammerat på så sätt att en mikrosekund motsvarar en centimeter. \cite{Lidar}
 
 
 \subsection{Detektering av mål}
@@ -284,21 +285,21 @@ Att identifiera objekt kan göras med hjälp av flera olika tekniker och sensore
 
 
 \subsubsection{FDC1004} %KAPACITIV SENSOR
-Sensorn FDC1004 är en sensor av kapacitiv typ. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kommunicerar därför mätdata digitalt till undsättningsrobotens processorenhet. Då sensorn är kapacacitiv så kan den detektera olika typer av material med varierande kapacitans. \cite{Texas}, \cite{Texas2}
+Sensorn FDC1004 är en sensor av kapacitiv typ. Det kan implementeras med hjälp av en I\textsuperscript{2}C-buss och kommunicerar därför mätdata digitalt till undsättningsrobotens processorenhet. Då sensorn är kapacitiv så kan den detektera olika typer av material med varierande kapacitans. \cite{Texas}, \cite{Texas2}
 
 \subsubsection{IRM-8601S} %IR-Detektor
 IR-detektorn \verb+IRM-8601-S+ används för att identifiera en källa som sänder ut IR-signaler. Utformandet av sensorn är relativt enkel med tre ingångar, en som kopplas till en 5 V spänningskälla och en som ansluts till jord. I och med att den är så pass enkelt utformad med begränsat användningsområde är den också relativt billig. \cite{IRM}
 
 \subsubsection{SFH300} %IR-SENSOR
-SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 leverar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan processeras. \cite{Osram}
+IR-sensorn SFH300 är en fotodiod med hög linjäritet som kan detektera våglängder i intervallet mellan 420 nm till 1130 nm. Detta betyder att denna fotodiod, utöver för ögat synligt ljus, även kan detektera infraröda våglängder. SFH300 levererar en analog spänning som utsignal, vilket innebär att en AD-omvandling är nödvändig innan en digital signal kan procesas. \cite{Osram}
 
 Precis som IRM-8601S detekterar SFH300 våglängder inom ett visst intervall, 420 nm till 1130 nm. Detta intervall inkluderar synligt ljus och även IR-vågor. Den kan alltså användas på ett bredare plan än IRM-8601S, vilket kan vara nödvändigt då det är säkert vad det är som ska detekteras. \cite{Osram}
 
 \subsubsection{BPX43-3}
-Liksom SFH300 så är även Siemens BPX43-3 en fotodiod som kan detektera infraröda våglängder. Idealt våglängdsintervall för denna fotodiolid ligger mellan 450 nanometer och 1100 nanometer. Utsignalen genereras i form av spänning, varför AD-omvandling krävs för att processera utsignalen. Utspänningen ska emellertid vara mycket i linjär i förhållande till ljusstyrkan som dioden får som insignal. \cite{siemens}
+Liksom SFH300 så är även Siemens BPX43-3 en fotodiod som kan detektera infraröda våglängder. Idealt våglängdsintervall för denna fotodiod ligger mellan 450 nm och 1100 nm. Utsignalen genereras i form av spänning, varför AD-omvandling krävs för att processa utsignalen. Utspänningen ska emellertid vara mycket linjär i förhållande till ljusstyrkan som dioden får som insignal. \cite{siemens}
 
 \subsection{Vinkelhastighetsmätning}
-Ett flertal olika sensorer kan användas för att avgöra undsättningsrobotens position och orientering. Vanligast förekommande för detta ändåmål är olika typer av gyroskopiska sensorer. Vinkelhastighetsmätning är av betydelse då roboten bör känna till sin position vid exempelvis kurvtagning i ett grottsystem.
+Ett flertal olika sensorer kan användas för att avgöra undsättningsrobotens position och orientering. Vanligast förekommande för detta ändamål är olika typer av gyroskopiska sensorer. Vinkelhastighetsmätning är av betydelse då roboten bör känna till sin position vid exempelvis kurvtagning i ett grottsystem.
 
 \subsubsection{MPU-6050}
 MPU-6050 är en sensor som består av 3 gyroskop, 3 accelerometrar och en AD-omvandlare för varje enhet. För att kunna vara så exakt som möjligt i beräkningarna, både vid långsamma och snabba rörelser, kan användaren själv ställa in vilka intervall gyrot och accelerometern ska fokusera på. Sensorn kan kommunicera via ett I\textsuperscript{2}C-buss-interface. \cite{MPU}
@@ -317,9 +318,9 @@ Eftersom sensorn av modell MPU-6050 även består av 3 accelerometrar så finns 
 \section{Resultat och slutsatser}
 En förutsättning för att en undsättningsrobot ska kunna operera på ett effektivt sätt är att ett flertal olika typer av sensorer behövs. De viktigaste egenskaperna hos en undsättningsrobot är att den ska kunna navigera och reglera på ett effektivt sätt samt att den kan hitta det objekt som eftersöks. Eftersom roboten ska kunna svänga är även en sensor som mäter vinkelhastighet viktig.
 
-För att roboten ska kunna regleras erfordras data som beskriver den omgivning som undsättningsroboten navigerar i. Ett effektivt sätt att göra detta på är att fästa fyra avståndssensorer, två på höger och på två vänster sida av roboten, för att ha koll på avstånd till sidoväggarna. Om avståndet från roboten till väggarna uteslutligen ligger mellan 4- och 30 centimeter är GP2D120 ett bra alternativ. Givet att avståndet istället är utanför detta intervall, eller helt okänt, är en mer avancerad sensor, liksom LIDAR-Lite, att föredra. En ultraljudssensor är ett bra val om miljön som roboten arbetar i är smutsig och i miljöer som är skiftande. Valet av IR-sensorn GP2D120 motiveras följdaktligen av att undsättningsroboten ska navigera i rena miljöer, utan chans att kunna bli smutsig. Korridorerna som den ska navigerr i är därtill 40 centimeter breda, varför GP2D120 är bra alternativ. 
+För att roboten ska kunna regleras erfordras data som beskriver den omgivning som undsättningsroboten navigerar i. Ett effektivt sätt att göra detta på är att fästa fyra avståndssensorer, två på höger och på två vänster sida av roboten, för att ha koll på avstånd till sidoväggarna. Om avståndet från roboten till väggarna uteslutande ligger mellan 4- och 30 cm är GP2D120 ett bra alternativ. Givet att avståndet istället är utanför detta intervall, eller helt okänt, är en mer avancerad sensor, liksom LIDAR-Lite v2, att föredra. En ultraljudssensor är ett bra val om miljön som roboten arbetar i är smutsig och i miljöer som är skiftande. Valet av IR-sensorn GP2D120 motiveras följaktligen av att undsättningsroboten ska navigera i rena miljöer, utan chans att kunna bli smutsig. Korridorerna som den ska navigera i är därtill 40 cm breda, varför GP2D120 är bra alternativ. 
 
-För att roboten inte ska krocka, och för att den ska avläsa omgivningen så effektivt som möjligt, är det av stor vikt att en avståndssensor installeras. Avståndssensorn, i denna mening, har som angivelse att mäta avstånd till nästa vägg framåt. I detta fall räcker inte de avstånd som sensorn GP2D120 kan detektera, utan en ultraljudssensor med mer precis detektering på längre avstångd är önskvärt. För detta ändamål så är även lasersensorn LIDAR-Lite v2 ett bra alternativ. Båda sensorerna uppfyller följaktligen detta syfte, men eftersom en lasersensor är betydligt snabbare än en ultraljudssensor är LIDAR-Lite v2 en bättre sensor för detta ändamål och är således att föredra. 
+För att roboten inte ska krocka, och för att den ska avläsa omgivningen så effektivt som möjligt, är det av stor vikt att en avståndssensor installeras. Avståndssensorn, i denna mening, har som angivelse att mäta avstånd till nästa vägg framåt. I detta fall räcker inte de avstånd som sensorn GP2D120 kan detektera, utan en ultraljudssensor med mer precis detektering på längre avstånd är önskvärt. För detta ändamål så är även lasersensorn LIDAR-Lite v2 ett bra alternativ. Båda sensorerna uppfyller följaktligen detta syfte, men eftersom en lasersensor är betydligt snabbare än en ultraljudssensor är LIDAR-Lite v2 en bättre sensor för detta ändamål och är således att föredra. 
 
 Valet av sensor för detektering beror på vilket typ av objekt som ska detekteras. Är det odefinierat är en kapacitiv sensor ett naturligt val, medan en IR-sensor lämpar sig bäst för att detektera IR-ljus. Då roboten i detta fall ska upptäcka en källa som sänder ut IR-ljus är IRM-8601S en passande sensor, som dessutom är billig, trivial i sitt utförande samt enkel att installera.
 
@@ -327,6 +328,7 @@ Om roboten kommer fram till en korsning och ska svänga, med hjälp av rotation,
 
 
 \pagebreak
+
 \addcontentsline{toc}{section}{Referenser}
 
 
