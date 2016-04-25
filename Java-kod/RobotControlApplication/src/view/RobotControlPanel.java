@@ -212,38 +212,39 @@ implements 	ChangeListener {
 		public void actionPerformed(ActionEvent e) {
 
 
-			String osName = System.getProperty("os.name");
-			String[] portNames = {"port 1", "port 2", "port 3"};
-
-			// get port names
-			if(osName.contains("Windows")){
-				portNames = SerialPortList.getPortNames();
-			} else if(osName.contains("Mac")) {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-			} else {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm)[0-9]{1,3}"));
-			}
-
-			if(portNames.length == 0) {
-				JOptionPane.showMessageDialog(animator.getFrame(),
-						"No ports available!",
-						"Port error",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
-						"Select COM port", 
-						"Select COM port",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						portNames,
-						portNames[0]);
-
-				if(selectedPort != null) {
-					handler.connectToSerialPort(selectedPort);
-				}
-
-			}
-
+//			String osName = System.getProperty("os.name");
+//			String[] portNames = {"port 1", "port 2", "port 3"};
+//
+//			// get port names
+//			if(osName.contains("Windows")){
+//				portNames = SerialPortList.getPortNames();
+//			} else if(osName.contains("Mac")) {
+//				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
+//			} else {
+//				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm)[0-9]{1,3}"));
+//			}
+//
+//			if(portNames.length == 0) {
+//				JOptionPane.showMessageDialog(animator.getFrame(),
+//						"No ports available!",
+//						"Port error",
+//						JOptionPane.ERROR_MESSAGE);
+//			} else {
+//				String selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
+//						"Select COM port", 
+//						"Select COM port",
+//						JOptionPane.PLAIN_MESSAGE,
+//						null,
+//						portNames,
+//						portNames[0]);
+//				
+//				if(selectedPort != null) {
+//					handler.connectToSerialPort(selectedPort);
+//				}
+//
+//			}
+			
+			handler.connectToSerialPort("/dev/tty.FireFly-71A4-SPP");
 
 
 		}
