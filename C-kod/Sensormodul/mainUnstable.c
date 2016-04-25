@@ -14,7 +14,7 @@
 #include <util/delay.h>
 
 //#include "sensorInit.h"
-#include "initiation_ceremony.h"
+#include "sensorInit.h"
 #include "I2C_slave.h"
 
 #define SCK PORTB7
@@ -68,8 +68,9 @@ uint8_t forwardDistanceLOW;
 uint8_t forwardDistanceHIGH;
 uint16_t up_value, down_value;
 volatile int count_1 = 0;
+volatile uint8_t lidarCount = 0;
 
-int8_t answer;
+uint8_t answer;
 
 int firstRun = 0;
 
@@ -146,7 +147,19 @@ ISR(TIMER1_CAPT_vect){
 	} else {
 		//Falling edge
 		down_value = ICR1;
-		forwardDistance = 0.4*(down_value - up_value);
+		if (0.4*(down_value - up_value) > 0){
+			forwardDistance = 0.4*(down_value - up_value);
+			SI_LIDAR_array[lidarCount] = forwardDistance;
+			lidarCount += 1;
+			
+			if (lidarCount == 5){
+				lidarCount = 0;
+			}
+			if (forwardDistance == 0){
+				//Do nothing
+			}
+		}
+		
 		TCCR1B |= (1<<ICES1);
 		PORTB &= ~(1<<PORTB0);
 	}
@@ -325,7 +338,7 @@ int main (void)
 			SI_IR2_array[count_1] = SI_IR2;
 			SI_IR3_array[count_1] = SI_IR3;
 			SI_IR4_array[count_1] = SI_IR4;
-			SI_LIDAR_array[count_1] = forwardDistance;
+			//SI_LIDAR_array[count_1] = forwardDistance;
 			
 			count_1++;
 			
