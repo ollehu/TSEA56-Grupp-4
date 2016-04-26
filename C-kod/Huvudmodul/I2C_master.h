@@ -7,7 +7,7 @@
 
 #include <avr/io.h>
 
-volatile int sensorData[15];
+volatile uint8_t sensorData[15];
 
 void TWIStart(void){
 	TWCR = (1<<TWINT)|(1<<TWEA)|(1<<TWSTA)|(1<<TWEN);
@@ -43,7 +43,7 @@ void interruptSetup(){
 	EIMSK = (1<<INT2)|(1<<INT1);
 }
 
-void Master(int times, uint8_t SLA, int *data){
+void Master(int times, uint8_t SLA, uint8_t *data){
 	
 	int counter = 0;
 	

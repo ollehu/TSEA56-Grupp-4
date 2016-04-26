@@ -8,11 +8,12 @@ int8_t SPI_send(unsigned char output);
 void SPI_MasterInit(void);
 void initTimer(void);
 void initADC(void);
-int8_t AR_read(void);
+uint8_t AR_read(void);
 void timer2_init(void);
 void converionStart(void);
 
-int sum;
+uint8_t sum;
+uint8_t out;
 //////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////
 
@@ -86,7 +87,7 @@ void converionStart(void)
 	PORTB |= (1<<PORTB4);
 }
 
-int8_t AR_read(void){
+uint8_t AR_read(void){
 	
 	converionStart();
 	
@@ -97,9 +98,15 @@ int8_t AR_read(void){
 	high = SPI_send(0x00);
 	low = SPI_send(0x00);
 	PORTB |= (1<<PORTB4);
-	sum  = ((high & 0x0F) << 8) + low;
+	sum  = (((high & 0x0F) << 4) + ((low & 0xF0) >> 4));
 	
-	return (((high & 0x0F) << 4) + ((low & 0xF0) >> 4) - 126);
+	if (sum > 245){
+		sum = 245;
+	} else if (sum == 0){
+		sum = 124;
+	}
+	
+	return sum;
 }
 /*
 void timer2_init()

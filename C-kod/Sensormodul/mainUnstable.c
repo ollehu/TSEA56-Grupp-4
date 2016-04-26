@@ -294,6 +294,20 @@ uint8_t get8Bit(float in)
 	}
 }
 
+uint8_t getMax(uint8_t array[])
+{
+	uint8_t max = 0;
+	
+	int i;
+	
+	for(i = 1; i < 14; ++i){
+		if (array[i] > max){
+			max = array[i];
+		}
+	}
+	
+	return max;
+}
 
 
 int main (void)
@@ -318,6 +332,10 @@ int main (void)
 	while(1) { 
 		
 		answer = AR_read();
+		
+		if (answer == 0){
+			answer = 124;
+		}
 		total = total + answer - 1996.5;
 		adcCounter = 1;
 		
@@ -347,8 +365,8 @@ int main (void)
 			
 		
 				forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
-				forwardDistanceLOW = (forwardDistanceMED & 0xFF);
-				forwardDistanceHIGH = (forwardDistanceMED >> 8);
+				forwardDistanceLOW = (forwardDistanceMED & 0x7F);
+				forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
 		
 				sensorData[1] = 1; 
 				sensorData[2] = getMedianIR(SI_IR2_array); //Höger fram
@@ -364,6 +382,11 @@ int main (void)
 				sensorData[12] = forwardDistanceLOW; // LIDAR
 				sensorData[13] = 7;
 				sensorData[14] = answer;
+				
+				if (getMax(sensorData) > 245){
+					forwardDistanceHIGH = 245;
+					//Test
+				}
 		
 			}
 
@@ -411,4 +434,5 @@ int main (void)
 
 		ADCSRA |= (1<<ADSC);
 	}
+}
 }

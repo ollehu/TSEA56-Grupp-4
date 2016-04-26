@@ -16,11 +16,11 @@
 #include "constants.h"
 #include <stdlib.h>
 
-#define zeroAngVel 124
 
-uint8_t commandType;
-uint8_t commandSubType;
-uint8_t commandValue;
+
+volatile uint8_t commandType;
+volatile uint8_t commandSubType;
+volatile uint8_t commandValue;
 
 uint16_t forwardSensor;
 uint8_t sideSensors[4][5];
@@ -76,19 +76,24 @@ char mes[16] = "";
 char mes2[16] = "";
 
 uint16_t tempForward;
-int16_t angVelocity;
+int8_t angVelocity;
 int16_t ackAngVelocity;
 
 int8_t currentVelocity;
 
+uint8_t zeroAngVel = 124;
+
+uint8_t printAngVel;
+uint8_t zero = 0;
+
+uint8_t debugCount = 0;
+
 ISR(TWI_vect){
 	
-	
+	debugCount += 1;
 	
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	PORTA = (0<<PORTA0);
-
-	
 
 	while(1){
 		//SLAVE RECEIVER
@@ -105,31 +110,12 @@ ISR(TWI_vect){
 				commandType = TWDR;
 				dataOrder = 1;
 				
-			} else if (commandType == controlCommand){
-
-						
-
-				if (dataOrder == 1){
-					commandSubType = TWDR;
-					dataOrder = 2;
-				} else if (dataOrder == 2){
-					commandValue = TWDR;
-					updateControl(commandSubType, commandValue);
+				if (commandType != 253){
+					commandType = 0;
+					//nothing
 				}
 				
 			} else if (commandType == sensorCommand){
-				
-				//////////////////////////////////////////////////////////////////////////
-				
-				
-				//////////////////////////////////////////////////////////////////////////
-				
-				/*tempArray[tempCount] = TWDR;
-				tempCount = tempCount + 1;
-				
-				if (tempCount == 14){
-					tempCount = 0;
-				}*/
 				
 				 //Should be working:
 				if (dataOrder % 2 == 1){
@@ -146,6 +132,15 @@ ISR(TWI_vect){
 					}
 				}
 				
+			} else if (commandType == controlCommand){
+
+				if (dataOrder == 1){
+					commandSubType = TWDR;
+					dataOrder = 2;
+				} else if (dataOrder == 2){
+					commandValue = TWDR;
+					updateControl(commandSubType, commandValue);
+				}
 				
 			} else if (commandType == settingCommand){
 				
@@ -165,11 +160,10 @@ ISR(TWI_vect){
 			
 			//What happens here?
 		} else if ((TWSR & 0xF8) == 0xA0){
-				//STOP or repeated START
+			//STOP or repeated START
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWIE);
 			break;
-			
-			
+		
 			//SLAVE TRANSMITTER
 		} else if ((TWSR & 0xF8) == 0xA8){
 			//SLA_R received, ACK returned, transmit data
@@ -188,8 +182,6 @@ ISR(TWI_vect){
 		
 		while(!(TWCR & (1<<TWINT)));
 	}
-	
-	
 }
 
 void updateSensorData(uint8_t sensor, uint8_t data)
@@ -206,12 +198,9 @@ void updateSensorData(uint8_t sensor, uint8_t data)
 		sideSensors[sensor - 1][0] = data;
 		
 	} else if (sensor == 5){
-		tempForward = data*256;
+		tempForward = data*128;
 	} else if (sensor == 6){
 		forwardSensor = tempForward + data;
-		/*if (forwardSensor == 0){
-			madeChange = 0;
-		}*/
 		
 		madeChange += 1; 
 		
@@ -228,8 +217,7 @@ void updateSensorData(uint8_t sensor, uint8_t data)
 		
 	} else if (sensor == 7){
 		
-		if((ackAngVelocity > (-3.4*currentVelocity + 841)) && (activeTurn >= 1))
-		{
+		if((ackAngVelocity > (-3.4*currentVelocity + 841)) && (activeTurn >= 1)){
 			if (activeTurn == 1){
 				stopWheels();
 				activeTurn = 0;
@@ -239,19 +227,25 @@ void updateSensorData(uint8_t sensor, uint8_t data)
 				ackAngVelocity = 0;
 			}
 		}
-		
-		if (abs(data - zeroAngVel) > 3){
-			angVelocity = ((int16_t) data) - zeroAngVel;
-			if (activeTurn >= 1){
-				ackAngVelocity = ackAngVelocity + angVelocity;
-			}
-		} else {
-			angVelocity = 0;
+			
+		printAngVel = data;
+			
+		if (printAngVel == 0){
+				zero = 1;
 		}
-	}
-	
-	//TODO: Other sensors
-	
+			
+		if (data >= 124){
+			angVelocity = data - zeroAngVel;
+		} else {
+			angVelocity = -(zeroAngVel - data);
+		}
+			
+		if (activeTurn >= 1){
+			ackAngVelocity = ackAngVelocity + angVelocity;
+		}
+			
+		debugCount -= 1;
+	}	
 }
 
 void updateControl(uint8_t direction, uint8_t controlSetting)
@@ -299,8 +293,9 @@ void updateControl(uint8_t direction, uint8_t controlSetting)
 				}
 				break;
 			default:
+				stopWheels();
 				break;
-					//stopWheels();
+					
 		} 
 			
 	} else if (autonomousMode == 1){
@@ -354,6 +349,7 @@ void autonomousForward(void)
 		leftWheelPair(preferredSpeed, 1);
 		
 	} else {
+	
 		if (wallRight == 1 && wallLeft == 1){
 			preferredDistance = (sideSensors[frontIndex][0] + sideSensors[backIndex][0] + sideSensors[frontIndex - 1][0] + sideSensors[backIndex - 1][0])/4;
 		}
@@ -361,8 +357,7 @@ void autonomousForward(void)
 		distance = (sideSensors[frontIndex][0] + sideSensors[backIndex][0])/2;
 		oldDistance = (sideSensors[frontIndex][4] + sideSensors[backIndex][4])/2;
 	
-
-		p_out = P * (distance - 100);
+		p_out = P * (distance - preferredDistance);
 		d_out = D * (sideSensors[frontIndex][0] - sideSensors[backIndex][0]);
 
 		y_out = K * (p_out + d_out);
@@ -380,8 +375,7 @@ void autonomousForward(void)
 				rightWheelPair(preferredSpeed + y_out/2, 1);
 				leftWheelPair(preferredSpeed - y_out/2, 1);
 			}
-		
-
+	
 		} else {
 		
 			if (preferredSpeed + y_out > 100){
@@ -392,8 +386,6 @@ void autonomousForward(void)
 				leftWheelPair(preferredSpeed - y_out/2, 1);
 			}
 		}
-	
-	
 	}
 	madeChange += 1;
 }
@@ -408,7 +400,6 @@ void autonomousRotate(uint8_t direction)
 {
 	ackAngVelocity = 0;
 	
-	
 	if (activeTurn == 0){
 		activeTurn = 1;
 		leftWheelPair(direction, 0);
@@ -416,8 +407,6 @@ void autonomousRotate(uint8_t direction)
 	}
 	
 }
-
-
 
 void updateSetting(uint8_t setting, uint8_t newValue)
 {
@@ -444,13 +433,11 @@ void updateSetting(uint8_t setting, uint8_t newValue)
 
 int main(void)
 {
-	DDRD |= (1<<DDD7);
 	
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
 	initPWM();
 	initLCD();
-	//writeTempMessage("Hej hej :)","//Styrmodul");
 	sei();
 	sprintf(mes, "%d %d %d", 10, 20, 200);
 	lcdWriteBottomRow(mes);
@@ -460,20 +447,13 @@ int main(void)
 	updateControl(1,50);
 	while(1)
 	{
-		//////////////////////////////////////////////////////////////////////////
-		PORTD |= (1<<PORTD7);
-		//////////////////////////////////////////////////////////////////////////
 	
 		if (madeChange >= 1){
-			sprintf(mes, "D:%u", forwardSensor);
+			sprintf(mes, "Data:%u 0:%d", printAngVel, zero);
 			lcdWriteTopRow(mes);
-			sprintf(mes2, "R:%d A:%d T:%u", angVelocity, ackAngVelocity, activeTurn);
+			sprintf(mes2, "DC:%d A:%d T:%u", debugCount, ackAngVelocity, activeTurn);
 			lcdWriteBottomRow(mes2);
 			madeChange = 0;
 		} 
-		
-		//////////////////////////////////////////////////////////////////////////
-		PORTD &= ~(1<<PORTD7);
-		//////////////////////////////////////////////////////////////////////////
 	}
 }
