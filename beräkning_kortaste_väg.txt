@@ -1,10 +1,3 @@
-Lägen då vägen ska blockeras:
+- Roboten ska hitta sin väg tillbaka till start 
+- Beräkna kortaste väg
 
-- Återvändsgränd utan att ha hittat något
-
-180-graderssväng, inte hittat målet
-
-- När den utforskat en väg, kommit fram till att den inte kan ge 
-	kortare väg och hittat tillbaka till korsningen som gav upphov till vägen
-
-180-graderssväng och kommit tillbaka till korsning med (o)utforskade vägar (titta på map för att se vägar åt olika håll, path ger vägen tillbaka)
