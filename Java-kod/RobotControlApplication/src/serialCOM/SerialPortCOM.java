@@ -128,6 +128,10 @@ public class SerialPortCOM {
 						updateMap(receivedData);
 					}
 					
+					if(Byte.toUnsignedInt(receivedData[0]) != DataID.SENSOR_DATA) {
+						System.out.println("Feldata!");
+					}
+					
 				}
 				catch (SerialPortException ex) {
 					System.out.println("Error in receiving string from COM-port: " + ex);
@@ -168,12 +172,16 @@ public class SerialPortCOM {
 		
 		for(int i = 2; i < receivedData.length; i+=2) {
 			if(i == 10) {
-				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 256;
+				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 128;
 			} else if(i == 12) {
 				sensorValues[j] += Byte.toUnsignedInt(receivedData[i]);
 				j++;
 			} else if(i == 14){
-				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 123;
+				if(Byte.toUnsignedInt(receivedData[i]) == 0) {
+					System.out.println("Nolla!");
+				}
+				
+				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 124;
 				j++;
 			} else {
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
