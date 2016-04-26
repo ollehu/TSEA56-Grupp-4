@@ -41,7 +41,7 @@ uint8_t distance;
 uint8_t oldDistance;
 
 
-volatile uint8_t preferredSpeed = 0;
+volatile uint8_t preferredSpeed = 30;
 volatile uint8_t preferredDistance = 100;
 
 
@@ -76,12 +76,15 @@ char mes[16] = "";
 char mes2[16] = "";
 
 uint16_t tempForward;
-int8_t angVelocity;
+int16_t angVelocity;
 int16_t ackAngVelocity;
 
-int currentVelocity;
+int8_t currentVelocity;
 
 ISR(TWI_vect){
+	
+	
+	
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	PORTA = (0<<PORTA0);
 
@@ -185,6 +188,8 @@ ISR(TWI_vect){
 		
 		while(!(TWCR & (1<<TWINT)));
 	}
+	
+	
 }
 
 void updateSensorData(uint8_t sensor, uint8_t data)
@@ -236,7 +241,7 @@ void updateSensorData(uint8_t sensor, uint8_t data)
 		}
 		
 		if (abs(data - zeroAngVel) > 3){
-			angVelocity = data - zeroAngVel;
+			angVelocity = ((int16_t) data) - zeroAngVel;
 			if (activeTurn >= 1){
 				ackAngVelocity = ackAngVelocity + angVelocity;
 			}
@@ -439,6 +444,7 @@ void updateSetting(uint8_t setting, uint8_t newValue)
 
 int main(void)
 {
+	DDRD |= (1<<DDD7);
 	
 	//Styrmodul = 0xCC
 	TWISetup(0xCC);
@@ -454,12 +460,20 @@ int main(void)
 	updateControl(1,50);
 	while(1)
 	{
-		if (madeChange == 10){
-			sprintf(mes, "Dist:%u", forwardSensor);
+		//////////////////////////////////////////////////////////////////////////
+		PORTD |= (1<<PORTD7);
+		//////////////////////////////////////////////////////////////////////////
+	
+		if (madeChange >= 1){
+			sprintf(mes, "D:%u", forwardSensor);
 			lcdWriteTopRow(mes);
 			sprintf(mes2, "R:%d A:%d T:%u", angVelocity, ackAngVelocity, activeTurn);
 			lcdWriteBottomRow(mes2);
 			madeChange = 0;
 		} 
+		
+		//////////////////////////////////////////////////////////////////////////
+		PORTD &= ~(1<<PORTD7);
+		//////////////////////////////////////////////////////////////////////////
 	}
 }
