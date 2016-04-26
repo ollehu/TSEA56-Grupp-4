@@ -163,13 +163,17 @@ public class SerialPortCOM {
 //		}
 		
 		// convert byte to unsigned ints
-		int[] sensorValues = new int[7];
+		int[] sensorValues = new int[6];
 		int j = 0;
+		
 		for(int i = 2; i < receivedData.length; i+=2) {
 			if(i == 10) {
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 256;
 			} else if(i == 12) {
 				sensorValues[j] += Byte.toUnsignedInt(receivedData[i]);
+				j++;
+			} else if(i == 14){
+				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 123;
 				j++;
 			} else {
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
