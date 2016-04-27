@@ -14,8 +14,10 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.StandardChartTheme;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.labels.IntervalCategoryItemLabelGenerator;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -103,6 +105,11 @@ public class GraphPanel extends JPanel{
 		JFreeChart angularVelocityChart = ChartFactory.createXYLineChart("Angular velocity", "Time [s]", "Velocity [deg/s]", angularVelocityXYDataset);
 //		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
 
+		// adjust angular velocity range axis
+		XYPlot angularVelocityPlot = (XYPlot) angularVelocityChart.getPlot();
+		ValueAxis yAxis = angularVelocityPlot.getRangeAxis();
+		yAxis.setRange(-100.0, 100.0 );
+		
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
 		chartList.add(new ChartPanel(angularVelocityChart));
