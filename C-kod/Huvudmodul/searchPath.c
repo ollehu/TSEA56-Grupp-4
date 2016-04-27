@@ -1,4 +1,12 @@
 ﻿/*
+ * SearchPath.c
+ *
+ * Created: 4/27/2016 8:45:41 AM
+ *  Author: lovgu777
+ */ 
+
+
+/*
 * SearchPath.c
 *
 * Created: 4/20/2016 9:01:32 AM
@@ -9,8 +17,8 @@
 #include <stdlib.h> //For use of abs()
 
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
-uint8_t map[28][28]; //0: initial value, 1: wall, 2: visited, 3: target, 4: the starting point
-uint8_t path[28][28]; //FF initial value, AA blocked way, >0 steps from start
+uint8_t map[28][28]; //FF: initial value, FA: wall, FB: target, [0,225] steps from start
+uint8_t path[28][28]; //FF initial value, AA blocked way, >0 steps from target
 uint8_t position[2] = {14,14};
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //Coordinates for target plus value in path
@@ -27,7 +35,8 @@ uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t hasFoundWayBack = 0;
 //uint8_t testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,0,1},{0,0,0},{1,0,1},{0,0,1},{1,1,0}};
-uint8_t testWalls[][3] = {{1, 0, 1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
+uint8_t testWalls[][3] = {{1,0,1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
+//uint8_t testWalls[][3] = {{0,0,0},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,0},{1,0,1},{1,1,1},{0,0,1},{1,0,1},{1,0,0},{1,0,1},{1,0,0},{0,0,1},{1,0,1},{}
 uint16_t straightAhead = 0;
 uint16_t oneModuleAhead = 50;
 
@@ -37,9 +46,15 @@ uint8_t u;
 uint8_t v;
 uint8_t w;
 uint8_t r;
-
 uint8_t p = 0;
+
 uint8_t dist;
+uint8_t wallValue = 0xFA;
+uint8_t	targetValue = 0xFB;
+uint8_t	initialValue = 0xFF;
+uint8_t blockedWayValue = 0xAA;
+uint8_t startPositionValue = 0xFC;
+uint8_t	targetPathValue = 0;
 
 /*void readSensors() //In which directions are there walls? 
 {
@@ -55,50 +70,50 @@ uint8_t dist;
 	if(direction == 0){
 		//Straight ahead, right, !!south open!!, left
 		if (straightAhead < oneModuleAhead){
-			map[position[0]][position[1]+1] = 1;
+			map[position[0]][position[1]+1] = wallValue;
 			walls[1] = 1;
 		}
 
 		if ((sensorData[2] < 245) && (sensorData[6] < 245)){
-			map[position[0]+1][position[1]] = 1;
+			map[position[0]+1][position[1]] = wallValue;
 			walls[0] = 1;
 		}
 
 		if ((sensorData[4] < 245) && (sensorData[8] < 245)){
-			map[position[0]-1][position[1]] = 1;
+			map[position[0]-1][position[1]] = wallValue;
 			walls[2] = 1;
 		}
 
 	} else if(direction == 1) {
 		//Left, straight ahead, right, !!west open!!
 		if ((sensorData[4] < 245) && (sensorData[8] < 245)){
-			map[position[0]][position[1]+1] = 1;
+			map[position[0]][position[1]+1] = wallValue;
 			walls[2] = 1;
 		}
 
 		if (straightAhead < oneModuleAhead){
-			map[position[0]+1][position[1]] = 1;
+			map[position[0]+1][position[1]] = wallValue;
 			walls[1] = 1;
 		}
 
 		if ((sensorData[2] < 245) && (sensorData[6] < 245)){
-			map[position[0]][position[1]-1] = 1;
+			map[position[0]][position[1]-1] = wallValue;
 			walls[0] = 1;
 		}
 	} else if(direction == 2) {
 		//!!north open!!, left, straight ahead, right
 		if ((sensorData[4] < 245) && (sensorData[8] < 245)){
-			map[position[0]+1][position[1]] = 1;
+			map[position[0]+1][position[1]] = wallValue;
 			walls[2] = 1;
 		}
 
 		if (straightAhead < oneModuleAhead){
-			map[position[0]][position[1]-1] = 1;
+			map[position[0]][position[1]-1] = wallValue;
 			walls[1] = 1;
 		}
 
 		if ((sensorData[2] < 245) && (sensorData[6] < 245)){
-			map[position[0]-1][position[1]] = 1;
+			map[position[0]-1][position[1]] = wallValue;
 			walls[0] = 1;
 		}
 
@@ -106,48 +121,22 @@ uint8_t dist;
 	} else if (direction == 3){
 		//Right, !!east open!!, left, straight ahead
 		if ((sensorData[2] < 245) && (sensorData[6] < 245)){
-			map[position[0]][position[1]+1] = 1;
+			map[position[0]][position[1]+1] = wallValue;
 			walls[0] = 1;
 		}
 
 		if ((sensorData[4] < 245) && (sensorData[8] < 245)){
-			map[position[0]][position[1]-1] = 1;
+			map[position[0]][position[1]-1] = wallValue;
 			walls[2] = 1;
 		}
 
 		if (straightAhead < oneModuleAhead){
-			map[position[0]-1][position[1]] = 1;
+			map[position[0]-1][position[1]] = wallValue;
 			walls[1] = 1;
 		}
 	}
-}
-*/
-void redoPath()//Do we need this one...??? 
-{
-	switch(direction){
-		case 0:
-			if (path[position[0]][position[1]] - path[position[0]][position[1]+1] > 1){
-				int i = 0;
-				while((path[position[0]][position[1]-i] - path[position[0]][position[1]-i+1] > 1) && 
-						(map[position[0]][position[1]-i] == 2)){
-					path[position[0]][position[1]-i] = path[position[0]][position[1]-i+1];
-					i = i + 1;
-				}
-			}
-		case 1:
-			if (path[position[0]][position[1]] - path[position[0]+1][position[1]] > 1){
-				
-			}
-		case 2:
-			if (path[position[0]][position[1]] - path[position[0]][position[1]-1] > 1){
-				
-			}
-		case 3:
-			if (path[position[0]][position[1]] - path[position[0]-1][position[1]] > 1){
-				
-			}
-	}
-}
+}*/
+
 
 uint8_t distanceToStart(uint8_t x, uint8_t y) //Returns the Manhattan distance from (x,y) to start
 {
@@ -156,8 +145,26 @@ uint8_t distanceToStart(uint8_t x, uint8_t y) //Returns the Manhattan distance f
 
 uint8_t distanceToTarget(uint8_t x, uint8_t y) //Returns the walking distance from (x,y) to target
 {
-	dist = abs(path[x][y]-path[target[0]][target[1]]);
+	dist = path[x][y];
 	return dist;
+}
+
+uint8_t hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
+{
+	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
+	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
+		//
+	} else {
+		//Check sensors to see if target is found
+	}*/
+	
+	if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
+		return 1;
+	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
+		return 2;
+	} else {
+		return 0;
+	}
 }
 
 void updateCoordinates() //Updates map, path and position variables
@@ -165,31 +172,57 @@ void updateCoordinates() //Updates map, path and position variables
 	//Cardinal direction: north, east, south, west
 	if (direction == 0){
 		//increase length from start by one
-		if (path[position[0]][position[1]+1] == 0xFF){
-			path[position[0]][position[1]+1] = path[position[0]][position[1]] + 1;
+		if (map[position[0]][position[1]+1] == initialValue){
+			if (map[position[0]][position[1]] == startPositionValue){
+				map[position[0]][position[1]+1] = 1;
+			} else{
+				map[position[0]][position[1]+1] = map[position[0]][position[1]] + 1;
+			}
 		}
+		if ((path[position[0]][position[1]+1] == initialValue) && (hasFoundTarget())){
+			path[position[0]][position[1]+1] = path[position[0]][position[1]] + 1;
+		}		
 		position[1] = position[1] + 1;
 	} else if (direction == 1){
 		//increase length from start by one
-		if (path[position[0]+1][position[1]] == 0xFF){
+		if (map[position[0]+1][position[1]] == initialValue){
+			if (map[position[0]][position[1]] == startPositionValue){
+				map[position[0]+1][position[1]] = 1;
+			} else{
+				map[position[0]+1][position[1]] = map[position[0]][position[1]] + 1;
+			}
+		}
+		if ((path[position[0]+1][position[1]] == initialValue) && (hasFoundTarget())){
 			path[position[0]+1][position[1]] = path[position[0]][position[1]] + 1;
 		}
 		position[0] = position[0] + 1;
 	} else if (direction == 2){
 		//increase length from start by one
-		if (path[position[0]][position[1]-1] == 0xFF){
+		if (map[position[0]][position[1]-1] == initialValue){
+			if (map[position[0]][position[1]] == startPositionValue){
+				map[position[0]][position[1]-1] = 1;
+			} else{
+				map[position[0]][position[1]-1] = map[position[0]][position[1]] + 1;
+			}
+		}
+		if ((path[position[0]][position[1]-1] == initialValue) && (hasFoundTarget())){
 			path[position[0]][position[1]-1] = path[position[0]][position[1]] + 1;
 		}
 		position[1] = position[1] - 1;
 	} else {
 		//increase length from start by one
-		if (path[position[0]-1][position[1]] == 0xFF){
+		if (map[position[0]-1][position[1]] == initialValue){
+			if (map[position[0]][position[1]] == startPositionValue){
+				map[position[0]-1][position[1]] = 1;
+			} else{
+				map[position[0]-1][position[1]] = map[position[0]][position[1]] + 1;
+			}
+		}
+		if ((path[position[0]-1][position[1]] == initialValue) && (hasFoundTarget())){
 			path[position[0]-1][position[1]] = path[position[0]][position[1]] + 1;
 		}
 		position[0] = position[0] - 1;
 	}
-	//update current module to visited
-	map[position[0]][position[1]] = 2;
 }
 
 void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
@@ -237,13 +270,13 @@ uint8_t * findTarget() //Search for target
 
 uint8_t unexploredPaths() //Are there any unexplored paths from current position?
 {
-	if((map[position[0]+1][position[1]] == 0) && (path[position[0]+1][position[1]] != 0xAA)){
+	if((map[position[0]+1][position[1]] == initialValue) && (path[position[0]+1][position[1]] != blockedWayValue)){
 		return 1;
-	} else if((map[position[0]-1][position[1]] == 0) && (path[position[0]-1][position[1]]!= 0xAA)){
+	} else if((map[position[0]-1][position[1]] == initialValue) && (path[position[0]-1][position[1]]!= blockedWayValue)){
 		return 1;
-	} else if ((map[position[0]][position[1]+1] == 0) && (path[position[0]][position[1]+1] != 0xAA)){
+	} else if ((map[position[0]][position[1]+1] == initialValue) && (path[position[0]][position[1]+1] != blockedWayValue)){
 		return 1;
-	} else if ((map[position[0]][position[1]-1] == 0) && (path[position[0]][position[1]-1] != 0xAA)){
+	} else if ((map[position[0]][position[1]-1] == initialValue) && (path[position[0]][position[1]-1] != blockedWayValue)){
 		return 1;
 	} else {
 		return 0;
@@ -252,10 +285,10 @@ uint8_t unexploredPaths() //Are there any unexplored paths from current position
 
 uint8_t * findWayBack(uint8_t distance) //Where to go to get closer to the start 
 {	
-	if((path[position[0]+1][position[1]] == path[position[0]][position[1]] - distance) || ((path[position[0]+1][position[1]] == path[position[0]][position[1]] - 1)&& (map[position[0]+1][position[1]] != 3))){
+	if(map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
-				//Rotate right, one forward
+				//Rotate right
 				return rotateRight;
 				break;
 			case 1:	
@@ -263,48 +296,46 @@ uint8_t * findWayBack(uint8_t distance) //Where to go to get closer to the start
 				return oneForward;
 				break;
 			case 2:
-				//Rotate left, one forward
+				//Rotate left
 				return rotateLeft;
 				break;
 			case 3:
 				//Should never happen??
-				//Rotate 180 degrees, one forward
+				//Rotate 180 degrees
 				return rotate180;
 				break;
 		}
-	} else if((path[position[0]][position[1]+1] == path[position[0]][position[1]] - distance) || ((path[position[0]][position[1]+1] == path[position[0]][position[1]] - 1) && (map[position[0]][position[1]+1] != 3))){
+	} else if(map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
 				//One forward
 				return oneForward;
 				break;
 			case 1:
-				//Rotate left, one forward
+				//Rotate left
 				return rotateLeft;
 				break;
 			case 2:
-				//Should never happen??
-				//Rotate 180 degrees, one forward
 				return rotate180;
 				break;
 			case 3: 
-				//Rotate right, one forward
+				//Rotate right
 				return rotateRight;
 				break;
 		}
-	} else if((path[position[0]-1][position[1]] == path[position[0]][position[1]] - distance) || ((path[position[0]-1][position[1]] == path[position[0]][position[1]] - 1) && (map[position[0]-1][position[1]] != 3))){
+	} else if(map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0:
-				//Rotate left, one forward
+				//Rotate left
 				return rotateLeft;
 				break;
 			case 1:
 				//Should never happen??
-				//Rotate 180 degrees, one forward
+				//Rotate 180 degrees
 				return rotate180;
 				break;
 			case 2:
-				//Rotate right, one forward
+				//Rotate right
 				return rotateRight;
 				break;
 			case 3:
@@ -312,15 +343,15 @@ uint8_t * findWayBack(uint8_t distance) //Where to go to get closer to the start
 				return oneForward;
 				break;
 			}
-	} else if((path[position[0]][position[1]-1] == path[position[0]][position[1]] - distance) || ((path[position[0]][position[1]-1] == path[position[0]][position[1]] - 1) && (map[position[0]][position[1]-1] != 3))){
+	} else if(map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0:
 				//Should never happen??
-				//Rotate 180 degrees, one forward
+				//Rotate 180 degrees
 				return rotate180;
 				break;
 			case 1:	
-				//Rotate right, one forward
+				//Rotate right
 				return rotateRight;
 				break;
 			case 2:
@@ -328,7 +359,7 @@ uint8_t * findWayBack(uint8_t distance) //Where to go to get closer to the start
 				return oneForward;
 				break;
 			case 3:
-				//Rotate left, one forward
+				//Rotate left
 				return rotateLeft;
 				break;
 		}
@@ -338,83 +369,56 @@ uint8_t * findWayBack(uint8_t distance) //Where to go to get closer to the start
 	
 }
 
+
 void searchPathInit() //Fills map and path, sets initial values 
 {
 	//Fill path with 255, map with 0
 	for(int i = 0;i<28;i++){
 		for(int j = 0;j<28;j++){
-			path[i][j] = 0xFF;
-			map[i][j] = 0;
+			path[i][j] = initialValue;
+			map[i][j] = initialValue;
 		}
 	}
 	
-	//Set start value for path and map
-	path[14][14] = 0;
-	map[14][14] = 3;
-}
-
-uint8_t hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
-{
-	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
-	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
-		//
-	} else {
-		//Check sensors to see if target is found
-	}*/
-	
-	if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
-		return 1;
-	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
-		return 2;
-	} else {
-		return 0;
-	}
+	//Set start value for map
+	map[14][14] = startPositionValue;
 }
 
 void updateTargetFound()//Updates map, path and position variables when target is found
 {
 	switch(direction){
 		case 0:
-			if (path[position[0]][position[1]+1] > path[position[0]][position[1]] + 1){
-				path[position[0]][position[1]+1] = path[position[0]][position[1]] + 1;
-			}
-			map[position[0]][position[1]+1] = 3;
+			map[position[0]][position[1]+1] = targetValue;
 			target[0] = position[0];
 			target[1] = position[1]+1;
-			target[2] = path[position[0]][position[1]] + 1;
+			target[2] = map[position[0]][position[1]] + 1;
 			break;
 		case 1:
-			if (path[position[0]+1][position[1]] > path[position[0]][position[1]] + 1){
-				path[position[0]+1][position[1]] = path[position[0]][position[1]] + 1;
-			}
-			map[position[0]+1][position[1]] = 3;
+			map[position[0]+1][position[1]] = targetValue;
 			target[0] = position[0]+1;
 			target[1] = position[1];
-			target[2] = path[position[0]][position[1]] + 1;
+			target[2] = map[position[0]][position[1]] + 1;
 			break;
 		case 2:
-			if (path[position[0]][position[1]-1] > path[position[0]][position[1]] + 1){
-				path[position[0]][position[1]-1] = path[position[0]][position[1]] + 1;
-			}
-			map[position[0]][position[1]-1] = 3;
+			map[position[0]][position[1]-1] = targetValue;
 			target[0] = position[0];
 			target[1] = position[1]-1;
-			target[2] = path[position[0]][position[1]] + 1;
+			target[2] = map[position[0]][position[1]] + 1;
 			break;
 		case 3:
-			if (path[position[0]-1][position[1]] > path[position[0]][position[1]] + 1){
-				path[position[0]-1][position[1]] = path[position[0]][position[1]] + 1;
-			}
-			map[position[0]-1][position[1]] = 3;
+			map[position[0]-1][position[1]] = targetValue;
 			target[0] = position[0]-1;
 			target[1] = position[1];
-			target[2] = path[position[0]][position[1]] + 1;
+			target[2] = map[position[0]][position[1]] + 1;
 			break;
 		}
+
 	
-	path[position[0]][position[1]] = path[position[0]][position[1]] + 2;
+	path[target[0]][target[1]] = targetPathValue;
+	path[position[0]][position[1]] = path[target[0]][target[1]] + 1;
+	
 	z[0] = distanceToStart(target[0],target[1]); //Optimistic value
-	z[1] = path[target[0]][target[1]]; //Pessimistic value
+	z[1] = map[target[0]][target[1]]; //Pessimistic value
 }
 
 uint8_t * exploreTargetFound() //Decides where to go when target is found
@@ -430,22 +434,22 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 			s = distanceToStart(position[0]-1,position[1]);
 			t = distanceToTarget(position[0],position[1]) + 1;
 		
-			if((map[position[0]+1][position[1]] == 0) && ( w + r < z[1])) { //(map[position[0]+1][position[1]] == 0)
+			if((map[position[0]+1][position[1]] == initialValue) && ( w + r < z[1])) {
 				return rotateRight;
-			} else if((map[position[0]][position[1]+1] == 0) && ( u + v < z[1])){ //(map[position[0]-1][position[1]] == 0)
-				path[position[0]+1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]][position[1]+1] == initialValue) && ( u + v < z[1])){ 
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return oneForward;
-			} else if((map[position[0]-1][position[1]] == 0) && ( s + t < z[1])){ //(map[position[0]-1][position[1]] == 0)
-				path[position[0]+1][position[1]] = 0xAA;
-				path[position[0]][position[1]+1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]-1][position[1]] == initialValue) && ( s + t < z[1])){ 
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
 				path[position[0]+1][position[1]] = 0xAA;
 				path[position[0]][position[1]+1] = 0xAA;
 				path[position[0]-1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 1:
@@ -458,22 +462,22 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 			s = distanceToStart(position[0],position[1]+1);
 			t = distanceToTarget(position[0],position[1])+1;
 			
-			if((map[position[0]][position[1]-1] == 0) && (w + r < z[1])){ //(map[position[0]][position[1]-1] == 0)
+			if((map[position[0]][position[1]-1] == initialValue) && (w + r < z[1])){ 
 				return rotateRight;
-			} else if((map[position[0]+1][position[1]] == 0) && (u + v < z[1])){ //(map[position[0]][position[1]+1] == 0)
-				path[position[0]][position[1]-1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]+1][position[1]] == initialValue) && (u + v < z[1])){ 
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return oneForward;
-			} else if((map[position[0]][position[1]+1] == 0) && (s + t < z[1])){ //(map[position[0]][position[1]+1] == 0)
-				path[position[0]][position[1]-1] = 0xAA;
-				path[position[0]+1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]][position[1]+1] == initialValue) && (s + t < z[1])){
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				path[position[0]][position[1]-1] = 0xAA;
-				path[position[0]+1][position[1]] = 0xAA;
-				path[position[0]][position[1]+1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 2:
@@ -486,22 +490,22 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 			s = distanceToStart(position[0]+1,position[1]);
 			t = distanceToTarget(position[0],position[1])+1;
 			
-			if((map[position[0]-1][position[1]] == 0) && (w + r < z[1])){ //(map[position[0]-1][position[1]] == 0)
+			if((map[position[0]-1][position[1]] == initialValue) && (w + r < z[1])){ 
 				return rotateRight;
-			} else if((map[position[0]][position[1]-1] == 0) && (u + v < z[1])){ //(map[position[0]+1][position[1]] == 0)
-				path[position[0]-1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]][position[1]-1] == initialValue) && (u + v < z[1])){ 
+				path[position[0]-1][position[1]] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return oneForward;
-			} else if((map[position[0]+1][position[1]] == 0) && (s + t < z[1])){ //(map[position[0]+1][position[1]] == 0)
-				path[position[0]-1][position[1]] = 0xAA;
-				path[position[0]][position[1]-1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]+1][position[1]] == initialValue) && (s + t < z[1])){
+				path[position[0]-1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				path[position[0]-1][position[1]] = 0xAA;
-				path[position[0]][position[1]-1] = 0xAA;
-				path[position[0]+1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+				path[position[0]-1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 3:
@@ -514,22 +518,22 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 			s = distanceToStart(position[0],position[1]-1);
 			t = distanceToTarget(position[0],position[1])+1;
 			
-			if((map[position[0]][position[1]+1] == 0) && (w + r < z[1])){ //(map[position[0]][position[1]+1] == 0)
+			if((map[position[0]][position[1]+1] == initialValue) && (w + r < z[1])){ 
 				return rotateRight;
-			} else if((map[position[0]-1][position[1]] == 0) && (u + v < z[1])){ //(map[position[0]][position[1]-1] == 0)
-				path[position[0]][position[1]+1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]-1][position[1]] == initialValue) && (u + v < z[1])){ 
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return oneForward;
-			} else if((map[position[0]][position[1]-1] == 0) && (s + t < z[1])){ //(map[position[0]][position[1]-1] == 0)
-				path[position[0]][position[1]+1] = 0xAA;
-				path[position[0]-1][position[1]] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+			} else if((map[position[0]][position[1]-1] == initialValue) && (s + t < z[1])){ 
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[position[0]-1][position[1]] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				path[position[0]][position[1]+1] = 0xAA;
-				path[position[0]-1][position[1]] = 0xAA;
-				path[position[0]][position[1]-1] = 0xAA;
-				path[target[0]][target[1]] = target[2];
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[position[0]-1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]-1] = blockedWayValue;
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 	}
@@ -541,16 +545,16 @@ void ruleOutPath() //Rules out map modules for easier calculation of shortest pa
 {
 	switch(direction){
 		case 0:
-			path[position[0]][position[1]-1] = 0xAA;
+			path[position[0]][position[1]-1] = blockedWayValue;
 			break;
 		case 1:
-			path[position[0]-1][position[1]] = 0xAA;
+			path[position[0]-1][position[1]] = blockedWayValue;
 			break;
 		case 2:
-			path[position[0]][position[1]+1] = 0xAA;
+			path[position[0]][position[1]+1] = blockedWayValue;
 			break;
 		case 3:
-			path[position[0]+1][position[1]] = 0xAA;
+			path[position[0]+1][position[1]] = blockedWayValue;
 			break;
 	}
 }
@@ -560,61 +564,61 @@ void tempUpdateWalls()
 	switch(direction){
 		case 0:
 			if(walls[0] == 1){
-				map[position[0]+1][position[1]] = 1;
+				map[position[0]+1][position[1]] = wallValue;
 			} 
 			
 			if(walls[1] == 1){
-				map[position[0]][position[1]+1] = 1;
+				map[position[0]][position[1]+1] = wallValue;
 			} 
 			
 			if (walls[2] == 1){
-				map[position[0]-1][position[1]] = 1;
+				map[position[0]-1][position[1]] = wallValue;
 			}
 			break;
 		case 1:
 			if(walls[0] == 1){
-				map[position[0]][position[1]-1] = 1;
+				map[position[0]][position[1]-1] = wallValue;
 			} 
 			
 			if(walls[1] == 1){
-				map[position[0]+1][position[1]] = 1;
+				map[position[0]+1][position[1]] = wallValue;
 			} 
 			
 			if (walls[2] == 1){
-				map[position[0]][position[1]+1] = 1;
+				map[position[0]][position[1]+1] = wallValue;
 			}
 			break;
 		case 2:
 			if(walls[0] == 1){
-				map[position[0]-1][position[1]] = 1;
+				map[position[0]-1][position[1]] = wallValue;
 			} 
 			
 			if(walls[1] == 1){
-				map[position[0]][position[1]-1] = 1;
+				map[position[0]][position[1]-1] = wallValue;
 			} 
 			
 			if (walls[2] == 1){
-				map[position[0]+1][position[1]] = 1;
+				map[position[0]+1][position[1]] = wallValue;
 			}
 			break;
 		case 3:
 			if(walls[0] == 1){
-				map[position[0]][position[1]+1] = 1;
+				map[position[0]][position[1]+1] = wallValue;
 			} 
 			
 			if(walls[1] == 1){
-				map[position[0]-1][position[1]] = 1;
+				map[position[0]-1][position[1]] = wallValue;
 			} 
 			
 			if (walls[2] == 1){
-				map[position[0]][position[1]-1] = 1;
+				map[position[0]][position[1]-1] = wallValue;
 			}
 			
 			break;
 	}
 }
 
-void updateCoordinatesTargetFound()
+/*void updateCoordinatesTargetFound()
 {
 	//Cardinal direction: north, east, south, west
 	if (direction == 0){
@@ -623,24 +627,24 @@ void updateCoordinatesTargetFound()
 		}
 		position[1] = position[1] + 1;
 	} else if (direction == 1){
-		if((path[position[0]+1][position[1]]  < target[2]) || (path[position[0]+1][position[1]]  == 0xFF)){
-			path[position[0]+1][position[1]]  = path[position[0]][position[1]] + 1;
+		if((path[position[0]+1][position[1]] < target[2]) || (path[position[0]+1][position[1]]  == 0xFF)){
+			path[position[0]+1][position[1]] = path[position[0]][position[1]] + 1;
 		}
 		position[0] = position[0] + 1;
 	} else if (direction == 2){
-		if((path[position[0]][position[1]-1]  < target[2]) || (path[position[0]][position[1]-1]  == 0xFF)){
-			path[position[0]][position[1]-1]  = path[position[0]][position[1]] + 1;
+		if((path[position[0]][position[1]-1] < target[2]) || (path[position[0]][position[1]-1]  == 0xFF)){
+			path[position[0]][position[1]-1] = path[position[0]][position[1]] + 1;
 		}
 		position[1] = position[1] - 1;
 	} else {
-		if((path[position[0]-1][position[1]]  < target[2]) || (path[position[0]-1][position[1]]  == 0xFF)){
-			path[position[0]-1][position[1]]  = path[position[0]][position[1]] + 1;
+		if((path[position[0]-1][position[1]] < target[2]) || (path[position[0]-1][position[1]]  == 0xFF)){
+			path[position[0]-1][position[1]] = path[position[0]][position[1]] + 1;
 		}
 		position[0] = position[0] - 1;
 	}
 	
-	map[position[0]][position[1]] = 2;
-}
+	//map[position[0]][position[1]] = 2;
+}*/
 
 uint8_t deadEndTarget()
 {
@@ -708,6 +712,7 @@ int main(void)
 		
 		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
 			//straightAhead = sensorData[10]*256 + sensorData[12];
+
 			lastCommand[1] = 0x01;
 			
 			//Master(3,...,lastCommand);
@@ -715,7 +720,7 @@ int main(void)
 				btSend(lastCommand[i]);
 			}*/
 		} else if (unexploredPaths()) {
-			
+		
 			if((hasFoundWayBack)){ // || ((lastCommand[1] == 0x01) && (lastCommand[2] == 0xB4))){
 				hasFoundWayBack = 0;
 				ruleOutPath();
@@ -744,6 +749,7 @@ int main(void)
 				}*/
 			}
 		} else {
+			
 			uint8_t * temp;
 
 			///////////////////////////////////////////////
@@ -777,8 +783,6 @@ int main(void)
 			if((lastCommand[2] == 0xB4) && deadEnd == 0){
 				hasFoundWayBack = 1;
 			}
-		} else if (hasFoundTarget()) {
-			updateCoordinatesTargetFound();
 		} else {
 			updateCoordinates();
 		}
