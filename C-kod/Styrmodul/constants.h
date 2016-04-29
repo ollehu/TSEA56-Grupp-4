@@ -17,6 +17,7 @@
 #define sensorRotation 0x06
 #define sensorTarget 0x07
 
+#define commandStop 0x00
 #define commandForward 0x01
 #define commandReverse 0x02
 #define commandRight 0x03
@@ -26,3 +27,9 @@
 #define commandReverseRight 0x07
 #define commandReverseLeft 0x08
 #define commandClaw 0x09
+
+#define stop 0x00
+#define forward 0x01
+#define rotation 0x02
+
+#define preferredForwardDistance 24

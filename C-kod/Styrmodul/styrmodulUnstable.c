@@ -7,48 +7,54 @@
 
 #define F_CPU 16000000UL
 #include <avr/io.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+
+#include "constants.h"
 #include "I2C_slave.h"
 #include "PWM.h"
 #include "LCD.h"
-#include <stdio.h>
-#include "constants.h"
-#include <stdlib.h>
 
-//////////////////////////////Variables////////////////////////////////////////////
+/************************************************************************/
+/*                            CONTROLLER                                */
+/************************************************************************/
+uint8_t autonomousMode = 1;
 volatile uint8_t lastControlCommand = forward;
 
-//Control mode (0 = manual control, 1 = autonomous mode)
-uint8_t autonomousMode = 1;
-
-uint8_t lastReceivedData[7];
-volatile uint8_t madeChange = 0;
-
-uint8_t debugCount = 0;
-
-/////////////////////////////Controller/////////////////////////////////////////////
-uint8_t sideSensors[4];
-uint16_t forwardSensor;
-
-int8_t angularVelocity;
-uint8_t zeroAngVel = 124;
-
-//PD-controller
 float P = 0.45;
 float D = 1.2;
 float K = 0.7;
-
-int16_t accumulatedAngle;
-int16_t preferredAccumulatedAngle;
 
 volatile uint8_t preferredSpeed = 50;
 uint8_t preferredRotationSpeed = 70;
 uint8_t preferredDistance = 100;
 
-//////////////////////////////////////////////////////////////////////////
-////////////////////////////////HEADER////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+/************************************************************************/
+/*                              SENSOR                                  */
+/************************************************************************/
+uint8_t sideSensors[4];
+int16_t forwardSensor;
+int16_t oldForwardSensor;
+
+int8_t angularVelocity;
+uint8_t zeroAngVel = 124;
+
+int16_t accumulatedAngle;
+int16_t preferredAccumulatedAngle;
+
+uint8_t lastReceivedData[7];
+
+/************************************************************************/
+/*                               LCD                                    */
+/************************************************************************/
+volatile uint8_t madeChange = 0;
+uint8_t debugCount = 0;
+
+/************************************************************************/
+/*                              HEADER                                  */
+/************************************************************************/
 void initInterrupt();
 void updateSensorData(uint8_t sensorIndex, uint8_t data);
 void respondToSensorData();
@@ -58,24 +64,23 @@ void autonomousForward();
 void autonomousRotate();
 int16_t convertAngle(int8_t value);
 void callMainInterrupt(void);
-/////////////////////////////////////////////////////////////////////////
 
+/************************************************************************/
+/*	Interrupt: TWI vector - receive data from main module.
 
-//////////////////////////////////////////////////////////////////////////
-uint8_t commandType = 0;
-uint8_t commandSubType = 0;
-uint8_t commandValue = 0;
+	Get sensor data or control command from main module.
+																		*/
+/************************************************************************/
+ISR(TWI_vect)
+{
 	
-uint8_t dataOrder = 0;
-//////////////////////////////////////////////////////////////////////////
-
-ISR(TWI_vect){
-	
-	/*uint8_t commandType = 0;
+	uint8_t commandType = 0;
 	uint8_t commandSubType = 0;
 	uint8_t commandValue = 0;
 	
-	uint8_t dataOrder = 0;*/
+	uint8_t dataOrder = 0;
+	
+	madeChange = 1;
 	
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	PORTA = (0<<PORTA0);
@@ -161,80 +166,100 @@ ISR(TWI_vect){
 	}
 }
 
-void updateSensorData(uint8_t sensorIndex, uint8_t data){
+/************************************************************************/
+/*	updateSensorData - update vector containing last received data
+		with argument data.
+
+	sensorIndex = 1 : Front right IR-sensor
+				  2 : Front left IR-sensor
+				  3 : Rear right IR-sensor
+				  4 : Rear left IR-sensor
+				  5 : Front laser sensor (high byte)
+				  6 : Front laser sensor (low byte)
+				  7 : Angular velocity
+																		*/
+/************************************************************************/
+void updateSensorData(uint8_t sensorIndex, uint8_t data)
+{
 	lastReceivedData[sensorIndex - 1] = data;
 }
 
-void respondToSensorData(){
-	// add IR sensors
+/************************************************************************/
+/*	respondToSensorData - act on sensor data.
+
+	Fill sideSensors, forwardSensor and angularVelocity.
+																		*/
+/************************************************************************/
+void respondToSensorData()
+{
+	//IR-sensors
 	for(uint8_t sensorIndex = 0; sensorIndex < 4; sensorIndex += 1)
 	{
 		sideSensors[sensorIndex] = lastReceivedData[sensorIndex];
 	}
 		
-	// add Lidar
+	//Lidar
 	forwardSensor = lastReceivedData[4]*128 + lastReceivedData[5];
 		
-	// add gyro
+	if (oldForwardSensor == 0){
+		oldForwardSensor = forwardSensor;
+	}
+		
+	//Gyro
 	if (lastReceivedData[6] >= 124){
 		angularVelocity = lastReceivedData[6] - zeroAngVel;
 		} else {
 		angularVelocity = -(zeroAngVel - lastReceivedData[6]);
 	}
 	
-
-	// TODO: handle stop conditions
-	//////////////////////////////////////////////////////////////////////////
-
-	if (forwardSensor < 25)
-	{
-		if(sideSensors[2] == 245 && lastControlCommand == forward){
-			lastControlCommand = rotation;
-			preferredAccumulatedAngle = convertAngle(1);
-			accumulatedAngle = 0;
-		} else if(sideSensors[3] == 245 && lastControlCommand == forward){
-			lastControlCommand = rotation;
-			preferredAccumulatedAngle = convertAngle(-1);
-			accumulatedAngle = 0;
-		} else if (lastControlCommand == forward){
-			lastControlCommand = rotation;
-			preferredAccumulatedAngle = convertAngle(2);
-			accumulatedAngle = 0;
-		}
-	}
-	
-	callMainInterrupt();
-	//////////////////////////////////////////////////////////////////////////
-	
-	// update controller according to last control command
 	switch(lastControlCommand){
-		
 		case stop:
-			
+			stopWheels();
 			break;
-		
 		case forward:
 			autonomousForward();
 			break;
-			
 		case rotation:
 			autonomousRotate();
 			break;
-			
 		default:
 			break;
 	}
 	
+	//Update LCD
 	madeChange = 1;
 }
+
+/************************************************************************/
+/*	respondToControlData - act on control data.
 	
-void respondToControlData(uint8_t command, uint8_t value){
+	autonomousMode = 0:
+	  	command = 1 : Forward							value : speed
+			      2 : Reverse							value : speed
+				  3 : Rotate clockwise					value : speed
+				  4 : Rotate c-clockwise				value : speed
+				  5 : Forward and right					value : speed
+				  6 : Forward and left					value : speed
+				  7 : Reverse and right					value : speed
+				  8 : Reverse and left					value : speed
+				  9 : Control Claw						value : 1 (O)
+																0 (C)
+				  0 : Stop								value : n/a
+				  
+	autonomouseMode = 1:
+		command = 1 : Autonomous forward				value : n/a
+				  2 : Autonomous rotate 180*			value : n/a
+				  3 : Autonomous rotate clockwise		value : n/a
+				  4 : Autonomous rotate c-clockwise		value : n/a
+																		*/
+/************************************************************************/
+void respondToControlData(uint8_t command, uint8_t value)
+{
 	if (autonomousMode == 0){
 		switch(command){
 			case commandForward:
 				leftWheelPair(value, 1);
 				rightWheelPair(value, 1);
-				
 				break;
 			case commandReverse:
 				leftWheelPair(value, 0);
@@ -274,23 +299,35 @@ void respondToControlData(uint8_t command, uint8_t value){
 			default:
 				stopWheels();
 				break;
-					
 		} 
-			
 	} else if (autonomousMode == 1){
 		switch(command){
 			case commandForward:
+				oldForwardSensor = forwardSensor;
 				lastControlCommand = forward;
-			
-				//////////////////////////////////////////////////////////////////////////
-				debugCount += 1;
-				//////////////////////////////////////////////////////////////////////////
-				
 				break;
-			case rotation:
+			case commandReverse:
 				lastControlCommand = rotation;
-				preferredAccumulatedAngle = convertAngle(value);
+				if (sideSensors[0] > sideSensors[1]){
+					preferredAccumulatedAngle = convertAngle(2);
+				} else {
+					preferredAccumulatedAngle = convertAngle(-2);
+				}
 				accumulatedAngle = 0;
+				break;
+			case commandRight:
+				lastControlCommand = rotation;
+				preferredAccumulatedAngle = convertAngle(1);
+				accumulatedAngle = 0;
+				break;
+			case commandLeft:
+				lastControlCommand = rotation;
+				preferredAccumulatedAngle = convertAngle(-1);
+				accumulatedAngle = 0;
+				break;
+
+			case commandStop:
+				lastControlCommand = stop;
 				break;
 			default:
 				break;
@@ -298,20 +335,44 @@ void respondToControlData(uint8_t command, uint8_t value){
 	}
 }
 
-int16_t convertAngle(int8_t value){
-	if (value == -1)
-	{
+/************************************************************************/
+/*	ConvertAngle - convert integer input to match preferred 
+		accumulated angular velocity.
+
+	value = -1 : Rotate 90 left
+			 1 : Rotate 90 right
+			-2 : Rotate 180 right
+			 2 : Rotate 180 left
+																		*/
+/************************************************************************/
+int16_t convertAngle(int8_t value)
+{
+	if (value == -1) {
 		return -3.4*preferredRotationSpeed + 841;
 	} else if (value == 1) {
 		return 3.4*preferredRotationSpeed - 841;
-	} else if (value == 2)
-	{
-		return (3.4*preferredRotationSpeed - 841)*2.2;
+	} else if (value == 2) {
+		return (3.4*preferredRotationSpeed - 841)*2.3;
+	} else if (value == -2) {
+		return -(3.4*preferredRotationSpeed - 841)*2.3;
 	}
 	
+	return 0;
 }
 
-void respondToSettingsData(uint8_t identifier, uint8_t value){
+/************************************************************************/
+/*	respondToSettingsData - act on settings data.
+
+	identifier = 1 : Set autonomous mode: value = 1 <-> ON
+												= 0 <-> OFF
+			     2 : Set P value		    : P = value / 100
+				 3 : Set D value		    : D = value / 100
+				 4 : Set K value		    : K = value / 10
+				 5 : Set preferred speed
+																		*/
+/************************************************************************/
+void respondToSettingsData(uint8_t identifier, uint8_t value)
+{
 	switch(identifier){
 		case 1:
 			autonomousMode = value;
@@ -333,23 +394,42 @@ void respondToSettingsData(uint8_t identifier, uint8_t value){
 	}
 }
 
-/**
-	Straight line controller
-*/
+/************************************************************************/
+/*	autonomousForward - autonomously drive forward.
+
+	Prefer to follow left wall, if not available follow right wall.
+	If neither are found, continue forward with preferredSpeed. If 
+	both walls are found update the preferred distance 
+	(preferredDistance) to nearby walls.
+	
+	Call for new control command [callMainInterrupt()] each module 
+	(40 cm) or when forward sensor detect a wall nearby.
+	
+	Regulate by adding or subtracting speed from preferredSpeed
+	with respect to 
+		i) Difference between average distance to wall and 
+		   preferredDistance
+	   ii) Difference in distance between forward and rear sensor
+																		*/
+/************************************************************************/
 void autonomousForward()
 {
 	uint8_t frontIndex = 10;
 	uint8_t backIndex = 0;
 	
+	if (((oldForwardSensor - forwardSensor > 30) && (forwardSensor > 35)) || (forwardSensor < preferredForwardDistance)){
+		//callMainInterrupt();
+		lastControlCommand = stop;
+		stopWheels();
+	}
+	
 	// adjust wall index
-	if (sideSensors[1] != 245){
+	if ((sideSensors[1] != 245) && (sideSensors[3] != 245) ){
 		frontIndex = 1;
 		backIndex = 3;
-	} else {
-		if (sideSensors[2] != 245){
-			frontIndex = 0;
-			backIndex = 2;
-		}
+	} else if ((sideSensors[0] != 245) && (sideSensors[2] != 245)){
+		frontIndex = 0;
+		backIndex = 2;
 	}
 	
 	if (frontIndex == 10){
@@ -399,16 +479,25 @@ void autonomousForward()
 	}
 }
 
-/**
-	Autonomously rotate
-	direction = 0 : 90 degrees left
-			  = 1 : 90 degrees right
-			  = 2 : 180 degrees right
-*/
+/************************************************************************/
+/*	autonomousRotate - autonomously rotate.
+
+	Rotate autonomously with respect to preferred accumulated angle
+	(preferredAccumulatedAngle) and call for new control command
+	when rotation is considered done.
+	
+	Before autonomousRotate is called, preferredAccumulatedAngle should 
+	be updated using the convertAngle function. convertAngle sets the
+	number of degrees and direction to rotate.
+	
+	Note: labs = long abs 
+																		*/
+/************************************************************************/
 void autonomousRotate()
 {
 	if(labs(accumulatedAngle) > labs(preferredAccumulatedAngle)){
-		callMainInterrupt();
+		//callMainInterrupt();
+		lastControlCommand = stop;
 		stopWheels();
 	} else if (preferredAccumulatedAngle > 0){
 		rightWheelPair(preferredRotationSpeed, 1);
@@ -419,23 +508,35 @@ void autonomousRotate()
 	}
 	
 	accumulatedAngle += angularVelocity;
-	
-	
-	
 }
 
-void initInterrupt(){
+/************************************************************************/
+/*	initInterrupt - Initiate interrupt where main module is called.     */
+/************************************************************************/
+void initInterrupt()
+{
 	DDRB |= (1<<DDB4);
 	PORTB &= ~(1<<PORTB4);
 }
 
-void callMainInterrupt(void){
+/************************************************************************/
+/*	callMainInterrupt - Call main module for new control command.       */
+/************************************************************************/
+void callMainInterrupt(void)
+{
 	//lastControlCommand = forward;
 	PORTB |= (1<<PORTB4);
 	
 	PORTB &= ~(1<<PORTB4);
 }
 
+/************************************************************************/
+/*	main - Main function.
+
+	Initiate PWM, LCD, interrupt and TWI. Print data to LCD when
+	madeChange is set to 1.
+																		*/
+/************************************************************************/
 int main(void)
 {
 	char bottomRowMessage[16] = "";
@@ -455,7 +556,7 @@ int main(void)
 	{
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "CC:%d DC:%u", lastControlCommand, debugCount);
+			sprintf(topRowMessage, "CC:%d S:%u", lastControlCommand, preferredSpeed);
 			lcdWriteTopRow(topRowMessage);
 			sprintf(bottomRowMessage, "L:%u R:%u A:%d", sideSensors[3], sideSensors[2], accumulatedAngle);
 			lcdWriteBottomRow(bottomRowMessage);
