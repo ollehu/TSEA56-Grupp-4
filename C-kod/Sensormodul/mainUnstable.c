@@ -256,7 +256,7 @@ uint8_t getMedianIR(uint8_t arr[])
 			}
 		}
 
-		if(arr[2] > 230){
+		if(arr[2] > 180){
 			arr[2] = 245;		
 		}else if(arr[2] < 40){
 			arr[2] = 0;
@@ -367,54 +367,15 @@ int main (void)
 				forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
 				forwardDistanceLOW = (forwardDistanceMED & 0x7F);
 				forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
-
 		
 				sensorData[1] = 1; 
-
-				if (getMedianIR(SI_IR2_array - sensorData[2] > 50){ //Höger fram
-					sensorData[2] = 245;
-				} else if (sensorData[2] - getMedianIR(SI_IR2_array > 50)){
-					sensorData[2] = 100;
-
-				} else {
-					sensordata[2] = getMedianIR(SI_IR2_array);
-
-				sensorData[3] = 2;
-
-				if (getMedianIR(SI_IR3_array - sensorData[4] > 50){ //Vänster fram
-					sensorData[4] = 245;
-				} else if (sensorData[4] - getMedianIR(SI_IR3_array > 50)){
-					sensorData[4] = 100;
-				} else {
-					sensordata[4] = getMedianIR(SI_IR3_array);
-
-				//sensorData[4] = getMedianIR(SI_IR3_array); //Vänster fram
-
-
+				sensorData[2] = getMedianIR(SI_IR2_array); //Höger fram
+				sensorData[3] = 2; 
+				sensorData[4] = getMedianIR(SI_IR3_array); //Vänster fram
 				sensorData[5] = 3;
-
-				if (getMedianIR(SI_IR1_array - sensorData[6] > 50){ //Höger bak
-					sensorData[6] = 245;
-				} else if (sensorData[6] - getMedianIR(SI_IR1_array > 50)){
-					sensorData[6] = 100;
-				} else {
-					sensordata[6] = getMedianIR(SI_IR1_array);
-
-				
-				//sensorData[6] = getMedianIR(SI_IR1_array); //Höger bak
-
+				sensorData[6] = getMedianIR(SI_IR1_array); //Höger bak
 				sensorData[7] = 4;
-
-				if (getMedianIR(SI_IR4_array - sensorData[8] > 50){ //Vänster  bak
-					sensorData[8] = 245;
-				} else if (sensorData[8] - getMedianIR(SI_IR4_array > 50)){
-					sensorData[8] = 100;
-				} else {
-					sensordata[8] = getMedianIR(SI_IR4_array);
-
-				
-				//sensorData[8] = getMedianIR(SI_IR4_array); // Vänster bak
-
+				sensorData[8] = getMedianIR(SI_IR4_array); // Vänster bak
 				sensorData[9] = 5;
 				sensorData[10] = forwardDistanceHIGH; // LIDAR
 				sensorData[11] = 6;
@@ -473,5 +434,4 @@ int main (void)
 
 		ADCSRA |= (1<<ADSC);
 	}
-}
 }

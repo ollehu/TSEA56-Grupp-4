@@ -5,22 +5,34 @@
  *  Author: ollul666
  */ 
 
+#define F_CPU 16000000UL
+#define speedPicker		OCR3A
+#define speedLeft		OCR1A
+#define speedRight		OCR1B
+#define speedPicker		OCR3A
+#define speedLeft		OCR1A
+#define speedRight		OCR1B
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
-#define speedPicker		OCR3A
+/************************************************************************/
+/*                              HEADER                                  */
+/************************************************************************/
+void initPWM(void);
+void leftWheelPair(uint8_t speed, uint8_t direction);
+void rightWheelPair(uint8_t speed, uint8_t direction);
+void stopWheels(void);
+void openPicker(void);
+void closePicker(void);
 
-#define speedLeft		OCR1A
-#define speedRight		OCR1B 
+/************************************************************************/
+/*	initPWM - Initiate PWM.
 
-#define F_CPU 16000000UL
-
-/**
-	Initiates the PWM for all three
-	PWM-outputs (left wheel pair, 
-	right wheel pair and picker).
-*/
+	Initiate timers in Phase Correct PWM-mode.
+																		*/
+/************************************************************************/
 void initPWM(void)
 {
 		//Set output for PWM
@@ -52,14 +64,14 @@ void initPWM(void)
 		ICR3 = 5000;
 }
 
-/**
-	Sets speed and direction for 
-	left wheel pair. 
-	
-	speed = integer 0 -> 100
-	direction = 0 for reverse
-				1 for forward
-*/
+/************************************************************************/
+/*	leftWheelPair - Control left wheel pair.
+
+	speed     : (0-100)	 - Speed
+	direction : 1        - Forward
+				0        - Reverse
+																		*/
+/************************************************************************/
 void leftWheelPair(uint8_t speed, uint8_t direction)
 {
 	if (speed >= 0){
@@ -78,14 +90,14 @@ void leftWheelPair(uint8_t speed, uint8_t direction)
 	}
 }
 
-/**
-	Sets speed and direction for 
-	right wheel pair. 
-	
-	speed = integer 0 -> 100
-	direction = 0 for reverse
-				1 for forward
-*/
+/************************************************************************/
+/*	rightWheelPair - Control right wheel pair.
+
+	speed     : (0-100)	 - Speed
+	direction : 1        - Forward
+				0        - Reverse
+																		*/
+/************************************************************************/
 void rightWheelPair(uint8_t speed, uint8_t direction)
 {
 	if (speed >= 0){
@@ -104,29 +116,27 @@ void rightWheelPair(uint8_t speed, uint8_t direction)
 	}
 }
 
-/**
-	Stop both wheel pairs.
-*/
+/************************************************************************/
+/*	stopWheels - Stop both wheel pairs.  								*/
+/************************************************************************/
 void stopWheels(void)
 {
 	speedLeft = 0;
 	speedRight = 0;
 }
 
-/**
-	Open picker.
-*/
+/************************************************************************/
+/*	openPicker - Open picker.			  								*/
+/************************************************************************/
 void openPicker(void)
 {
 	speedPicker = 400; //ändrat från 125. Fungerar lite bättre
-
 }
 
-/**
-	Close picker
-*/
+/************************************************************************/
+/*	closePicker - Close picker.			  								*/
+/************************************************************************/
 void closePicker(void)
 {
-	
 	speedPicker = 625;
 }

@@ -1,37 +1,40 @@
 #include "I2C_master.h"
+#include "constants.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #define F_CPU 14745600UL
 #include <util/delay.h>
+#include "searchPath.h"
+
+#include <util/delay.h>
 
 
 
-int styrAutonomt[] = {0x00, 0x02}; //Kommunikations-ID, styrkommando, vinkel/sträcka(1)
-int styrManuellt[] = {0x00, 0x02, 0x00}; //Kommunikations-ID, styrkommando, hastighet
+ //Kommunikations-ID, styrkommando, vinkel/sträcka(1)
+uint8_t styrManuellt[] = {0x00, 0x02, 0x00}; //Kommunikations-ID, styrkommando, hastighet
 
 int SLA_sensor_R = 0xCB;
 int SLA_sensor_W = 0xCA;
 int SLA_styr_R = 0xCD;
-int SLA_styr_W = 0xCC;
 
 int counterComputer = 0;
-int sendToComputer = 1; //How often sensoredata is sent to the computer
+int sendToComputer = 1; //How often sensor data is sent to the computer
 
 int data = 0;
 int recieved;
-int controlCommand[3];
+uint8_t controlCommand[3];
 
 volatile int sleep = 0;
 volatile int autodrive = 0;
-int switchMode[3] = {0xFC, 0x01, 0x00};
+uint8_t switchMode[3] = {0xFC, 0x01, 0x00};
 
-void btSend(unsigned char data)
+/*void btSend(unsigned char data)
 {
 	// Wait for empty transmit buffer
 	while ( !( UCSR0A & (1<<UDRE0)) );
 	// Put data into buffer, sends the data
 	UDR0 = data;
-}
+}*/
 
 void btInit(void){
 	//16Mhz, Baud rate = 115.2kbps
@@ -71,9 +74,30 @@ ISR(USART0_RX_vect){
 
 ISR(INT1_vect){ //Interrupt from controller module
 	//1. Välj ny modul att utforska
+	explore();
 	
-	//2. Skicka styrkommando till styrmodulen enligt beslut i 1.
-	Master(2,SLA_styr_W,styrAutonomt);
+	
+	/*if (sensorData[10]*128 + sensorData[12] < preferredForwardDistance)
+	{
+		if(sensorData[4] == 245){
+			uint8_t autonomousControl[3] = {controlCommandType, commandLeft, 0x03};
+			Master(3,SLA_styr_W,autonomousControl);
+		} else if(sensorData[2] == 245){
+			uint8_t autonomousControl[3] = {controlCommandType, commandRight, 0x03};
+			Master(3,SLA_styr_W,autonomousControl);
+		} else {
+			if (sensorData[2] > sensorData[4]){
+				uint8_t autonomousControl[3] = {controlCommandType, commandReverseRight, 0x03};
+				Master(3,SLA_styr_W,autonomousControl);
+			} else {
+				uint8_t autonomousControl[3] = {controlCommandType, commandReverseLeft, 0x03};
+				Master(3,SLA_styr_W,autonomousControl);	
+			}
+		}
+	} else {
+		uint8_t autonomousControl[3] = {controlCommandType, commandForward, 0x03};
+		Master(3,SLA_styr_W,autonomousControl);
+	}*/
 	
 	//SENSORDATA KOMMER I AVBROTTET FRÅN SENSORMODULEN!
 }
@@ -85,8 +109,9 @@ ISR(INT2_vect){ //Interrupt from sensor module
 	Master(15,SLA_sensor_R,sensorData);
 	
 	//send the collected data to styr module
-	Master(15,SLA_styr_W,sensorData);
-	
+	if (autodrive == 1){
+		Master(15,SLA_styr_W,sensorData);
+	}
 	//send the collected data to the computer
 
 		for(int i = 0; i < 15; i++){
@@ -94,6 +119,20 @@ ISR(INT2_vect){ //Interrupt from sensor module
 		}
 
 	
+}
+
+void sendMap(void)
+{
+	uint8_t i;
+	uint8_t j;
+	for(i = 0; i < 28; ++i){
+		for(j = 0; j < 28; ++j){
+			btSend(0xFE);
+			btSend(i);
+			btSend(j);
+			btSend(map[i][j]);
+		}
+	}
 }
 
 int main(void)
@@ -105,6 +144,7 @@ int main(void)
 	TWISetup();
 	interruptSetup();
 	btInit();
+	searchPathInit();
 	
 	sei();
 	
@@ -145,7 +185,7 @@ int main(void)
 		if (autodrive == 0) { // Manual mode
 			//Do nothing
 			} else if (autodrive == 1) { // Autonomous mode
-			//Send map to computer
+			//sendMap();
 		}
 		
 	}
