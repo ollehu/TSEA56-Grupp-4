@@ -1,7 +1,10 @@
 package view;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
@@ -18,19 +21,14 @@ public class MapPanel extends JPanel{
 		map = new Map();
 		
 		add(map);
-		
-		boolean[] hasWalls = {true,true,false,false};
-		
-//		mapPlaceHolder = new JTextArea(20,40);
-//		mapPlaceHolder.setEditable(false);
-//		mapPlaceHolder.setText("This is a placeholder for the map");
-//		
-//		add(mapPlaceHolder);
-	}
 
+	}
+		
 	public Map getMap() {
 		return map;
 	}
-	
-	
+
+	public void clearMap() {
+		map.clearMap();
+	}
 }

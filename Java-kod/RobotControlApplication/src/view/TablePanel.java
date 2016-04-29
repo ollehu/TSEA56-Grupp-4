@@ -104,4 +104,14 @@ public class TablePanel extends JPanel{
 		
 		return controllerCoefficients;
 	}
+	
+	public String getLatestSensorValues() {
+		String lastSensorValues = "";
+		
+		for(SensorLabel sensorLabel : sensorList) {
+			lastSensorValues += sensorLabel.getName() + ": " + sensorLabel.getValue() + " ";
+		}
+		
+		return lastSensorValues;
+	}
 }

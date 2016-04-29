@@ -1,0 +1,30 @@
+===================
+2016-04-28 14:37:26
+===================
+
+14:37:43 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 0
+14:37:44 - IR F/R: 245 : IR F/L: 90 : IR B/R: 245 : IR B/RL: 0
+14:37:44 - IR F/R: 245 : IR F/L: 82 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 245 : IR F/L: 90 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:44 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 245 : IR F/L: 89 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:44 - IR F/R: 245 : IR F/L: 86 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:44 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:44 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:45 - IR F/R: 245 : IR F/L: 84 : IR B/R: 245 : IR B/RL: 245
+14:37:45 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:45 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:45 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:45 - IR F/R: 245 : IR F/L: 82 : IR B/R: 245 : IR B/RL: 0
+14:37:45 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:45 - IR F/R: 245 : IR F/L: 87 : IR B/R: 245 : IR B/RL: 245
+14:37:45 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:45 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 109
+14:37:45 - IR F/R: 0 : IR F/L: 0 : IR B/R: 0 : IR B/RL: 0
+14:37:46 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 245
+14:37:46 - IR F/R: 245 : IR F/L: 85 : IR B/R: 245 : IR B/RL: 154
