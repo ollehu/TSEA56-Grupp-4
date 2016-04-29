@@ -37,6 +37,7 @@
 .recommenders/
 Java-kod/Testenvironment/
 Java-kod/AdaptiveMapTest/
+Java-kod/AdaptiveGridTest/
 
 # Mac IDE files
 *.swp
