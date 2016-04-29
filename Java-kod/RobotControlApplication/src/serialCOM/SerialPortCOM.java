@@ -3,6 +3,8 @@ package serialCOM;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import javax.swing.JOptionPane;
+
 import control.Handler;
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
@@ -165,19 +167,24 @@ public class SerialPortCOM {
 	}
 
 	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
-
+		boolean isAutonomousModeOn = Byte.toUnsignedInt(receivedData[1]) == 1;
 		
-		if(Byte.toUnsignedInt(receivedData[2]) == 1) {
-			// set auto mode on and write to log
-			handler.setAutomousMode(true);
+		handler.setAutomousMode(isAutonomousModeOn);
+		if(isAutonomousModeOn) {
 			handler.getLogWriter().appendToLog("Autonomous mode on");
-		} else if(Byte.toUnsignedInt(receivedData[2]) == 0) {
-			// set auto mode on and write to log
-			handler.setAutomousMode(true);
-			handler.getLogWriter().appendToLog("Autonomous mode on");
+			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+					"Autonomous mode: on!",
+					"Autonomous mode",
+					JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			throw new CommunicationFormatException();
+			handler.getLogWriter().appendToLog("Autonomous mode off");
+			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+					"Autonomous mode: off!",
+					"Autonomous mode",
+					JOptionPane.INFORMATION_MESSAGE);
 		}
+		
+		
 	}
 
 	private void updateSensorValues(byte[] receivedData) {
