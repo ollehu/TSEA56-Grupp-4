@@ -10,7 +10,7 @@
 
 \vspace{5em}
 
-Version 0.1
+Version 1.0
 
 \vspace{5em}
 Grupp 4 \\
@@ -100,14 +100,66 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
+Det genomförda projektet har gått ut på att konstruera en undsättningsrobot. Detta dokument syftar till att användas som underlag till personer som vill bygga en liknande robot. Innehåller består av detaljerade beskrivningar av systemets olika delar och dess mjuk- och hårdvarukomponenter samt implementation.
 
 \section{Produkten}
+Produkten som har konstruerats är en undsättningsrobot bestående av fyra moduler som tillsammans med sensorer och en gripklo är integrerade på ett gemensamt chassi, enligt figur \ref{overview}.  ÄNDRA TILL 1284P OCH EV GP2D120
+
+\begin{figure}[!htbp]
+\centering
+\noindent\resizebox{\linewidth}{!}{
+	\input{images/overview}}
+	\caption{Det totala systemet \label{overview}}	
+\end{figure}
+
+Med hjälp av sensorerna kan roboten navigera i ett laryrintsystem, vilket den gör ända till den detekterar en nödställd. Då ser den till att finna den snabbaste/kortaste vägen ut och hämtar en förnödenhet med gripklon som den sedan åker och lämnar till den nödställde. 
 
 \section{Teori}
 
 \section{Systemet}
 
+\subsection{Protokoll}
+
+
 \section{Modulerna}
+I detta avsnitt följer en detaljerad beskrivning av systemets ingående moduler. 
+
+\subsection{Huvudmodulen}
+Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera samt att göra alla tyngre beräkningar. Kommunikationen med den externa datormodulen sker genom Bluetooth\textsuperscript{\circledR} och genom en tvåtrådad I\textsuperscript{2}C-buss med de interna modulerna, vilket visas i figur \ref{communication}.
+
+\begin{figure}[htbp]
+\noindent\resizebox{.97\textwidth}{!}{
+	\input{images/communication}}
+	\caption{Intermodulär kommunikation \label{communication}}
+\end{figure}
+
+\pagebreak
+
+\subsection{Sensormodulen}
+Robotens sensormodul har som uppgift att läsa av den data som behövs för att reglera, identifiera den nödställda och att kommunicera datan till huvudmodulen. De sensorer som används är följande, NAMN PÅ SENSORER
+\begin{description}
+	\item[Avstånd] \hfill \\
+	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+	\item[Vinkelhastighet] \hfill \\
+	1 x Gyro/accelerometer \verb+MPU-6500+ 
+	\item[Identifierare av nödställd] \hfill \\
+	1 x IR-detektor \verb+IRM-8601-S+
+\end{description}
+och är placerade enligt figur \ref{sensors}. 
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\textwidth}{!}{
+	\input{images/sensor}	}
+	\caption{Sensorplacering \label{sensors}}
+\end{figure}
+
+\subsection{Styrmodulen}
+Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska kunna hanteras är styrning av chassits motorer för att få roboten att röra på sig, rotera det eventuella lasersensortornet eller att styra gripklon.
+
+\subsection{Datormodulen}
+
 
 \section{Slutsatser}
 

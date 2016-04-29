@@ -1,4 +1,4 @@
-ï»¿/*
+/*
  * SearchPath.c
  *
  * Created: 4/27/2016 8:45:41 AM
@@ -17,8 +17,8 @@
 #include <stdlib.h> //For use of abs()
 
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
-uint8_t map[28][28]; //FF: initial value, FA: wall, FB: target, FC: start, [0,225] steps from start
-uint8_t path[28][28]; //FF initial value, AA blocked way, >0 steps from target
+uint8_t map[28][28]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
+uint8_t path[28][28]; //FF initial value, F1 blocked way, >0 steps from target
 uint8_t position[2] = {14,14};
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //Coordinates for target plus value in path
@@ -50,11 +50,11 @@ uint8_t w;
 uint8_t r;
 
 uint8_t dist;
-uint8_t wallValue = 0xFA;
-uint8_t	targetValue = 0xFB;
-uint8_t	initialValue = 0xFF;
-uint8_t blockedWayValue = 0xFD;
-uint8_t startPositionValue = 0xFC;
+uint8_t wallValue = 0xF4;
+uint8_t	targetValue = 0xF3;
+uint8_t	initialValue = 0xF5;
+uint8_t blockedWayValue = 0xF1;
+uint8_t startPositionValue = 0xF2;
 uint8_t	targetPathValue = 0;
 
 int i = 0;
@@ -153,7 +153,7 @@ uint8_t distanceToTarget(uint8_t x, uint8_t y) //Returns the walking distance fr
 
 uint8_t hasFoundTarget() // Checks if target is found NEEDS IMPLEMENTATION!!!
 {
-	//GÃ¶ra skillnad pÃ¥ tre tillstÃ¥nd: MÃ¥let ej hittat, ser mÃ¥let, vet precis vilken kartmodul mÃ¥let befinner sig i???
+	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
 	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
 		//
 	} else {
