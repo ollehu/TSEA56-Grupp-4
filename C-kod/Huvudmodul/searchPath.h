@@ -40,7 +40,7 @@ uint8_t hasFoundWayBack = 0;
 //uint8_t testWalls[][3] = {{1,0,1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
 uint8_t testWalls[][3] = {{0,0,0},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,0},{1,0,1},{1,1,1},{0,0,1},{1,0,1},{1,0,0},{1,0,1},{1,0,0},{0,0,1},{1,0,1},{0,1,0},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{0,1,1},{1,0,0},{1,0,1},{0,1,0},{1,0,1},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,1}};
 uint16_t straightAhead = 0;
-uint16_t oneModuleAhead = 50;
+uint16_t oneModuleAhead = 24;
 
 uint8_t s;
 uint8_t t;
@@ -59,6 +59,8 @@ uint8_t	targetPathValue = 0;
 
 int i = 0;
 int nrOfCoordinates = 0;
+
+int SLA_styr_W = 0xCC;
 
 /*void readSensors() //In which directions are there walls? 
 {
@@ -743,12 +745,7 @@ void explore()
 {
 	if(hasFoundTarget() == 1){ 
 			//Update map with the right number and target with the right 
-			updateTargetFound(); //Only just when the target has been found
-			walls[0] = testWalls[i][0];
-			walls[1] = testWalls[i][1];
-			walls[2] = testWalls[i][2];
-			i++;
-			tempUpdateWalls();			
+			updateTargetFound(); //Only just when the target has been found			
 		} 
 		
 		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
@@ -756,7 +753,7 @@ void explore()
 
 			lastCommand[1] = 0x01;
 			
-			//Master(3,...,lastCommand);
+			Master(3,SLA_styr_W,lastCommand);
 			/*for (int k = 0; k < 3; k++)	{
 				btSend(lastCommand[i]);
 			}*/
@@ -767,12 +764,7 @@ void explore()
 				ruleOutPath();
 			}			
 		
-			//readSensors();
-			walls[0] = testWalls[i][0];
-			walls[1] = testWalls[i][1];
-			walls[2] = testWalls[i][2];
-			i++;
-			tempUpdateWalls();
+			readSensors();
 		
 			uint8_t * temp;
 			if(hasFoundTarget()){
@@ -784,7 +776,7 @@ void explore()
 			lastCommand[1] = temp[1];
 			lastCommand[2] = temp[2];
 			if(lastCommand[1] != 0){
-				//Master(3,...,lastCommand);
+				Master(3,SLA_styr_W,lastCommand);
 				/*for (int k = 0; k < 3; k++)	{
 					btSend(lastCommand[i]);
 				}*/
@@ -805,7 +797,7 @@ void explore()
 			lastCommand[2] = temp[2];
 			
 			if(lastCommand[1] != 0){
-				//Master(3,...,lastCommand);
+				Master(3,SLA_styr_W,lastCommand);
 				/*for (int k = 0; k < 3; k++)	{
 					btSend(lastCommand[i]);
 				}*/
