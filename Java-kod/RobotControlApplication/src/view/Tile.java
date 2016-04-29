@@ -16,64 +16,61 @@ import javax.swing.UIManager;
  */
 public class Tile extends JComponent{
 	
-	private int width = 15;
-	private int height = 15;
+	private int width = 10;
+	private int height = 10;
 	
-	private Color unexploredBackgroundColor = new Color(200, 0, 0);
+	public static final int UNEXPLORED = 245;
+	public static final int WALL = 244;
+	public static final int TARGET = 243;
+	public static final int START = 242;
+
+	
+	private Color unexploredBackgroundColor = new Color(110,110,110);
+	private Color wallBackgroundColor = new Color(10,10,10);
 	private Color exploredBackgroundColor = UIManager.getColor("Panel.background");
-	
-	private Color unexploredWallColor = new Color(200, 200, 200);
-	private Color exploredWallColor = new Color(0, 0, 0);
+	private Color startBackgroundColor = new Color(0, 155, 0);
+	private Color targetBackgroundColor = new Color(155, 0, 0);
 
 	/**
-	 * 0 = north, 1 = east, 2 = south, 3 = west
+	 * 245 (0xF5) = unexplored, 244 (0xF4) =  wall, 
+	 * 243 (0xF3) = target, 242 = (0xF2) = start, 0-225 = range from start
 	 */
-	private boolean[] hasWalls;
-	
-	private boolean hasBeenExplored = false;
+	private int value = UNEXPLORED;
 	
 	public Tile() {
 		setPreferredSize(new Dimension(width + 2, height + 2));
 	}
 	
-	public void explore(boolean[] hasWalls) {
-		hasBeenExplored = true;
-		this.hasWalls = hasWalls;
+	public void setValue(int value) {
+		this.value = value;
+		repaint();
 	}
 	
 	@Override
 	public void paintComponent(Graphics graphics) {
-		Graphics2D graphics2d = (Graphics2D) graphics;
-		
-		if (hasBeenExplored) {
-			graphics2d.setStroke(new BasicStroke(4));
-			
-			this.setBackground(exploredBackgroundColor);
-			graphics2d.setColor(exploredWallColor);
-			
-			super.paintComponent(graphics);
-			
-			if(hasWalls[0]){
-				graphics2d.drawLine(0, 0, width, 0);
-			}
-			if(hasWalls[1]){
-				graphics2d.drawLine(width, 0, width, height);
-			}
-			if(hasWalls[2]){
-				graphics2d.drawLine(0, height, width, height);
-			}
-			if(hasWalls[3]){
-				graphics2d.drawLine(0, 0, 0, height);
-			}
+		if(value == UNEXPLORED) {
+			graphics.setColor(unexploredBackgroundColor);
+		} else if(value == WALL) {
+			graphics.setColor(wallBackgroundColor);
+		} else if(value == TARGET) {
+			graphics.setColor(targetBackgroundColor);
+		} else if(value == START) {
+			graphics.setColor(startBackgroundColor);
 		} else {
-			graphics2d.setStroke(new BasicStroke(1));
-			this.setBackground(unexploredBackgroundColor);
-			graphics2d.setColor(unexploredWallColor);
+			graphics.setColor(exploredBackgroundColor);
+		}
+		
+		super.paintComponent(graphics);
 			
-			super.paintComponent(graphics);
-			
-			graphics2d.fillRect(0, 0, width, height);
+		graphics.fillRect(0, 0, width, height);
+		
+		if(value <= 225) {
+			graphics.drawString("" + value, 0, 0);
 		}
 	}
 	
+	public void clear() {
+		value = UNEXPLORED;
+		repaint();
+	}
 }

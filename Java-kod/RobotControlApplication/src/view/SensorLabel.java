@@ -31,5 +31,15 @@ public class SensorLabel extends JLabel{
 		this.value = value;
 		updateText();
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getValue() {
+		return value;
+	}
+	
+	
 	
 }

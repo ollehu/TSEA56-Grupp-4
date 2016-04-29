@@ -32,10 +32,7 @@ import control.Handler;
  */
 public class GraphPanel extends JPanel{
 
-	private JTextArea graphPlaceHolder;
-	
 	private Animator animator;
-	
 
 	private ArrayList<ChartPanel> chartList;
 	
@@ -154,6 +151,11 @@ public class GraphPanel extends JPanel{
 		for(int index = 0; index < 6; index++) {
 			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
 		}
+		
+		animator.getHandler().getLogWriter().appendToLog("IR F/R: " + sensorValues[0] + " : " +  
+														"IR F/L: " + sensorValues[1] + " : " + 
+														"IR B/R: " + sensorValues[2] + " : " + 
+														"IR B/RL: " + sensorValues[3]);
 		
 		// add controller values
 //		int[] controllerValues = calculateControllerValue(sensorValues);

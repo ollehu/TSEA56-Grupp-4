@@ -54,7 +54,7 @@ public class SerialPortCOM {
 	}
 
 	/**
-	 * Closes port on program exit
+	 * Closes port. Called on program exit
 	 */
 	public void closeSerialPort() {
 		if(serialPort != null) {
@@ -110,26 +110,49 @@ public class SerialPortCOM {
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
-					byte[] receivedData = new byte[15];
-					try {
-						receivedData = serialPort.readBytes(15, 70);
-					} catch (SerialPortTimeoutException e) {
-						e.printStackTrace();
+					byte[] communicationsIDByte = serialPort.readBytes(1);
+					int communicationsID = Byte.toUnsignedInt(communicationsIDByte[0]);
+					
+					// get byte string length
+					int byteStringLength = 100;
+					
+					if(communicationsID == DataID.CONTROL_SETTING) {
+						byteStringLength = 2;
+					} else if(communicationsID == DataID.SENSOR_DATA) {
+						byteStringLength = 14;
+					} else if(communicationsID == DataID.MAP_DATA) {
+						byteStringLength = 3;
+					} else if(communicationsID == DataID.CONTROL_DATA) {
+						byteStringLength = 2;
+					} else {
+						serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
 					}
 					
-					if(Byte.toUnsignedInt(receivedData[0]) == DataID.CONTROL_SETTING) {
+					byte[] receivedData = new byte[byteStringLength];
+					
+					try {
+						receivedData = serialPort.readBytes(byteStringLength, 70);
+					} catch (SerialPortTimeoutException e) {
+//						System.out.println("BT time out. ID: " + communicationsID);
+						handler.getLogWriter().appendToLog("BT time out. ID: " + communicationsID);
+						return;
+					}
+					
+					if(communicationsID == DataID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
 						switchMode(receivedData);
-					} else if(Byte.toUnsignedInt(receivedData[0]) == DataID.SENSOR_DATA) {
+					} else if(communicationsID == DataID.SENSOR_DATA) {
 						//TODO handle sensor array
 						updateSensorValues(receivedData);
-					} else if(Byte.toUnsignedInt(receivedData[0]) == DataID.MAP_DATA) {
+					} else if(communicationsID == DataID.MAP_DATA) {
 						//TODO handle map data
 						updateMap(receivedData);
-					}
-					
-					if(Byte.toUnsignedInt(receivedData[0]) != DataID.SENSOR_DATA) {
-						System.out.println("Feldata!");
+					} else if(communicationsID == DataID.CONTROL_DATA) {
+						System.out.println("Sensorer: " + handler.getAnimator().getTablePanel().getLatestSensorValues());
+						System.out.println("Styrkommando: " + Byte.toUnsignedInt(receivedData[0]));
+						System.out.println("");
+						handler.getLogWriter().appendToLog("Styrkommando: " + Byte.toUnsignedInt(receivedData[0]));
+						handler.getLogWriter().appendToLog("Sensorer: " + handler.getAnimator().getTablePanel().getLatestSensorValues());
 					}
 					
 				}
@@ -143,51 +166,39 @@ public class SerialPortCOM {
 
 	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
 
-		if(Byte.toUnsignedInt(receivedData[1]) == ControlSettingID.CONTROLLER) {
-			if(Byte.toUnsignedInt(receivedData[3]) == 1) {
-				// set auto mode on and write to log
-				handler.setAutomousMode(true);
-				handler.getLogWriter().appendToLog("Autonomous mode on");
-			} else if(Byte.toUnsignedInt(receivedData[3]) == 0) {
-				// set auto mode on and write to log
-				handler.setAutomousMode(true);
-				handler.getLogWriter().appendToLog("Autonomous mode on");
-			} else {
-				throw new CommunicationFormatException();
-			}
+		
+		if(Byte.toUnsignedInt(receivedData[2]) == 1) {
+			// set auto mode on and write to log
+			handler.setAutomousMode(true);
+			handler.getLogWriter().appendToLog("Autonomous mode on");
+		} else if(Byte.toUnsignedInt(receivedData[2]) == 0) {
+			// set auto mode on and write to log
+			handler.setAutomousMode(true);
+			handler.getLogWriter().appendToLog("Autonomous mode on");
 		} else {
 			throw new CommunicationFormatException();
 		}
 	}
 
 	private void updateSensorValues(byte[] receivedData) {
-		// throw error if wrong format
-//		if(receivedData.length != 15) {
-//			throw new CommunicationFormatException();
-//		}
 		
 		// convert byte to unsigned ints
 		int[] sensorValues = new int[6];
 		int j = 0;
 		
-		for(int i = 2; i < receivedData.length; i+=2) {
-			if(i == 10) {
+		for(int i = 1; i < receivedData.length; i+=2) {
+			if(i == 9) {
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 128;
-			} else if(i == 12) {
+			} else if(i == 11) {
 				sensorValues[j] += Byte.toUnsignedInt(receivedData[i]);
 				j++;
-			} else if(i == 14){
-				if(Byte.toUnsignedInt(receivedData[i]) == 0) {
-					System.out.println("Nolla!");
-				}
-				
+			} else if(i == 13){
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 124;
 				j++;
 			} else {
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
 				j++;
 			}
-			
 			
 		}
 		
@@ -197,17 +208,14 @@ public class SerialPortCOM {
 	}
 
 	private void updateMap(byte[] receivedData) {
-		// throw error if wrong format
-//		if(receivedData.length != 4) {
-//			throw new CommunicationFormatException();
-//		}
-		
 		// get x- and y-coordinate
-		int xCoordinate = Byte.toUnsignedInt(receivedData[1]);
-		int yCoordinate = Byte.toUnsignedInt(receivedData[2]);
+		int xCoordinate = Byte.toUnsignedInt(receivedData[0]);
+		int yCoordinate = Byte.toUnsignedInt(receivedData[1]);
+		
+		int value = Byte.toUnsignedInt(receivedData[2]);
 	
 		// update map
-		handler.getAnimator().getMapPanel().getMap().updateMap(xCoordinate, yCoordinate, receivedData[3]);
+		handler.getAnimator().getMapPanel().getMap().updateMap(xCoordinate, yCoordinate, value);
 		
 	}
 

@@ -56,8 +56,11 @@ public class Handler {
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (SerialPortException e) {
 			String toolTip;
+			
+			e.printStackTrace();
+			
 			if(e.getExceptionType().equals("Port busy")) {
-				toolTip = "! Try 'lsof | grep FireFly' in console \nif the problem persists";
+				toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
 			} else {
 				toolTip = "";
 			}
