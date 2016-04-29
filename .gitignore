@@ -36,6 +36,7 @@
 .metadata/
 .recommenders/
 Java-kod/Testenvironment/
+Java-kod/AdaptiveMapTest/
 
 # Mac IDE files
 *.swp
