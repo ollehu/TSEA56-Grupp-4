@@ -114,6 +114,8 @@ Produkten som har konstruerats är en undsättningsrobot bestående av fyra modu
 	\caption{Det totala systemet \label{overview}}	
 \end{figure}
 
+\pagebreak
+
 Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. Denna är beroede av sensorer för att få en uppfattning om sin omgivning samt en styrenhet för att kunna röra sig i förhållande till sin omgivning. Navigationen pågår tills den detekterar en nödställd. Då ser den till att finna den kortaste vägen ut för att där hämta en förnödenhet med gripklon som den sedan åker och lämnar till den nödställde. 
 
 \section{Teori}
@@ -121,6 +123,18 @@ Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. 
 
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
+
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/bana}}
+	\caption{Översikt av banan\label{system}}	
+\end{figure}
+
+\subsection{Beskrivning av systemet}
+Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, en gyroskop sensor som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
 
 \subsection{Protokoll}
 
