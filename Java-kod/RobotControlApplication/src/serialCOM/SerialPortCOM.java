@@ -222,8 +222,8 @@ public class SerialPortCOM {
 		int value = Byte.toUnsignedInt(receivedData[2]);
 	
 		// update map
-		handler.getAnimator().getMapPanel().getMap().updateMap(xCoordinate, yCoordinate, value);
-		
+		handler.getAnimator().getMapPanel().getMap().update(xCoordinate, yCoordinate, value);
+		System.out.println("Uppdaterat kartan! X: " + xCoordinate + ", Y: " + yCoordinate + ", value: " + value);
 	}
 
 	public SerialPort getSerialPort() {
