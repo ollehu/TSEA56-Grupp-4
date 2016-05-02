@@ -21,14 +21,10 @@ public class MapPanel extends JPanel{
 		map = new Map();
 		
 		add(map);
-
 	}
 		
 	public Map getMap() {
 		return map;
 	}
 
-	public void clearMap() {
-		map.clearMap();
-	}
 }

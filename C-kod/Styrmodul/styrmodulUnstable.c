@@ -53,6 +53,13 @@ volatile uint8_t madeChange = 0;
 uint8_t debugCount = 0;
 
 /************************************************************************/
+/*                               DEBUG                                  */
+/************************************************************************/
+volatile uint8_t called;
+volatile uint8_t received;
+volatile uint8_t debugMode;
+
+/************************************************************************/
 /*                              HEADER                                  */
 /************************************************************************/
 void updateSensorData(uint8_t sensorIndex, uint8_t data);
@@ -123,6 +130,7 @@ ISR(TWI_vect)
 				} else {
 					commandValue = TWDR;
 					respondToControlData(commandSubType, commandValue);
+					received += 1;
 				}
 				
 			} else if (commandType == settingCommand){
@@ -164,6 +172,21 @@ ISR(TWI_vect)
 		
 		while(!(TWCR & (1<<TWINT)));
 	}
+}
+
+char *commandToString(uint8_t command)
+{
+		switch(command){
+			case forward:
+				return "Forward";
+				break;
+			case rotation:
+				return "Rotation";
+				break;
+			default:
+				break;
+		}
+	
 }
 
 /************************************************************************/
@@ -347,13 +370,13 @@ void respondToControlData(uint8_t command, uint8_t value)
 int16_t convertAngle(int8_t value)
 {
 	if (value == -1) {
-		return -3.4*preferredRotationSpeed + 841;
+		return 1050;
 	} else if (value == 1) {
-		return 3.4*preferredRotationSpeed - 841;
+		return -1050;
 	} else if (value == 2) {
-		return (3.4*preferredRotationSpeed - 841)*2.3;
+		return -2200;
 	} else if (value == -2) {
-		return -(3.4*preferredRotationSpeed - 841)*2.3;
+		return 2200;
 	}
 	
 	return 0;
@@ -368,6 +391,7 @@ int16_t convertAngle(int8_t value)
 				 3 : Set D value		    : D = value / 100
 				 4 : Set K value		    : K = value / 10
 				 5 : Set preferred speed
+				 6 : Manually call interrupt
 																		*/
 /************************************************************************/
 void respondToSettingsData(uint8_t identifier, uint8_t value)
@@ -387,6 +411,9 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 			break;
 		case 5:
 			preferredSpeed = value;
+			break;
+		case 6:
+			callMainInterrupt();
 			break;
 		default:
 			break;
@@ -535,8 +562,26 @@ void initInterrupt()
 /************************************************************************/
 void callMainInterrupt(void)
 {
+	called += 1;
 	PORTB |= (1<<PORTB4);
 	PORTB &= ~(1<<PORTB4);
+}
+
+void initLED(void)
+{
+	DDRD |= (1<<DDD6)|(1<<DDD7);
+	
+	if (autonomousMode == 1){
+		PORTD |= (1<<PORTD6);
+	} else {
+		PORTD &= ~(1<<PORTD6);
+	}
+	
+	if (debugMode == 1){
+		PORTD |= (1<<PORTD7);
+	} else {
+		PORTD &= ~(1<<PORTD7);
+	}
 }
 
 /************************************************************************/
@@ -554,19 +599,25 @@ int main(void)
 	TWISetup(mySlaveAdress);
 	initPWM();
 	initLCD();
+	
 	initInterrupt();
 	
 	sei();
 
 	autonomousMode = 1;
+	debugMode = 0;
+	//callMainInterrupt();
+	initLED();
 	while(1)
 	{
 	
 		if (madeChange >= 1){
-			//sprintf(topRowMessage, "CC:%d S:%u", lastControlCommand, preferredSpeed);
-			lcdWriteTopRow("-- Forward: --");
-			sprintf(bottomRowMessage, "%u", forwardSensor);
-			lcdWriteBottomRow(bottomRowMessage);
+			sprintf(topRowMessage, "C:%u R:%u F:%u", called, received, accumulatedAngle);
+			lcdWriteTopRow(topRowMessage);
+			if (lastControlCommand != stop){
+				sprintf(bottomRowMessage, "Command %s", commandToString(lastControlCommand));
+				lcdWriteBottomRow(bottomRowMessage);
+			}
 			madeChange = 0;
 		} 
 	}

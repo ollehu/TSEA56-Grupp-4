@@ -16,6 +16,8 @@
 #include <avr/io.h>
 #include <stdlib.h> //For use of abs()
 
+int SLA_styr_W = 0xCC;
+
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
 uint8_t map[28][28]; //FF: initial value, FA: wall, FB: target, FC: start, [0,225] steps from start
 uint8_t path[28][28]; //FF initial value, AA blocked way, >0 steps from target
@@ -25,6 +27,7 @@ uint8_t target[3] = {0xFF,0xFF,0xFF}; //Coordinates for target plus value in pat
 uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path
 uint8_t currentCommand[3];
 uint8_t doneShortestPathInit = 0;
+uint8_t shortestPath[150][2];
 
 uint8_t lastCommand[3]; //Last send controller command
 
@@ -33,6 +36,7 @@ uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
 uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
 uint8_t rotate180[3] = {0xFF, 0x03, 0xB4};
+uint8_t openClaw[3] = {0xFF, 0x09, 0x01};	
 uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t hasFoundWayBack = 0;
@@ -50,15 +54,23 @@ uint8_t w;
 uint8_t r;
 
 uint8_t dist;
-uint8_t wallValue = 0xFA;
-uint8_t	targetValue = 0xFB;
-uint8_t	initialValue = 0xFF;
-uint8_t blockedWayValue = 0xFD;
-uint8_t startPositionValue = 0xFC;
 uint8_t	targetPathValue = 0;
+uint8_t blockedWayValue = 0xF1;
+uint8_t startPositionValue[2] = {0xF2,0xF0};
+uint8_t	targetValue = 0xF3;
+uint8_t wallValue = 0xF4;
+uint8_t	initialValue = 0xF5;
 
 int i = 0;
 int nrOfCoordinates = 0;
+int returnStart = 0xFF;
+int goTheShortestPath = 0;
+
+uint8_t forward = 0x01;
+uint8_t oneEighty = 0x02;
+uint8_t right = 0x03;
+uint8_t left = 0x04;
+uint8_t claw = 0x09;
 
 /*void readSensors() //In which directions are there walls? 
 {
@@ -175,7 +187,7 @@ void updateCoordinates() //Updates map, path and position variables
 	if (direction == 0){
 		//increase length from start by one
 		if (map[position[0]][position[1]+1] == initialValue){
-			if (map[position[0]][position[1]] == startPositionValue){
+			if (map[position[0]][position[1]] == startPositionValue[0]){
 				map[position[0]][position[1]+1] = 1;
 			} else{
 				map[position[0]][position[1]+1] = map[position[0]][position[1]] + 1;
@@ -188,7 +200,7 @@ void updateCoordinates() //Updates map, path and position variables
 	} else if (direction == 1){
 		//increase length from start by one
 		if (map[position[0]+1][position[1]] == initialValue){
-			if (map[position[0]][position[1]] == startPositionValue){
+			if (map[position[0]][position[1]] == startPositionValue[0]){
 				map[position[0]+1][position[1]] = 1;
 			} else{
 				map[position[0]+1][position[1]] = map[position[0]][position[1]] + 1;
@@ -201,7 +213,7 @@ void updateCoordinates() //Updates map, path and position variables
 	} else if (direction == 2){
 		//increase length from start by one
 		if (map[position[0]][position[1]-1] == initialValue){
-			if (map[position[0]][position[1]] == startPositionValue){
+			if (map[position[0]][position[1]] == startPositionValue[0]){
 				map[position[0]][position[1]-1] = 1;
 			} else{
 				map[position[0]][position[1]-1] = map[position[0]][position[1]] + 1;
@@ -214,7 +226,7 @@ void updateCoordinates() //Updates map, path and position variables
 	} else {
 		//increase length from start by one
 		if (map[position[0]-1][position[1]] == initialValue){
-			if (map[position[0]][position[1]] == startPositionValue){
+			if (map[position[0]][position[1]] == startPositionValue[0]){
 				map[position[0]-1][position[1]] = 1;
 			} else{
 				map[position[0]-1][position[1]] = map[position[0]][position[1]] + 1;
@@ -287,7 +299,7 @@ uint8_t unexploredPaths() //Are there any unexplored paths from current position
 
 uint8_t * findWayBack() //Where to go to get closer to the start 
 {	
-	if(map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1){
+	if((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
 				//Rotate right
@@ -307,7 +319,7 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 				return rotate180;
 				break;
 		}
-	} else if(map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1){
+	} else if((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
 				//One forward
@@ -325,7 +337,7 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 				return rotateRight;
 				break;
 		}
-	} else if(map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1){
+	} else if((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0:
 				//Rotate left
@@ -345,7 +357,7 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 				return oneForward;
 				break;
 			}
-	} else if(map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1){
+	} else if((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0:
 				//Should never happen??
@@ -468,7 +480,8 @@ void searchPathInit() //Fills map and path, sets initial values
 	}
 	
 	//Set start value for map
-	map[14][14] = startPositionValue;
+	map[14][14] = startPositionValue[0];
+	map[14][13] = startPositionValue[1];
 }
 
 void updateTargetFound()//Updates map, path and position variables when target is found
@@ -533,9 +546,9 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				path[position[0]+1][position[1]] = 0xAA;
-				path[position[0]][position[1]+1] = 0xAA;
-				path[position[0]-1][position[1]] = 0xAA;
+				path[position[0]+1][position[1]] = blockedWayValue;
+				path[position[0]][position[1]+1] = blockedWayValue;
+				path[position[0]-1][position[1]] = blockedWayValue;
 				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
@@ -791,6 +804,11 @@ void explore()
 			}
 		} else {
 			
+			if((hasFoundWayBack)){
+				hasFoundWayBack = 0;
+				ruleOutPath();
+			}	
+			
 			uint8_t * temp;
 
 			if (hasFoundTarget()){
@@ -828,110 +846,136 @@ uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
 	
-	switch(direction){
-		case 0:
-			if(path[position[0]+1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]+1][position[1]];
-				currentCommand = rotateRight;
-			}
+	if(distanceToTarget(position[0],position[1]) == 1){
+		return openClaw;
+	} else {
+		switch(direction){
+			case 0:
+				if(path[position[0]+1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]+1][position[1]];
+					currentCommand[0] = rotateRight[0];
+					currentCommand[1] = rotateRight[1];
+					currentCommand[2] = rotateRight[2];
+				}
 			
-			if(path[position[0]][position[1]+1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]+1];
-				currentCommand = oneForward;
-			}
+				if(path[position[0]][position[1]+1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]+1];
+					currentCommand[0] = oneForward[0];
+					currentCommand[1] = oneForward[1];
+					currentCommand[2] = oneForward[2];
+				}
 			
-			if(path[position[0]-1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]-1][position[1]];
-				currentCommand = rotateLeft;
-			}
+				if(path[position[0]-1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]-1][position[1]];
+					currentCommand[0] = rotateLeft[0];
+					currentCommand[1] = rotateLeft[1];
+					currentCommand[2] = rotateLeft[2];
+				}
 			
-			return currentCommand;
+				return currentCommand;
 		
-		case 1:
-			if(path[position[0]+1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]+1][position[1]];
-				currentCommand = oneForward;
-			}
+			case 1:
+				if(path[position[0]+1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]+1][position[1]];
+					currentCommand[0] = oneForward[0];
+					currentCommand[1] = oneForward[1];
+					currentCommand[2] = oneForward[2];
+				}
 		
-			if(path[position[0]][position[1]+1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]+1];
-				currentCommand = rotateLeft;
-			}
+				if(path[position[0]][position[1]+1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]+1];
+					currentCommand[0] = rotateLeft[0];
+					currentCommand[1] = rotateLeft[1];
+					currentCommand[2] = rotateLeft[2];
+				}
 
-			if(path[position[0]][position[1]-1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]-1];
-				currentCommand = rotateRight;
-			}
+				if(path[position[0]][position[1]-1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]-1];
+					currentCommand[0] = rotateRight[0];
+					currentCommand[1] = rotateRight[1];
+					currentCommand[2] = rotateRight[2];
+				}
 		
-			return currentCommand;
+				return currentCommand;
 		
-		case 2:
-			if(path[position[0]+1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]+1][position[1]];
-				currentCommand = rotateLeft;
-			}
+			case 2:
+				if(path[position[0]+1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]+1][position[1]];
+					currentCommand[0] = rotateLeft[0];
+					currentCommand[1] = rotateLeft[1];
+					currentCommand[2] = rotateLeft[2];
+				}
 			
-			if(path[position[0]-1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]-1][position[1]];
-				currentCommand = rotateRight
-			}
+				if(path[position[0]-1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]-1][position[1]];
+					currentCommand[0] = rotateRight[0];
+					currentCommand[1] = rotateRight[1];
+					currentCommand[2] = rotateRight[2];
+				}
 			
-			if(path[position[0]][position[1]-1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]-1];
-				currentCommand = oneForward;
-			}
+				if(path[position[0]][position[1]-1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]-1];
+					currentCommand[0] = oneForward[0];
+					currentCommand[1] = oneForward[1];
+					currentCommand[2] = oneForward[2];
+				}
 			
-			return currentCommand;
+				return currentCommand;
 			
-		case 3:			
-			if(path[position[0]][position[1]+1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]+1];
-				currentCommand = rotateRight;
-			}
+			case 3:			
+				if(path[position[0]][position[1]+1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]+1];
+					currentCommand[0] = rotateRight[0];
+					currentCommand[1] = rotateRight[1];
+					currentCommand[2] = rotateRight[2];
+				}
 			
-			if(path[position[0]-1][position[1]] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]-1][position[1]];
-				currentCommand = oneForward;
-			}
+				if(path[position[0]-1][position[1]] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]-1][position[1]];
+					currentCommand[0] = oneForward[0];
+					currentCommand[1] = oneForward[1];
+					currentCommand[2] = oneForward[2];
+				}
 			
-			if(path[position[0]][position[1]-1] < currentCoordinateValue){
-				currentCoordinateValue = path[position[0]][position[1]-1];
-				currentCommand = rotateLeft;
-			}
+				if(path[position[0]][position[1]-1] < currentCoordinateValue){
+					currentCoordinateValue = path[position[0]][position[1]-1];
+					currentCommand[0] = rotateLeft[0];
+					currentCommand[1] = rotateLeft[1];
+					currentCommand[2] = rotateLeft[2];
+				}
 			
-			return currentCoordinate;
+				return currentCommand;
+		}
+	
 	}
-	
-	
 }
 
-uint8_t * newCoordinates(uint8_t * shortestPath)
+void newCoordinates()
 {
 	switch(direction){
 		case 0:
 			position[1] = position[1] + 1;
+			break;
 		case 1:
 			position[0] = position[0] + 1;
+			break;
 		case 2:
 			position[1] = position[1] - 1;
+			break;
 		case 3:
 			position[0] = position[0] - 1;
+			break;
 	}
 	
 	nrOfCoordinates = nrOfCoordinates + 1;
-	shortestPath[nrOfCoordinates] = position;
-	
-	return shortestPath;
+	shortestPath[nrOfCoordinates][0] = position[0];
+	shortestPath[nrOfCoordinates][1] = position[1];
 }
 
-uint8_t * shortestPathToTarget(uint8_t * shortestPath)
+void shortestPathToTarget()
 {
 	uint8_t *temp;
-	if(atCrossing()){
-		temp = chooseDirection();	
-	} else {
-		temp = findWayBackTarget();
-	}
+	temp = chooseDirection();	
 	
 	lastCommand[0] = temp[0];
 	lastCommand[1] = temp[1];
@@ -943,18 +987,94 @@ uint8_t * shortestPathToTarget(uint8_t * shortestPath)
 		}*/
 	}
 	
-	if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
+	if((hasFoundWayBack)){
+		hasFoundWayBack = 0;
+		ruleOutPath();
+	}
+	
+	if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 		newDirection(lastCommand[1],lastCommand[2]);
-	} else {
-		temp = newCoordinates();
+	} else if (lastCommand[1] != claw){
+		newCoordinates();
 	}
 }
 
-uint8_t * shortestPathInit(uint8_t count)
+void shortestPathInit()
 {
-	uint8_t shortestPath[count][2];
 	shortestPath[0][0] = 14;
 	shortestPath[0][1] = 14;
+	direction = 0;
+}
+
+uint8_t * returnToStart()
+{
+	if ((position[0] == shortestPath[returnStart][0]) && (position[1]-1 == shortestPath[returnStart][1])){
+		switch(direction){
+			case 0:
+				return rotate180;
+				break;
+			case 1:
+				return rotateRight;
+				break;
+			case 2:
+				returnStart = returnStart - 1;
+				return oneForward;
+				break;
+			case 3:
+				return rotateLeft;
+				break;
+		}
+	} else if ((position[0] == shortestPath[returnStart][0]) && (position[1]+1 == shortestPath[returnStart][1])){
+		switch(direction){
+			case 0:
+				returnStart = returnStart - 1;
+				return oneForward;
+				break;
+			case 1:
+				return rotateLeft;
+				break;
+			case 2:
+				return rotate180;
+				break;
+			case 3:
+				return rotateRight;
+				break;
+		}
+	} else if ((position[0]-1 == shortestPath[returnStart][0]) && (position[1] == shortestPath[returnStart][1])){
+		switch(direction){
+			case 0:
+				return rotateLeft;
+				break;
+			case 1:
+				return rotate180;
+				break;
+			case 2:
+				return rotateRight;
+				break;
+			case 3:
+				returnStart = returnStart - 1;
+				return oneForward;
+				break;
+		}
+	} else if ((position[0]+1 == shortestPath[returnStart][0]) && (position[1] == shortestPath[returnStart][1])){
+		switch(direction){
+			case 0:
+				return rotateRight;
+				break;
+			case 1:
+				returnStart = returnStart - 1;
+				return oneForward;
+				break;
+			case 2:
+				return rotateLeft;
+				break;
+			case 3:
+				return rotate180;
+				break;
+		}
+	} else {
+		return falseCommand;
+	}
 }
 
 int main(void)
@@ -962,16 +1082,40 @@ int main(void)
 	searchPathInit();
 	uint8_t * shortestPath;
 
-	while(1){
-		if((map[position[0]][position[1]] == startPositionValue) && hasFoundTarget() && !unexploredPaths()){
-			if(!doneShortestPathInit){
-				doneShortestPathInit = 1;
-				shortestPath = shortestPathInit(z[1]);
+	while(1){		
+		if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
+			goTheShortestPath = 1;
+		}
+		
+		if(lastCommand[1] == claw){
+			returnStart = nrOfCoordinates - 1;
+		}
+	
+		if (returnStart != 0xFF){
+			uint8_t * temp = returnToStart();
+			lastCommand[0] = temp[0];
+			lastCommand[1] = temp[1];
+			lastCommand[2] = temp[2];
+			//Master(3,SLA_styr_W,lastCommand);
+			/*for (int k = 0; k < 3; k++)	{
+			btSend(lastCommand[i]);
+			}*/
+			
+			if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
+				newDirection(lastCommand[1],lastCommand[2]);
+			} else if (lastCommand[1] != claw){
+				newCoordinates();
 			}
 			
-			shortestPath = shortestPathToTarget(shortestPath);
+		} else if(goTheShortestPath){
+			if(!doneShortestPathInit){
+				doneShortestPathInit = 1;
+				shortestPathInit();
+			}
+			
+			shortestPathToTarget();
 		} else {
-			explore();
+     			explore();
 		}		
 	}
 }
