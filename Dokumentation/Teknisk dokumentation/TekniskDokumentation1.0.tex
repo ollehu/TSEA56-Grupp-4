@@ -129,13 +129,23 @@ Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. 
 I detta avsnitt följer en detaljerad beskrivning av systemets ingående moduler. 
 
 \subsection{Huvudmodulen}
-Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera samt tar alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}.
+Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}.
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
 	\input{images/communication}}
 	\caption{Intermodulär kommunikation \label{communication}}
 \end{figure}
+
+Det finns två olika körlägen för roboten, ett autonomt och ett manuellt. När det autonoma läget är aktiverat tas beslut utifrån datan som kommunicerats från sensormodulen vilken används i huvudmodulens avsökningsalgoritm för att bestämma vilken kartmodul om 40x40 cm som ska besökas härnäst. När beslutet är taget skickas kommando till styrmodulen som utför önskad operation. Därefter inväntar huvudmodulen att styrmodulen ska meddela att den är klar med operationen. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.9\linewidth}{!}{
+	\input{images/autonomousMode}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
+\end{figure}
+
 
 \pagebreak
 
