@@ -13,7 +13,6 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-//#include "sensorInit.h"
 #include "sensorInit.h"
 #include "I2C_slave.h"
 
@@ -58,8 +57,6 @@ uint8_t SI_IR3_array[5];
 uint8_t SI_IR4_array[5];
 uint16_t SI_LIDAR_array[5];
 
-
-//int angular_velocity = 0;
 int SI_lidar;
 
 uint16_t forwardDistance;
@@ -74,20 +71,19 @@ uint8_t answer;
 
 int firstRun = 0;
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 void SPI_MasterInit(void);
 void initTimer(void);
 void initADC(void);
-int processLidar(double lidarValue);
 uint8_t getMedianIR(uint8_t arr[]);
 uint16_t getMedianLIDAR(uint16_t arr[]);
 uint8_t get8Bit(float in);
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-
 uint8_t adcCounter;
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+/********************************I2C-interrupt*****************************/
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	//PORTA = (0<<PORTA0);
@@ -113,7 +109,6 @@ ISR(TWI_vect){
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWIE);
 			break;
 			
-			
 			//SLAVE TRANSMITTER
 		} else if ((TWSR & 0xF8) == 0xA8){
 			//SLA_R received, ACK returned, transmit data
@@ -135,6 +130,7 @@ ISR(TWI_vect){
 	}
 }
 
+/*****************************Lidar interrupt******************************/ 
 ISR(TIMER1_CAPT_vect){
 	
 	if (TCCR1B & (1<<ICES1)){
@@ -163,16 +159,13 @@ ISR(TIMER1_CAPT_vect){
 		TCCR1B |= (1<<ICES1);
 		PORTB &= ~(1<<PORTB0);
 	}
-		
-	
-	
-	
 }
 
+/****************************IR-detector interrupt*************************/
 ISR (INT0_vect)
 {
 	if (firstRun <= 1){
-	if(!(EICRA & (1<<ISC00))) //Om nedflank
+	if(!(EICRA & (1<<ISC00))) //If falling edge
 	{
 		TCCR0B |= (0<<CS02)|(1<<CS01)|(0<<CS00);
 		EICRA |= (1<<ISC00);
@@ -188,25 +181,25 @@ ISR (INT0_vect)
 	}
 	firstRun = firstRun + 1;
 	}
-
 }
 
+/*************************Counter, IR-detector*****************************/
 ISR (TIMER0_COMPA_vect)
 {
 	counter = counter + 1;
 }
 
+/*************Counter that eventually will invoke main module**************/
 ISR(TIMER2_OVF_vect)
 {
 	// keep a track of number of overflows
 	tot_overflow++;
 }
 
+/*****************************IR-sensor interrupt**************************/
 ISR(ADC_vect){ //IR-SENSOR
 	CLKPR = 0x06;
 	
-	
-
 	if(ADMUX == adc1){
 		Distance_1 = ADCH;
 		ADMUX = adc2;
@@ -227,18 +220,7 @@ ISR(ADC_vect){ //IR-SENSOR
 	}
 }
 
-int processLidar(double lidarValue)
-{
-	int lidarValueInt = (int) lidarValue;
-	
-	if(lidarValueInt > 245)
-	{
-		return 245;
-	} else {
-		return lidarValueInt;
-	}
-}
-
+/**Subprogram that will pick the medium value of five from the IR-sensors**/
 uint8_t getMedianIR(uint8_t arr[])
 {
 		uint8_t i, j, swap;
@@ -264,6 +246,7 @@ uint8_t getMedianIR(uint8_t arr[])
 		return arr[2];
 }
 
+/*Subprogram that will pick the medium value of five from the Lidar-sensor*/
 uint16_t getMedianLIDAR(uint16_t arr[])
 {
 	uint16_t i, j, swap;
@@ -280,11 +263,10 @@ uint16_t getMedianLIDAR(uint16_t arr[])
 			}
 		}
 	}
-	
 	return arr[2];
-	
 }
 
+/*******Subprogram that converts a float to an unsigned 8-bit integer******/
 uint8_t get8Bit(float in)
 {
 	if (in > 255){
@@ -293,6 +275,7 @@ uint8_t get8Bit(float in)
 		return (uint8_t) in;
 	}
 }
+
 
 uint8_t getMax(uint8_t array[])
 {
@@ -308,7 +291,6 @@ uint8_t getMax(uint8_t array[])
 	
 	return max;
 }
-
 
 int main (void)
 {
@@ -328,7 +310,6 @@ int main (void)
 
 	SPI_MasterInit();
 	
-	
 	while(1) { 
 		
 		answer = AR_read();
@@ -339,31 +320,26 @@ int main (void)
 		total = total + answer - 1996.5;
 		adcCounter = 1;
 		
-		SI_IR1 =  get8Bit(10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
+		SI_IR1 = get8Bit(10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
 		SI_IR2 = get8Bit(10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363));
 		SI_IR3 = get8Bit(10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186));
 		SI_IR4 = get8Bit(10*(-0.00002338455*Distance_4*Distance_4*Distance_4+0.0071*Distance_4*Distance_4 -0.786*Distance_4 + 37.0525));
-		
 		
 		if ((counter>=15)&(counter<=19)){
 			detected = 1;
 		} else {
 			detected = 0;
 		}
-		
-				
+			
 			SI_IR1_array[count_1] = SI_IR1;
 			SI_IR2_array[count_1] = SI_IR2;
 			SI_IR3_array[count_1] = SI_IR3;
 			SI_IR4_array[count_1] = SI_IR4;
-			//SI_LIDAR_array[count_1] = forwardDistance;
-			
 			count_1++;
 			
 			if (count_1 == 5){
 				count_1 = 0;
 			
-		
 				forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
 				forwardDistanceLOW = (forwardDistanceMED & 0x7F);
 				forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
@@ -387,7 +363,6 @@ int main (void)
 					forwardDistanceHIGH = 245;
 					//Test
 				}
-		
 			}
 
 	  if (tot_overflow >= 11)  // NOTE: '>=' is used
@@ -399,39 +374,10 @@ int main (void)
 						 PORTD |= (1<<PORTD7);
 			        TCNT2 = 0;            // reset counter
 			        tot_overflow = 0;     // reset overflow counter
-						PORTD &= ~(1<<PORTD7);
-					
+						PORTD &= ~(1<<PORTD7);	
 		        }
 	        }
 	
-
-		
-		//Receive 90*-rotation start signal
-		//answer = AR_read();
-		//total = total + answer - 1996.5;
-		
-		//When 90* rotation -> send stop signal
-		/*if(total < -18300){ //Left
-		stop;
-		}
-		else if(total > 18300){
-		stop;
-		} */
-		
-		
-		//Receive 180*-rotation start signal
-		//answer = AR_read();
-		//total = total + answer - 1996.5;
-		
-		//When 180* rotation -> send stop signal
-		/*if(total < -36600){ //Left
-		stop;
-		}
-		else if(total > 36600){
-		stop;
-		} */
-
-
 		ADCSRA |= (1<<ADSC);
 	}
 }

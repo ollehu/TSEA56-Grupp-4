@@ -10,52 +10,44 @@
 //TWI
 int SLA_styr_W = 0xCC;
 
-//Search path
+//Position and orientation
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
+uint8_t position[2] = {14,14}; //Where the robot is right now (is updated after command is sent)
+	
+//The internal map
+uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)	
 uint8_t map[28][28]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
 uint8_t path[28][28]; //FF initial value, F1 blocked way, >0 steps from target
-uint8_t position[2] = {14,14};
-uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side
-uint8_t target[3] = {0xFF,0xFF,0xFF}; //Coordinates for target plus value in path
-uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path
-uint8_t currentCommand[3];
-uint8_t doneShortestPathInit = 0;
 
-uint8_t lastCommand[3]; //Last send controller command
+uint16_t straightAhead = 0; //Value straight ahead (Lidar)
+uint16_t oldStraighAhead = 0;
+uint16_t oneModuleAhead = 24; //When can we say that the next module is a wall?
 
-//Controller commands
+uint8_t	targetPathValue = 0;
+uint8_t blockedWayValue = 0xF1;
+uint8_t startPositionValue = 0xF2;
+uint8_t	targetValue = 0xF3;
+uint8_t wallValue = 0xF4;
+uint8_t	initialValue = 0xF5;
+
+uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at an intersection
+
+//Target
+uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
+uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path (optimistic, pessimistic)
+
+//Controller
+uint8_t lastCommand[3]; //Last sent controller command
 uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
 uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
 uint8_t rotate180[3] = {0xFF, 0x02, 0xB4};
 uint8_t falseCommand[3] = {0,0,0};
-
-uint8_t hasFoundWayBack = 0;
-//uint8_t testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,0,1},{0,0,0},{1,0,1},{0,0,1},{1,1,0}};
-//uint8_t testWalls[][3] = {{1,0,1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
-//uint8_t testWalls[][3] = {{0,0,0},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,0},{1,0,1},{1,1,1},{0,0,1},{1,0,1},{1,0,0},{1,0,1},{1,0,0},{0,0,1},{1,0,1},{0,1,0},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{0,1,1},{1,0,0},{1,0,1},{0,1,0},{1,0,1},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,1}};
-uint8_t testWalls[][3] = {{1,0,0},{1,0,1},{1,1,0},{1,0,1},{1,1,0},{1,0,1},{1,1,0},{1,0,1}};
-uint16_t straightAhead = 0;
-uint16_t oldStraighAhead = 0;
-uint16_t oneModuleAhead = 24;
-
-uint8_t s;
-uint8_t t;
-uint8_t u;
-uint8_t v;
-uint8_t w;
-uint8_t r;
-
-uint8_t dist;
-uint8_t wallValue = 0xF4;
-uint8_t	targetValue = 0xF3;
-uint8_t	initialValue = 0xF5;
-uint8_t blockedWayValue = 0xF1;
-uint8_t startPositionValue = 0xF2;
-uint8_t	targetPathValue = 0;
-
-int i = 0;
-int nrOfCoordinates = 0;
+	
+uint8_t forward = 0x01;
+uint8_t oneEighty = 0x02;
+uint8_t right = 0x03;
+uint8_t left = 0x04;
 
 //////////////////////////////////////////////////////////////////////////
 uint8_t keepExploring = 1;
@@ -71,7 +63,7 @@ void btSend(unsigned char data)
 	UDR0 = data;
 }
 
-uint8_t * findTarget() //Search for target
+uint8_t * findTarget() //Sends a controller command depending on value in walls[i], i = 0,1,2
 {
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
 		return rotateRight;
@@ -83,7 +75,6 @@ uint8_t * findTarget() //Search for target
 		return rotate180;
 	}
 }
-
 
 void ruleOutPath() //Rules out map modules for easier calculation of shortest path
 {
@@ -102,7 +93,6 @@ void ruleOutPath() //Rules out map modules for easier calculation of shortest pa
 		break;
 	}
 }
-
 
 uint8_t hasFoundTarget(void) // Checks if target is found NEEDS IMPLEMENTATION!!!
 {
@@ -237,7 +227,8 @@ void readSensors() //In which directions are there walls?
 	
 }
 
-void sendMapCoordinate(uint8_t x, uint8_t y){
+void sendMapCoordinate(uint8_t x, uint8_t y) //Send value in map for coordinates (x,y)
+{
 	btSend(0xFE);
 	btSend(x);
 	btSend(y);
@@ -257,7 +248,6 @@ void searchPathInit() //Fills map and path, sets initial values
 	//Set start value for map
 	map[14][14] = startPositionValue;
 }
-
 
 void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
 {
@@ -289,7 +279,7 @@ void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
 	}
 }
 
-uint8_t deadEndTarget()
+uint8_t deadEndTarget() //Was the target found in the current dead end?
 {
 	switch(direction){
 		case 0:
@@ -323,65 +313,6 @@ uint8_t deadEndTarget()
 	}
 	
 	return 0;
-}
-
-void tempUpdateWalls()
-{
-	switch(direction){
-		case 0:
-			if(walls[0] == 1){
-				map[position[0]+1][position[1]] = wallValue;
-			} 
-			
-			if(walls[1] == 1){
-				map[position[0]][position[1]+1] = wallValue;
-			} 
-			
-			if (walls[2] == 1){
-				map[position[0]-1][position[1]] = wallValue;
-			}
-			break;
-		case 1:
-			if(walls[0] == 1){
-				map[position[0]][position[1]-1] = wallValue;
-			} 
-			
-			if(walls[1] == 1){
-				map[position[0]+1][position[1]] = wallValue;
-			} 
-			
-			if (walls[2] == 1){
-				map[position[0]][position[1]+1] = wallValue;
-			}
-			break;
-		case 2:
-			if(walls[0] == 1){
-				map[position[0]-1][position[1]] = wallValue;
-			} 
-			
-			if(walls[1] == 1){
-				map[position[0]][position[1]-1] = wallValue;
-			} 
-			
-			if (walls[2] == 1){
-				map[position[0]+1][position[1]] = wallValue;
-			}
-			break;
-		case 3:
-			if(walls[0] == 1){
-				map[position[0]][position[1]+1] = wallValue;
-			} 
-			
-			if(walls[1] == 1){
-				map[position[0]-1][position[1]] = wallValue;
-			} 
-			
-			if (walls[2] == 1){
-				map[position[0]][position[1]-1] = wallValue;
-			}
-			
-			break;
-	}
 }
 
 void updateCoordinates() //Updates map, path and position variables
@@ -441,7 +372,6 @@ void updateCoordinates() //Updates map, path and position variables
 		position[0] = position[0] - 1;
 	}
 }
-
 
 uint8_t * findWayBack() //Where to go to get closer to the start
 {
@@ -529,8 +459,7 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 	
 }
 
-
-void explore(void)
+void explore(void) //Decides where to go depending on whether or not the target has been found and updates variables accordingly
 {
 	if (keepExploring == 1){
 	
@@ -539,10 +468,10 @@ void explore(void)
 			//updateTargetFound(); //Only just when the target has been found			
 		} 
 		
-		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04) || (lastCommand[1] == 0x02)) {
+		if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 				//straightAhead = sensorData[10]*256 + sensorData[12];
 
-			lastCommand[1] = 0x01;
+			lastCommand[1] = forward;
 			
 			Master(3,SLA_styr_W,lastCommand);
 			for (int k = 0; k < 3; k++)	{
@@ -615,7 +544,7 @@ void explore(void)
 		}
 		
 		
-		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04) || (lastCommand[1] == 0x02)) {
+		if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 			newDirection(lastCommand[1],lastCommand[2]);
 			uint8_t deadEnd = deadEndTarget();
 			if((lastCommand[2] == 0xB4) && deadEnd == 0){

@@ -21,7 +21,7 @@
 /*                            CONTROLLER                                */
 /************************************************************************/
 uint8_t autonomousMode = 1;
-volatile uint8_t lastControlCommand = forward;
+volatile uint8_t lastControlCommand = stop;
 
 float P = 0.45;
 float D = 1.2;
@@ -39,7 +39,7 @@ int16_t forwardSensor;
 int16_t oldForwardSensor;
 
 int8_t angularVelocity;
-uint8_t zeroAngVel = 124;
+
 
 int16_t accumulatedAngle;
 int16_t preferredAccumulatedAngle;
@@ -55,14 +55,14 @@ uint8_t debugCount = 0;
 /************************************************************************/
 /*                              HEADER                                  */
 /************************************************************************/
-void initInterrupt();
 void updateSensorData(uint8_t sensorIndex, uint8_t data);
 void respondToSensorData();
 void respondToControlData(uint8_t command, uint8_t value);
+int16_t convertAngle(int8_t value);
 void respondToSettingsData(uint8_t identifier, uint8_t value);
 void autonomousForward();
 void autonomousRotate();
-int16_t convertAngle(int8_t value);
+void initInterrupt();
 void callMainInterrupt(void);
 
 /************************************************************************/
@@ -204,7 +204,7 @@ void respondToSensorData()
 	if (oldForwardSensor == 0){
 		oldForwardSensor = forwardSensor;
 	}
-		
+
 	//Gyro
 	if (lastReceivedData[6] >= 124){
 		angularVelocity = lastReceivedData[6] - zeroAngVel;
@@ -308,7 +308,7 @@ void respondToControlData(uint8_t command, uint8_t value)
 				break;
 			case commandReverse:
 				lastControlCommand = rotation;
-				if (sideSensors[0] > sideSensors[1]){
+				if (sideSensors[frontRightIndex] > sideSensors[frontLeftIndex]){
 					preferredAccumulatedAngle = convertAngle(2);
 				} else {
 					preferredAccumulatedAngle = convertAngle(-2);
@@ -325,7 +325,6 @@ void respondToControlData(uint8_t command, uint8_t value)
 				preferredAccumulatedAngle = convertAngle(-1);
 				accumulatedAngle = 0;
 				break;
-
 			case commandStop:
 				lastControlCommand = stop;
 				break;
@@ -341,8 +340,8 @@ void respondToControlData(uint8_t command, uint8_t value)
 
 	value = -1 : Rotate 90 left
 			 1 : Rotate 90 right
-			-2 : Rotate 180 right
-			 2 : Rotate 180 left
+			-2 : Rotate 180 left
+			 2 : Rotate 180 right
 																		*/
 /************************************************************************/
 int16_t convertAngle(int8_t value)
@@ -402,8 +401,8 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 	both walls are found update the preferred distance 
 	(preferredDistance) to nearby walls.
 	
-	Call for new control command [callMainInterrupt()] each module 
-	(40 cm) or when forward sensor detect a wall nearby.
+	Call main module for new control command (callMainInterrupt) each 
+	module (40 cm) or when forward sensor detects a wall ahead.
 	
 	Regulate by adding or subtracting speed from preferredSpeed
 	with respect to 
@@ -414,41 +413,53 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 /************************************************************************/
 void autonomousForward()
 {
-	uint8_t frontIndex = 10;
-	uint8_t backIndex = 0;
+	uint8_t frontIndex = noWallsIndex;
+	uint8_t backIndex;
 	
-	if (((oldForwardSensor - forwardSensor > 30) && (forwardSensor > 35)) || (forwardSensor < preferredForwardDistance)){
+	if (((oldForwardSensor - forwardSensor > moduleDepth) && 
+		 (forwardSensor > (moduleDepth + 5))) || 
+		 (forwardSensor < minDistanceForward)){
+			 
 		//callMainInterrupt();
 		lastControlCommand = stop;
 		stopWheels();
 	}
 	
-	// adjust wall index
-	if ((sideSensors[1] != 245) && (sideSensors[3] != 245) ){
-		frontIndex = 1;
-		backIndex = 3;
-	} else if ((sideSensors[0] != 245) && (sideSensors[2] != 245)){
-		frontIndex = 0;
-		backIndex = 2;
+	if ((sideSensors[frontLeftIndex] != maxDistance) && 
+		(sideSensors[rearLeftIndex] != maxDistance) ){
+			
+		frontIndex = frontLeftIndex;
+		backIndex = rearLeftIndex;
+	} else if ((sideSensors[frontRightIndex] != maxDistance) && 
+			   (sideSensors[rearRightIndex] != maxDistance)){
+				   
+		frontIndex = frontRightIndex;
+		backIndex = rearRightIndex;
 	}
 	
-	if (frontIndex == 10){
-		// no walls available
+	if (frontIndex == noWallsIndex){
 		rightWheelPair(preferredSpeed, 1);
 		leftWheelPair(preferredSpeed, 1);
-		
 	} else {
 	
 		// if both walls available, adjust preferred distance
-		if (sideSensors[1] != 245 && sideSensors[2] != 245){
-			preferredDistance = (sideSensors[0] + sideSensors[1] + sideSensors[2] + sideSensors[3])/4;
+		if (sideSensors[frontRightIndex] != maxDistance && 
+			sideSensors[frontLeftIndex] != maxDistance  &&
+			sideSensors[rearRightIndex] != maxDistance &&
+			sideSensors[rearLeftIndex] != maxDistance ){
+			
+			preferredDistance = (sideSensors[frontRightIndex] + 
+								 sideSensors[frontLeftIndex]  + 
+								 sideSensors[rearRightIndex]  + 
+								 sideSensors[rearLeftIndex])/4;
 		}
 	
-		// controller
-		uint8_t distance = (sideSensors[frontIndex] + sideSensors[backIndex])/2;
+		uint8_t distance = (sideSensors[frontIndex] + 
+							sideSensors[backIndex])/2;
 	
 		float p_out = P * (distance - preferredDistance);
-		float d_out = D * (sideSensors[frontIndex] - sideSensors[backIndex]);
+		float d_out = D * (sideSensors[frontIndex] - 
+						   sideSensors[backIndex]);
 
 		int16_t y_out = K * (p_out + d_out);
 
@@ -458,9 +469,9 @@ void autonomousForward()
 	
 		if(y_out < 0) {
 		
-			if (preferredSpeed - y_out > 100){
-				rightWheelPair(100 + y_out, 1);
-				leftWheelPair(100, 1);
+			if (preferredSpeed - y_out > maxSpeed){
+				rightWheelPair(maxSpeed + y_out, 1);
+				leftWheelPair(maxSpeed, 1);
 			} else {
 				rightWheelPair(preferredSpeed + y_out/2, 1);
 				leftWheelPair(preferredSpeed - y_out/2, 1);
@@ -468,9 +479,9 @@ void autonomousForward()
 	
 		} else {
 		
-			if (preferredSpeed + y_out > 100){
-				rightWheelPair(100, 1);
-				leftWheelPair(100 - y_out, 1);
+			if (preferredSpeed + y_out > maxSpeed){
+				rightWheelPair(maxSpeed, 1);
+				leftWheelPair(maxSpeed - y_out, 1);
 			} else {
 				rightWheelPair(preferredSpeed + y_out/2, 1);
 				leftWheelPair(preferredSpeed - y_out/2, 1);
@@ -524,9 +535,7 @@ void initInterrupt()
 /************************************************************************/
 void callMainInterrupt(void)
 {
-	//lastControlCommand = forward;
 	PORTB |= (1<<PORTB4);
-	
 	PORTB &= ~(1<<PORTB4);
 }
 
@@ -542,23 +551,21 @@ int main(void)
 	char bottomRowMessage[16] = "";
 	char topRowMessage[16] = "";
 	
-	//Styrmodul = 0xCC
-	TWISetup(0xCC);
+	TWISetup(mySlaveAdress);
 	initPWM();
 	initLCD();
 	initInterrupt();
-	sei();
-	sprintf(bottomRowMessage, "%d %d %d", 10, 20, 200);
-	lcdWriteBottomRow(bottomRowMessage);
 	
+	sei();
+
 	autonomousMode = 1;
 	while(1)
 	{
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "CC:%d S:%u", lastControlCommand, preferredSpeed);
-			lcdWriteTopRow(topRowMessage);
-			sprintf(bottomRowMessage, "L:%u R:%u A:%d", sideSensors[3], sideSensors[2], accumulatedAngle);
+			//sprintf(topRowMessage, "CC:%d S:%u", lastControlCommand, preferredSpeed);
+			lcdWriteTopRow("-- Forward: --");
+			sprintf(bottomRowMessage, "%u", forwardSensor);
 			lcdWriteBottomRow(bottomRowMessage);
 			madeChange = 0;
 		} 
