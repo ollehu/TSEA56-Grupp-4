@@ -40,8 +40,7 @@ implements 	ChangeListener {
 	private BasicArrowButton rightArrowKeyButton;
 
 	private JButton clearMapButton;
-	private JButton saveLogButton;
-	private JButton commentLogButton;
+	
 	private JButton selectCOMPortButton;
 
 	private JLabel autonomousModeLabel;
@@ -70,29 +69,6 @@ implements 	ChangeListener {
 		constraints.gridy = 0;
 		constraints.anchor = GridBagConstraints.PAGE_START;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-
-		// add clearMapButton
-		clearMapButton = new JButton("Clear map");
-		clearMapButton.addActionListener(new ClearMapListener());
-		add(clearMapButton, constraints);
-		
-		// add saveLogButton
-		constraints.gridy++;
-		saveLogButton = new JButton("Save log");
-		saveLogButton.addActionListener(new SaveLogListener());
-		add(saveLogButton, constraints);
-
-		// add commentLogButton
-		constraints.gridy++;
-		commentLogButton = new JButton("Comment log");
-		commentLogButton.addActionListener(new CommentLogListener());
-		add(commentLogButton, constraints);
-
-		// add selectCOMPortButton
-		constraints.gridy++;
-		selectCOMPortButton = new JButton("Select COM port");
-		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
-		add(selectCOMPortButton, constraints);
 
 		// create labels 
 		autonomousModeLabel = new JLabel("Control: off");
@@ -189,79 +165,5 @@ implements 	ChangeListener {
 			clawStatusLabel.setText("Claw: closed");
 			clawStatusLabel.setForeground(Colors.FALSE_COLOR);
 		}
-	}
-
-	private class ClearMapListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			animator.getMapPanel().clearMap();
-		}
-		
-	}
-	
-	private class SaveLogListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String comment = JOptionPane.showInputDialog("Write a log comment");
-
-			animator.getHandler().getLogWriter().closeLog(comment, true);
-		}
-
-	}
-
-	private class CommentLogListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String comment = JOptionPane.showInputDialog("Write a log comment");
-
-			animator.getHandler().getLogWriter().appendToLog(comment);
-		}
-
-	}
-	
-	private class SelectCOMPortListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-
-			String osName = System.getProperty("os.name");
-			String[] portNames = {"port 1", "port 2", "port 3"};
-			String selectedPort = "";
-
-			// get port names
-			if(osName.contains("Windows")){
-				portNames = SerialPortList.getPortNames();
-			} else if(osName.contains("Mac")) {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-			} else {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm)[0-9]{1,3}"));
-			}
-
-			if(portNames.length == 0) {
-				JOptionPane.showMessageDialog(animator.getFrame(),
-						"No ports available!",
-						"Port error",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
-						"Select COM port", 
-						"Select COM port",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						portNames,
-						portNames[0]);
-				
-				if(selectedPort != null) {
-					handler.connectToSerialPort(selectedPort);
-				}
-
-			}
-			
-		}
-
 	}
 }

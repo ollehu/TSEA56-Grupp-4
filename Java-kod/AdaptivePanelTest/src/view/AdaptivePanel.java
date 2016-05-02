@@ -11,17 +11,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JPanel;
 
-public class Map extends JPanel{
+public class AdaptivePanel extends JPanel{
 
-	private Tile[][] mapTiles;
-	private ArrayList<Tile> exploredTiles;
+	private AdaptiveElement[][] adaptiveElements;
+	private ArrayList<AdaptiveElement> exploredElements;
 	private GridBagConstraints constraints;
 	
 	public static final int X_MAX = 29;
 	public static final int Y_MAX = 29;
 	
-	public static final int WIDTH = 400;
-	public static final int HEIGHT = 400;
+	public static final int WIDTH = 600;
+	public static final int HEIGHT = 600;
 	
 	private int exploreCounter = 0;
 	private int currentX = 15;
@@ -33,7 +33,7 @@ public class Map extends JPanel{
 	private int eastMax = 15;
 	
 	
-	public Map() {
+	public AdaptivePanel() {
 		setLayout(new GridBagLayout());
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
@@ -45,33 +45,35 @@ public class Map extends JPanel{
 		constraints.gridy = 0;
 		constraints.fill = GridBagConstraints.BOTH;
 		
-		mapTiles = new Tile[X_MAX][Y_MAX];
-		exploredTiles = new ArrayList<>();
+		adaptiveElements = new AdaptiveElement[X_MAX][Y_MAX];
+		exploredElements = new ArrayList<>();
 		for(int x = 0; x < X_MAX; x++) {
 			for(int y = 0; y < Y_MAX; y++) {
 				constraints.gridx = x;
 				constraints.gridy = y;
 				
-				mapTiles[x][y] = new Tile();
-				add(mapTiles[x][y], constraints);
+				adaptiveElements[x][y] = new AdaptiveElement();
+				add(adaptiveElements[x][y], constraints);
 			}
 		}
 	}
 	
-	public void clear() {
-		for(Tile tile: exploredTiles) {
-			tile.clear();
+	
+	public void exploreRandom(){
+		// get next coordinate
+		int nextX = currentX + ThreadLocalRandom.current().nextInt(-1,1);
+		int nextY = currentY + ThreadLocalRandom.current().nextInt(-1,1);
+		
+		while(adaptiveElements[nextX][nextY].isExplored()){
+			nextX = currentX + ThreadLocalRandom.current().nextInt(-1,1);
+			nextY = currentY + ThreadLocalRandom.current().nextInt(-1,1);
 		}
 		
-		exploredTiles = new ArrayList<>();
-	}
-	
-	public void update(int nextX, int nextY, int value){
 		// explore element
 		currentX = nextX;
 		currentY = nextY;
-		mapTiles[nextX][nextY].explore(exploreCounter++);
-		exploredTiles.add(mapTiles[nextX][nextY]);
+		adaptiveElements[nextX][nextY].explore(exploreCounter++);
+		exploredElements.add(adaptiveElements[nextX][nextY]);
 		
 		// change boundaries if needed
 		if(currentX < westMax) {
@@ -89,10 +91,8 @@ public class Map extends JPanel{
 		int nextWidth = WIDTH / (eastMax - westMax + 1);
 		int nextHeight = HEIGHT / (northMax - southMax + 1);
 		
-		int nextDimension = Integer.min(nextWidth, nextHeight);
-		
-		for(Tile element : exploredTiles) {
-			element.setDimension(nextDimension, nextDimension);
+		for(AdaptiveElement element : exploredElements) {
+			element.setDimension(nextWidth, nextHeight);
 		}
 	}
 	

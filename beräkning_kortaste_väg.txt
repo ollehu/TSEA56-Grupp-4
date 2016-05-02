@@ -1,3 +1,0 @@
-- Roboten ska hitta sin väg tillbaka till start 
-- Beräkna kortaste väg
-
