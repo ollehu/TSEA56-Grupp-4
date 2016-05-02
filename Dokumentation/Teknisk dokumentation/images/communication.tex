@@ -1,0 +1,75 @@
+\documentclass[border=20pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{amssymb}
+\usetikzlibrary{shapes,arrows}
+
+\begin{document}
+	\begin{tikzpicture}[scale=1]
+		
+		\tikzset{every node/.style={thick, draw=black, align=center, minimum height=40pt, text width=100pt, minimum width=100pt}}
+		\node(datormodul) {Datormodul};
+		\node[right=10pt of datormodul,minimum height=20pt, minimum width=10pt,text width=10pt] (bt1) {\includegraphics{bluetooth}};
+		
+		\node[right=40pt of bt1,minimum height=20pt, minimum width=10pt,text width=10pt] (bt2) {\includegraphics{bluetooth}};
+		
+		\node[right=10pt of bt2] 			(huvudmodul) 	{Huvudmodul};
+		\node[below=-10pt of huvudmodul,draw=none] (master) {\textit{master}};
+		\node[right=10pt of huvudmodul] 		(sensormodul) 	{Sensormodul};
+		\node[below=-10pt of sensormodul,draw=none] (slave1) {\textit{slave}};
+		\node[right=10pt of sensormodul] 	(styrmodul) 		{Styrmodul};
+		\node[below=-10pt of styrmodul,draw=none] (slave2) {\textit{slave}};
+		
+		\coordinate (sclStart) 	at ($(huvudmodul.north west) + (0,20pt)$);
+		\coordinate (sclEnd)		at ($(styrmodul.north east)  + (0,20pt)$);
+		
+		\coordinate (sdaStart)  at ($(sclStart) + (0,20pt)$);
+		\coordinate (sdaEnd)		at ($(sclEnd)	+ (0,20pt)$);
+		
+		\coordinate (vddStart)  at ($(sdaStart) + (0,40pt)$);
+		\coordinate (vddEnd)		at ($(sdaEnd)	+ (0,40pt)$);
+		
+		\draw[thick] (sclStart) -- (sclEnd) node [right,draw=none,text width=0,minimum width=0] {SCL};
+		\draw[thick] (sdaStart) -- (sdaEnd) node [right,draw=none,text width=0,minimum width=0] {SDA};
+		\draw[thick] (vddStart) -- (vddEnd) node [right,draw=none,text width=0,minimum width=0] {$V_{dd}$};
+		
+		\draw[thick] (datormodul.east) -- (bt1.west);
+		
+		\draw[thick, ->,line join=round,decorate, decoration={
+    												snake,
+    												segment length=5,
+    												amplitude=1,
+    												post=lineto,
+    												post length=1pt}] 
+    		($(bt1.east) + (5pt,5pt)$) -- ($(bt2.west) + (-5pt,5pt)$);
+    		
+    	\draw[thick, ->,line join=round,decorate, decoration={
+    												snake,
+    												segment length=5,
+    												amplitude=1,
+    												post=lineto,
+    												post length=1pt}] 
+    		 ($(bt2.west) + (-5pt,-5pt)$) -- ($(bt1.east) + (5pt,-5pt)$);
+    		 
+    	\draw[thick] (bt2.east) -- (huvudmodul.west);
+    	
+    	\draw[thick,fill=black] ($(huvudmodul.north) + (-10pt,0)$) -- ($(huvudmodul.north) + (-10pt,20pt)$) circle [radius=2pt];
+    	\draw[thick,fill=black] ($(huvudmodul.north) + (+10pt,0)$) -- ($(huvudmodul.north) + (+10pt,40pt)$) circle [radius=2pt];
+    	
+    	\draw[thick,fill=black] ($(sensormodul.north) + (-10pt,0)$) -- ($(sensormodul.north) + (-10pt,20pt)$) circle [radius=2pt];
+    	\draw[thick,fill=black] ($(sensormodul.north) + (+10pt,0)$) -- ($(sensormodul.north) + (+10pt,40pt)$) circle [radius=2pt];
+    	
+    	\draw[thick,fill=black] ($(styrmodul.north) + (-10pt,0)$) -- ($(styrmodul.north) + (-10pt,20pt)$) circle [radius=2pt];
+    	\draw[thick,fill=black] ($(styrmodul.north) + (+10pt,0)$) -- ($(styrmodul.north) + (+10pt,40pt)$) circle [radius=2pt];
+    	
+    	\draw[thick,fill=black] ($(sensormodul.north east) + (-5pt,20pt)$) circle [radius=2pt] -- ($(sensormodul.north east) + (-5pt,80pt)$) circle [radius=2pt];
+    	\draw[thick,fill=black] ($(styrmodul.north west) + (5pt,40pt)$) circle [radius=2pt] -- ($(styrmodul.north west) + (5pt,80pt)$) circle [radius=2pt];
+    	\draw[thick,draw=black,fill=white] ($(styrmodul.north west) + (2pt,50pt)$) rectangle ($(styrmodul.north west) + (8pt,70pt)$);
+		\draw[thick,draw=black,fill=white] ($(sensormodul.north east) + (-8pt,50pt)$) rectangle ($(sensormodul.north east) + (-2pt,70pt)$) node [below left=-10pt and 20pt,draw=none,minimum width=0, text width = 0pt] {$R_p$};
+		
+		\draw[thick, ->] ($(sensormodul.south) + (+40pt,0)$) -- ($(sensormodul.south) + (40pt,-30pt)$) -- ($(huvudmodul.south) + (40pt,-30pt)$) -- ($(huvudmodul.south) + (40pt,0)$);
+		\draw[thick, ->] ($(styrmodul.south) + (+40pt,0)$) -- ($(styrmodul.south) + (40pt,-40pt)$) -- node [midway,below,minimum height=20pt, draw=none] {Avbrott}($(huvudmodul.south) + (30pt,-40pt)$) -- ($(huvudmodul.south) + (30pt,0)$);
+	\end{tikzpicture}
+\end{document}
