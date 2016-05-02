@@ -71,8 +71,8 @@ uint8_t answer;
 
 int firstRun = 0;
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 void SPI_MasterInit(void);
 void initTimer(void);
 void initADC(void);
@@ -80,10 +80,10 @@ uint8_t getMedianIR(uint8_t arr[]);
 uint16_t getMedianLIDAR(uint16_t arr[]);
 uint8_t get8Bit(float in);
 uint8_t adcCounter;
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
-/***************I2C-interrupt******************/
+/********************************I2C-interrupt*****************************/
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	//PORTA = (0<<PORTA0);
@@ -130,7 +130,7 @@ ISR(TWI_vect){
 	}
 }
 
-/**********************Lidar interrupt******************/ 
+/*****************************Lidar interrupt******************************/ 
 ISR(TIMER1_CAPT_vect){
 	
 	if (TCCR1B & (1<<ICES1)){
@@ -161,7 +161,7 @@ ISR(TIMER1_CAPT_vect){
 	}
 }
 
-/*********************IR-detector interrupt****************/
+/****************************IR-detector interrupt*************************/
 ISR (INT0_vect)
 {
 	if (firstRun <= 1){
@@ -183,20 +183,20 @@ ISR (INT0_vect)
 	}
 }
 
-/**********************counter, IR-detector*****************/
+/*************************Counter, IR-detector*****************************/
 ISR (TIMER0_COMPA_vect)
 {
 	counter = counter + 1;
 }
 
-/******************counter that eventually will invoke main module**********/
+/*************Counter that eventually will invoke main module**************/
 ISR(TIMER2_OVF_vect)
 {
 	// keep a track of number of overflows
 	tot_overflow++;
 }
 
-/****************IR-sensor interrupt****************/
+/*****************************IR-sensor interrupt**************************/
 ISR(ADC_vect){ //IR-SENSOR
 	CLKPR = 0x06;
 	
@@ -220,7 +220,7 @@ ISR(ADC_vect){ //IR-SENSOR
 	}
 }
 
-/**************Subprogram that will pick the medium value of five from the IR-sensors******************/
+/**Subprogram that will pick the medium value of five from the IR-sensors**/
 uint8_t getMedianIR(uint8_t arr[])
 {
 		uint8_t i, j, swap;
@@ -246,7 +246,7 @@ uint8_t getMedianIR(uint8_t arr[])
 		return arr[2];
 }
 
-/**************Subprogram that will pick the medium value of five from the Lidar-sensor******************/
+/*Subprogram that will pick the medium value of five from the Lidar-sensor*/
 uint16_t getMedianLIDAR(uint16_t arr[])
 {
 	uint16_t i, j, swap;
@@ -266,7 +266,7 @@ uint16_t getMedianLIDAR(uint16_t arr[])
 	return arr[2];
 }
 
-/**********Subprogram that converts a float to an unsigned 8-bit integer*********/
+/*******Subprogram that converts a float to an unsigned 8-bit integer******/
 uint8_t get8Bit(float in)
 {
 	if (in > 255){
