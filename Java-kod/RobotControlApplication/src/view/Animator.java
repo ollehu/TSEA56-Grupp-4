@@ -169,6 +169,8 @@ public class Animator {
 		constraints.fill = GridBagConstraints.NONE;
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		frame.add(robotControlPanel, constraints);
+		
+		setDebugMode(false);
 	}
 	
 	public void showFrame() {
@@ -186,11 +188,7 @@ public class Animator {
 			handler.closeSerialPort();
 			
 			// delete or close log
-			if(comment.equals("")) {
-				 handler.getLogWriter().deleteLog();
-			} else {
-				handler.getLogWriter().closeLog(comment, false);
-			}
+			handler.getLogWriter().exit(comment);
 			
 			System.exit(0);
 		} 	
@@ -228,9 +226,7 @@ public class Animator {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String comment = JOptionPane.showInputDialog("Write a log comment");
-
-			handler.getLogWriter().closeLog(comment, true);
+			handler.getLogWriter().closeLog(LogWriter.SAVE);
 		}
 
 	}
@@ -300,6 +296,7 @@ public class Animator {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// send debug mode to robot
 			int value = 0;
 			if(debugModeAction.isSelected()) {
 				value = 1;
@@ -310,7 +307,17 @@ public class Animator {
 			} catch (SerialPortException e1) {
 				e1.printStackTrace();
 			}
+			
+			// adjust window
+			setDebugMode(debugModeAction.isSelected());
 		}
+	}
+	
+	public void setDebugMode(boolean state) {
+		saveLogAction.setVisible(state);
+		commentLogAction.setVisible(state);
 		
+		tablePanel.setDebugMode(debugModeAction.isSelected());
+		robotControlPanel.setDebugMode(debugModeAction.isSelected());
 	}
 }

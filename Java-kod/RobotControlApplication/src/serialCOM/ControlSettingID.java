@@ -24,4 +24,10 @@ public class ControlSettingID {
 	 * Debug mode on = 1, off = 0
 	 */
 	public static final int DEBUG_MODE = 7;
+	
+	/**
+	 * Ping to tell robot that the computer has connected
+	 */
+	public static final int PING = 8;
 }
+

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import control.Handler;
 import jssc.SerialPort;
@@ -53,6 +54,8 @@ public class SerialPortCOM {
 		// add port listener
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 
+		// ping robot
+		sendToRobot(DataID.CONTROL_SETTING, ControlSettingID.PING, 1);
 	}
 
 	/**
@@ -142,7 +145,7 @@ public class SerialPortCOM {
 					
 					if(communicationsID == DataID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
-						switchMode(receivedData);
+						updateControlSettings(receivedData);
 					} else if(communicationsID == DataID.SENSOR_DATA) {
 						//TODO handle sensor array
 						updateSensorValues(receivedData);
@@ -166,23 +169,33 @@ public class SerialPortCOM {
 
 	}
 
-	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
-		boolean isAutonomousModeOn = Byte.toUnsignedInt(receivedData[1]) == 1;
+	private void updateControlSettings(byte[] receivedData) throws CommunicationFormatException{
+		int controlSettingID = Byte.toUnsignedInt(receivedData[0]);
+		int value = Byte.toUnsignedInt(receivedData[1]);
 		
-		handler.setAutomousMode(isAutonomousModeOn);
-		if(isAutonomousModeOn) {
-			handler.getLogWriter().appendToLog("Autonomous mode on");
-			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
-					"Autonomous mode: on!",
-					"Autonomous mode",
-					JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			handler.getLogWriter().appendToLog("Autonomous mode off");
-			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
-					"Autonomous mode: off!",
-					"Autonomous mode",
-					JOptionPane.INFORMATION_MESSAGE);
+		if(controlSettingID == ControlSettingID.AUTONOMOUS_MODE) {
+			boolean isAutonomousModeOn = value == 1;
+			
+			handler.setAutomousMode(isAutonomousModeOn);
+			if(isAutonomousModeOn) {
+				handler.getLogWriter().appendToLog("Autonomous mode on");
+				JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+						"Autonomous mode: on!",
+						"Autonomous mode",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				handler.getLogWriter().appendToLog("Autonomous mode off");
+				JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+						"Autonomous mode: off!",
+						"Autonomous mode",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		} else if (controlSettingID == ControlSettingID.DEBUG_MODE) {
+			boolean isDebugModeOn = value == 1;
+			
+			handler.getAnimator().setDebugMode(isDebugModeOn);
 		}
+		
 		
 		
 	}
