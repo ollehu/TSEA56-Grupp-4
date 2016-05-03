@@ -6,23 +6,35 @@ import javax.swing.JOptionPane;
 
 import jssc.SerialPortException;
 import serialCOM.ControlID;
-import serialCOM.DataID;
+import serialCOM.CommunicationID;
 import serialCOM.SerialPortCOM;
 import view.*;
 
 /**
- * Handles the animator, the key listener and the serial port
+ * Handles the animator, the key listener, the serial port and the log writer
  * @author isak
  *
  */
 public class Handler {
 
+	/**
+	 * Handles the GUI
+	 */
 	private Animator animator;
 
+	/**
+	 * Handles key events
+	 */
 	private MyKeyListener myKeyListener;
 
+	/**
+	 * Handles serial communication with the robot
+	 */
 	private SerialPortCOM serialPortCOM;
 	
+	/**
+	 * Handles logs
+	 */
 	private LogWriter logWriter;
 
 	private int lastSentControlCommand;
@@ -56,8 +68,6 @@ public class Handler {
 					JOptionPane.INFORMATION_MESSAGE);
 		} catch (SerialPortException e) {
 			String toolTip;
-			
-			e.printStackTrace();
 			
 			if(e.getExceptionType().equals("Port busy")) {
 				toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
@@ -112,7 +122,7 @@ public class Handler {
 		try {
 			if(controlCommand != lastSentControlCommand) {
 
-				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, controlCommand, getSpeed());
+				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, controlCommand, getSpeed());
 				lastSentControlCommand = controlCommand;
 			}
 		} catch (SerialPortException e) {
@@ -120,14 +130,17 @@ public class Handler {
 		}
 	}
 
+	/**
+	 * Toggles internal variables related to the robot's claw
+	 */
 	public void toggleClaw() {
 		isClawOpen = !isClawOpen;
 		
 		try {
 			if(isClawOpen) {
-				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
+				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
 			} else {
-				serialPortCOM.sendToRobot(DataID.CONTROL_DATA, ControlID.CLAW_SETTING, 0);
+				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW_SETTING, 0);
 			}
 
 
@@ -161,5 +174,7 @@ public class Handler {
 		return logWriter;
 	}
 
-
+	public void setDebugMode(boolean state) {
+		
+	}
 }

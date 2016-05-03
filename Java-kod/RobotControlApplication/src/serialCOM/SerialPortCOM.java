@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import control.Handler;
 import jssc.SerialPort;
@@ -53,6 +54,8 @@ public class SerialPortCOM {
 		// add port listener
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 
+		// ping robot
+		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
 	}
 
 	/**
@@ -118,13 +121,13 @@ public class SerialPortCOM {
 					// get byte string length
 					int byteStringLength = 100;
 					
-					if(communicationsID == DataID.CONTROL_SETTING) {
+					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						byteStringLength = 2;
-					} else if(communicationsID == DataID.SENSOR_DATA) {
+					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
 						byteStringLength = 14;
-					} else if(communicationsID == DataID.MAP_DATA) {
+					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						byteStringLength = 3;
-					} else if(communicationsID == DataID.CONTROL_DATA) {
+					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
 						byteStringLength = 2;
 					} else {
 						serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
@@ -140,16 +143,16 @@ public class SerialPortCOM {
 						return;
 					}
 					
-					if(communicationsID == DataID.CONTROL_SETTING) {
+					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
-						switchMode(receivedData);
-					} else if(communicationsID == DataID.SENSOR_DATA) {
+						updateControlSettings(receivedData);
+					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
 						//TODO handle sensor array
 						updateSensorValues(receivedData);
-					} else if(communicationsID == DataID.MAP_DATA) {
+					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						//TODO handle map data
 						updateMap(receivedData);
-					} else if(communicationsID == DataID.CONTROL_DATA) {
+					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
 						System.out.println("Sensorer: " + handler.getAnimator().getTablePanel().getLatestSensorValues());
 						System.out.println("Styrkommando: " + Byte.toUnsignedInt(receivedData[0]));
 						System.out.println("");
@@ -166,23 +169,33 @@ public class SerialPortCOM {
 
 	}
 
-	private void switchMode(byte[] receivedData) throws CommunicationFormatException{
-		boolean isAutonomousModeOn = Byte.toUnsignedInt(receivedData[1]) == 1;
+	private void updateControlSettings(byte[] receivedData) {
+		int controlSettingID = Byte.toUnsignedInt(receivedData[0]);
+		int value = Byte.toUnsignedInt(receivedData[1]);
 		
-		handler.setAutomousMode(isAutonomousModeOn);
-		if(isAutonomousModeOn) {
-			handler.getLogWriter().appendToLog("Autonomous mode on");
-			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
-					"Autonomous mode: on!",
-					"Autonomous mode",
-					JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			handler.getLogWriter().appendToLog("Autonomous mode off");
-			JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
-					"Autonomous mode: off!",
-					"Autonomous mode",
-					JOptionPane.INFORMATION_MESSAGE);
+		if(controlSettingID == ControlSettingID.AUTONOMOUS_MODE) {
+			boolean isAutonomousModeOn = value == 1;
+			
+			handler.setAutomousMode(isAutonomousModeOn);
+			if(isAutonomousModeOn) {
+				handler.getLogWriter().appendToLog("Autonomous mode on");
+				JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+						"Autonomous mode: on!",
+						"Autonomous mode",
+						JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				handler.getLogWriter().appendToLog("Autonomous mode off");
+				JOptionPane.showMessageDialog(handler.getAnimator().getFrame(),
+						"Autonomous mode: off!",
+						"Autonomous mode",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		} else if (controlSettingID == ControlSettingID.DEBUG_MODE) {
+			boolean isDebugModeOn = value == 1;
+			
+			handler.getAnimator().setDebugMode(isDebugModeOn);
 		}
+		
 		
 		
 	}
@@ -222,8 +235,8 @@ public class SerialPortCOM {
 		int value = Byte.toUnsignedInt(receivedData[2]);
 	
 		// update map
-		handler.getAnimator().getMapPanel().getMap().updateMap(xCoordinate, yCoordinate, value);
-		
+		handler.getAnimator().getMapPanel().getMap().update(xCoordinate, yCoordinate, value);
+		System.out.println("Uppdaterat kartan! X: " + xCoordinate + ", Y: " + yCoordinate + ", value: " + value);
 	}
 
 	public SerialPort getSerialPort() {

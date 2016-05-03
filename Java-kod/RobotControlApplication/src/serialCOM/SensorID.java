@@ -1,5 +1,10 @@
 package serialCOM;
 
+/**
+ * List of all sensor IDs
+ * @author isak
+ *
+ */
 public class SensorID {
 
 	public static final int FRONT_RIGHT_IR = 1;

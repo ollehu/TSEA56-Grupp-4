@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 import jssc.SerialPortException;
 import serialCOM.ControlSettingID;
-import serialCOM.DataID;
+import serialCOM.CommunicationID;
 
 /**
  * Element containing one control coefficient
@@ -44,7 +44,7 @@ public class ControlCoefficientPanel extends JPanel{
 				
 				// send new value to robot and write to log
 				try {
-					animator.getHandler().getSerialPortCOM().sendToRobot(DataID.CONTROL_SETTING, getControlSettingID(), getControlValue());
+					animator.getHandler().getSerialPortCOM().sendToRobot(CommunicationID.CONTROL_SETTING, getControlSettingID(), getControlValue());
 					animator.getHandler().getLogWriter().appendToLog(name + ": " + value);
 				} catch (SerialPortException e1) {
 					e1.printStackTrace();

@@ -7,7 +7,7 @@ import java.awt.event.KeyListener;
 import view.Animator;
 
 /**
- * Handles key presses
+ * Handles key presses. Uses a boolean array to keep track of pressed keys, this enable multiple keypresses and held down keys
  * @author isak
  *
  */
@@ -41,6 +41,9 @@ public class MyKeyListener implements KeyListener{
 		}
 	}
 
+	/**
+	 * Stores keypress if a key is pressed
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if(!isAutonomousModeOn){
@@ -53,6 +56,9 @@ public class MyKeyListener implements KeyListener{
 		}
 	}
 
+	/**
+	 * Deletes key press if a key is released
+	 */
 	@Override
 	public void keyReleased(KeyEvent e) {
 		if(!isAutonomousModeOn) {

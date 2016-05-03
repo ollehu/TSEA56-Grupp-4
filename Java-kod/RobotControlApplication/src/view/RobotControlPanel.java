@@ -19,7 +19,10 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicArrowButton;
 
 import control.Handler;
+import jssc.SerialPortException;
 import jssc.SerialPortList;
+import serialCOM.ControlSettingID;
+import serialCOM.CommunicationID;
 
 /**
  * Panel containing robot controls
@@ -39,10 +42,7 @@ implements 	ChangeListener {
 	private BasicArrowButton leftArrowKeyButton;
 	private BasicArrowButton rightArrowKeyButton;
 
-	private JButton clearMapButton;
-	private JButton saveLogButton;
-	private JButton commentLogButton;
-	private JButton selectCOMPortButton;
+	private JButton nextDecisionButton;
 
 	private JLabel autonomousModeLabel;
 	private JLabel clawStatusLabel;
@@ -70,30 +70,12 @@ implements 	ChangeListener {
 		constraints.gridy = 0;
 		constraints.anchor = GridBagConstraints.PAGE_START;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
-
-		// add clearMapButton
-		clearMapButton = new JButton("Clear map");
-		clearMapButton.addActionListener(new ClearMapListener());
-		add(clearMapButton, constraints);
 		
-		// add saveLogButton
-		constraints.gridy++;
-		saveLogButton = new JButton("Save log");
-		saveLogButton.addActionListener(new SaveLogListener());
-		add(saveLogButton, constraints);
-
-		// add commentLogButton
-		constraints.gridy++;
-		commentLogButton = new JButton("Comment log");
-		commentLogButton.addActionListener(new CommentLogListener());
-		add(commentLogButton, constraints);
-
-		// add selectCOMPortButton
-		constraints.gridy++;
-		selectCOMPortButton = new JButton("Select COM port");
-		selectCOMPortButton.addActionListener(new SelectCOMPortListener());
-		add(selectCOMPortButton, constraints);
-
+		// create next decision button
+		nextDecisionButton = new JButton("Next decision");
+		nextDecisionButton.addActionListener(new NextDecisionListener());
+		add(nextDecisionButton, constraints);
+		
 		// create labels 
 		autonomousModeLabel = new JLabel("Control: off");
 		autonomousModeLabel.setForeground(Colors.FALSE_COLOR);
@@ -190,78 +172,22 @@ implements 	ChangeListener {
 			clawStatusLabel.setForeground(Colors.FALSE_COLOR);
 		}
 	}
-
-	private class ClearMapListener implements ActionListener {
+	
+	public void setDebugMode(boolean state) {
+		nextDecisionButton.setVisible(state);
+	}
+	
+	private class NextDecisionListener implements ActionListener {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			animator.getMapPanel().clearMap();
+			try {
+				handler.getSerialPortCOM().sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.NEXT_DECISION, 1);
+			} catch (SerialPortException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		
-	}
-	
-	private class SaveLogListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String comment = JOptionPane.showInputDialog("Write a log comment");
-
-			animator.getHandler().getLogWriter().closeLog(comment, true);
-		}
-
-	}
-
-	private class CommentLogListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			String comment = JOptionPane.showInputDialog("Write a log comment");
-
-			animator.getHandler().getLogWriter().appendToLog(comment);
-		}
-
-	}
-	
-	private class SelectCOMPortListener implements ActionListener {
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-
-
-			String osName = System.getProperty("os.name");
-			String[] portNames = {"port 1", "port 2", "port 3"};
-			String selectedPort = "";
-
-			// get port names
-			if(osName.contains("Windows")){
-				portNames = SerialPortList.getPortNames();
-			} else if(osName.contains("Mac")) {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("tty."));
-			} else {
-				portNames = SerialPortList.getPortNames("/dev/", Pattern.compile("(ttyS|ttyUSB|ttyACM|ttyAMA|rfcomm)[0-9]{1,3}"));
-			}
-
-			if(portNames.length == 0) {
-				JOptionPane.showMessageDialog(animator.getFrame(),
-						"No ports available!",
-						"Port error",
-						JOptionPane.ERROR_MESSAGE);
-			} else {
-				selectedPort = (String)JOptionPane.showInputDialog(animator.getFrame(),
-						"Select COM port", 
-						"Select COM port",
-						JOptionPane.PLAIN_MESSAGE,
-						null,
-						portNames,
-						portNames[0]);
-				
-				if(selectedPort != null) {
-					handler.connectToSerialPort(selectedPort);
-				}
-
-			}
-			
-		}
-
 	}
 }

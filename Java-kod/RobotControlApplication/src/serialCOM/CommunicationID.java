@@ -1,6 +1,11 @@
 package serialCOM;
 
-public class DataID {
+/**
+ * List of all communcation IDs
+ * @author isak
+ *
+ */
+public class CommunicationID {
 
 	public static final int CONTROL_DATA = 255;
 	
