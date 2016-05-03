@@ -41,8 +41,8 @@ uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t hasFoundWayBack = 0;
 //uint8_t testWalls[][3] = {{1, 0, 1},{0, 1, 0},{1, 1, 0},{1, 0, 1},{1, 0, 1},{1, 0, 0},{0, 1, 1},{1, 1, 1},{0,0,1},{1,0,1},{0,0,0},{1,1,1},{0,0,0},{1,0,1},{0,1,1},{1,0,1},{1,0,0},{1,0,1},{0,0,0},{1,0,1},{0,0,1},{1,1,0}};
-//uint8_t testWalls[][3] = {{1,0,1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
-uint8_t testWalls[][3] = {{0,0,0},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,0},{1,0,1},{1,1,1},{0,0,1},{1,0,1},{1,0,0},{1,0,1},{1,0,0},{0,0,1},{1,0,1},{0,1,0},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{0,1,1},{1,0,0},{1,0,1},{0,1,0},{1,0,1},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,1}};
+uint8_t testWalls[][3] = {{1,0,1},{1,0,1},{0,1,0},{1,0,0},{1,1,1},{0,0,1},{1,0,1},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,0,0},{1,0,1},{1,0,1},{0,0,0},{1,0,1},{0,1,1},{0,0,0},{1,0,1},{1,0,1}};
+//uint8_t testWalls[][3] = {{0,0,0},{1,0,1},{1,1,0},{1,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,0},{1,0,1},{1,1,1},{0,0,1},{1,0,1},{1,0,0},{1,0,1},{1,0,0},{0,0,1},{1,0,1},{0,1,0},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{0,1,1},{1,0,0},{1,0,1},{0,1,0},{1,0,1},{1,0,1},{0,0,1},{1,0,1},{1,0,1},{1,0,1},{1,0,1}};
 uint16_t straightAhead = 0;
 uint16_t oneModuleAhead = 50;
 
@@ -755,91 +755,91 @@ uint8_t deadEndTarget()
 void explore()
 {
 	if(hasFoundTarget() == 1){ 
-			//Update map with the right number and target with the right 
-			updateTargetFound(); //Only just when the target has been found
-			walls[0] = testWalls[i][0];
-			walls[1] = testWalls[i][1];
-			walls[2] = testWalls[i][2];
-			i++;
-			tempUpdateWalls();			
-		} 
+		//Update map with the right number and target with the right 
+		updateTargetFound(); //Only just when the target has been found
+		walls[0] = testWalls[i][0];
+		walls[1] = testWalls[i][1];
+		walls[2] = testWalls[i][2];
+		i++;
+		tempUpdateWalls();			
+	} 
 		
-		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
-			//straightAhead = sensorData[10]*256 + sensorData[12];
+	if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
+		//straightAhead = sensorData[10]*256 + sensorData[12];
 
-			lastCommand[1] = 0x01;
+		lastCommand[1] = 0x01;
 			
+		//Master(3,...,lastCommand);
+		/*for (int k = 0; k < 3; k++)	{
+			btSend(lastCommand[i]);
+		}*/
+	} else if (unexploredPaths()) {
+		
+		if((hasFoundWayBack)){
+			hasFoundWayBack = 0;
+			ruleOutPath();
+		}			
+		
+		//readSensors();
+		walls[0] = testWalls[i][0];
+		walls[1] = testWalls[i][1];
+		walls[2] = testWalls[i][2];
+		i++;
+		tempUpdateWalls();
+		
+		uint8_t * temp;
+		if(hasFoundTarget()){
+			temp = exploreTargetFound();
+		} else {
+			temp = findTarget();
+		}
+		lastCommand[0] = temp[0];
+		lastCommand[1] = temp[1];
+		lastCommand[2] = temp[2];
+		if(lastCommand[1] != 0){
 			//Master(3,...,lastCommand);
 			/*for (int k = 0; k < 3; k++)	{
 				btSend(lastCommand[i]);
 			}*/
-		} else if (unexploredPaths()) {
-		
-			if((hasFoundWayBack)){
-				hasFoundWayBack = 0;
-				ruleOutPath();
-			}			
-		
-			//readSensors();
-			walls[0] = testWalls[i][0];
-			walls[1] = testWalls[i][1];
-			walls[2] = testWalls[i][2];
-			i++;
-			tempUpdateWalls();
-		
-			uint8_t * temp;
-			if(hasFoundTarget()){
-				temp = exploreTargetFound();
-			} else {
-				temp = findTarget();
-			}
-			lastCommand[0] = temp[0];
-			lastCommand[1] = temp[1];
-			lastCommand[2] = temp[2];
-			if(lastCommand[1] != 0){
-				//Master(3,...,lastCommand);
-				/*for (int k = 0; k < 3; k++)	{
-					btSend(lastCommand[i]);
-				}*/
-			}
-		} else {
+		}
+	} else {
 			
-			if((hasFoundWayBack)){
-				hasFoundWayBack = 0;
-				ruleOutPath();
-			}	
+		if((hasFoundWayBack)){
+			hasFoundWayBack = 0;
+			ruleOutPath();
+		}	
 			
-			uint8_t * temp;
+		uint8_t * temp;
 
-			if (hasFoundTarget()){
-				temp = findWayBack();
-			} else {
-				hasFoundWayBack = 1;
-				temp = findWayBack(0x01);
-			}
-			
-			lastCommand[0] = temp[0];
-			lastCommand[1] = temp[1];
-			lastCommand[2] = temp[2];
-			
-			if(lastCommand[1] != 0){
-				//Master(3,...,lastCommand);
-				/*for (int k = 0; k < 3; k++)	{
-					btSend(lastCommand[i]);
-				}*/
-			}
-		}
-		
-		
-		if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
-			newDirection(lastCommand[1],lastCommand[2]);
-			uint8_t deadEnd = deadEndTarget();
-			if((lastCommand[2] == 0xB4) && deadEnd == 0){
-				hasFoundWayBack = 1;
-			}
+		if (hasFoundTarget()){
+			temp = findWayBack();
 		} else {
-			updateCoordinates();
+			hasFoundWayBack = 1;
+			temp = findWayBack(0x01);
 		}
+			
+		lastCommand[0] = temp[0];
+		lastCommand[1] = temp[1];
+		lastCommand[2] = temp[2];
+			
+		if(lastCommand[1] != 0){
+			//Master(3,...,lastCommand);
+			/*for (int k = 0; k < 3; k++)	{
+				btSend(lastCommand[i]);
+			}*/
+		}
+	}
+		
+		
+	if((lastCommand[1] == 0x03) || (lastCommand[1] == 0x04)) {
+		newDirection(lastCommand[1],lastCommand[2]);
+		uint8_t deadEnd = deadEndTarget();
+		if((lastCommand[2] == 0xB4) && deadEnd == 0 && !hasFoundTarget()){
+			hasFoundWayBack = 1;
+		}
+	} else {
+		updateCoordinates();
+	}
 }
 
 uint8_t * chooseDirection()
@@ -1092,6 +1092,11 @@ int main(void)
 		}
 	
 		if (returnStart != 0xFF){
+			if(returnStart == -1){
+				uint8_t temp = 0;
+				while(1);
+			}
+			
 			uint8_t * temp = returnToStart();
 			lastCommand[0] = temp[0];
 			lastCommand[1] = temp[1];
