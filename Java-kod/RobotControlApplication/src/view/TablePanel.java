@@ -28,7 +28,7 @@ public class TablePanel extends JPanel{
 	private String[] sensorUnits = {"mm", "mm", "mm",
 			"mm", "cm", "deg/s"};
 
-	private String[] controlCoefficients = {"P", "D", "K", "Speed"};
+	private String[] controlCoefficients = {"P", "D", "K", "Speed", "90", "180"};
 
 	public TablePanel(Animator animator) {
 		this.animator = animator;

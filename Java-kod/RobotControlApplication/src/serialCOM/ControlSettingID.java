@@ -21,7 +21,7 @@ public class ControlSettingID {
 	public static final int SPEED = 6;
 	
 	/**
-	 * Trigger next control decision (only avaialable in debug mode)
+	 * Trigger next control decision (only available in debug mode)
 	 */
 	public static final int NEXT_DECISION = 6;
 	
@@ -34,5 +34,10 @@ public class ControlSettingID {
 	 * Ping to tell robot that the computer has connected
 	 */
 	public static final int PING = 8;
+	
+	public static final int CONSTANT_90 = 9;
+	
+	public static final int CONSTANT_180 = 10;
+
 }
 

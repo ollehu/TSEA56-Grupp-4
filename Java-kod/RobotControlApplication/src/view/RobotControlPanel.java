@@ -174,7 +174,11 @@ implements 	ChangeListener {
 	}
 	
 	public void setDebugMode(boolean state) {
-		nextDecisionButton.setVisible(state);
+		if(state) {
+			nextDecisionButton.setText("Next decision");
+		} else {
+			nextDecisionButton.setText("Start run");
+		}
 	}
 	
 	private class NextDecisionListener implements ActionListener {

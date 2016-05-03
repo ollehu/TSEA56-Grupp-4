@@ -70,7 +70,7 @@ public class Map extends JPanel{
 		// explore element
 		currentX = nextX;
 		currentY = nextY;
-		mapTiles[nextX][nextY].explore(exploreCounter++);
+		mapTiles[nextX][nextY].explore(value);
 		exploredTiles.add(mapTiles[nextX][nextY]);
 		
 		// change boundaries if needed

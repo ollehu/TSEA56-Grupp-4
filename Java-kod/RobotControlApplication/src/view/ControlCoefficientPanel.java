@@ -73,9 +73,12 @@ public class ControlCoefficientPanel extends JPanel{
 			return ControlSettingID.KONSTANT;
 		} else if(name.equals("Speed")){
 			return ControlSettingID.SPEED;
+		} else if(name.equals("90")){
+			return ControlSettingID.CONSTANT_90;
+		} else if(name.equals("180")){
+			return ControlSettingID.CONSTANT_180;
 		} else {
 			return -1;
-
 		}
 	}
 	
@@ -88,6 +91,10 @@ public class ControlCoefficientPanel extends JPanel{
 			return (int) (value * 10);
 		} else if(name == "Speed"){
 			return (int) value;
+		} else if(name.equals("90")){
+			return (int) (value / 10);
+		} else if(name.equals("180")){
+			return (int) (value / 10);
 		} else {
 			return -1;
 		}
