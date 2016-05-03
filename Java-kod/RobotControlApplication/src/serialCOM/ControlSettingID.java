@@ -1,5 +1,10 @@
 package serialCOM;
 
+/**
+ * List of all control setting IDs
+ * @author isak
+ *
+ */
 public class ControlSettingID {
 
 	/**

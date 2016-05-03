@@ -22,7 +22,7 @@ import control.Handler;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import serialCOM.ControlSettingID;
-import serialCOM.DataID;
+import serialCOM.CommunicationID;
 
 /**
  * Panel containing robot controls
@@ -182,7 +182,7 @@ implements 	ChangeListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			try {
-				handler.getSerialPortCOM().sendToRobot(DataID.CONTROL_SETTING, ControlSettingID.NEXT_DECISION, 1);
+				handler.getSerialPortCOM().sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.NEXT_DECISION, 1);
 			} catch (SerialPortException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

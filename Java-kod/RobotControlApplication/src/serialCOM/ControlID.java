@@ -1,6 +1,10 @@
 package serialCOM;
 
-
+/**
+ * List of all control command IDs
+ * @author isak
+ *
+ */
 public class ControlID {
 
 	public static final int FORWARDS = 1;

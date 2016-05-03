@@ -29,6 +29,9 @@ public class LogWriter {
 		createNewLog();
 	}
 
+	/**
+	 * Creates a new log with a timestamp
+	 */
 	public void createNewLog() {
 		isLogEmpty = true;
 
@@ -67,6 +70,10 @@ public class LogWriter {
 
 	}
 
+	/**
+	 * Appends a string to the log
+	 * @param textToAppend
+	 */
 	public void appendToLog(String textToAppend) {
 		if(lastLog != null) {
 			// get current time
@@ -88,6 +95,10 @@ public class LogWriter {
 		}
 	}
 
+	/**
+	 * Closes the log and creates a new one depending on mode
+	 * @param mode
+	 */
 	public void closeLog(int mode) {
 		if(mode == DEBUG && isLogEmpty) {
 			deleteLog();
@@ -109,6 +120,10 @@ public class LogWriter {
 		}
 	}
 
+	/**
+	 * Closes the log. Called on program exit
+	 * @param comment
+	 */
 	public void exit(String comment) {
 		// delete if comment == ""
 		if(comment.equals("")) {

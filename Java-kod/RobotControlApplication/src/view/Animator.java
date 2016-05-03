@@ -23,7 +23,7 @@ import control.*;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import serialCOM.ControlSettingID;
-import serialCOM.DataID;
+import serialCOM.CommunicationID;
 
 /**
  * Handles the GUI
@@ -32,18 +32,15 @@ import serialCOM.DataID;
  */
 public class Animator {
 	
-	/**
-	 * 
-	 */
 	private Handler handler;
 	
 	/**
-	 * 
+	 * Main frame
 	 */
 	private JFrame frame;
 	
 	/**
-	 * 
+	 * Main frame menu bar
 	 */
 	private JMenuBar menuBar;
 	
@@ -138,12 +135,13 @@ public class Animator {
 		editMenu.addSeparator();
 		editMenu.add(clearMapAction);
 		
-		// create and add content panels
+		// create content panels
 		robotControlPanel = new RobotControlPanel(handler, this);
 		mapPanel = new MapPanel();
 		graphPanel = new GraphPanel(this);
 		tablePanel = new TablePanel(this);
 		
+		// add map panel
 		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
@@ -153,18 +151,21 @@ public class Animator {
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
 		frame.add(mapPanel, constraints);
 		
+		// add table panel
 		constraints.gridx = 1;
 		constraints.fill = GridBagConstraints.VERTICAL;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_END;
 		frame.add(tablePanel, constraints);
 		tablePanel.setAutonomousMode(false);
 		
+		// add graph panel
 		constraints.gridx = 0;
 		constraints.gridy = 1;
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.anchor = GridBagConstraints.LAST_LINE_START;
 		frame.add(graphPanel, constraints);
 		
+		// add robot control panel
 		constraints.gridx = 1;
 		constraints.fill = GridBagConstraints.NONE;
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
@@ -173,11 +174,17 @@ public class Animator {
 		setDebugMode(false);
 	}
 	
+	/**
+	 * Makes main frame visible
+	 */
 	public void showFrame() {
 		frame.pack();
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * Closes serial port and log. Called on program exit
+	 */
 	private void exitProgram() {
 		// write comment to log file
 		String comment = JOptionPane.showInputDialog("Write a log comment");
@@ -222,6 +229,11 @@ public class Animator {
 		return tablePanel;
 	}
 	
+	/**
+	 * Listener related to save log menu item
+	 * @author isak
+	 *
+	 */
 	private class SaveLogListener implements ActionListener {
 
 		@Override
@@ -231,6 +243,11 @@ public class Animator {
 
 	}
 
+	/**
+	 * Listener related to comment log menu item
+	 * @author isak
+	 *
+	 */
 	private class CommentLogListener implements ActionListener {
 
 		@Override
@@ -242,6 +259,11 @@ public class Animator {
 
 	}
 	
+	/**
+	 * Listener related to connect to serial port menu item
+	 * @author isak
+	 *
+	 */
 	private class SelectCOMPortListener implements ActionListener {
 
 		@Override
@@ -282,7 +304,11 @@ public class Animator {
 		}
 	}
 	
-
+	/**
+	 * Listener related to clear map menu item
+	 * @author isak
+	 *
+	 */
 	private class ClearMapListener implements ActionListener {
 
 		@Override
@@ -292,6 +318,11 @@ public class Animator {
 		
 	}
 	
+	/**
+	 * Listener related to debug mode menu item
+	 * @author isak
+	 *
+	 */
 	private class DebugModeListener implements ActionListener {
 
 		@Override
@@ -303,7 +334,7 @@ public class Animator {
 			}
 			
 			try {
-				handler.getSerialPortCOM().sendToRobot(DataID.CONTROL_SETTING, ControlSettingID.DEBUG_MODE, value);
+				handler.getSerialPortCOM().sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.DEBUG_MODE, value);
 			} catch (SerialPortException e1) {
 				e1.printStackTrace();
 			}
@@ -313,6 +344,10 @@ public class Animator {
 		}
 	}
 	
+	/**
+	 * Sets debug mode for all animator components
+	 * @param state on = true, off = false
+	 */
 	public void setDebugMode(boolean state) {
 		saveLogAction.setVisible(state);
 		commentLogAction.setVisible(state);

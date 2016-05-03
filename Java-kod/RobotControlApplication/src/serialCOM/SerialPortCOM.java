@@ -55,7 +55,7 @@ public class SerialPortCOM {
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 
 		// ping robot
-		sendToRobot(DataID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
 	}
 
 	/**
@@ -121,13 +121,13 @@ public class SerialPortCOM {
 					// get byte string length
 					int byteStringLength = 100;
 					
-					if(communicationsID == DataID.CONTROL_SETTING) {
+					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						byteStringLength = 2;
-					} else if(communicationsID == DataID.SENSOR_DATA) {
+					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
 						byteStringLength = 14;
-					} else if(communicationsID == DataID.MAP_DATA) {
+					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						byteStringLength = 3;
-					} else if(communicationsID == DataID.CONTROL_DATA) {
+					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
 						byteStringLength = 2;
 					} else {
 						serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
@@ -143,16 +143,16 @@ public class SerialPortCOM {
 						return;
 					}
 					
-					if(communicationsID == DataID.CONTROL_SETTING) {
+					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						//TODO handle switch from auto/man
 						updateControlSettings(receivedData);
-					} else if(communicationsID == DataID.SENSOR_DATA) {
+					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
 						//TODO handle sensor array
 						updateSensorValues(receivedData);
-					} else if(communicationsID == DataID.MAP_DATA) {
+					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						//TODO handle map data
 						updateMap(receivedData);
-					} else if(communicationsID == DataID.CONTROL_DATA) {
+					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
 						System.out.println("Sensorer: " + handler.getAnimator().getTablePanel().getLatestSensorValues());
 						System.out.println("Styrkommando: " + Byte.toUnsignedInt(receivedData[0]));
 						System.out.println("");
@@ -169,7 +169,7 @@ public class SerialPortCOM {
 
 	}
 
-	private void updateControlSettings(byte[] receivedData) throws CommunicationFormatException{
+	private void updateControlSettings(byte[] receivedData) {
 		int controlSettingID = Byte.toUnsignedInt(receivedData[0]);
 		int value = Byte.toUnsignedInt(receivedData[1]);
 		
