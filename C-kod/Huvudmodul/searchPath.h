@@ -10,11 +10,19 @@
 //TWI
 int SLA_styr_W = 0xCC;
 
-//Position and orientation
+//////////////////////////////////////////////////////////////////////////
+uint8_t keepExploring = 1;
+//////////////////////////////////////////////////////////////////////////
+
+/************************************************************************/
+/*                       POSITION AND ORIENTATION                       */
+/************************************************************************/
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
 uint8_t position[2] = {14,14}; //Where the robot is right now (is updated after command is sent)
 	
-//The internal map
+/************************************************************************/
+/*                           INTERNAL MAP                               */
+/************************************************************************/
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)	
 uint8_t map[28][28]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
 uint8_t path[28][28]; //FF initial value, F1 blocked way, >0 steps from target
@@ -32,11 +40,15 @@ uint8_t	initialValue = 0xF5;
 
 uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at an intersection
 
-//Target
+/************************************************************************/
+/*                              TARGET                                  */
+/************************************************************************/
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
 uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path (optimistic, pessimistic)
 
-//Controller
+/************************************************************************/
+/*                            CONTROLLER                                */
+/************************************************************************/
 uint8_t lastCommand[3]; //Last sent controller command
 uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
@@ -49,11 +61,24 @@ uint8_t oneEighty = 0x02;
 uint8_t right = 0x03;
 uint8_t left = 0x04;
 
-//////////////////////////////////////////////////////////////////////////
-uint8_t keepExploring = 1;
-//////////////////////////////////////////////////////////////////////////
 
+/************************************************************************/
+/*                              HEADER                                  */
+/************************************************************************/
+void btSend(unsigned char data);
+uint8_t deadEndTarget();
+void explore(void);
+uint8_t * findTarget();
+uint8_t * findWayBack()
+uint8_t hasFoundTarget(void);
+void newDirection(uint8_t rotation, uint8_t degrees)
+void readSensors();
+void ruleOutPath();
+void searchPathInit();
 void sendMapCoordinate(uint8_t x, uint8_t y);
+uint8_t unexploredPaths();
+void updateCoordinates();
+
 
 void btSend(unsigned char data)
 {
@@ -63,7 +88,15 @@ void btSend(unsigned char data)
 	UDR0 = data;
 }
 
-uint8_t * findTarget() //Sends a controller command depending on value in walls[i], i = 0,1,2
+/************************************************************************/
+/*	findTarget - Sends a controller command according to search 
+		algorithm
+
+	walls[i] = 	0	open
+				1	wall
+																		*/
+/************************************************************************/
+uint8_t * findTarget()
 {
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
 		return rotateRight;
@@ -76,7 +109,14 @@ uint8_t * findTarget() //Sends a controller command depending on value in walls[
 	}
 }
 
-void ruleOutPath() //Rules out map modules for easier calculation of shortest path
+/************************************************************************/
+/*	ruleOutPath - rules out path for easier calculation of shortest 
+		path
+		
+	Sets appropriate coordinate in path to 0xF4
+																		*/
+/************************************************************************/
+void ruleOutPath()
 {
 	switch(direction){
 		case 0:
@@ -94,7 +134,15 @@ void ruleOutPath() //Rules out map modules for easier calculation of shortest pa
 	}
 }
 
-uint8_t hasFoundTarget(void) // Checks if target is found NEEDS IMPLEMENTATION!!!
+/************************************************************************/
+/*	hasFoundTarget - checks if target has been found
+
+	Returns: 	0 	not found
+				1	target in the module ahead
+				2	target found 
+																		*/
+/************************************************************************/
+uint8_t hasFoundTarget(void) //NEEDS IMPLEMENTATION!!!
 {
 	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
 	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
@@ -114,7 +162,14 @@ uint8_t hasFoundTarget(void) // Checks if target is found NEEDS IMPLEMENTATION!!
 	}*/
 }
 
-uint8_t unexploredPaths() //Are there any unexplored paths from current position?
+/************************************************************************/
+/*	unexploredPaths - checks if there are any unexplored paths
+
+	Returns:	0	No unexplored path
+				1	Unexplored path(s)
+																		*/
+/************************************************************************/
+uint8_t unexploredPaths()
 {
 	if((map[position[0]+1][position[1]] == initialValue) && (path[position[0]+1][position[1]] != blockedWayValue)){
 		return 1;
@@ -129,7 +184,13 @@ uint8_t unexploredPaths() //Are there any unexplored paths from current position
 	}
 }
 
-void readSensors() //In which directions are there walls? 
+/************************************************************************/
+/*	readSensors - checks in which directions there are walls
+
+	Updates map and walls accordingly
+																		*/
+/************************************************************************/
+void readSensors()
 {
 	walls[0] = 0;
 	walls[1] = 0;
@@ -227,7 +288,10 @@ void readSensors() //In which directions are there walls?
 	
 }
 
-void sendMapCoordinate(uint8_t x, uint8_t y) //Send value in map for coordinates (x,y)
+/************************************************************************/
+/*	sendMapCoordinate - sends map information to the computer			*/															*/
+/************************************************************************/
+void sendMapCoordinate(uint8_t x, uint8_t y)
 {
 	btSend(0xFE);
 	btSend(x);
@@ -235,6 +299,12 @@ void sendMapCoordinate(uint8_t x, uint8_t y) //Send value in map for coordinates
 	btSend(map[x][y]);
 }
 
+/************************************************************************/
+/*	searchPathInit - initiate map and path
+
+	Fills map and path with initialValue and sets startPositionValue
+																		*/
+/************************************************************************/
 void searchPathInit() //Fills map and path, sets initial values 
 {
 	//Fill path with 255, map with 0
@@ -249,7 +319,15 @@ void searchPathInit() //Fills map and path, sets initial values
 	map[14][14] = startPositionValue;
 }
 
-void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
+/************************************************************************/
+/*	newDirection - updates direction in which the robot is positioned.
+
+	rotation:	0x02	180 degrees
+				0x03	right turn
+				0x04	left turn
+																		*/
+/************************************************************************/
+void newDirection(uint8_t rotation, uint8_t degrees)
 {
 	if(degrees == 0x5A){
 		if(((direction == 0) && (rotation == 0x03)) || ((direction == 2) && (rotation == 0x04))){
@@ -261,7 +339,7 @@ void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
 			} else {
 			direction = 0; //north
 		}
-		} else {
+	} else {
 		switch(direction){
 			case 0:
 			direction = 2;
@@ -279,6 +357,11 @@ void newDirection(uint8_t rotation, uint8_t degrees)//Updates direction
 	}
 }
 
+/************************************************************************/
+/*	deadEndTarget - keeps track of whether or not the target was found 
+		in the current dead end
+																		*/
+/************************************************************************/
 uint8_t deadEndTarget() //Was the target found in the current dead end?
 {
 	switch(direction){
@@ -315,6 +398,11 @@ uint8_t deadEndTarget() //Was the target found in the current dead end?
 	return 0;
 }
 
+/************************************************************************/
+/*	updateCoordinates - updates map, path and position when a move 
+		forward has been made
+																		*/
+/************************************************************************/
 void updateCoordinates() //Updates map, path and position variables
 {
 	//Cardinal direction: north, east, south, west
@@ -373,6 +461,12 @@ void updateCoordinates() //Updates map, path and position variables
 	}
 }
 
+/************************************************************************/
+/*	findWayBack - decides where to go to get closer to the start
+
+	Follows the numbers in map in decending order
+																		*/
+/************************************************************************/
 uint8_t * findWayBack() //Where to go to get closer to the start
 {
 	if(map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1){
@@ -459,7 +553,12 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 	
 }
 
-void explore(void) //Decides where to go depending on whether or not the target has been found and updates variables accordingly
+/************************************************************************/
+/*	explore - Decides where to go depending on whether or not the 
+		target has been found and updates variables accordingly
+																		*/
+/************************************************************************/
+void explore(void)
 {
 	if (keepExploring == 1){
 	
@@ -513,34 +612,34 @@ void explore(void) //Decides where to go depending on whether or not the target 
 			}
 		
 		} else {
-			
-				uint8_t * temp;
+		
+			uint8_t * temp;
 
-				if (hasFoundTarget()){
-					temp = findWayBack();
-				} else {
-					hasFoundWayBack = 1;
-					temp = findWayBack(0x01);
-				}
-			
-				if ((hasFoundTarget() == 0) && (position[0] == 14) && (position[1] == 14)){
-					if (lastCommand[0] != 0){
-						lastCommand[1] = 0x00;
-						Master(3,SLA_styr_W,lastCommand);
-						keepExploring = 0;
-					}
-				}
-			
-				lastCommand[0] = temp[0];
-				lastCommand[1] = temp[1];
-				lastCommand[2] = temp[2];
-			
-				if(lastCommand[1] != 0){
+			if (hasFoundTarget()){
+				temp = findWayBack();
+			} else {
+				hasFoundWayBack = 1;
+				temp = findWayBack(0x01);
+			}
+		
+			if ((hasFoundTarget() == 0) && (position[0] == 14) && (position[1] == 14)){
+				if (lastCommand[0] != 0){
+					lastCommand[1] = 0x00;
 					Master(3,SLA_styr_W,lastCommand);
+					keepExploring = 0;
 				}
-				for (int k = 0; k < 3; k++)	{
-						btSend(lastCommand[k]);
-				}
+			}
+		
+			lastCommand[0] = temp[0];
+			lastCommand[1] = temp[1];
+			lastCommand[2] = temp[2];
+		
+			if(lastCommand[1] != 0){
+				Master(3,SLA_styr_W,lastCommand);
+			}
+			for (int k = 0; k < 3; k++)	{
+					btSend(lastCommand[k]);
+			}
 		}
 		
 		
