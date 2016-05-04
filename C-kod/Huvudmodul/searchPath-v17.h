@@ -71,7 +71,7 @@ void explore(void);
 uint8_t * findTarget();
 uint8_t * findWayBack()
 uint8_t hasFoundTarget(void);
-void newDirection(uint8_t rotation, uint8_t degrees)
+void newDirection(uint8_t rotation, uint8_t degrees);
 void readSensors();
 void ruleOutPath();
 void searchPathInit();
