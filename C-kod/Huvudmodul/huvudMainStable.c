@@ -103,6 +103,34 @@ ISR(INT1_vect){ //Interrupt from controller module
 	explore();
 	
 	
+	//This should work when we are interested in testing with target
+	/*if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
+		goTheShortestPath = 1;
+	}
+	
+	if(lastCommand[1] == claw){
+		returnStart = nrOfCoordinates - 1;
+	}
+
+	if (returnStart != 0xFF){
+		returnToStart();
+		
+	} else if(goTheShortestPath){
+		if(!doneShortestPathInit){
+			doneShortestPathInit = 1;
+			shortestPathInit();
+		}
+		
+		shortestPathToTarget();
+	} else {
+		explore();
+	}*/		
+	
+	
+	
+	
+	
+	
 	/*if (sensorData[10]*128 + sensorData[12] < preferredForwardDistance)
 	{
 		if(sensorData[4] == 245){
