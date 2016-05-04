@@ -1,7 +1,8 @@
 #include <avr/io.h>
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+/************************************************************************/
+/*                              METHODS	                                */
+/************************************************************************/
 void init_counter(void);
 int8_t SPI_send(unsigned char output);
 void SPI_MasterInit(void);
@@ -11,12 +12,17 @@ uint8_t AR_read(void);
 void timer2_init(void);
 void converionStart(void);
 
+/************************************************************************/
+/*                            VARIABLES	                                */
+/************************************************************************/
 uint8_t sum;
 uint8_t out;
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 
-/******************Counter used to identify target*************/
+
+/************************************************************************/
+/*	Initiation: Timer0 - Counter used to identify target.
+																		*/
+/************************************************************************/
 void init_counter(void)
 {
 	DDRB |= (1<<DDB3);
@@ -30,7 +36,11 @@ void init_counter(void)
 	TIMSK0 |= (1<<OCIE0A);	
 }
 
-/************Timer used to measure forward distance (Lidar-lite)********/
+/************************************************************************/
+/*	Initiation: Timer1 - Timer used to measure forward distance 
+	(Lidar-lite).
+																		*/
+/************************************************************************/
 void initTimer(void){
 	TIMSK1 |= (1<<ICIE1);//|(1<<OCIE1A)|(1<<TOIE1);
 	//TCCR1A |= (1<<COM1A0);
@@ -39,7 +49,11 @@ void initTimer(void){
 	//OCR1A = 0x009F;
 }
 
-/*********Initiates the SPI-interface*******/
+/************************************************************************/
+/*	Initiation: SPI-interface - Makes sure that the Atmega 
+	microcontroller is master.
+																		*/
+/************************************************************************/
 void SPI_MasterInit(void)
 {	
 	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
@@ -54,7 +68,11 @@ void SPI_MasterInit(void)
 	PORTB |= (1<<PORTB4);	
 }
 
-/*****SPI-interface used to send and receive information from gyroscope******/
+/************************************************************************/
+/*	Subprogram: SPI send - Necessary in order to receive and send 
+	information from gyroscope.
+																		*/
+/************************************************************************/
 int8_t SPI_send(unsigned char output)
 {
 	SPDR = output;
@@ -63,20 +81,26 @@ int8_t SPI_send(unsigned char output)
 	return SPDR;
 }
 
-/****Enables ADC-conversion for IR-sensors****/
+/************************************************************************/
+/*	Initiation: ADC-conversion - Enables ADC-conversion on ports A0-A4 
+																		*/
+/************************************************************************/
 void initADC(void)
 {
-	DDRA = 0xE0; // Pin 0-4 input for ADC conversion
-	DDRD = 0xBB; // Pin 2 input for INT0
+	DDRA = 0xE0;			// Pin 0-4 input for ADC conversion
+	DDRD = 0xBB;			// Pin 2 input for INT0
 	
-	//SPSR = 0x80;
-	ADCSRA = 0xCB; // Enables ADC, ADC Start conversion and ADC interrupt enable
-	ADMUX = 0x20; // Left adjusted ADC data register (ADLAR = 1)
-	EIMSK = (1<<INT0); // Enables interrupt INT0
-	EICRA = (1<<ISC01); //Interrupt at low edge
+	ADCSRA = 0xCB;			// Enables ADC, ADC Start conversion and ADC interrupt enable
+	ADMUX = 0x20;			// Left adjusted ADC data register (ADLAR = 1)
+	EIMSK = (1<<INT0);		// Enables interrupt INT0
+	EICRA = (1<<ISC01);		// Interrupt at low edge
 }
 
-/********Starts conversion**********/
+/************************************************************************/
+/*	Subprogram: SPI conversion - Sends information in order to receive
+	angular velocity from gyroscope. 
+																		*/
+/************************************************************************/
 void converionStart(void)
 {
 	PORTB &= ~(1<<PORTB4);
@@ -86,7 +110,11 @@ void converionStart(void)
 	PORTB |= (1<<PORTB4);
 }
 
-/*********Returns angular velocity to main program*******/
+/************************************************************************/
+/*	Subprogram: SPI read - Starts conversion, and returns angular
+	velocity to main program.
+																		*/
+/************************************************************************/
 uint8_t AR_read(void){
 	
 	converionStart();
@@ -109,24 +137,16 @@ uint8_t AR_read(void){
 	return sum;
 }
 
-/*********Timer that invokes main module every 50 ms*********/
+/************************************************************************/
+/*	Initiation: Timer2 -  initiates the routine that will invoke the main 
+	module every 50 ms.
+																		*/
+/************************************************************************/
 void timer2_init(void)
 {
-    // set up timer with prescaler = 256
-    TCCR2B |= (1 << CS22)|(1 << CS21);
-  
-    // initialize counter
-    TCNT2 = 0;
-  
-    // enable overflow interrupt
-    TIMSK2 |= (1 << TOIE2);
-  
-    // enable global interrupts
-    sei();
-  
-    // initialize overflow counter variable
-   // tot_overflow = 0;
-	
-	// connect interrupt in main module
-	DDRD |= (1<<PORTD7);
+    TCCR2B |= (1 << CS22)|(1 << CS21);		// Set up timer with prescaler = 256
+    TCNT2 = 0;								// Initialize counter
+    TIMSK2 |= (1 << TOIE2);					// Enable overflow interrupt
+	sei();									// Enable global interrupts
+	DDRD |= (1<<PORTD7);					// Connect interrupt in main module
 }

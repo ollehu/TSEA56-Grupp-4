@@ -144,7 +144,7 @@ ISR(TWI_vect){
 /************************************************************************/
 /*	Interrupt: LIDAR Lite v2 - Laser Rangefinder.
 	Measures forward distance up to 40 m. Data is transferred through a 
-	pwm-interface.
+	PWM-interface.
 																		*/
 /************************************************************************/
 ISR(TIMER1_CAPT_vect){
@@ -354,8 +354,7 @@ int main (void)
 	sensorData[0] = 253;
 	
 /************************************************************************/
-/*	Initiates the interrupts.
-																		*/
+/*					INITIATION OF INTERRUPTS AND SPI					*/
 /************************************************************************/	
 	TWISetup(slaveAddress);
 	initADC();
@@ -415,9 +414,9 @@ int main (void)
 			sensorData[11] = 6;
 			sensorData[12] = forwardDistanceLOW;		// LIDAR low
 			sensorData[13] = 7;
-			sensorData[14] = answer;			// Angular velocity
+			sensorData[14] = answer;					// Angular velocity
 			sensorData[15] = 8;
-			sensorData[16] = target_detected;		// Detection of target
+			sensorData[16] = target_detected;			// Detection of target
 				
 			if (getMax(sensorData) > 245){
 				forwardDistanceHIGH = 245;
@@ -425,10 +424,10 @@ int main (void)
 		}
 
 		if (tot_overflow >= 11){						
-			if (TCNT2 >= 53){				// Check if the timer count reaches 53
-				PORTD |= (1<<PORTD7);			// Send interrupt
-			    TCNT2 = 0;					// Reset counter
-			    tot_overflow = 0;				// Reset overflow counter
+			if (TCNT2 >= 53){							// Check if the timer count reaches 53
+				PORTD |= (1<<PORTD7);					// Send interrupt
+			    TCNT2 = 0;								// Reset counter
+			    tot_overflow = 0;						// Reset overflow counter
 				PORTD &= ~(1<<PORTD7);	
 		    }
 		}
