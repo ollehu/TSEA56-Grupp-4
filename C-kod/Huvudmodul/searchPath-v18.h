@@ -46,6 +46,8 @@ uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at a
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
 uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path (optimistic, pessimistic)
 
+uint8_t readSensorsF = 0;
+
 /************************************************************************/
 /*                            CONTROLLER                                */
 /************************************************************************/
@@ -101,10 +103,9 @@ uint8_t * exploreTargetFound();
 uint8_t * findStart();
 uint8_t * findTarget();
 uint8_t * findWayBack();
-uint8_t * findWayBackTarget();
 uint8_t hasFoundTarget(void);
 void newCoordinates();
-void newDirection(uint8_t rotation, uint8_t degrees)
+void newDirection(uint8_t rotation, uint8_t degrees);
 void readSensors();
 void returnToStart();
 void ruleOutPath();
@@ -179,18 +180,23 @@ void ruleOutPath()
 				2	target found 
 																		*/
 /************************************************************************/
-uint8_t hasFoundTarget(void) //NEEDS IMPLEMENTATION!!!
+uint8_t hasFoundTarget(void)
 {
-	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i???
-	/*if((target[0] != 0xFF) && (target[1] != 0xFF)){
-		//
-	} else {
-		//Check sensors to see if target is found
-	}*/
+	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i
 	
 	return 0;
 	
 	/*if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
+		return 1;
+	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
+		return 2;
+	} else {
+		return 0;
+	}*/
+	
+	/*straightAhead = sensorData[10]*128 + sensorData[12];
+	
+	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead)){
 		return 1;
 	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
 		return 2;
@@ -326,7 +332,7 @@ void readSensors()
 }
 
 /************************************************************************/
-/*	sendMapCoordinate - sends map information to the computer			*/															*/
+/*	sendMapCoordinate - sends map information to the computer			*/															
 /************************************************************************/
 void sendMapCoordinate(uint8_t x, uint8_t y)
 {
@@ -503,9 +509,11 @@ void updateCoordinates() //Updates map, path and position variables
 /*	findWayBack - decides where to go to get closer to the start
 
 	Follows the numbers in map in decending order
+	
+	Returns controller command
 																		*/
 /************************************************************************/
-uint8_t * findWayBack() //Where to go to get closer to the start 
+uint8_t * findWayBack()
 {	
 	if((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
@@ -592,8 +600,8 @@ uint8_t * findWayBack() //Where to go to get closer to the start
 }
 
 /************************************************************************/
-/*	explore - Decides where to go depending on whether or not the 
-		target has been found and updates variables accordingly
+/*	explore - takes the robot around the labyrinth to find target 
+		and make sure it has found the shortest path to it
 																		*/
 /************************************************************************/
 void explore(void)
@@ -604,15 +612,29 @@ void explore(void)
 		//updateTargetFound(); //Only just when the target has been found			
 	} 
 	
-	if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
+	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) && readSensorsF == 0) {
 		//straightAhead = sensorData[10]*256 + sensorData[12];
-		lastCommand[1] = forward;
+		
+		if(hasFoundTarget() == 1){
+			if (lastCommand[1] == 0x03){
+				lastCommand[1] = 0x04;
+				readSensorsF = 1;
+			} else {
+				lastCommand[1] == 0x03;
+			}
+		} else {
+			lastCommand[1] = 0x01;
+		}
 		
 		Master(3,SLA_styr_W,lastCommand);
 		for (int k = 0; k < 3; k++)	{
 			btSend(lastCommand[k]);
 		}
 	} else if (unexploredPaths()) {
+	
+		if(readSensorsF == 1){
+			readSensorsF = 0;
+		}
 	
 		if((hasFoundWayBack)){
 			hasFoundWayBack = 0;
@@ -648,7 +670,9 @@ void explore(void)
 		}
 	
 	} else {
-	
+		if(readSensorsF == 1){
+			readSensorsF = 0;
+		}
 	
 		////////////////////////////////////////////////////////
 		if((hasFoundWayBack)){
@@ -700,110 +724,31 @@ void explore(void)
 }
 
 /************************************************************************/
-/*	ruleOutPath - rules out path for easier calculation of shortest 
-		path
-		
-	Sets appropriate coordinate in path to 0xF4
+/*	distanceToStart - calculates the Manhattan distance from (x,y) 
+		to start
 																		*/
 /************************************************************************/
-uint8_t distanceToStart(uint8_t x, uint8_t y) //Returns the Manhattan distance from (x,y) to start
+uint8_t distanceToStart(uint8_t x, uint8_t y)
 {
 	return abs(x-14)+abs(y-14);
 }
 
-uint8_t distanceToTarget(uint8_t x, uint8_t y) //Returns the walking distance from (x,y) to target
+/************************************************************************/
+/*	distanceToTarget - calculates the walking distance to target
+																		*/
+/************************************************************************/
+uint8_t distanceToTarget(uint8_t x, uint8_t y)
 {
 	dist = path[x][y];
 	return dist;
 }
 
-uint8_t * findWayBackTarget() //Where to go to get closer to the start
-{
-	if(path[position[0]+1][position[1]] == path[position[0]][position[1]] - 1){
-		switch (direction){// 0: north, 1: east, 2: south, 3: west
-			case 0:
-				//Rotate right
-				return rotateRight;
-				break;
-			case 1:
-				//One forward, update position with new coordinates
-				return oneForward;
-				break;
-			case 2:
-				//Rotate left
-				return rotateLeft;
-				break;
-			case 3:
-				//Should never happen??
-				//Rotate 180 degrees
-				return rotate180;
-				break;
-		}
-	} else if(path[position[0]][position[1]+1] == path[position[0]][position[1]] - 1){
-		switch (direction){// 0: north, 1: east, 2: south, 3: west
-			case 0:
-				//One forward
-				return oneForward;
-				break;
-			case 1:
-				//Rotate left
-				return rotateLeft;
-				break;
-			case 2:
-				return rotate180;
-				break;
-			case 3:
-				//Rotate right
-				return rotateRight;
-				break;
-		}
-	} else if(path[position[0]-1][position[1]] == path[position[0]][position[1]] - 1){
-		switch (direction){// 0: north, 1: east, 2: south, 3: west
-			case 0:
-				//Rotate left
-				return rotateLeft;
-				break;
-			case 1:
-				//Should never happen??
-				//Rotate 180 degrees
-				return rotate180;
-				break;
-			case 2:
-				//Rotate right
-				return rotateRight;
-				break;
-			case 3:
-				//One forward
-				return oneForward;
-				break;
-		}
-	} else if(path[position[0]][position[1]-1] == path[position[0]][position[1]] - 1){
-		switch (direction){// 0: north, 1: east, 2: south, 3: west
-			case 0:
-				//Should never happen??
-				//Rotate 180 degrees
-				return rotate180;
-				break;
-			case 1:
-				//Rotate right
-				return rotateRight;
-				break;
-			case 2:
-				//One forward
-				return oneForward;
-				break;
-			case 3:
-				//Rotate left
-				return rotateLeft;
-				break;
-		}
-	}
-	
-	return falseCommand;
-	
-}
-
-void updateTargetFound()//Updates map, path and position variables when target is found
+/************************************************************************/
+/*	updateTargetFound - updates map, path and position variables when 
+		target is found
+																		*/
+/************************************************************************/
+void updateTargetFound()
 {
 	switch(direction){
 		case 0:
@@ -840,7 +785,13 @@ void updateTargetFound()//Updates map, path and position variables when target i
 	z[1] = target[2]; //Pessimistic value
 }
 
-uint8_t * exploreTargetFound() //Decides where to go when target is found
+/************************************************************************/
+/*	exploreTargetFound - decides where to go when target is found
+
+	Returns controller command
+																		*/
+/************************************************************************/
+uint8_t * exploreTargetFound()
 { 
 	switch(direction){
 		case 0:
@@ -960,6 +911,13 @@ uint8_t * exploreTargetFound() //Decides where to go when target is found
 	
 }
 
+/************************************************************************/
+/*	chooseDirection - decides where to go to walk the shortest distance 
+		to target
+		
+	Returns controller command
+																		*/
+/************************************************************************/
 uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
@@ -1068,6 +1026,13 @@ uint8_t * chooseDirection()
 	}
 }
 
+/************************************************************************/
+/*	newCoordinates - updates position when taking the shortest path
+
+	Adds the new coordinate to array shortestPath to keep track of the 
+	way so it can find the way out.
+																		*/
+/************************************************************************/
 void newCoordinates()
 {
 	switch(direction){
@@ -1090,6 +1055,13 @@ void newCoordinates()
 	shortestPath[nrOfCoordinates][1] = position[1];
 }
 
+/************************************************************************/
+/*	shortestPathToTarget - decides where to go to take the shortest 
+		path to target
+		
+	Updates direction or coordinates
+																		*/
+/************************************************************************/
 void shortestPathToTarget()
 {
 	uint8_t *temp;
@@ -1117,6 +1089,12 @@ void shortestPathToTarget()
 	}
 }
 
+/************************************************************************/
+/*	shortestPathInit - Initiates array shortestPath
+
+	Sets direction to 0 (north)
+																		*/
+/************************************************************************/
 void shortestPathInit()
 {
 	shortestPath[0][0] = 14;
@@ -1124,6 +1102,13 @@ void shortestPathInit()
 	direction = 0;
 }
 
+/************************************************************************/
+/*	findStart - decides where to go to follow the shortest path 
+		from target to start 
+		
+	Returns controller command
+																		*/
+/************************************************************************/
 uint8_t * findStart()
 {
 	if ((position[0] == shortestPath[returnStart][0]) && (position[1]-1 == shortestPath[returnStart][1])){
@@ -1195,6 +1180,11 @@ uint8_t * findStart()
 	}
 }
 
+/************************************************************************/
+/*	returnToStart - takes the robot back to start when object has 
+		been dropped att target
+																		*/
+/************************************************************************/
 void returnToStart()
 {
 	if(returnStart == -1){

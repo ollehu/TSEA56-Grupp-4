@@ -105,7 +105,7 @@ Projektets syfte är att konstruera en undsättningsrobot. Detta dokument syftar
 
 \section{Produkten}
 \textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
-Produkten som konstrueras är en undsättningsrobot bestående av fyra moduler varav tre är, tillsammans med sensorer och en gripklo, integrerade på ett gemensamt chassi enligt figur \ref{overview}. Den fjärde modulen är en dator som visar sensordata och en karta över utforskade moduler. \todo{ÄNDRA TILL 1284P OCH EV GP2D120A}
+Produkten som konstrueras är en undsättningsrobot bestående av fyra moduler varav tre är, tillsammans med sensorer och en gripklo, integrerade på ett gemensamt chassi enligt figur \ref{overview}. Den fjärde modulen är en dator som visar sensordata och en karta över utforskade moduler.
 
 \begin{figure}[!htbp]
 \centering
@@ -136,7 +136,6 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med
 \subsection{Beskrivning av systemet}
 Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, en gyroskop sensor som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
 
-\subsection{Protokoll}
 
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
@@ -184,9 +183,11 @@ och är placerade enligt figur \ref{sensors}.
 \end{figure}
 
 \subsection{Styrmodulen}
-Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska kunna hanteras är styrning av chassits motorer för att få roboten att röra på sig, rotera det eventuella lasersensortornet och att styra gripklon.
+Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska kunna hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon.
 
 \subsection{Datormodulen}
+
+\section{Intermodulär kommunikation}
 
 \section{Slutsatser}
 \textit{Vilka förbättringar skulle kunna göras?}
