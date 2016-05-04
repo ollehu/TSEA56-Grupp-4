@@ -22,7 +22,7 @@ int sendToComputer = 1; //How often sensor data is sent to the computer
 
 int data = 0;
 int recieved;
-uint8_t controlCommand[3];
+uint8_t computerMessage[3];
 
 volatile int sleep = 0;
 volatile int autodrive = 0;
@@ -52,24 +52,50 @@ void btInit(void){
 }
 
 ISR(USART0_RX_vect){
-	recieved = UDR0;
 	if (data == 0){
+		//data = 0;
+		computerMessage[data] = UDR0;
+		data += 1;
+	}  else {
+		computerMessage[data] = UDR0;
+		data += 1;
+		
+		if (data == 3){
+			if (computerMessage[0] == 252 &&
+				computerMessage[1] == 8   &&
+				computerMessage[2] == 1){
+				
+				//for(int i = 0; i<3;i++){
+				//	btSend(switchMode[i]);
+				//}
+				
+			} else {
+				Master(3,SLA_styr_W,computerMessage);
+				
+			}
+			data = 0;
+		}
+	}
+	
+	//recieved = UDR0;
+	
+	/*if (data == 0){
 		if(((autodrive == 0) && (recieved == 255)) || ((autodrive == 1) && (recieved == 252))){
-			controlCommand[data] = recieved;
+			computerMessage[data] = recieved;
 			data = data + 1;
 		}
-		} else {
-		if(((autodrive == 0) & (controlCommand[0] == 255)) | ((autodrive == 1) & (controlCommand[0] == 252))){
-			controlCommand[data] = recieved;
+	} else {
+		if(((autodrive == 0) & (computerMessage[0] == 255)) | ((autodrive == 1) & (computerMessage[0] == 252))){
+			computerMessage[data] = recieved;
 			
 			if (data < 2){
 				data = data + 1;
-				} else {
-				Master(3,SLA_styr_W,controlCommand);
+			} else {
+				Master(3,SLA_styr_W,computerMessage);
 				data = 0;
 			}
 		}
-	}
+	}*/
 }
 
 ISR(INT1_vect){ //Interrupt from controller module
@@ -153,8 +179,8 @@ int main(void)
 		if (PIND & (1<<PIND5)){
 			autodrive = 0; // Manual mode
 			
-			if (switchMode[3] == 1){
-				switchMode[3] = 0;
+			if (switchMode[2] == 1){
+				switchMode[2] = 0;
 				
 				
 				//Notify computer
@@ -167,8 +193,8 @@ int main(void)
 			}
 		} else {
 			autodrive = 1; // Autonomous mode
-			if (switchMode[3] == 0){
-				switchMode[3] = 1;
+			if (switchMode[2] == 0){
+				switchMode[2] = 1;
 				
 				
 				//Notify computer
