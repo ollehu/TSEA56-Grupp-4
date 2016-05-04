@@ -7,11 +7,12 @@
 
 #define F_CPU 16000000UL
 #define speedPicker		OCR3A
+#define speedLidar		OCR3B 
 #define speedLeft		OCR1A
 #define speedRight		OCR1B
-#define speedPicker		OCR3A
-#define speedLeft		OCR1A
-#define speedRight		OCR1B
+
+uint16_t pickerMin = 125;
+uint16_t pickerMax = 625;
 
 #include <avr/io.h>
 #include <util/delay.h>
@@ -26,6 +27,7 @@ void rightWheelPair(uint8_t speed, uint8_t direction);
 void stopWheels(void);
 void openPicker(void);
 void closePicker(void);
+void scanLidar(void);
 
 /************************************************************************/
 /*	initPWM - Initiate PWM.
@@ -37,7 +39,8 @@ void initPWM(void)
 {
 		//Set output for PWM
 		DDRD |= (1<<DDD5)|(1<<DDD4);
-		DDRB |= (1<<DDB6);
+		DDRB |= (1<<DDB6)|(1<<DDB7);
+		
 		
 		//Set output for direction
 		DDRD |= (1<<DDD1)|(1<<DDD0);
@@ -60,8 +63,11 @@ void initPWM(void)
 		TCCR3B |= (0<<CS02)|(1<<CS01)|(1<<CS00);
 		TCCR1B |= (0<<CS12)|(1<<CS11)|(1<<CS10);
 		
-		//Top value for picker => 20ms duty cycle
+		//Top value for picker => 20ms duty cycle-
 		ICR3 = 5000;
+		
+		//Set values for lidar servo and claw
+		speedPicker = pickerMax;
 }
 
 /************************************************************************/
@@ -130,7 +136,7 @@ void stopWheels(void)
 /************************************************************************/
 void openPicker(void)
 {
-	speedPicker = 400; //ändrat från 125. Fungerar lite bättre
+	speedPicker = pickerMin; //ändrat från 125. Fungerar lite bättre
 }
 
 /************************************************************************/
@@ -138,5 +144,5 @@ void openPicker(void)
 /************************************************************************/
 void closePicker(void)
 {
-	speedPicker = 625;
+	speedPicker = pickerMax;
 }

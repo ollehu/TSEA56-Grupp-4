@@ -21,7 +21,8 @@
 /*                            CONTROLLER                                */
 /************************************************************************/
 uint8_t autonomousMode = 1;
-volatile uint8_t lastControlCommand = stop;
+volatile uint8_t currControlCommand = stop;
+volatile uint8_t prevControlCommand;
 
 float P = 0.45;
 float D = 1.2;
@@ -40,11 +41,20 @@ int16_t oldForwardSensor;
 
 int8_t angularVelocity;
 
+int16_t convertAngle90 = 820;
+int16_t convertAngle180 = 1900;
 
 int16_t accumulatedAngle;
 int16_t preferredAccumulatedAngle;
 
 uint8_t lastReceivedData[7];
+
+uint16_t lidarMid = 390;
+uint16_t lidarMax;
+uint16_t lidarMin;
+uint8_t lidarIncrement = 3;
+uint16_t currentLidarAngle;
+uint16_t lidarMaxDistance = 0;
 
 /************************************************************************/
 /*                               LCD                                    */
@@ -62,6 +72,7 @@ volatile uint8_t debugMode;
 /************************************************************************/
 /*                              HEADER                                  */
 /************************************************************************/
+char *commandToString(uint8_t command);
 void updateSensorData(uint8_t sensorIndex, uint8_t data);
 void respondToSensorData();
 void respondToControlData(uint8_t command, uint8_t value);
@@ -69,6 +80,8 @@ int16_t convertAngle(int8_t value);
 void respondToSettingsData(uint8_t identifier, uint8_t value);
 void autonomousForward();
 void autonomousRotate();
+void adjustRotation(void);
+void autonomousScan(void);
 void initInterrupt();
 void callMainInterrupt(void);
 
@@ -174,6 +187,12 @@ ISR(TWI_vect)
 	}
 }
 
+/************************************************************************/
+/*	commandToString - Convert a command to a string.
+
+	command: Command to translate.
+																		*/
+/************************************************************************/
 char *commandToString(uint8_t command)
 {
 		switch(command){
@@ -186,7 +205,8 @@ char *commandToString(uint8_t command)
 			default:
 				break;
 		}
-	
+		
+		return "Error";
 }
 
 /************************************************************************/
@@ -223,10 +243,6 @@ void respondToSensorData()
 		
 	//Lidar
 	forwardSensor = lastReceivedData[4]*128 + lastReceivedData[5];
-		
-	if (oldForwardSensor == 0){
-		oldForwardSensor = forwardSensor;
-	}
 
 	//Gyro
 	if (lastReceivedData[6] >= 124){
@@ -235,7 +251,7 @@ void respondToSensorData()
 		angularVelocity = -(zeroAngVel - lastReceivedData[6]);
 	}
 	
-	switch(lastControlCommand){
+	switch(currControlCommand){
 		case stop:
 			stopWheels();
 			break;
@@ -244,6 +260,9 @@ void respondToSensorData()
 			break;
 		case rotation:
 			autonomousRotate();
+			break;
+		case commandScan:
+			autonomousScan();
 			break;
 		default:
 			break;
@@ -326,12 +345,15 @@ void respondToControlData(uint8_t command, uint8_t value)
 	} else if (autonomousMode == 1){
 		switch(command){
 			case commandForward:
-				oldForwardSensor = forwardSensor;
-				lastControlCommand = forward;
+				if (oldForwardSensor == 0){
+					oldForwardSensor = forwardSensor;
+				}
+				currControlCommand = forward;
 				break;
 			case commandReverse:
-				lastControlCommand = rotation;
-				if (sideSensors[frontRightIndex] > sideSensors[frontLeftIndex]){
+				currControlCommand = rotation;
+				if (sideSensors[frontRightIndex] > 
+					sideSensors[frontLeftIndex]){
 					preferredAccumulatedAngle = convertAngle(2);
 				} else {
 					preferredAccumulatedAngle = convertAngle(-2);
@@ -339,17 +361,17 @@ void respondToControlData(uint8_t command, uint8_t value)
 				accumulatedAngle = 0;
 				break;
 			case commandRight:
-				lastControlCommand = rotation;
+				currControlCommand = rotation;
 				preferredAccumulatedAngle = convertAngle(1);
 				accumulatedAngle = 0;
 				break;
 			case commandLeft:
-				lastControlCommand = rotation;
+				currControlCommand = rotation;
 				preferredAccumulatedAngle = convertAngle(-1);
 				accumulatedAngle = 0;
 				break;
 			case commandStop:
-				lastControlCommand = stop;
+				currControlCommand = stop;
 				break;
 			default:
 				break;
@@ -370,13 +392,13 @@ void respondToControlData(uint8_t command, uint8_t value)
 int16_t convertAngle(int8_t value)
 {
 	if (value == -1) {
-		return 1050;
+		return convertAngle90;
 	} else if (value == 1) {
-		return -1050;
+		return -convertAngle90;
 	} else if (value == 2) {
-		return -2200;
+		return -convertAngle180;
 	} else if (value == -2) {
-		return 2200;
+		return convertAngle180;
 	}
 	
 	return 0;
@@ -415,6 +437,14 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 		case 6:
 			callMainInterrupt();
 			break;
+		case 7:
+			debugMode = value;
+			break;
+		case 9:
+			convertAngle90 = 10 * value;
+			break;
+		case 10:
+			convertAngle180 = 10 * value;
 		default:
 			break;
 	}
@@ -442,13 +472,17 @@ void autonomousForward()
 {
 	uint8_t frontIndex = noWallsIndex;
 	uint8_t backIndex;
+	uint8_t speed = preferredSpeed;
 	
 	if (((oldForwardSensor - forwardSensor > moduleDepth) && 
-		 (forwardSensor > (moduleDepth + 5))) || 
+		 (forwardSensor > (moduleDepth - 5))) || 
 		 (forwardSensor < minDistanceForward)){
 			 
-		//callMainInterrupt();
-		lastControlCommand = stop;
+		if (debugMode == 0) {
+			callMainInterrupt();
+		}
+		currControlCommand = stop;
+		oldForwardSensor = 0;
 		stopWheels();
 	}
 	
@@ -493,25 +527,31 @@ void autonomousForward()
 		if (frontIndex == 0){
 			y_out = -y_out;
 		}
+		
+		if (forwardSensor < moduleDepth ||
+			sideSensors[frontRightIndex] == 245 ||
+			sideSensors[frontLeftIndex]  == 245){
+			speed *= 0.6;   
+		}
 	
 		if(y_out < 0) {
 		
-			if (preferredSpeed - y_out > maxSpeed){
+			if (speed - y_out > maxSpeed){
 				rightWheelPair(maxSpeed + y_out, 1);
 				leftWheelPair(maxSpeed, 1);
 			} else {
-				rightWheelPair(preferredSpeed + y_out/2, 1);
-				leftWheelPair(preferredSpeed - y_out/2, 1);
+				rightWheelPair(speed + y_out/2, 1);
+				leftWheelPair(speed - y_out/2, 1);
 			}
 	
 		} else {
 		
-			if (preferredSpeed + y_out > maxSpeed){
+			if (speed + y_out > maxSpeed){
 				rightWheelPair(maxSpeed, 1);
 				leftWheelPair(maxSpeed - y_out, 1);
 			} else {
-				rightWheelPair(preferredSpeed + y_out/2, 1);
-				leftWheelPair(preferredSpeed - y_out/2, 1);
+				rightWheelPair(speed + y_out/2, 1);
+				leftWheelPair(speed - y_out/2, 1);
 			}
 		}
 	}
@@ -534,9 +574,7 @@ void autonomousForward()
 void autonomousRotate()
 {
 	if(labs(accumulatedAngle) > labs(preferredAccumulatedAngle)){
-		//callMainInterrupt();
-		lastControlCommand = stop;
-		stopWheels();
+		adjustRotation();
 	} else if (preferredAccumulatedAngle > 0){
 		rightWheelPair(preferredRotationSpeed, 1);
 		leftWheelPair(preferredRotationSpeed, 0);
@@ -546,6 +584,38 @@ void autonomousRotate()
 	}
 	
 	accumulatedAngle += angularVelocity;
+}
+
+/************************************************************************/
+/*	adjustRotation - Adjust robot after 90 or 180 degrees rotation.     */
+/************************************************************************/
+void adjustRotation(void)
+{
+	stopWheels();
+	currentLidarAngle = lidarMin;
+	lidarMaxDistance = 0;
+	currControlCommand = commandScan;
+}
+
+/************************************************************************/
+/*	autonomousScan - Scan the corridor ahead to seek the largest 
+		distance.														*/
+/************************************************************************/
+void autonomousScan(void)
+{
+	if (currentLidarAngle + lidarIncrement <= lidarMax){
+		speedLidar = currentLidarAngle;
+		currentLidarAngle += lidarIncrement;
+		if (forwardSensor > lidarMaxDistance){
+			lidarMaxDistance = forwardSensor;
+		}
+	} else {
+		oldForwardSensor = lidarMaxDistance;
+		speedLidar = lidarMid;
+		if (debugMode == 0){
+			callMainInterrupt();
+		}
+	}
 }
 
 /************************************************************************/
@@ -562,26 +632,75 @@ void initInterrupt()
 /************************************************************************/
 void callMainInterrupt(void)
 {
+
 	called += 1;
 	PORTB |= (1<<PORTB4);
 	PORTB &= ~(1<<PORTB4);
+	currControlCommand = stop;
+	stopWheels();
 }
 
-void initLED(void)
+/************************************************************************/
+/*	setAutonomousLED - Set autonomous LED.
+		
+		mode = 1 : On
+			   2 : Off											        */
+/************************************************************************/
+void setAutonomousLED(uint8_t mode)
 {
-	DDRD |= (1<<DDD6)|(1<<DDD7);
-	
-	if (autonomousMode == 1){
+	if (mode == 1){
 		PORTD |= (1<<PORTD6);
 	} else {
 		PORTD &= ~(1<<PORTD6);
 	}
-	
-	if (debugMode == 1){
+}
+
+/************************************************************************/
+/*	setDebugLED - Set debug LED.
+		
+		mode = 1 : On
+			   2 : Off											        */
+/************************************************************************/
+void setDebugLED(uint8_t mode)
+{
+	if (mode == 1){
 		PORTD |= (1<<PORTD7);
 	} else {
 		PORTD &= ~(1<<PORTD7);
 	}
+}
+
+/************************************************************************/
+/*	initLED - Initiate and set LEDs.								    */
+/************************************************************************/
+void initLED(void)
+{
+	DDRD |= (1<<DDD6)|(1<<DDD7);
+	
+	setAutonomousLED(autonomousMode);
+	setDebugLED(debugMode);
+}
+
+/************************************************************************/
+/*	initCommandModule - Initiate Command module.						*/
+/************************************************************************/
+void initCommandModule(void)
+{
+	TWISetup(mySlaveAdress);
+	initPWM();
+	initLCD();
+	
+	initInterrupt();
+	
+	sei();
+
+	autonomousMode = 1;
+	debugMode = 0;
+	initLED();
+	
+	speedLidar = lidarMid;
+	lidarMax = lidarMid + 60;
+	lidarMin = lidarMid - 60;
 }
 
 /************************************************************************/
@@ -593,31 +712,25 @@ void initLED(void)
 /************************************************************************/
 int main(void)
 {
+	initCommandModule();
+	
 	char bottomRowMessage[16] = "";
 	char topRowMessage[16] = "";
 	
-	TWISetup(mySlaveAdress);
-	initPWM();
-	initLCD();
-	
-	initInterrupt();
-	
-	sei();
-
-	autonomousMode = 1;
-	debugMode = 0;
-	//callMainInterrupt();
-	initLED();
 	while(1)
 	{
+		setDebugLED(debugMode);
+		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "C:%u R:%u F:%u", called, received, accumulatedAngle);
+			sprintf(topRowMessage, "LiMax: %d", 
+					oldForwardSensor);
 			lcdWriteTopRow(topRowMessage);
-			if (lastControlCommand != stop){
-				sprintf(bottomRowMessage, "Command %s", commandToString(lastControlCommand));
+			//if (currControlCommand != stop){
+				sprintf(bottomRowMessage, "LiCurr: %d", 
+						forwardSensor);
 				lcdWriteBottomRow(bottomRowMessage);
-			}
+			//}
 			madeChange = 0;
 		} 
 	}
