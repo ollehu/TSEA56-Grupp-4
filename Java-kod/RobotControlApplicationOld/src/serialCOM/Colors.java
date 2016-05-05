@@ -1,4 +1,4 @@
-package view;
+package serialCOM;
 
 import java.awt.Color;
 

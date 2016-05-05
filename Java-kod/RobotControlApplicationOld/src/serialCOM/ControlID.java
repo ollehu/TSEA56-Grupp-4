@@ -23,7 +23,7 @@ public class ControlID {
 	
 	public static final int BACKWARDS_LEFT = 8;
 	
-	public static final int CLAW_SETTING = 9;
+	public static final int CLAW = 9;
 	
 	public static final int STOP = 10;
 	

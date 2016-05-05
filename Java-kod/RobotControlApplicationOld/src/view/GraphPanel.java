@@ -2,44 +2,59 @@ package view;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.nio.ByteBuffer;
+import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
-import org.jfree.chart.*;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.labels.IntervalCategoryItemLabelGenerator;
+import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.xy.*;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 
-public class GraphPanel extends JPanel implements Observer{
+import control.Handler;
 
-	/**
-	 * List of charts
-	 */
+/**
+ * Panel containing all the graphs
+ * @author isak
+ *
+ */
+public class GraphPanel extends JPanel{
+
+	private Animator animator;
+
 	private ArrayList<ChartPanel> chartList;
 	
-	/**
-	 * List of data series
-	 */
 	private ArrayList<XYSeries> dataSeriesList;
 
-	/**
-	 * Constants for instantiation
-	 */
 	private String[] chartNames = {"IR F/R", "IR F/L", "IR B/R",
 			"IR B/L", "Lidar Lite", "Angular velocity",
 	"Angle to wall"};
 	private int chartNameCounter = 0;
+
+	private String[] chartUnits = {"cm", "cm", "cm",
+			"cm", "cm", "deg/s",
+	"deg"};
 	
+	private String[] controllerNames = {"P", "D", "K"};
+
 	private long startTime;
 	private boolean firstTime = true;
 	
-	/**
-	 * Constructor
-	 */
-	public GraphPanel() {
+	public GraphPanel(Animator animator) {
+		this.animator = animator;
+		
 		chartList = new ArrayList<>();
 		dataSeriesList = new ArrayList<>();
 
@@ -47,6 +62,7 @@ public class GraphPanel extends JPanel implements Observer{
 		XYSeriesCollection iRXYDataset = new XYSeriesCollection();
 		XYSeriesCollection lidarXYDataset = new XYSeriesCollection();
 		XYSeriesCollection angularVelocityXYDataset = new XYSeriesCollection();
+		XYSeriesCollection controllerXYDataset = new XYSeriesCollection();
 		
 		XYSeries series;
 		for(int i = 0; i < 4; i++) {
@@ -71,20 +87,30 @@ public class GraphPanel extends JPanel implements Observer{
 		dataSeriesList.add(series);
 		angularVelocityXYDataset.addSeries(series);
 		
+		// add controller chart
+		for(String controllerName : controllerNames) {
+			series = new XYSeries(controllerName);
+			series.setMaximumItemCount(100);
+			
+			dataSeriesList.add(series);
+			controllerXYDataset.addSeries(series);
+		}
+		
 		// create JCharts
 		JFreeChart iRXYChart = ChartFactory.createXYLineChart("IR", "Time [s]", "Distance [cm]", iRXYDataset);
 		JFreeChart lidarXYChart = ChartFactory.createXYLineChart("Lidar", "Time [s]", "Distance [cm]", lidarXYDataset);
 		JFreeChart angularVelocityChart = ChartFactory.createXYLineChart("Angular velocity", "Time [s]", "Velocity [deg/s]", angularVelocityXYDataset);
+//		JFreeChart controllerXYChart = ChartFactory.createXYLineChart("Controller", "Time [s]", "Value", controllerXYDataset);
 
 		// adjust angular velocity range axis
 		XYPlot angularVelocityPlot = (XYPlot) angularVelocityChart.getPlot();
 		ValueAxis yAxis = angularVelocityPlot.getRangeAxis();
 		yAxis.setRange(-100.0, 100.0 );
 		
-		// add charts and set preferred size
 		chartList.add(new ChartPanel(iRXYChart));
 		chartList.add(new ChartPanel(lidarXYChart));
 		chartList.add(new ChartPanel(angularVelocityChart));
+//		chartList.add(new ChartPanel(controllerXYChart));
 
 		for(ChartPanel chartPanel : chartList) {
 			chartPanel.setPreferredSize(new Dimension(300, 200));
@@ -92,33 +118,7 @@ public class GraphPanel extends JPanel implements Observer{
 			add(chartPanel);
 		}
 	}
-	
-	/**
-	 * Sensor data observer
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		if(o instanceof model.SensorData) {
-			if(arg instanceof int[]) {
-				double timeStamp = getTimeStamp();
-				int[] sensorValues = (int[]) arg;
-				
-				// add IR sensor and Lidar values
-				for(int index = 0; index < 6; index++) {
-					dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
-				}
-			}
-		}
-	}
-	
-	//================================================================================
-    // Internal methods
-    //================================================================================
-	/**
-	 * Changes font size
-	 * @param chart
-	 * @param fontSizePercentage
-	 */
+
 	private void changeFontSize(JFreeChart chart, double fontSizePercentage) {
 		final StandardChartTheme chartTheme = (StandardChartTheme)org.jfree.chart.StandardChartTheme.createJFreeTheme();
 
@@ -144,10 +144,28 @@ public class GraphPanel extends JPanel implements Observer{
 		chartTheme.apply(chart);
 	}
 	
-	/**
-	 * Gets time stamp
-	 * @return
-	 */
+	public void updateSensorValues(int[] sensorValues) {
+		double timeStamp = getTimeStamp();
+		
+		// add IR sensor and Lidar values
+		for(int index = 0; index < 6; index++) {
+			dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+		}
+		
+		animator.getHandler().getLogWriter().appendToLog("IR F/R: " + sensorValues[0] + " : " +  
+														"IR F/L: " + sensorValues[1] + " : " + 
+														"IR B/R: " + sensorValues[2] + " : " + 
+														"IR B/RL: " + sensorValues[3]);
+		
+		// add controller values
+//		int[] controllerValues = calculateControllerValue(sensorValues);
+//		int index = 5;
+//		for(int controllerValue : controllerValues) {
+//			dataSeriesList.get(index).add(timeStamp, controllerValue);
+//			index++;
+//		}
+	}
+	
 	private double getTimeStamp() {
 		if(firstTime) {
 			firstTime = !firstTime;
@@ -158,5 +176,45 @@ public class GraphPanel extends JPanel implements Observer{
 			
 			return elapsedTimeMillis / 1000;
 		}
+	}
+	
+	private int[] calculateControllerValue(int[] sensorValues) {
+		int[] controllerValues = new int [3];
+
+		int[] oldDistance = new int[20];
+		int preferredDistance = 100;
+
+		double period = 0.2;
+		int index = 5;
+		
+		// calculate distance to wall
+		int distance = 10;
+		
+		if(sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[0] + sensorValues[1]) / 2;
+		} else if (sensorValues[0] < 245 && sensorValues[1] < 245) {
+			distance = (sensorValues[2] + sensorValues[3]) / 2;
+		} else {
+			//TODO handle crossroads
+		}
+		
+		// get controller coefficients P (*100), D (*100), K (*10)
+		int[] controllerCoefficients = animator.getTablePanel().getControllerCoefficients();
+		
+		// calculate P, D, K
+		double P = ((double) controllerCoefficients[0]) / 100;
+		double D = ((double) controllerCoefficients[1]) / 100;
+		double K = ((double) controllerCoefficients[2]) / 10;
+		
+		double p_out = P * (distance - preferredDistance);
+		double d_out = D * (distance - oldDistance[index]) / (index * period);
+		
+		int y_out = (int) (K *(p_out + d_out));
+		
+		controllerValues[0] = (int) p_out;
+		controllerValues[1] = (int) d_out;
+		controllerValues[2] = y_out;
+		
+		return controllerValues;
 	}
 }

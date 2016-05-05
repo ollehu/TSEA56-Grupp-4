@@ -1,30 +1,19 @@
 package view;
 
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 
-/**
- * Panel containing map
- * @author isak
- *
- */
-public class MapPanel extends JPanel{
+public class MapPanel extends JPanel implements Observer{
 
-	private Map map;
-	
-	public MapPanel() {
-		map = new Map();
+	/**
+	 * Map data observer
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
 		
-		add(map);
-	}
-		
-	public Map getMap() {
-		return map;
 	}
 
 }
