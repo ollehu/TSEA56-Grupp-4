@@ -26,12 +26,14 @@ public class Handler implements Observer{
 	private Log log;
 	private RobotData robotData;
 	private SensorData sensorData;
+	private MapData mapData;
 	
 	public Handler() {
 		// initialize model
 		log = new Log();
 		robotData = new RobotData();
 		sensorData = new SensorData();
+		mapData = new MapData();
 		
 		/* initialize animator and action handler
 		this is split into multiple calls due to
@@ -44,7 +46,7 @@ public class Handler implements Observer{
 		
 		// initialize key handler and serial com
 		keyHandler = new KeyHandler(animator, actionHandler);
-		serialCommunicationHandler = new SerialCommunicationHandler(log, robotData, sensorData);
+		serialCommunicationHandler = new SerialCommunicationHandler(log, robotData, sensorData, mapData);
 		
 		// assign all observers
 		assignObservers();
@@ -76,11 +78,21 @@ public class Handler implements Observer{
 	}
 	
 	private void setAutonomousMode(boolean state) {
-		
+		//TODO add mode handling
+		if(state) {
+			System.out.println("Auto on");
+		} else {
+			System.out.println("Auto off");
+		}
 	}
 	
 	private void setDebugMode(boolean state) {
-		
+		//TODO add mode handling
+		if(state) {
+			System.out.println("Debug on");
+		} else {
+			System.out.println("Debug off");
+		}
 	}
 	
 	//================================================================================

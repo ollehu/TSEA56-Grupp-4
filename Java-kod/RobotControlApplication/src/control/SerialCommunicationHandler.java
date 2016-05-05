@@ -1,33 +1,41 @@
 package control;
 
-import java.awt.Robot;
-
-import javax.swing.JOptionPane;
-
 import jssc.*;
 import model.*;
 import resources.*;
 
 public class SerialCommunicationHandler {
 
+	/**
+	 * Log
+	 */
 	private Log log;
 	
+	/**
+	 * Data storage
+	 */
 	private RobotData robotData;
-	
 	private SensorData sensorData;
+	private MapData mapData;
 	
+	/**
+	 * Serial port
+	 */
 	private static SerialPort serialPort;
 
-	// standard port settings for firefly
+	/**
+	 * Firefly standard values
+	 */
 	private int baudRate = 115200;
 	private int numberOfDataBits = 8;
 	private int numberOfStopBits = 1;
 	private int numberOfParityBits = 0;
 
-	public SerialCommunicationHandler(Log log, RobotData robotData, SensorData sensorData)  {
+	public SerialCommunicationHandler(Log log, RobotData robotData, SensorData sensorData, MapData mapData) {
 		this.log = log;
 		this.robotData = robotData;
 		this.sensorData = sensorData;
+		this.mapData = mapData;
 	}
 
 	/**
@@ -214,15 +222,14 @@ public class SerialCommunicationHandler {
 	}
 
 	private void updateMap(byte[] receivedData) {
-//		// get x- and y-coordinate
-//		int xCoordinate = Byte.toUnsignedInt(receivedData[0]);
-//		int yCoordinate = Byte.toUnsignedInt(receivedData[1]);
-//		
-//		int value = Byte.toUnsignedInt(receivedData[2]);
-//	
-//		// update map
-//		handler.getAnimator().getMapPanel().getMap().update(xCoordinate, yCoordinate, value);
-//		System.out.println("Uppdaterat kartan! X: " + xCoordinate + ", Y: " + yCoordinate + ", value: " + value);
+		// get x- and y-coordinate
+		int xCoordinate = Byte.toUnsignedInt(receivedData[0]);
+		int yCoordinate = Byte.toUnsignedInt(receivedData[1]);
+		
+		int value = Byte.toUnsignedInt(receivedData[2]);
+	
+		// update map
+		mapData.update(xCoordinate, yCoordinate, value);
 	}
 
 	private void updateControlData(byte[] receivedData) {
@@ -237,19 +244,30 @@ public class SerialCommunicationHandler {
     // Testing
     //================================================================================
 	public void simulateReceivedData() {
-		byte[] simulatedData = new byte[14];
+		// sensor data test
+//		byte[] simulatedData = new byte[14];
+//		
+//		for(int index = 1; index < 14; index += 2) {
+//			simulatedData[index] = (byte) (index * 2);
+//		}
+//		
+//		updateSensorValues(simulatedData);
 		
-		for(int index = 1; index < 14; index += 2) {
-			simulatedData[index] = (byte) (index * 2);
-		}
-		
-		updateSensorValues(simulatedData);
-		
+		// robot status data test
 //		byte[] simulatedData = new byte[2];
 //		
 //		simulatedData[0] = (byte) ControlSettingID.DEBUG_MODE;
 //		simulatedData[1] = (byte) 1;
 //		
 //		updateControlSettings(simulatedData);
+		
+		// map data test
+		byte[] simulatedData = new byte[3];
+		
+		simulatedData[0] = (byte) 15;
+		simulatedData[1] = (byte) 15;
+		simulatedData[2] = (byte) 243;
+		
+		updateMap(simulatedData);
 	}
 }

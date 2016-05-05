@@ -7,7 +7,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
 
-public class Tile extends JComponent{
+public class MapVisualElement extends JComponent{
 	
 	public static final int UNEXPLORED = 245;
 	public static final int WALL = 244;
@@ -29,7 +29,7 @@ public class Tile extends JComponent{
 	private int width = 15;
 	private int height = 15;
 	
-	public Tile() {
+	public MapVisualElement() {
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setVisible(false);
 	}

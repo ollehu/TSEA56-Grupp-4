@@ -13,8 +13,8 @@ import javax.swing.JPanel;
 
 public class Map extends JPanel{
 
-	private Tile[][] mapTiles;
-	private ArrayList<Tile> exploredTiles;
+	private MapVisualElement[][] mapTiles;
+	private ArrayList<MapVisualElement> exploredTiles;
 	private GridBagConstraints constraints;
 	
 	public static final int X_MAX = 29;
@@ -45,21 +45,21 @@ public class Map extends JPanel{
 		constraints.gridy = 0;
 		constraints.fill = GridBagConstraints.BOTH;
 		
-		mapTiles = new Tile[X_MAX][Y_MAX];
+		mapTiles = new MapVisualElement[X_MAX][Y_MAX];
 		exploredTiles = new ArrayList<>();
 		for(int x = 0; x < X_MAX; x++) {
 			for(int y = 0; y < Y_MAX; y++) {
 				constraints.gridx = x;
 				constraints.gridy = y;
 				
-				mapTiles[x][y] = new Tile();
+				mapTiles[x][y] = new MapVisualElement();
 				add(mapTiles[x][y], constraints);
 			}
 		}
 	}
 	
 	public void clear() {
-		for(Tile tile: exploredTiles) {
+		for(MapVisualElement tile: exploredTiles) {
 			tile.clear();
 		}
 		
@@ -91,7 +91,7 @@ public class Map extends JPanel{
 		
 		int nextDimension = Integer.min(nextWidth, nextHeight);
 		
-		for(Tile element : exploredTiles) {
+		for(MapVisualElement element : exploredTiles) {
 			element.setDimension(nextDimension, nextDimension);
 		}
 	}

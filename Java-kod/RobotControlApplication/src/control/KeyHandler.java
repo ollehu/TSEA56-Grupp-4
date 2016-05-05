@@ -36,25 +36,32 @@ public class KeyHandler {
 		actionMap.put("backwards", actionHandler.backwardsAction);
 		actionMap.put("rotate right", actionHandler.rotateRightAction);
 		
-		bindKeys();
+		bindTemporaryKeys();
 	}
 	
 	/**
 	 * Sets keybinds 
 	 * @param state true = keybinds on, false = keybinds off
 	 */
-	public void setKeyBinds(boolean state) {
+	public void setTemporaryKeyBinds(boolean state) {
 		if(state) {
-			bindKeys();
+			bindTemporaryKeys();
 		} else {
-			unbindKeys();
+			unbindTemporaryKeys();
 		}
 	}
 	
 	//================================================================================
     // Internal methods
     //================================================================================
-	private void bindKeys() {
+	private void bindPermanentKeys() {
+		JPanel bindPanel = animator.getRobotStatusPanel();
+	
+		// get input map and add keys		
+		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+	}
+	
+	private void bindTemporaryKeys() {
 		JPanel bindPanel = animator.getRobotStatusPanel();
 		
 		// get input map and add keys		
@@ -66,7 +73,7 @@ public class KeyHandler {
 
 	}
 	
-	private void unbindKeys() {
+	private void unbindTemporaryKeys() {
 		JPanel bindPanel = animator.getRobotStatusPanel();
 		
 		// get input map and remove keys		
