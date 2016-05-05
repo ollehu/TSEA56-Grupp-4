@@ -120,7 +120,7 @@ public class Handler implements Observer{
 		robotData.addObserver(this);
 		
 		// add map data observer
-		robotData.addObserver(animator.getMapPanel());
+		mapData.addObserver(animator.getMapPanel());
 	}
 	
 	//================================================================================

@@ -13,6 +13,8 @@ public class ActionHandler {
 
 	private Animator animator;
 	
+	//TODO fundera över implementeringen av denna!
+	
 	/**
 	 * Public actions for use
 	 */
@@ -148,7 +150,7 @@ public class ActionHandler {
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			animator.getMapPanel().clear();
 		}
 		
 	}

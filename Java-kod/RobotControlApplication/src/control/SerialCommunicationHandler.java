@@ -1,10 +1,13 @@
 package control;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import jssc.*;
 import model.*;
 import resources.*;
 
-public class SerialCommunicationHandler {
+public class SerialCommunicationHandler implements Observer{
 
 	/**
 	 * Log
@@ -36,6 +39,15 @@ public class SerialCommunicationHandler {
 		this.robotData = robotData;
 		this.sensorData = sensorData;
 		this.mapData = mapData;
+	}
+	
+	/**
+	 * Robot status observer
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -243,6 +255,9 @@ public class SerialCommunicationHandler {
 	//================================================================================
     // Testing
     //================================================================================
+	private int xCoordinate = 15;
+	private int yCoordinate = 15;
+	
 	public void simulateReceivedData() {
 		// sensor data test
 //		byte[] simulatedData = new byte[14];
@@ -264,8 +279,8 @@ public class SerialCommunicationHandler {
 		// map data test
 		byte[] simulatedData = new byte[3];
 		
-		simulatedData[0] = (byte) 15;
-		simulatedData[1] = (byte) 15;
+		simulatedData[0] = (byte) xCoordinate++;
+		simulatedData[1] = (byte) yCoordinate++;
 		simulatedData[2] = (byte) 243;
 		
 		updateMap(simulatedData);

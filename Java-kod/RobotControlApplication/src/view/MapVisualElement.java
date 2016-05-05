@@ -1,11 +1,9 @@
 package view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 
 import javax.swing.JComponent;
-import javax.swing.UIManager;
 
 import resources.CustomColors;
 
@@ -20,9 +18,17 @@ public class MapVisualElement extends JComponent{
 	private int width = 15;
 	private int height = 15;
 	
-	public MapVisualElement(int value) {
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+	public MapVisualElement() {
+		setVisible(false);
+	}
+	
+	public void explore(int value) {
+		setVisible(true);
 		this.value = value;
+	}
+	
+	public void clear() {
+		setVisible(false);
 	}
 	
 	public void setDimension(int width, int height) {
@@ -46,6 +52,13 @@ public class MapVisualElement extends JComponent{
 		}
 		
 		graphics.fillRect(0, 0, width, height);
+		
+		System.out.println("w: " + width + "h: " + height);
+		if(isVisible()) {
+			System.out.println("This is visible");
+		} else {
+			System.out.println("This is NOT visible");
+		}
 	}
 	
 }

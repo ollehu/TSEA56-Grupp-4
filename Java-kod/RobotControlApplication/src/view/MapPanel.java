@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import model.MapElement;
 
 public class MapPanel extends JPanel implements Observer{
 
+	private MapVisualElement[][] elementHolder;
+	
 	/**
 	 * Explored visual map elements
 	 */
@@ -51,7 +54,6 @@ public class MapPanel extends JPanel implements Observer{
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		constraints = new GridBagConstraints();
-		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
@@ -59,10 +61,22 @@ public class MapPanel extends JPanel implements Observer{
 		constraints.fill = GridBagConstraints.BOTH;
 		
 		exploredMapElements = new ArrayList<>();
+		elementHolder = new MapVisualElement[X_MAX][Y_MAX];
+		for(int x = 0; x < X_MAX; x++) {
+			for(int y = 0; y < Y_MAX; y++) {
+				constraints.gridx = x;
+				constraints.gridy = y;
+				
+				elementHolder[x][y] = new MapVisualElement();
+				add(elementHolder[x][y], constraints);
+			}
+		}
 	}
 	
 	public void clear() {
-		this.removeAll();
+		for(MapVisualElement mapVisualElement: exploredMapElements) {
+			mapVisualElement.clear();
+		}
 		
 		// reset boundaries
 		currentX = 15;
@@ -72,6 +86,8 @@ public class MapPanel extends JPanel implements Observer{
 		southMax = 15;
 		westMax = 15;
 		eastMax = 15;
+		
+		exploredMapElements.clear();
 	}
 	
 	/**
@@ -91,7 +107,6 @@ public class MapPanel extends JPanel implements Observer{
 			if(arg instanceof MapElement) {
 				// create a visual map element with the correct value
 				int value = ((MapElement) arg).getValue();
-				MapVisualElement nextVisualElement = new MapVisualElement(value);
 				
 				// add the element at the correct x- and y-coordinate
 				int xCoordinate = ((MapElement) arg).getxCoordinate();
@@ -100,19 +115,19 @@ public class MapPanel extends JPanel implements Observer{
 				constraints.gridx = xCoordinate;
 				constraints.gridy = yCoordinate;
 				
-				add(nextVisualElement);
-				exploredMapElements.add(nextVisualElement);
+				elementHolder[xCoordinate][yCoordinate].explore(value);
+				exploredMapElements.add(elementHolder[xCoordinate][yCoordinate]);
 				
 				// expand boundaries if needed
-				if(currentX < westMax) {
-					westMax = currentX;
-				} else if(currentX > eastMax) {
-					eastMax = currentX;
+				if(xCoordinate < westMax) {
+					westMax = xCoordinate;
+				} else if(xCoordinate > eastMax) {
+					eastMax = xCoordinate;
 				}
-				if(currentY < southMax) {
-					southMax = currentY;
-				} else if(currentY > northMax) {
-					northMax = currentY;
+				if(yCoordinate < southMax) {
+					southMax = yCoordinate;
+				} else if(yCoordinate > northMax) {
+					northMax = yCoordinate;
 				}
 				
 				// adjust width and height of all added elements
@@ -124,6 +139,8 @@ public class MapPanel extends JPanel implements Observer{
 				for(MapVisualElement element : exploredMapElements) {
 					element.setDimension(nextDimension, nextDimension);
 				}
+				
+				repaint();
 			}
 		}
 	}

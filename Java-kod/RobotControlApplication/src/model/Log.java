@@ -30,7 +30,7 @@ public class Log {
 	 * Constructor
 	 */
 	public Log() {
-		createNewLog();
+//		createNewLog();
 	}
 
 	/**
