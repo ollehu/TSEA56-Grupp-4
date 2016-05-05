@@ -101,11 +101,18 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 \section{Inledning}
 \textit{Bakgrund och syfte}
+
 Projektets syfte är att konstruera en undsättningsrobot. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet på en nivå där resultatet ska kunna återskapas. Innehållet består av detaljerade beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt implementationen.
 
 \section{Produkten}
 \textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
-Produkten som konstrueras är en undsättningsrobot bestående av fyra moduler varav tre är, tillsammans med sensorer och en gripklo, integrerade på ett gemensamt chassi enligt figur \ref{overview}. Den fjärde modulen är en dator som visar sensordata och en karta över utforskade moduler.
+
+Produkten som konstruerats är en undsättningsrobot. Den består av fyra hjul, ett chassi och en gripklo som ska kunna greppa en förnödenhet att leverera till en nödställd. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade via en I\textsuperscript{2}C-buss medan kommunikationen med datormodulen sker via Bluetooth\textsuperscript{\circledR}, enligt figur \ref{overview}. Gripklon kontrolleras av styrmodulen medan det är sensormodulen som tar in data från sensorerna.
+
+Varje modul har en processor samt annan nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
+
+Tanken med roboten är att den ska söka av en labyrint bestående av 40 cm breda korridorer och identifiera en nödställd som sänder ut IR-ljus. Det ska den klara i både manuellt och autonomt läge. När målet är identifierat ska kortaste vägen mellan labyrintens ingång och målet bestämmas. Då ska roboten hämta en förnödenhet vid starten och köra kortaste vägen till den nödställda och lämna av förnödenheten. 
+
 
 \begin{figure}[!htbp]
 \centering
