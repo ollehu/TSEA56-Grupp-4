@@ -38,6 +38,9 @@ public class ControlSettingID {
 	public static final int CONSTANT_90 = 9;
 	
 	public static final int CONSTANT_180 = 10;
-
+	
+	public static final int CLAW = 11;
+	
+	public static final int LAST_CONTROL_COMMAND = 12;
 }
 

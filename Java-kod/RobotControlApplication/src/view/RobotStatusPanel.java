@@ -29,7 +29,7 @@ public class RobotStatusPanel extends JPanel implements Observer{
 		
 		int index = 0;
 		for(String labelName : OtherConstants.ROBOT_STATUS_NAMES) {
-			String[] states = OtherConstants.ROBOT_STATUS_STATES[index];
+			String[] states = OtherConstants.ROBOT_STATUS_STATES[index++];
 			RobotStatusLabel nextLabel = new RobotStatusLabel(labelName, states);
 			
 			robotStatusLabels.add(nextLabel);

@@ -15,7 +15,8 @@ public class OtherConstants {
 	public static final String[][] ROBOT_STATUS_STATES = {{"off", "on"},
 															{"off", "on"},
 															{"closed", "open"},
-															null
+															null,
+															{"forward", "backward", "left", "right"}
 	};
 	
 	/**

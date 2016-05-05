@@ -38,6 +38,23 @@ public class RobotData extends Observable{
 		notifyObservers(statusToUpdate);
 	}
 	
+	public void toggle(int identifier) {
+		RobotStatus statusToUpdate = robotStatus.get(convertIdentifierToIndex(identifier));
+		
+		int value;
+		if(statusToUpdate.getValue() == 1) {
+			value = 0;
+		} else if((statusToUpdate.getValue() == 0) || (statusToUpdate.getValue() == -1)) {
+			value = 1;
+		} else {
+			return;
+		}
+		
+		statusToUpdate.setValue(value);
+		setChanged();
+		notifyObservers(statusToUpdate);
+	}
+	
 	//================================================================================
     // Internal methods
     //================================================================================
@@ -48,12 +65,14 @@ public class RobotData extends Observable{
 		} else if (identifier == ControlSettingID.DEBUG_MODE) {
 			return 1;		
 		
-		} else if (identifier == ControlID.CLAW) {
+		} else if (identifier == ControlSettingID.CLAW) {
 			return 2;		
 		
 		} else if (identifier == ControlSettingID.SPEED) {
 			return 3;		
 		
+		} else if(identifier == ControlSettingID.LAST_CONTROL_COMMAND) {
+			return 4;
 		} else {
 			return -1;
 		}

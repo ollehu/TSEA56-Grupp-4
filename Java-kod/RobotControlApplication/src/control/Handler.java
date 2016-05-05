@@ -38,11 +38,13 @@ public class Handler implements Observer{
 		/* initialize animator and action handler
 		this is split into multiple calls due to
 		the way they interact */
-		animator = new Animator(this);
-		actionHandler = new ActionHandler(animator);
+		actionHandler = new ActionHandler();
 		
+		animator = new Animator(this);
 		animator.initializeMenuBar();
 		animator.showFrame();
+		
+		actionHandler.initializeActionHandler(animator, log, robotData, serialCommunicationHandler);
 		
 		// initialize key handler and serial com
 		keyHandler = new KeyHandler(animator, actionHandler);

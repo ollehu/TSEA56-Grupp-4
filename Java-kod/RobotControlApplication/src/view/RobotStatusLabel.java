@@ -28,10 +28,12 @@ public class RobotStatusLabel extends JLabel{
 		this.value = value;
 		
 		if(states != null) {
-			if(value == 1) {
+			if(states.length == 2 && value == 1) {
 				setForeground(CustomColors.ON_COLOR);
-			} else if (value == 0){
+			} else if (states.length == 2 && value == 0){
 				setForeground(CustomColors.OFF_COLOR);
+			} else {
+				setForeground(Color.BLACK);
 			}
 			
 			setText(name + ": " + states[value]);

@@ -13,14 +13,14 @@ public class SerialCommunicationHandler implements Observer{
 	 * Log
 	 */
 	private Log log;
-	
+
 	/**
 	 * Data storage
 	 */
 	private RobotData robotData;
 	private SensorData sensorData;
 	private MapData mapData;
-	
+
 	/**
 	 * Serial port
 	 */
@@ -40,14 +40,14 @@ public class SerialCommunicationHandler implements Observer{
 		this.sensorData = sensorData;
 		this.mapData = mapData;
 	}
-	
+
 	/**
 	 * Robot status observer
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -56,25 +56,21 @@ public class SerialCommunicationHandler implements Observer{
 	 * @param portName port selected by user through GUI
 	 * @throws SerialPortException
 	 */
-	public void connectToSerialPort(String portName) {
+	public void connectToSerialPort(String portName) throws SerialPortException {
 		serialPort = new SerialPort(portName);
 
-		try {
-			// open port for communication
-			serialPort.openPort();
-			// baundRate, numberOfDataBits, numberOfStopBits, parity
-			serialPort.setParams(baudRate, numberOfDataBits, numberOfStopBits, numberOfParityBits);
-			// byte data transfer
-			serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
-					SerialPort.FLOWCONTROL_RTSCTS_OUT);
-			// add port listener
-			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-			// ping robot
-			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-		} catch (SerialPortException e) {
-			e.printStackTrace();
-		}
-		
+		// open port for communication
+		serialPort.openPort();
+		// baundRate, numberOfDataBits, numberOfStopBits, parity
+		serialPort.setParams(baudRate, numberOfDataBits, numberOfStopBits, numberOfParityBits);
+		// byte data transfer
+		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
+				SerialPort.FLOWCONTROL_RTSCTS_OUT);
+		// add port listener
+		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		// ping robot
+		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+
 	}
 
 	/**
@@ -103,7 +99,7 @@ public class SerialCommunicationHandler implements Observer{
 		try {
 			// send dataID byte
 			sendData(convertIntToByte(dataID));
-			
+
 			// send command byte
 			sendData(convertIntToByte(commandID));
 
@@ -115,15 +111,15 @@ public class SerialCommunicationHandler implements Observer{
 	}
 
 	//================================================================================
-    // Accessors
-    //================================================================================
+	// Accessors
+	//================================================================================
 	public SerialPort getSerialPort() {
 		return serialPort;
 	}
-	
+
 	//================================================================================
-    // Internal methods
-    //================================================================================
+	// Internal methods
+	//================================================================================
 	private byte convertIntToByte(int data) {
 		byte binaryByte = (byte) (data & (0xFF));
 		return binaryByte;
@@ -155,10 +151,10 @@ public class SerialCommunicationHandler implements Observer{
 				try {
 					byte[] communicationsIDByte = serialPort.readBytes(1);
 					int communicationsID = Byte.toUnsignedInt(communicationsIDByte[0]);
-					
+
 					// get byte string length
 					int byteStringLength = 100;
-					
+
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						byteStringLength = 2;
 					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
@@ -170,16 +166,16 @@ public class SerialCommunicationHandler implements Observer{
 					} else {
 						serialPort.purgePort(SerialPort.PURGE_RXCLEAR);
 					}
-					
+
 					// read data from port
 					byte[] receivedData = new byte[byteStringLength];
-					
+
 					try {
 						receivedData = serialPort.readBytes(byteStringLength, 70);
 					} catch (SerialPortTimeoutException e) {
 						return;
 					}
-					
+
 					// respond to received data
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						updateControlSettings(receivedData);
@@ -190,7 +186,7 @@ public class SerialCommunicationHandler implements Observer{
 					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
 						updateControlData(receivedData);
 					}
-					
+
 				}
 				catch (SerialPortException ex) {
 					System.out.println("Error in receiving string from COM-port: " + ex);
@@ -203,17 +199,17 @@ public class SerialCommunicationHandler implements Observer{
 	private void updateControlSettings(byte[] receivedData) {
 		int identifier = Byte.toUnsignedInt(receivedData[0]);
 		int value = Byte.toUnsignedInt(receivedData[1]);
-		
+
 		// update robot data
 		robotData.update(identifier, value);
 	}
 
 	private void updateSensorValues(byte[] receivedData) {
-		
+
 		// convert byte to unsigned ints
 		int[] sensorValues = new int[6];
 		int j = 0;
-		
+
 		for(int i = 1; i < receivedData.length; i+=2) {
 			if(i == 9) {
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) * 128;
@@ -227,9 +223,9 @@ public class SerialCommunicationHandler implements Observer{
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
 				j++;
 			}
-			
+
 		}
-		
+
 		sensorData.update(sensorValues);
 	}
 
@@ -237,9 +233,9 @@ public class SerialCommunicationHandler implements Observer{
 		// get x- and y-coordinate
 		int xCoordinate = Byte.toUnsignedInt(receivedData[0]);
 		int yCoordinate = Byte.toUnsignedInt(receivedData[1]);
-		
+
 		int value = Byte.toUnsignedInt(receivedData[2]);
-	
+
 		// update map
 		mapData.update(xCoordinate, yCoordinate, value);
 	}
@@ -247,42 +243,42 @@ public class SerialCommunicationHandler implements Observer{
 	private void updateControlData(byte[] receivedData) {
 		int identifier = Byte.toUnsignedInt(receivedData[0]);
 		int value = Byte.toUnsignedInt(receivedData[1]);
-		
+
 		// update robot data
 		robotData.update(identifier, value);
 	}
-	
+
 	//================================================================================
-    // Testing
-    //================================================================================
+	// Testing
+	//================================================================================
 	private int xCoordinate = 15;
 	private int yCoordinate = 15;
-	
+
 	public void simulateReceivedData() {
 		// sensor data test
-//		byte[] simulatedData = new byte[14];
-//		
-//		for(int index = 1; index < 14; index += 2) {
-//			simulatedData[index] = (byte) (index * 2);
-//		}
-//		
-//		updateSensorValues(simulatedData);
-		
+		//		byte[] simulatedData = new byte[14];
+		//		
+		//		for(int index = 1; index < 14; index += 2) {
+		//			simulatedData[index] = (byte) (index * 2);
+		//		}
+		//		
+		//		updateSensorValues(simulatedData);
+
 		// robot status data test
-//		byte[] simulatedData = new byte[2];
-//		
-//		simulatedData[0] = (byte) ControlSettingID.DEBUG_MODE;
-//		simulatedData[1] = (byte) 1;
-//		
-//		updateControlSettings(simulatedData);
-		
+		//		byte[] simulatedData = new byte[2];
+		//		
+		//		simulatedData[0] = (byte) ControlSettingID.DEBUG_MODE;
+		//		simulatedData[1] = (byte) 1;
+		//		
+		//		updateControlSettings(simulatedData);
+
 		// map data test
 		byte[] simulatedData = new byte[3];
-		
+
 		simulatedData[0] = (byte) xCoordinate++;
 		simulatedData[1] = (byte) yCoordinate++;
 		simulatedData[2] = (byte) 243;
-		
+
 		updateMap(simulatedData);
 	}
 }
