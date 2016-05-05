@@ -124,7 +124,7 @@ Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. 
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
-Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen sker åt båda hållen och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen är dubbelriktad och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
 
 \begin{figure}[htbp]
 \centering
@@ -134,15 +134,17 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med
 \end{figure}
 
 \subsection{Beskrivning av systemet}
-Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, en gyroskop sensor som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna och kan ta svängar utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. Ifall roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
+Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, ett gyroskop som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. I det fall då roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
 
+\section{Begränsningar}
+Roboten är begränsad till att navigera i enbart korridorer och att alla korsningar sker med 90 gradersvinklar.
 
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
 I detta avsnitt följer en detaljerad beskrivning av systemets ingående moduler. 
 
 \subsection{Huvudmodulen}
-Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}.
+Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. När det kommer till prioriteringen av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
@@ -150,7 +152,9 @@ Huvudmodulen har som uppgift att ta emot och förmedla information mellan de and
 	\caption{Intermodulär kommunikation \label{communication}}
 \end{figure}
 
-Det finns två olika körlägen för roboten, ett autonomt och ett manuellt. När det autonoma läget är aktiverat tas beslut utifrån datan som kommunicerats från sensormodulen vilken används i huvudmodulens avsökningsalgoritm för att bestämma vilken kartmodul om 40x40 cm som ska besökas härnäst. När beslutet är taget skickas kommando till styrmodulen som utför önskad operation. Därefter inväntar huvudmodulen att styrmodulen ska meddela att den är klar med operationen. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}
+Det finns två olika körlägen för roboten, ett autonomt och ett manuellt läge. När det autonoma läget är aktiverat tas beslut utifrån en avsökningsalgoritm som i grunden sker genom högerföljning och där beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickats från sensormodulen. När beslutet är taget skickas motsvarande kommando till styrmodulen, som sedan utför önskad operation. Nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sen vidarebefodrar dessa till styrmodulen. Den informationen som skickas är begränsad till när en knapp trycks ned och när en knapp släpps, och i så fall vilken. Flödet finns beskrivet i figur \ref{manualMode}. Rent hårdvarumässigt styrs detta med hjälp av en switch kopplad till huvudmodulen.
+
+Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstras algoritm. När målet är funnet numreras varje nod med en siffra som representerar ett avstånd till målet. Kortaste väg från start till mål fås då genom att, för varje nod välja den närliggande nod med lägst siffra. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet som motsvarar hur många steg från start som målet är om roboten följt vägen och undvikt återvändsgränder. Detta avstånd jämförs sedan med summan av hur köravståndet från målet till aktuell nod samt manhattanavståndet från start till aktuell nod. Är det uträknade avståndet lika eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet.
 
 \begin{figure}[htbp]
 \centering
@@ -159,6 +163,12 @@ Det finns två olika körlägen för roboten, ett autonomt och ett manuellt. Nä
 	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.7\linewidth}{!}{
+	\input{images/manualMode}}
+	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
+\end{figure}
 
 \pagebreak
 
