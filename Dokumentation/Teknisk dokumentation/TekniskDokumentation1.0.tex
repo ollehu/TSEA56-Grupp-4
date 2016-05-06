@@ -132,7 +132,7 @@ Nedan följer en sammanfattning av den teori som robotens reglering och optimeri
 
 
 \subsection{Reglering}
-
+\label{subsection:reglering}
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
@@ -214,7 +214,26 @@ och är placerade enligt figur \ref{sensors}.
 \end{figure}
 
 \subsection{Styrmodulen}
-Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska kunna hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon.
+Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon. Styrmodulen kan agera i två lägen, autonomt eller manuellt läge.
+
+\subsubsection*{Autonomt läge}
+I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som huvudmodulen utövar. Styrmodulen begär ett nytt styrkommando genom att skicka en uppåtflank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Rotera vänster}, \textit{Rotera höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
+
+När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen, därefter kallas den metod som sköter reglering av styrkommandot. 
+
+Styrkommandot \textit{Fram} innebär att roboten ska flytta sig en modul föröver. Modullängden är detsamma för hela banan och satt till $40$ cm. Roboten beräknar tillryggalagd sträcka genom att beräkna antalet varv hjulen roterar och under färden sker reglering enligt avsnitt \ref{subsection:reglering}. När modulen är avverkad kallas återigen huvudmodulen för ett nytt styrkommando. Tack vare hastigheten hos I\textsuperscript{2}C-bussen och fördröjningen hos PWM-styrningen agerar roboten på nästa kommando utan ett ryck emellan. 
+
+Styrkommandot \textit{Rotera vänster/höger} innebär en vinkelrät rotation åt respektive håll. Här förutsätts roboten befinna sig mitt i en modul och behöver med andra ord inte reglera sig i vertikal- eller horisontellt led. Regleringen av rotation sker med hjälp av det gyro som förmedlar vinkelhastighet till sensormodulen. När en rotation påbörjas summeras vinkelhastigheterna hos styrmodulen i takt med varenda nytt sensordata. Nivån som summationen sker till byter endast tecken mellan vänster- och högerrotation. Det är rotationsregleringen som sätter kravet att sensordata ska skickas med $30$ Hz för att minimera felet vid snabba rotationer. 
+
+Styrkommandot \textit{Rotera 180\textdegree} innebär ett halvt varvs rotation av roboten. Regleringen sker precis på samma sätt som den vinkelräta rotationen ovan. Den enda skillnaden är det tak summationen sker till. 
+
+För att hantera det sensorfel som gyrot för med sig följer ytterligare en reglering efter båda typerna av rotation. Regleringen bygger på att det finns en vägg att förhålla sig till och kallas därför inte om roboten befinner sig i en fyrvägskorsning. När det finns en vägg åt något håll rätar roboten upp sig genom att minimera differensen mellan den främre och bakre sensorn. 
+
+Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen reglering sker. 
+
+\subsubsection*{Manuellt läge}
+
+
 
 \subsection{Datormodulen}
 
