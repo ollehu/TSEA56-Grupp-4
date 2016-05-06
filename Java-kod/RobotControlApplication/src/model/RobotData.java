@@ -18,11 +18,14 @@ public class RobotData extends Observable{
 	public RobotData() {
 		robotStatus = new ArrayList<>();
 		
-		int index = 0;
-		for(String statusName : OtherConstants.ROBOT_STATUS_NAMES) {
+		for(int index = 0; index < OtherConstants.ROBOT_STATUS_NAMES.length; index++) {
 			robotStatus.add(new RobotStatus(index));
-			index++;
 		}
+	}
+	
+	public void initialize() {
+		update(ControlSettingID.SPEED, 50);
+		update(ControlSettingID.DEBUG_MODE, 0);
 	}
 	
 	/**
@@ -53,6 +56,25 @@ public class RobotData extends Observable{
 		statusToUpdate.setValue(value);
 		setChanged();
 		notifyObservers(statusToUpdate);
+	}
+	
+	//================================================================================
+    // Accessors
+    //================================================================================
+	public int getDebugMode() {
+		return robotStatus.get(1).getValue();
+	}
+	
+	public int getSpeed() {
+		return robotStatus.get(3).getValue();
+	}
+	
+	public int getLastControlCommand() {
+		return robotStatus.get(4).getValue();
+	}
+	
+	public int getControlSetting(int controlSettingID) {
+		return robotStatus.get(convertIdentifierToIndex(controlSettingID)).getValue();
 	}
 	
 	//================================================================================
