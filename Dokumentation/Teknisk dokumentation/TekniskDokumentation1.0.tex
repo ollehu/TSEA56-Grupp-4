@@ -143,6 +143,15 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med
 \subsection{Beskrivning av systemet}
 Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, ett gyroskop som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. I det fall då roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
 
+Blockshemat för systemet återfinns i figur \ref{blockSystem}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{1\linewidth}{!}{
+	\input{images/systemet}}
+	\caption{Övergripande blockschema för systemet}	\label{blockSystem}
+\end{figure}
+
 \section{Begränsningar}
 Roboten är begränsad till att navigera i enbart korridorer och att alla korsningar sker med 90 gradersvinklar.
 

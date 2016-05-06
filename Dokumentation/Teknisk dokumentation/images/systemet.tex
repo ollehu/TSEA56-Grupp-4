@@ -1,0 +1,48 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[block](start){Start};
+\node[decision, below of = start, aspect = 2, text width = 8 em] (foundTarget) {Målet funnet?};
+\node[block, below of = foundTarget, node distance = 3cm, text width = 7em] (explore) {Utforska enligt högerföljning};
+\node[decision, right of = foundTarget, text width = 6em, aspect = 2, node distance = 6cm] (foundShortestPath) {Garanterat funnit kortaste väg?};
+\node[block, below of = foundShortestPath, node distance = 3cm, text width = 7em] (exploreTargetFound) {Utforska enligt högerföljning och optimering};
+\node[block, right of = foundShortestPath, node distance = 5cm] (pickUp) {Hämta förnödenhet vid start};
+\node[block, right of = pickUp, node distance = 3cm, text width = 6em] (shortestPath) {Från start följa kortaste väg till målet};
+\node[block, right of = shortestPath, node distance = 3cm] (drop) {Lämna förnödenhet};
+\node[block, below of = drop, node distance = 3cm, text width = 7em] (return) {Återvänd till startpunkt den kortaste vägen};
+\node[block, below of = return, node distance = 3cm] (stop) {Slut};
+
+\draw[->](start) --  (foundTarget);
+\draw[->](foundTarget) -- node[near start, right]{nej} (explore);
+\draw[->] (explore.west) -| ++(-1,3) -| (foundTarget.west);
+\draw[->](foundTarget) -- coordinate[midway] (aux) node[near start, above]{ja} (foundShortestPath);
+\draw[->] (foundShortestPath) -- node[near start, right]{nej}(exploreTargetFound);
+\draw[->] (exploreTargetFound) -| (aux);
+\draw[->] (foundShortestPath) -- node[near start, above]{ja}(pickUp);
+\draw[->] (pickUp) -- (shortestPath);
+\draw[->] (shortestPath) -- (drop);
+\draw[->] (drop) -- (return);
+\draw[->] (return) -- (stop);
+
+	\end{tikzpicture}
+	
+\end{document}
