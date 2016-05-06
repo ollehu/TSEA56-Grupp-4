@@ -25,6 +25,7 @@ public class CustomColors {
 	public static final Color UNKNOWN_COLOR = new Color(155, 155, 155);
 	
 	public static final  Color WALL_BACKGROUND_COLOR = new Color(10,10,10);
+	public static final  Color UNEXPLORED_BACKGROUND_COLOR = new Color(155, 155, 155);
 	public static final  Color EXPLORED_BACKGROUND_COLOR = new Color(0, 0, 155);
 	
 	public static final  Color START_BACKGROUND_COLOR = new Color(0, 155, 0);

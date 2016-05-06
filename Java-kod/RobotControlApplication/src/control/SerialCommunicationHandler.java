@@ -255,8 +255,8 @@ public class SerialCommunicationHandler {
 	 * @param receivedData
 	 */
 	private void updateControlData(byte[] receivedData) {
-		int identifier = Byte.toUnsignedInt(receivedData[0]);
-		int value = Byte.toUnsignedInt(receivedData[1]);
+		int identifier = ControlSettingID.LAST_CONTROL_COMMAND;
+		int value = Byte.toUnsignedInt(receivedData[0]);
 
 		// update robot data
 		robotData.update(identifier, value);
