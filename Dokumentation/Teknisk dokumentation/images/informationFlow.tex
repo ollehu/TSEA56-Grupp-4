@@ -22,19 +22,21 @@
 
 \node (robot) at (-1,4.2) {\verb+Robot+};
 \node[block] (styr) at (0,0) {Styrmodul};
-\node[block] (sensor) at (0,3) {Sensormodul};
-\node[block] (huvud) at (4,1.5) {Huvudmodul};
-\draw[dashed] (-1.65,-1) rectangle (5.6,4);
+\node[block] (sensor) at (3.5,3) {Sensormodul};
+\node[block] (huvud) at (7,0) {Huvudmodul};
+\draw[dashed] (-1.65,-2) rectangle (8.6,4);
 
-\node[block] (dator) at (11,1.5) {Datormodul};
+\node[block] (dator) at (15,0) {Datormodul};
 
-\draw[-latex] (huvud) edge node[above]{Sensordata} (dator);
-\draw[-latex, bend left] (huvud) edge node[above]{Kartinformation} (dator);
-\draw[-latex, bend left] (dator) edge node[below]{Styrkommandon} (huvud);
+
+\draw[-latex, bend left] (huvud) edge node[above]{Kartinformation} node[below]{Sensordata}(dator);
+\draw[-latex, bend left] (dator) edge node[below]{Styrkommandon} node[above]{Styrinställningar} (huvud);
+
+\draw[-latex, bend left] (huvud) edge node[below]{Sensordata}(styr);
+\draw[-latex] (huvud) edge node[above]{Styrkommandon} (styr);
+\draw[-latex, bend right] (huvud) edge node[above]{Styrinställningar} (styr);
 
 \draw[->] (sensor.east) -| node[above]{Sensordata}(huvud.north);
-\draw[->] (huvud.west) -| node[above]{Sensordata} (styr.north);
-\draw[->] (huvud.south) |- node[below]{Styrkommandon} (styr.east);
 	\end{tikzpicture}
 	
 \end{document}
