@@ -101,7 +101,7 @@ public class Animator {
 		
 		// add robot status panel
 		constraints.gridx = 1;
-		constraints.fill = GridBagConstraints.NONE;
+		constraints.fill = GridBagConstraints.BOTH;
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		robotStatusPanel = new RobotStatusPanel(handler.getActionHandler());
 		frame.add(robotStatusPanel, constraints);

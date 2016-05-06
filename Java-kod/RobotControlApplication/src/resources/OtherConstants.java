@@ -21,8 +21,10 @@ public class OtherConstants {
 															{"off", "on"},
 															{"closed", "open"},
 															null,
-															{"forward", "backward", "left", "right",
-																"none", "none", "none", "none", "none", "stop"}
+															{"none", "forward", "backward", "left", 
+																"right", "forwards right", "forwards left", 
+																"backwards right", "backwards left", 
+																"none", "stop"}
 	};
 	
 	/**

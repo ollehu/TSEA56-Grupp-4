@@ -54,10 +54,12 @@ public class MapPanel extends JPanel implements Observer{
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		constraints = new GridBagConstraints();
+		constraints.insets = new Insets(2, 2, 2, 2);
 		constraints.weightx = 1.0;
 		constraints.weighty = 1.0;
 		constraints.gridx = 0;
 		constraints.gridy = 0;
+		constraints.anchor = GridBagConstraints.CENTER;
 		constraints.fill = GridBagConstraints.BOTH;
 		
 		exploredMapElements = new ArrayList<>();

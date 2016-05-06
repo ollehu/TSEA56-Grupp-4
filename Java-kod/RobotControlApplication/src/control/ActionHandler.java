@@ -303,8 +303,8 @@ public class ActionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!(robotData.getLastControlCommand() == controlCommand - 1)) {
-				robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommand - 1);
+			if(!(robotData.getLastControlCommand() == controlCommand)) {
+				robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommand);
 				serialCOM.sendToRobot(CommunicationID.CONTROL_DATA, controlCommand, robotData.getSpeed());
 			}
 		}
@@ -370,9 +370,10 @@ public class ActionHandler {
 
 		@Override
 		public void tableChanged(TableModelEvent e) {
-			//TODO add table changed handling
-			//robotData.update(identifier, value);
+			// TODO Auto-generated method stub
+			
 		}
+
 		
 	}
 }
