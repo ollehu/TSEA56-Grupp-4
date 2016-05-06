@@ -35,6 +35,11 @@ public class KeyHandler {
 		actionMap.put("rotate left", actionHandler.rotateLeftAction);
 		actionMap.put("backwards", actionHandler.backwardsAction);
 		actionMap.put("rotate right", actionHandler.rotateRightAction);
+		actionMap.put("stop", actionHandler.stopAction);
+		
+		actionMap.put("increase speed", actionHandler.increaseSpeedAction);
+		actionMap.put("decrease speed", actionHandler.decreaseSpeedAction);
+		actionMap.put("claw", actionHandler.clawAction);
 		
 		bindTemporaryKeys();
 	}
@@ -51,6 +56,52 @@ public class KeyHandler {
 		}
 	}
 	
+	/**
+	 * Binds all temporary keys i.e. those that can be unbound
+	 */
+	public void bindTemporaryKeys() {
+		JPanel bindPanel = animator.getRobotStatusPanel();
+		
+		// get input map and add keys		
+		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		inputMap.put(KeyStroke.getKeyStroke('w'), "forwards");
+		inputMap.put(KeyStroke.getKeyStroke('a'), "rotate left");
+		inputMap.put(KeyStroke.getKeyStroke('s'), "backwards");
+		inputMap.put(KeyStroke.getKeyStroke('d'), "rotate right");
+		
+		inputMap.put(KeyStroke.getKeyStroke("released W"), "stop");
+		inputMap.put(KeyStroke.getKeyStroke("released A"), "stop");
+		inputMap.put(KeyStroke.getKeyStroke("released S"), "stop");
+		inputMap.put(KeyStroke.getKeyStroke("released D"), "stop");
+		
+		inputMap.put(KeyStroke.getKeyStroke('x'), "increase speed");
+		inputMap.put(KeyStroke.getKeyStroke('z'), "decrease speed");
+		inputMap.put(KeyStroke.getKeyStroke('c'), "claw");
+	}
+	
+	/**
+	 * Unbinds all temporary keys
+	 */
+	public void unbindTemporaryKeys() {
+		JPanel bindPanel = animator.getRobotStatusPanel();
+		
+		// get input map and remove keys		
+		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		inputMap.put(KeyStroke.getKeyStroke('w'), "none");
+		inputMap.put(KeyStroke.getKeyStroke('a'), "none");
+		inputMap.put(KeyStroke.getKeyStroke('s'), "none");
+		inputMap.put(KeyStroke.getKeyStroke('d'), "none");
+		
+		inputMap.put(KeyStroke.getKeyStroke("released W"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("released A"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("released S"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("released D"), "none");
+		
+		inputMap.put(KeyStroke.getKeyStroke('x'), "none");
+		inputMap.put(KeyStroke.getKeyStroke('z'), "none");
+		inputMap.put(KeyStroke.getKeyStroke('c'), "none");
+	}
+	
 	//================================================================================
     // Internal methods
     //================================================================================
@@ -60,28 +111,4 @@ public class KeyHandler {
 		// get input map and add keys		
 		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
 	}
-	
-	private void bindTemporaryKeys() {
-		JPanel bindPanel = animator.getRobotStatusPanel();
-		
-		// get input map and add keys		
-		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-		inputMap.put(KeyStroke.getKeyStroke('w'), "forwards");
-		inputMap.put(KeyStroke.getKeyStroke('a'), "rotate left");
-		inputMap.put(KeyStroke.getKeyStroke('s'), "backwards");
-		inputMap.put(KeyStroke.getKeyStroke('d'), "rotate right");
-
-	}
-	
-	private void unbindTemporaryKeys() {
-		JPanel bindPanel = animator.getRobotStatusPanel();
-		
-		// get input map and remove keys		
-		InputMap inputMap = bindPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-		inputMap.put(KeyStroke.getKeyStroke('w'), "none");
-		inputMap.put(KeyStroke.getKeyStroke('a'), "none");
-		inputMap.put(KeyStroke.getKeyStroke('s'), "none");
-		inputMap.put(KeyStroke.getKeyStroke('d'), "none");
-	}
-	
 }

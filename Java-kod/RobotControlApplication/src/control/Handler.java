@@ -35,6 +35,9 @@ public class Handler implements Observer{
 		sensorData = new SensorData();
 		mapData = new MapData();
 		
+		//initialize serial com
+		serialCommunicationHandler = new SerialCommunicationHandler(log, robotData, sensorData, mapData);
+		
 		/* initialize animator and action handler
 		this is split into multiple calls due to
 		the way they interact */
@@ -48,10 +51,10 @@ public class Handler implements Observer{
 		
 		// initialize key handler and serial com
 		keyHandler = new KeyHandler(animator, actionHandler);
-		serialCommunicationHandler = new SerialCommunicationHandler(log, robotData, sensorData, mapData);
 		
 		// assign all observers
 		assignObservers();
+		dataInitialization();
 	}
 	
 	
@@ -81,20 +84,32 @@ public class Handler implements Observer{
 	
 	private void setAutonomousMode(boolean state) {
 		//TODO add mode handling
+		
+		// internal handling
 		if(state) {
+			keyHandler.unbindTemporaryKeys();
 			System.out.println("Auto on");
 		} else {
+			keyHandler.unbindTemporaryKeys();
 			System.out.println("Auto off");
 		}
+		
+		// external handling
+		animator.getRobotStatusPanel().setAutonomousMode(state);
 	}
 	
 	private void setDebugMode(boolean state) {
 		//TODO add mode handling
+		
+		//internal handling
 		if(state) {
 			System.out.println("Debug on");
 		} else {
 			System.out.println("Debug off");
 		}
+		
+		// external handling
+		animator.getRobotStatusPanel().setDebugMode(state);
 	}
 	
 	//================================================================================
@@ -123,6 +138,10 @@ public class Handler implements Observer{
 		
 		// add map data observer
 		mapData.addObserver(animator.getMapPanel());
+	}
+	
+	private void dataInitialization() {
+		robotData.initialize();
 	}
 	
 	//================================================================================

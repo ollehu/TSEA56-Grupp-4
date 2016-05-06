@@ -1,12 +1,13 @@
 package control;
 
+import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -25,35 +26,42 @@ public class ActionHandler {
 	private Log log;
 	private RobotData robotData;
 	private SerialCommunicationHandler serialCOM;
-	
+
 	//TODO fundera över implementeringen av denna!
-	
+
 	/**
 	 * Public actions for use
 	 */
 	public DisplayKeybindingsAction displayKeybindingsAction = new DisplayKeybindingsAction();
-	
+
 	public SaveLogAction saveLogAction = new SaveLogAction();
 	public CommentLogAction commentLogAction = new CommentLogAction();
-	
+
 	public SelectCOMPortAction selectCOMPortAction = new SelectCOMPortAction();
-	
+
 	public DebugModeAction debugModeAction = new DebugModeAction();
 	public ClearMapAction clearMapAction = new ClearMapAction();
-	
+
 	public SendControlCommandAction rotateLeftAction = new SendControlCommandAction(ControlID.ROTATE_LEFT);
 	public SendControlCommandAction rotateRightAction = new SendControlCommandAction(ControlID.ROTATE_RIGHT);
 	public SendControlCommandAction forwardsAction = new SendControlCommandAction(ControlID.FORWARDS);
 	public SendControlCommandAction backwardsAction = new SendControlCommandAction(ControlID.BACKWARDS);
-	
-//	public SendControlCommandAction forwardsRightAction = new SendControlCommandAction(ControlID.FORWARDS_RIGHT);
-//	public SendControlCommandAction forwardsLeftAction = new SendControlCommandAction(ControlID.FORWARDS_LEFT);
-//	public SendControlCommandAction backwardsLeftAction = new SendControlCommandAction(ControlID.BACKWARDS_LEFT);
-//	public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
-	
 	public SendControlCommandAction stopAction = new SendControlCommandAction(ControlID.STOP);
-	public SendControlCommandAction clawAction = new SendControlCommandAction(ControlID.ROTATE_LEFT);
 	
+	public ChangeRobotSpeedAction increaseSpeedAction = new ChangeRobotSpeedAction(true);
+	public ChangeRobotSpeedAction decreaseSpeedAction = new ChangeRobotSpeedAction(false);
+	
+	//	public SendControlCommandAction forwardsRightAction = new SendControlCommandAction(ControlID.FORWARDS_RIGHT);
+	//	public SendControlCommandAction forwardsLeftAction = new SendControlCommandAction(ControlID.FORWARDS_LEFT);
+	//	public SendControlCommandAction backwardsLeftAction = new SendControlCommandAction(ControlID.BACKWARDS_LEFT);
+	//	public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
+
+	public SendControlSettingAction clawAction = new SendControlSettingAction("","",ControlSettingID.CLAW);
+	public SendControlSettingAction startRunAction = new SendControlSettingAction("Start run", "Starts an autonomous run",
+																					ControlSettingID.NEXT_DECISION);
+	public SendControlSettingAction nextDecisionAction = new SendControlSettingAction("Next decision", "Commands robot to take next autonomous decision",
+			ControlSettingID.NEXT_DECISION);
+
 	/**
 	 * Initialize action handler
 	 */
@@ -63,64 +71,87 @@ public class ActionHandler {
 		this.robotData = robotData;
 		this.serialCOM = serialCOM;
 	}
-	
-	
+
+
 	//================================================================================
-    // Menu actions
-    //================================================================================
+	// Menu actions
+	//================================================================================
 	/**
-	 * action	
+	 * Displays all keybindings used by the program	
 	 * @author isak
 	 *
 	 */
 	private class DisplayKeybindingsAction extends AbstractAction {
 
 		private JTextArea textArea;
-		
+
 		public DisplayKeybindingsAction() {
 			super("Display keybindings");
 
 			putValue(SHORT_DESCRIPTION, "Displays all hotkeys used by the program");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			//TODO display keybindings popup
+			// create JDialog
+			JDialog keybindingsDialog = new JDialog(animator.getFrame(), "Keybindings", Dialog.DEFAULT_MODALITY_TYPE);
+
+			JTextArea textArea = new JTextArea();
+			textArea.setAutoscrolls(true);
+			textArea.setPreferredSize(new Dimension(300, 300));
+			textArea.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+			textArea.setFont(new Font("courier new", Font.PLAIN, 12));
+			textArea.setLineWrap(true);
+
+			// add text to text area
+			for(String row : OtherConstants.KEYBINDINGS_INFO_TEXT) {
+				textArea.append(row + "\n");
+			}
+			
+			JScrollPane textAreaScroll = new JScrollPane();
+			textAreaScroll.setViewportView(textArea);
+			textAreaScroll.setAutoscrolls(true);
+			
+			keybindingsDialog.add(textAreaScroll);
+			keybindingsDialog.pack();
+			keybindingsDialog.setVisible(true);
 		}
-		
+
 	}
-	
+
 	private class SaveLogAction extends AbstractAction {
 
 		public SaveLogAction() {
 			super("Save log", UIManager.getIcon("FileView.floppyDriveIcon"));
-			
+
 			putValue(SHORT_DESCRIPTION, "Closes and saves the log after asking for a final comment");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO save log
-			animator.simulateReceivedData();
+			//animator.simulateReceivedData();
+			robotData.toggle(ControlSettingID.AUTONOMOUS_MODE);
 		}
-		
+
 	}
-	
+
 	private class CommentLogAction extends AbstractAction {
 
 		public CommentLogAction() {
 			super("Comment log");
-			
+
 			putValue(SHORT_DESCRIPTION, "Appends a comment to the log");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO comment log
 		}
-		
+
 	}
-	
+
 	/**
 	 * Connects to robot communications port through user input
 	 * @author isak
@@ -130,10 +161,10 @@ public class ActionHandler {
 
 		public SelectCOMPortAction() {
 			super("Select communications port");
-			
+
 			putValue(SHORT_DESCRIPTION, "Select a port for robot communication from the available ports");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			String osName = System.getProperty("os.name");
@@ -164,7 +195,7 @@ public class ActionHandler {
 						null,
 						portNames,
 						portNames[0]);
-				
+
 				if(selectedPort != null) {
 					// connect to port
 					try {
@@ -176,13 +207,13 @@ public class ActionHandler {
 								JOptionPane.INFORMATION_MESSAGE);
 					} catch (SerialPortException e2) {
 						String toolTip;
-						
+
 						if(e2.getExceptionType().equals("Port busy")) {
 							toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
 						} else {
 							toolTip = "";
 						}
-						
+
 						JOptionPane.showMessageDialog(animator.getFrame(),
 								e2.getExceptionType() + toolTip,
 								e2.getPortName(),
@@ -192,72 +223,115 @@ public class ActionHandler {
 			}
 		}
 	}
-	
+
+	/**
+	 * Activates debug mode, both internally and on the robot through a sent command
+	 * @author isak
+	 *
+	 */
 	private class DebugModeAction extends AbstractAction {
 
 		public DebugModeAction() {
 			super("Debug mode");
-			
+
 			putValue(SHORT_DESCRIPTION, "Toggle robot debug mode");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			robotData.toggle(ControlSettingID.DEBUG_MODE);
-			//TODO add send 
+			serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.DEBUG_MODE, robotData.getDebugMode());
 		}
-		
+
 	}
-	
+
+	/**
+	 * Clears the internal map. Does NOT affect the robots map!
+	 * @author isak
+	 *
+	 */
 	private class ClearMapAction extends AbstractAction {
 
 		public ClearMapAction() {
 			super("Clear map");
-			
+
 			putValue(SHORT_DESCRIPTION, "Clears the map. Does NOT affect the robot's internal map");
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			animator.getMapPanel().clear();
 		}
-		
+
 	}
-	
+
 	//================================================================================
-    // Robot control actions
-    //================================================================================
+	// Robot control actions
+	//================================================================================
 	private class SendControlCommandAction extends AbstractAction {
 
 		private int controlCommand;
-		
+
 		public SendControlCommandAction(int controlCommand) {
-			super("Send control command");
+			super();
 			
 			this.controlCommand = controlCommand;
 		}
-		
+
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommand - 1);
+			if(!(robotData.getLastControlCommand() == controlCommand - 1)) {
+				robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommand - 1);
+				serialCOM.sendToRobot(CommunicationID.CONTROL_DATA, controlCommand, robotData.getSpeed());
+			}
 		}
-		
+
 	}
-	
+
 	private class SendControlSettingAction extends AbstractAction {
 
 		private int controlSetting;
-		
-		public SendControlSettingAction(int controlSetting) {
-			super("Send control setting");
-			
+
+		public SendControlSettingAction(String name, String description, 
+										int controlSetting) {
+			super(name);
+			putValue(SHORT_DESCRIPTION, description);
+
 			this.controlSetting = controlSetting;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			if(controlSetting == ControlSettingID.NEXT_DECISION) {
+				serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, controlSetting, 1);
+
+			} else {
+				robotData.toggle(controlSetting);
+				serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, controlSetting, robotData.getControlSetting(controlSetting));
+			}
+		}
+	}
+	
+	/**
+	 * Increments or decrements the robots speed by +/-10
+	 * @author isak
+	 *
+	 */
+	private class ChangeRobotSpeedAction extends AbstractAction {
+
+		private boolean isIncrement;
+		
+		public ChangeRobotSpeedAction(boolean isIncrement) {
+			this.isIncrement = isIncrement;
 		}
 		
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO Auto-generated method stub
+			if(isIncrement) {
+				robotData.update(ControlSettingID.SPEED, robotData.getSpeed() + 10);
+			} else {
+				robotData.update(ControlSettingID.SPEED, robotData.getSpeed() - 10);
+			}
 		}
-		
 	}
 }

@@ -16,7 +16,8 @@ public class OtherConstants {
 															{"off", "on"},
 															{"closed", "open"},
 															null,
-															{"forward", "backward", "left", "right"}
+															{"forward", "backward", "left", "right",
+																"none", "none", "none", "none", "none", "stop"}
 	};
 	
 	/**
@@ -53,7 +54,12 @@ public class OtherConstants {
 			{"W - move robot forward",
 			"A - rotate robot left",
 			"S - move robot backward",
-			"D - rotate robot right"};
+			"D - rotate robot right",
+			"",
+			"C - open/close claw",
+			"",
+			"Shift - increase speed",
+			"Ctrl - decrease speed"};
 	
 }
 

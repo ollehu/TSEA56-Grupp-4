@@ -7,7 +7,7 @@ import jssc.*;
 import model.*;
 import resources.*;
 
-public class SerialCommunicationHandler implements Observer{
+public class SerialCommunicationHandler {
 
 	/**
 	 * Log
@@ -34,20 +34,18 @@ public class SerialCommunicationHandler implements Observer{
 	private int numberOfStopBits = 1;
 	private int numberOfParityBits = 0;
 
+	/**
+	 * Constructor
+	 * @param log
+	 * @param robotData
+	 * @param sensorData
+	 * @param mapData
+	 */
 	public SerialCommunicationHandler(Log log, RobotData robotData, SensorData sensorData, MapData mapData) {
 		this.log = log;
 		this.robotData = robotData;
 		this.sensorData = sensorData;
 		this.mapData = mapData;
-	}
-
-	/**
-	 * Robot status observer
-	 */
-	@Override
-	public void update(Observable o, Object arg) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
