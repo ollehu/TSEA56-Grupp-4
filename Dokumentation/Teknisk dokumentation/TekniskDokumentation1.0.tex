@@ -128,6 +128,33 @@ Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. 
 \section{Teori}
 \textit{Beskrivning av regleralgoritmer mm.}
 
+\subsection{Beräkning av kortaste väg}
+Nedan beskrivs två algoritmer för att få fram kortaste väg.
+
+\subsubsection{Dijkstras algoritm}
+Dijkstras algoritm är en girig, bäst-först-algoritm. Genom algoritmen beräknar man den billigaste (kortaste) vägen från startnoden till samtliga noder och den fungerar på nätverk med icke-negativa bågkostnader. 
+
+Vid starten definieras två mängder, en mängd som innehåller de avsökta noderna och en de oavsökta noderna. De oavsökta noderna får ett oändligt nodpris och startnoden nodpriset noll. Med ursprung i startnoden sökes alla grannar genom. Nodpriset updateras i det fall då följande samband gäller:
+
+\begin{displaymath}
+	y_i + c_{i,j} < y_j
+\end{displaymath}
+
+där \begin{math} y_i \end{math} är den nod som söks av, \begin{math} c_{i,j} \end{math} kostnaden mellan nod \begin{math} i \end{math} och \begin{math} j \end{math}, och \begin{math} y_j \end{math} är nodgrannen.
+
+Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills slutnoden har undersökts. Den kortaste vägen kan sedan nästlas upp om man även sparar vilken föregångare som bidrog till en kortare väg. 
+
+En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
+
+\subsubsection{A*}
+A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm fast där noder avsöks i stigande ordning av
+\begin{equation*}
+	f(n) = g(n) + h(n)
+\end{equation*}
+där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
+
+$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras.
+
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
