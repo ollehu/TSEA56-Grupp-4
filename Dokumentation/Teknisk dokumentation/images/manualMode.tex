@@ -24,14 +24,16 @@
 %\node[decision, aspect=2, text width = 8em, below of = start, node distance = 3cm](kommando){Matar användare in styrkommando på tangentbordet?};
 \node[block, below of = start, node distance = 3cm, text width = 7em](blåtand){Styrkommando från datormodulen tas emot};
 \node[block, right of = blåtand, node distance = 3.5cm, text width = 7em](toStart){Styrkommando skickas från huvudmodul till styrmodul};
-\node[decision, aspect=2, text width = 5em, right of = toStart, node distance = 4.5cm](isDone){Har knappen släppts upp?};
-\node[block, below of = isDone,node distance = 8em](stop){Skicka stoppsignal till styrmodulen};
+\node[decision, aspect=2, text width = 7em, right of = toStart, node distance = 4.5cm](isDone){Har knappen släppts upp?};
+\node[block, below of = isDone,node distance = 8em](stopSignal){Skicka stoppsignal till styrmodulen};
+\node[block, right of = stopSignal, node distance = 5 cm] (stop) {Slut};
 
 \draw[->](start) --  (blåtand);
 \draw[->](blåtand) -- (toStart);
 \draw[->](toStart) -- (isDone);
-\draw[->](isDone) -- node[near start, right]{ja}(stop);
+\draw[->](isDone) -- node[near start, right]{ja}(stopSignal);
 \draw[->](isDone.east) -| node[near start, below]{nej} ++(0.7,2) -| (isDone.north);
+\draw[->] (stopSignal) -- (stop);
 
 	\end{tikzpicture}
 	

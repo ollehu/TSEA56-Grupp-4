@@ -181,7 +181,7 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstr
 
 \begin{figure}[htbp]
 \centering
-\noindent\resizebox{0.7\linewidth}{!}{
+\noindent\resizebox{0.9\linewidth}{!}{
 	\input{images/manualMode}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
 \end{figure}
@@ -214,6 +214,132 @@ Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon o
 \subsection{Datormodulen}
 
 \section{Intermodulär kommunikation}
+I denna del förklaras hur kommunikationen mellan robotens olika moduler fungerar.
+
+\subsection{Informationsflöde}
+Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 250. 
+
+I figur \ref{informationFlow} visualiseras informationsflödet. Där anges mottagare och sändare samt vilken typ av information som går mellan dem.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/informationFlow}}
+	\caption{Schema över informationsflödet\label{informationFlow}}	
+\end{figure}
+
+\subsubsection{Kommunikationsprotokoll - styrkommandon}
+Följande protokoll används för att skicka styrkommandon (gäller både för datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul):
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för överföring av styrkommandon\label{styrdata}}	
+\end{figure}
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
+	\item B (1 byte) - Definierar vilket kommando som skickas, se tabell \ref{styrtab}.
+	\item C (1 byte) - Hastighet (om manuellt läge), sträcka/vinkel (om autonomt läge)(tillåtna värden: 0-245).
+\end{itemize}
+
+\subsubsection{Kommunikationsprotokoll - kartinformation}
+Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. 
+
+Varje korsning kommer att representeras som en nod och vägarna däremellan som bågar. För att så enkelt som möjligt överföra denna information från huvudmodulen till datormodulen kommer varje nod att representeras enligt protokollet nedan:
+
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/mapdata}}
+	\caption{Protokoll för överföring av kartdata \label{kartdata}}	
+\end{figure} 
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (1 byte) - Kommunikations-ID.
+	\item B (1 byte) - Motsvarar nodens x-koordinat (tillåtna värden: 0-15).
+	\item C (1 byte) - Motsvarar nodens y-koordinat (tillåtna värden: 0-15).
+	\item D (1 byte) - Representerar väggar kring noden (11 = vägg, 00 = ingen vägg) i nordlig, västlig, sydlig och östlig riktning (b0-1 = N, b2-3 = W, b4-5 = S, b6-7 = E).
+\end{itemize}
+
+\subsubsection{Kommunikationsprotokoll - sensordata}
+Sensordata skickas enligt följande protokoll:
+
+ \begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/sensordata}}
+	\caption{Protokoll för överföring av sensordata\label{sensordata}}	
+\end{figure} 
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A - Kommunikations-ID
+	\item B - Sensordatapaket
+	\begin{itemize}
+	\item ID (1 byte) - identifierar sensorn, se tabell \ref{sensortab}.
+	\item Data (1 byte) - sensorns värde (tillåtna värden: 0-245).
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Kommunikationsprotokoll - styrinställningar}
+Följande protokoll används för att skicka styrinställningar (gäller både för datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul):
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/controlldata}}
+	\caption{Protokoll för överföring av styrkommandon\label{styrdata}}	
+\end{figure}
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
+	\item B (1 byte) - Definierar vilken styrinställning som skickas, se tabell \ref{styrinsttab}.
+	\item C (4 byte) - 0/1 om av/på. Annars flyttal (C float).
+\end{itemize}
+
+\subsection{Tabeller}
+
+\begin{longtable}[l]{| l | l | c |} \hline
+\textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
+1 & IR-sensor höger-fram & cm \\ \hline
+2 & IR-sensor vänster-fram  & cm \\ \hline
+3 & IR-sensor höger-bak  & cm  \\ \hline
+4 & IR-sensor vänster-bak  &  cm \\ \hline
+5 & Lasersensor & cm  \\ \hline
+6 & Rotation kring z-axeln & rad/s \\ \hline
+7 & IR-sensor för mål & cm \\ \hline
+\caption{Tabell över sensorerna}\label{sensortab}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Styrkommando} \\ \hline 
+1 & Kör fram \\ \hline
+2 & Kör bak \\ \hline
+3 & Rotera åt höger \\ \hline
+4 & Rotera åt vänster \\ \hline
+5 & Fram och höger \\ \hline
+6 & Fram och vänster \\ \hline
+7 & Bak och höger \\ \hline
+8 & Bak och vänster \\ \hline
+9 & Gripklo öppna/stäng \\ \hline
+
+\caption{Tabell över styrkommandon}\label{styrtab}
+\end{longtable}
+
+\begin{longtable}[l]{| l | l |} \hline
+\textbf{ID} & \textbf{Styrinställning} \\ \hline 
+1 & Reglering av/på \\ \hline
+2 & P-värde \\ \hline
+3 & D-värde \\ \hline
+4 & K-värde \\ \hline
+
+\caption{Tabell över styrinställningar}\label{styrinsttab}
+\end{longtable}
 
 \section{Slutsatser}
 \textit{Vilka förbättringar skulle kunna göras?}
