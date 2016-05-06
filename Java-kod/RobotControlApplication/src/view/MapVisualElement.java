@@ -18,6 +18,9 @@ public class MapVisualElement extends JComponent{
 	private int width = 15;
 	private int height = 15;
 	
+	/**
+	 * Constructor
+	 */
 	public MapVisualElement() {
 		setVisible(false);
 	}

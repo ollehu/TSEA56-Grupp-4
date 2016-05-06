@@ -85,4 +85,21 @@ public class MenuBar extends JMenuBar {
 		helpMenu.add(displayKeybindingsMenuItem);
 	}
 
+	/**
+	 * Sets autonomous mode
+	 */
+	public void setAutonomousMode(boolean state) {
+		debugModeMenuItem.setVisible(state);
+		editFirstSeparator.setVisible(state);
+	}
+	
+	/**
+	 * Sets debug mode
+	 */
+	public void setDebugMode(boolean state) {
+		saveLogMenuItem.setVisible(state);
+		commentLogMenuItem.setVisible(state);
+		fileFirstSeparator.setVisible(state);
+	}
+	
 }

@@ -7,6 +7,11 @@ import javax.swing.UIManager;
 
 import com.orsoncharts.Chart3D;
 
+/**
+ * All used program colors
+ * @author isak
+ *
+ */
 public class CustomColors {
 
 	public static final Color PRESSED_BACKGROUND_COLOR = new Color(40, 40, 40);

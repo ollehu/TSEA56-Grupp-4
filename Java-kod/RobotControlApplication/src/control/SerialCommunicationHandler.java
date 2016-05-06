@@ -194,6 +194,10 @@ public class SerialCommunicationHandler {
 
 	}
 
+	/**
+	 * Updates control settings. Called on received control settings data
+	 * @param receivedData
+	 */
 	private void updateControlSettings(byte[] receivedData) {
 		int identifier = Byte.toUnsignedInt(receivedData[0]);
 		int value = Byte.toUnsignedInt(receivedData[1]);
@@ -202,6 +206,10 @@ public class SerialCommunicationHandler {
 		robotData.update(identifier, value);
 	}
 
+	/**
+	 * Updates sensor data. Called on received sensor data
+	 * @param receivedData
+	 */
 	private void updateSensorValues(byte[] receivedData) {
 
 		// convert byte to unsigned ints
@@ -227,6 +235,10 @@ public class SerialCommunicationHandler {
 		sensorData.update(sensorValues);
 	}
 
+	/**
+	 * Updates map. Called on received map data
+	 * @param receivedData
+	 */
 	private void updateMap(byte[] receivedData) {
 		// get x- and y-coordinate
 		int xCoordinate = Byte.toUnsignedInt(receivedData[0]);
@@ -238,6 +250,10 @@ public class SerialCommunicationHandler {
 		mapData.update(xCoordinate, yCoordinate, value);
 	}
 
+	/**
+	 * Updates control data. Called on received control command data
+	 * @param receivedData
+	 */
 	private void updateControlData(byte[] receivedData) {
 		int identifier = Byte.toUnsignedInt(receivedData[0]);
 		int value = Byte.toUnsignedInt(receivedData[1]);

@@ -73,6 +73,9 @@ public class MapPanel extends JPanel implements Observer{
 		}
 	}
 	
+	/**
+	 * Sets all MapVisualElements as unexplored
+	 */
 	public void clear() {
 		for(MapVisualElement mapVisualElement: exploredMapElements) {
 			mapVisualElement.clear();

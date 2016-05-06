@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
@@ -27,10 +29,8 @@ public class ActionHandler {
 	private RobotData robotData;
 	private SerialCommunicationHandler serialCOM;
 
-	//TODO fundera över implementeringen av denna!
-
 	/**
-	 * Public actions for use
+	 * Menu actions
 	 */
 	public DisplayKeybindingsAction displayKeybindingsAction = new DisplayKeybindingsAction();
 
@@ -42,6 +42,9 @@ public class ActionHandler {
 	public DebugModeAction debugModeAction = new DebugModeAction();
 	public ClearMapAction clearMapAction = new ClearMapAction();
 
+	/** 
+	 * Robot control actions
+	 */
 	public SendControlCommandAction rotateLeftAction = new SendControlCommandAction(ControlID.ROTATE_LEFT);
 	public SendControlCommandAction rotateRightAction = new SendControlCommandAction(ControlID.ROTATE_RIGHT);
 	public SendControlCommandAction forwardsAction = new SendControlCommandAction(ControlID.FORWARDS);
@@ -61,7 +64,12 @@ public class ActionHandler {
 																					ControlSettingID.NEXT_DECISION);
 	public SendControlSettingAction nextDecisionAction = new SendControlSettingAction("Next decision", "Commands robot to take next autonomous decision",
 			ControlSettingID.NEXT_DECISION);
-
+	
+	/**
+	 * Listeners
+	 */
+	public ControlTableListener controlTableListener = new ControlTableListener();
+	
 	/**
 	 * Initialize action handler
 	 */
@@ -120,6 +128,11 @@ public class ActionHandler {
 
 	}
 
+	/**
+	 * Saves the active log and creates a new one
+	 * @author isak
+	 *
+	 */
 	private class SaveLogAction extends AbstractAction {
 
 		public SaveLogAction() {
@@ -130,13 +143,16 @@ public class ActionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO save log
-			//animator.simulateReceivedData();
-			robotData.toggle(ControlSettingID.AUTONOMOUS_MODE);
+			log.closeLog(true);
 		}
 
 	}
 
+	/**
+	 * Appends a comment to the current log
+	 * @author isak
+	 *
+	 */
 	private class CommentLogAction extends AbstractAction {
 
 		public CommentLogAction() {
@@ -147,7 +163,9 @@ public class ActionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// TODO comment log
+			String textToAppend = JOptionPane.showInputDialog("Write a log comment");
+			
+			log.appendToLog(textToAppend);
 		}
 
 	}
@@ -268,6 +286,11 @@ public class ActionHandler {
 	//================================================================================
 	// Robot control actions
 	//================================================================================
+	/**
+	 * Sends a predefined control command to the robot
+	 * @author isak
+	 *
+	 */
 	private class SendControlCommandAction extends AbstractAction {
 
 		private int controlCommand;
@@ -288,6 +311,11 @@ public class ActionHandler {
 
 	}
 
+	/**
+	 * Sends a predefined control setting to the robot
+	 * @author isak
+	 *
+	 */
 	private class SendControlSettingAction extends AbstractAction {
 
 		private int controlSetting;
@@ -333,5 +361,18 @@ public class ActionHandler {
 				robotData.update(ControlSettingID.SPEED, robotData.getSpeed() - 10);
 			}
 		}
+	}
+	
+	//================================================================================
+	// Listeners
+	//================================================================================
+	private class ControlTableListener implements TableModelListener {
+
+		@Override
+		public void tableChanged(TableModelEvent e) {
+			//TODO add table changed handling
+			//robotData.update(identifier, value);
+		}
+		
 	}
 }

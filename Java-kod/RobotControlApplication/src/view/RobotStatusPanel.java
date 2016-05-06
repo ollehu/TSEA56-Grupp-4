@@ -83,15 +83,16 @@ public class RobotStatusPanel extends JPanel implements Observer{
 	}
 
 	/**
-	 * 
+	 * Sets autonomous mode
 	 */
 	public void setAutonomousMode(boolean state) {
-		//TODO add mode handling
 		startRunNextMoveButton.setVisible(state);
 	}
 	
+	/**
+	 * Sets debug mode
+	 */
 	public void setDebugMode(boolean state) {
-		//TODO add mode handling
 		if(state) {
 			startRunNextMoveButton.setAction(actionHandler.nextDecisionAction);
 		} else {

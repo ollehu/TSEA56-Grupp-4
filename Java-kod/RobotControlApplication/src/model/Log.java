@@ -10,6 +10,9 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 public class Log {
 
 	/**
@@ -24,13 +27,13 @@ public class Log {
 	private String fileName = "Log ";
 	private String fileExtension = ".txt";
 
-	boolean logEmpty;
+	private boolean logEmpty;
 	
 	/**
 	 * Constructor
 	 */
 	public Log() {
-//		createNewLog();
+		createNewLog();
 	}
 
 	/**
@@ -77,6 +80,8 @@ public class Log {
 	 */
 	public void appendToLog(String textToAppend) {
 		if(lastLog != null) {
+			logEmpty = false;
+			
 			// get current time
 			DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 			Date date = new Date();
@@ -96,43 +101,30 @@ public class Log {
 		}
 	}
 
-//	/**
-//	 * Closes the log and creates a new one depending on mode
-//	 * @param mode
-//	 */
-//	public void closeLog(int mode) {
-//		if(mode == DEBUG && isLogEmpty) {
-//			deleteLog();
-//		} else {
-//			// append final comment
-//			String comment = JOptionPane.showInputDialog("Write a log comment");
-//
-//			// delete if comment == ""
-//			if(comment.equals("")) {
-//				deleteLog();
-//			} else {
-//				appendToLog(comment);
-//			}
-//
-//			// create new log if save
-//			if(mode == SAVE) {
-//				createNewLog();
-//			}
-//		}
-//	}
-//
-//	/**
-//	 * Closes the log. Called on program exit
-//	 * @param comment
-//	 */
-//	public void exit(String comment) {
-//		// delete if comment == ""
-//		if(comment.equals("")) {
-//			deleteLog();
-//		} else {
-//			appendToLog(comment);
-//		}
-//	}
+	/**
+	 * Closes the log and creates a new one depending on mode
+	 * @param mode
+	 */
+	public void closeLog(boolean openNewLog) {
+		if(isLogEmpty()) {
+			deleteLog();
+		} else {
+			// append final comment
+			String comment = JOptionPane.showInputDialog("Write a final log comment");
+
+			// delete if comment == ""
+			if(comment.equals("")) {
+				deleteLog();
+			} else {
+				appendToLog(comment);
+			}
+
+			// create new log if openNewLog
+			if(openNewLog) {
+				createNewLog();
+			}
+		}
+	}
 
 	private void deleteLog() {
 		if (lastLog != null) {

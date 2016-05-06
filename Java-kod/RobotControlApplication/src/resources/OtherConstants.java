@@ -1,5 +1,10 @@
 package resources;
 
+/**
+ * Constants used by several parts of the program
+ * @author isak
+ *
+ */
 public class OtherConstants {
 
 	/**
@@ -42,7 +47,6 @@ public class OtherConstants {
 			{"P", new Double(0.45)},
 			{"D", new Double(1.2)},
 			{"K", new Double(0.7)},
-			{"Speed", new Integer(50)},
 			{"90", new Integer(780)},
 			{"180", new Integer(1800)}
 		};

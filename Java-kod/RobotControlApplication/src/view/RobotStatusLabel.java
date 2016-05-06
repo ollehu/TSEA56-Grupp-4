@@ -14,6 +14,11 @@ public class RobotStatusLabel extends JLabel{
 	
 	private int value = -1;
 	
+	/**
+	 * Constructor
+	 * @param name
+	 * @param states
+	 */
 	public RobotStatusLabel(String name, String[] states) {
 		super();
 		
@@ -24,6 +29,10 @@ public class RobotStatusLabel extends JLabel{
 		setText(name + ": unknown");
 	}
 	
+	/**
+	 * Converts and sets label value
+	 * @param value
+	 */
 	public void setValue(int value) {
 		this.value = value;
 		
