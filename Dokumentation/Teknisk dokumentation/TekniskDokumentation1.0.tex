@@ -131,11 +131,11 @@ Nedan följer en sammanfattning av den teori som robotens reglering och optimeri
 
 
 \subsection{Reglering}
-
+\label{subsection:reglering}
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
-Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med datormodulen är dubbelriktad och via Bluetooth\textsuperscript{\circledR}. Roboten ska dock även klara sitt uppdrag utan kommunikation med datormodulen. Det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köras manuellt och autonomt, något som bestäms av en brytare på roboten. Kommunikationen med datormodulen är dubbelriktad via Bluetooth\textsuperscript{\circledR}. Roboten ska klara sitt uppdrag utan kommunikation med datormodulen, det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
 
 \begin{figure}[htbp]
 \centering
@@ -145,9 +145,15 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Kommunikationen med
 \end{figure}
 
 \subsection{Beskrivning av systemet}
-Roboten navigerar själva banan med hjälp av en lasersensor som mäter avstånd framåt, fyra IR-sensorer som mäter robotens avstånd till respiktive vägg i korridoren, ett gyroskop som mäter vinkelhastighet samt en IR-detektor för identifiering av nödställd. En regleringsmodell säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta mot väggar. Under färden ska roboten autonomt kartlägga och finna den kortaste vägen mellan ingången och den nödställde. I det fall då roboten även är uppkopplad mot datormodulen ska mjukvara på datorn successivt rita upp en karta och kunna presentera utvalda mätvärden i realtid. När den kortaste vägen är funnen ska roboten använda denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo.
+Roboten navigerar med hjälp värden som fås av sensormodulens sensorer. En lasersensor, fäst på ett servo, mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämnna intervall kommunicerar sensormodulen dessa värden till huvudmodulen, som i sin tur vidarebefordrar de till styrmodulen. 
 
-Blockshemat för systemet återfinns i figur \ref{blockSystem}.
+I styrmodulen är en regleringsmodell implementerad, vilken säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta mot väggar. Önskade värden kan skrivas ut på en LCD-display, vilken också är en del av styrmodulen.
+
+Under färden sker autonomt kartläggning och beräkning av kortaste väg mellan ingången och den nödställde. När roboten är uppkopplad mot datormodulen ritar mjukvaran på datorn successivt upp en karta och presenterar utvalda mätvärden i realtid. 
+
+När den kortaste vägen är funnen använder roboten denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo, som kontrolleras av styrmodulen.
+
+På systemnivå är det om målet är funnet och om kortaste väg kan garanterats som avgör robotens beslut, vilket figur \ref{blockSystem} illustrerar.
 
 \begin{figure}[htbp]
 \centering
@@ -156,8 +162,8 @@ Blockshemat för systemet återfinns i figur \ref{blockSystem}.
 	\caption{Övergripande blockschema för systemet}	\label{blockSystem}
 \end{figure}
 
-\section{Begränsningar}
-Roboten är begränsad till att navigera i enbart korridorer och att alla korsningar sker med 90 gradersvinklar.
+\section{Begränsningar} 
+Roboten är begränsad till att navigera i korridorer som är ca 40 cm breda och klarar enbart av korsningar med 90 gradersvinklar.
 
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
@@ -213,7 +219,27 @@ och är placerade enligt figur \ref{sensors}.
 \end{figure}
 
 \subsection{Styrmodulen}
-Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som ska kunna hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon.
+Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon. Styrmodulen kan agera i två lägen, autonomt eller manuellt läge.
+
+\subsubsection*{Autonomt läge}
+I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som huvudmodulen utövar. Styrmodulen begär ett nytt styrkommando genom att skicka en uppåtflank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Rotera 90\textdegree vänster}, \textit{Rotera 90\textdegree höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
+
+När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen, därefter kallas den metod som sköter reglering av styrkommandot. 
+
+Styrkommandot \textit{Fram} innebär att roboten ska flytta sig en modul föröver. Modullängden är detsamma för hela banan och satt till $40$ cm. Roboten beräknar tillryggalagd sträcka genom att beräkna antalet varv hjulen roterar och under färden sker reglering enligt avsnitt \ref{subsection:reglering}. När modulen är avverkad kallas återigen huvudmodulen för ett nytt styrkommando. Tack vare hastigheten hos I\textsuperscript{2}C-bussen och fördröjningen hos PWM-styrningen agerar roboten på nästa kommando utan ett ryck emellan. 
+
+Styrkommandot \textit{Rotera 90\textdegree vänster/höger} innebär en vinkelrät rotation åt respektive håll. Här förutsätts roboten befinna sig mitt i en modul och behöver med andra ord inte reglera sig i vertikal- eller horisontellt led. Regleringen av rotation sker med hjälp av det gyro som förmedlar vinkelhastighet till sensormodulen. När en rotation påbörjas summeras vinkelhastigheterna hos styrmodulen i takt med varenda nytt sensordata. Nivån som summationen sker till byter endast tecken mellan vänster- och högerrotation. Det är rotationsregleringen som sätter kravet att sensordata ska skickas med $30$ Hz för att minimera felet vid snabba rotationer. 
+
+Styrkommandot \textit{Rotera 180\textdegree} innebär ett halvt varvs rotation av roboten. Regleringen sker precis på samma sätt som den vinkelräta rotationen ovan. Den enda skillnaden är det tak summationen sker till. 
+
+
+För att hantera det sensorfel som gyrot för med sig följer ytterligare en reglering efter båda typerna av rotation. Regleringen bygger på att det finns en vägg att förhålla sig till och kallas därför inte om roboten befinner sig i en fyrvägskorsning. När det finns en vägg åt något håll rätar roboten upp sig genom att minimera differensen mellan den främre och bakre sensorn. 
+
+Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen reglering sker. 
+
+\subsubsection*{Manuellt läge}
+
+
 
 \subsection{Datormodulen}
 
