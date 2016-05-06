@@ -64,6 +64,8 @@ public class Animator {
 		{
 			public void windowClosing(WindowEvent e)
 			{
+				handler.exit();
+				
 				System.exit(0);
 			}
 		});
@@ -99,18 +101,24 @@ public class Animator {
 		
 		// add robot status panel
 		constraints.gridx = 1;
-		constraints.fill = GridBagConstraints.NONE;
+		constraints.fill = GridBagConstraints.BOTH;
 		constraints.anchor = GridBagConstraints.LAST_LINE_END;
 		robotStatusPanel = new RobotStatusPanel(handler.getActionHandler());
 		frame.add(robotStatusPanel, constraints);
 	}
 	
+	/**
+	 * Initialized menu bar. Used to call initialization separate from the constructor
+	 */
 	public void initializeMenuBar() {
 		// create menu
 		menuBar = new MenuBar(handler.getActionHandler());
 		frame.setJMenuBar(menuBar);
 	}
 	
+	/**
+	 * Shows the main window
+	 */
 	public void showFrame() {
 		// show frame
 		frame.pack();
@@ -138,6 +146,10 @@ public class Animator {
 	
 	public JFrame getFrame() {
 		return frame;
+	}
+	
+	public MenuBar getMenuBar() {
+		return menuBar;
 	}
 	
 	//================================================================================

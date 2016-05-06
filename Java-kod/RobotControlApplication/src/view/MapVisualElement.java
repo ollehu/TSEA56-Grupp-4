@@ -18,6 +18,9 @@ public class MapVisualElement extends JComponent{
 	private int width = 15;
 	private int height = 15;
 	
+	/**
+	 * Constructor
+	 */
 	public MapVisualElement() {
 		setVisible(false);
 	}
@@ -43,6 +46,8 @@ public class MapVisualElement extends JComponent{
 		
 		if(value <= 225){
 			graphics.setColor(CustomColors.EXPLORED_BACKGROUND_COLOR);
+		} else if(value == 245){
+			graphics.setColor(CustomColors.UNEXPLORED_BACKGROUND_COLOR);
 		} else if(value == 244){
 			graphics.setColor(CustomColors.WALL_BACKGROUND_COLOR);
 		} else if(value == 243){
@@ -52,13 +57,5 @@ public class MapVisualElement extends JComponent{
 		}
 		
 		graphics.fillRect(0, 0, width, height);
-		
-		System.out.println("w: " + width + "h: " + height);
-		if(isVisible()) {
-			System.out.println("This is visible");
-		} else {
-			System.out.println("This is NOT visible");
-		}
 	}
-	
 }

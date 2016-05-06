@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import jssc.SerialPortException;
 import serialCOM.ControlID;
+import serialCOM.ControlSettingID;
 import serialCOM.CommunicationID;
 import serialCOM.SerialPortCOM;
 import view.*;
@@ -138,9 +139,9 @@ public class Handler {
 		
 		try {
 			if(isClawOpen) {
-				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW_SETTING, 1);
+				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW, 1);
 			} else {
-				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW_SETTING, 0);
+				serialPortCOM.sendToRobot(CommunicationID.CONTROL_DATA, ControlID.CLAW, 0);
 			}
 
 

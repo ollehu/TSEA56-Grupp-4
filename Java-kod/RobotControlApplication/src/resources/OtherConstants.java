@@ -1,5 +1,10 @@
 package resources;
 
+/**
+ * Constants used by several parts of the program
+ * @author isak
+ *
+ */
 public class OtherConstants {
 
 	/**
@@ -16,8 +21,10 @@ public class OtherConstants {
 															{"off", "on"},
 															{"closed", "open"},
 															null,
-															{"forward", "backward", "left", "right",
-																"none", "none", "none", "none", "none", "stop"}
+															{"none", "forward", "backward", "left", 
+																"right", "forwards right", "forwards left", 
+																"backwards right", "backwards left", 
+																"none", "stop"}
 	};
 	
 	/**
@@ -42,7 +49,6 @@ public class OtherConstants {
 			{"P", new Double(0.45)},
 			{"D", new Double(1.2)},
 			{"K", new Double(0.7)},
-			{"Speed", new Integer(50)},
 			{"90", new Integer(780)},
 			{"180", new Integer(1800)}
 		};

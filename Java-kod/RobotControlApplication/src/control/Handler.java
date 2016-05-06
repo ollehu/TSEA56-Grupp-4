@@ -2,8 +2,11 @@ package control;
 
 import java.util.Observable;
 import java.util.Observer;
+import java.util.ResourceBundle.Control;
 
+import demo.orsoncharts.swing.ExitOnClose;
 import model.*;
+import resources.ControlSettingID;
 import view.*;
 
 public class Handler implements Observer{
@@ -28,6 +31,9 @@ public class Handler implements Observer{
 	private SensorData sensorData;
 	private MapData mapData;
 	
+	/**
+	 * Constructor
+	 */
 	public Handler() {
 		// initialize model
 		log = new Log();
@@ -57,6 +63,13 @@ public class Handler implements Observer{
 		dataInitialization();
 	}
 	
+	/**
+	 * Called on program exit
+	 */
+	public void exit() {
+		log.closeLog(false);
+		serialCommunicationHandler.closeSerialPort();
+	}
 	
 	//================================================================================
     // Robot mode handling
@@ -82,34 +95,44 @@ public class Handler implements Observer{
 		}		
 	}
 	
+	/**
+	 * Sets autonomous mode
+	 * @param state
+	 */
 	private void setAutonomousMode(boolean state) {
 		//TODO add mode handling
 		
 		// internal handling
 		if(state) {
 			keyHandler.unbindTemporaryKeys();
-			System.out.println("Auto on");
 		} else {
-			keyHandler.unbindTemporaryKeys();
-			System.out.println("Auto off");
+			keyHandler.bindTemporaryKeys();
+			robotData.update(ControlSettingID.DEBUG_MODE, 0);
 		}
 		
 		// external handling
 		animator.getRobotStatusPanel().setAutonomousMode(state);
+		animator.getMenuBar().setAutonomousMode(state);
 	}
 	
+	/**
+	 * Sets debug mode
+	 * @param state
+	 */
 	private void setDebugMode(boolean state) {
 		//TODO add mode handling
 		
 		//internal handling
 		if(state) {
-			System.out.println("Debug on");
+			log.createNewLog();
 		} else {
-			System.out.println("Debug off");
+			log.closeLog(false);
 		}
 		
 		// external handling
 		animator.getRobotStatusPanel().setDebugMode(state);
+		animator.getMenuBar().setDebugMode(state);
+		animator.getTablePanel().setDebugMode(state);
 	}
 	
 	//================================================================================
@@ -127,6 +150,9 @@ public class Handler implements Observer{
 	//================================================================================
     // Internal methods
     //================================================================================
+	/**
+	 * Assigns observers to the observables
+	 */
 	private void assignObservers() {
 		// add sensor data observers
 		sensorData.addObserver(animator.getTablePanel());
