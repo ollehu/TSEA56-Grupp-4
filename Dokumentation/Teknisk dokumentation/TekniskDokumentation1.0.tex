@@ -373,6 +373,52 @@ Respektive segment motsvarar följande:
 \caption{Tabell över styrinställningar}\label{styrinsttab}
 \end{longtable}
 
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|} \hline
+
+\textbf{Kommando} & \textbf{Id} & \textbf{Info} & \textbf{Kommentar}\\ \hline
+
+252 & 1 & 1/0 & 1 om reglering är på, 0 annars \\ \hline
+252 & 2 & Data & Regleringfunktionens P-värde \\ \hline
+252 & 3 & Data & Regleringfunktionens D-värde \\ \hline
+252 & 4 & 1/0 & 1 om gripklo ska vara öppen, 0 om den ska vara stängd \\ \hline
+
+
+253 & 1 & 1 & Data för främre högra IR-sensorn kommer skickas härnäst \\ \hline
+253 & 2 & Data & Värde på den främre högra IR-sensorn \\ \hline
+253 & 3 & 2 & Data för främre vänstra IR-sensorn kommer skickas härnäst \\ \hline
+253 & 4 & Data & Värde på den främre vänstra IR-sensorn \\ \hline
+253 & 5 & 3 & Data för bakre högra IR-sensorn kommer skickas härnäst \\ \hline
+253 & 6 & Data & Värde på den bakre högra IR-sensorn \\ \hline
+253 & 7 & 4 & Data för bakre vänstra IR-sensorn kommer skickas härnäst \\ \hline
+253 & 8 & Data & Värde på den bakre vänstra IR-sensorn \\ \hline
+
+253 & 9 & 5 & LIDAR-Lite's 8 mest signifikanta bitar kommer skickas härnäst \\ \hline
+253 & 10 & Data & Värde på LIDAR-Lite's 8 mest signifikanta bitar \\ \hline
+253 & 11 & 6 & LIDAR-Lite's 8 minst signifikanta bitar kommer skickas härnäst \\ \hline
+253 & 12 & Data & Värde på LIDAR-Lite's 8 minst signifikanta bitar \\ \hline
+
+253 & 13 & 7 & Data för gyrot kommer skickas härnäst \\ \hline
+253 & 14 & Data & Värde på gyrot \\ \hline
+
+253 & 15 & 8 & Data för IR-detektorn kommer skickas härnäst \\ \hline
+253 & 16 & 1/0 & 1 skickas om målet är upptäckt, 0 annars \\ \hline
+
+255 & - & - & Kommando att köra framåt \\ \hline
+255 & - & Data/not care\text{*} & Hur fort roboten ska köras framåt \\ \hline
+255 & - & - & Kommando att köra bakåt \\ \hline
+255 & - & Data/not care & Hur fort roboten ska köras bekåt \\ \hline
+255 & - & - & Kommando att rotera höger \\ \hline
+255 & - & Data/not care & Hur fort roboten ska rotera åt höger  \\ \hline
+255 & - & - & Kommando att rotera vänster \\ \hline
+255 & - & Data/not care & Hur fort roboten ska rotera åt vänster  \\ \hline
+
+\end{tabular}
+\end{table}
+
+\text{*} Reagerar på data vid manuellt läge och ignorerar data vid autonomt
+
 \section{Slutsatser}
 \textit{Vilka förbättringar skulle kunna göras?}
 
