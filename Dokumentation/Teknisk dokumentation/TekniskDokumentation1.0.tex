@@ -219,9 +219,59 @@ och är placerade enligt figur \ref{sensors}.
 \end{figure}
 
 \subsection{Styrmodulen}
-Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon. Styrmodulen kan agera i två lägen, autonomt eller manuellt läge.
+Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon och ser till att roboten tar sig fram på önskat sätt. Det som hanteras är styrning av chassits motorer för att få roboten att röra på sig och att styra gripklon. 
 
-\subsubsection*{Autonomt läge}
+De komponenter som ingår i styrmodulen är
+\begin{itemize}
+  \item[-] \verb+ATmega1284p+,
+  \item[-] LCD-display \verb+JM162A+,
+  \item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz,
+  \item[-] LED-dioder, 
+  \item[-] Resistanser,
+  \item[-] Potentiometer och
+  \item[-] Studsfri tryckknapp.
+\end{itemize}
+
+Styrmodulen kopplas enligt kretsschemat i appendix \ref{kopplingsschema:styrmodul}. Kopplingen sker på ett virkort som sedan monteras på robotens chassi. Härefter följer detaljerade beskrivningar av styrmodulens olika delar.
+
+\subsubsection{Mjukvara}
+Mjukvaran till styrmodulen består av följande filer.
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[controlModule.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och regleringen. I huvudloopen är den endast LCD-displayen och LED-dioderna som uppdateras.
+  \item[PWM.h] som är ett paket för pulsbreddsmodulering.
+  \item[LCD.h] som är ett paket för LCD-displayen.
+  \item[constants.h] som är ett paket med definitioner av konstanter till controlModule.c.
+  \item[I2C\_slave.h] som är ett paket för slavar inom I\textsuperscript{2}C-bussen.
+
+\end{description}
+
+
+\subsubsection{PWM}
+Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att respektive utgång styrs med olika arbetscyklar, men delar samma inställningar gällande frekvens och periodtid. Gripklon och servot för den främre sensorn delar även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och de konfigureras därför enligt nedan. 
+
+\begin{center}
+\begin{tabular}{l l l l l}
+
+    \textbf{Syfte} & \textbf{Läge} & \textbf{Antal bitar} & \textbf{Prescale} & \textbf{Toppvärde} \\
+    Hjulpar & Fast PWM, 10-bit & 10 bitar & $\text{clk}/64$ &  0x03FF \\
+	Gripklo och sensorservo & Fast PWM & 16 bitar & $\text{clk}/64$  & ICR \\
+\end{tabular}
+\end{center}
+
+\subsubsection{LCD-display}
+LCD-displayen, \verb+JM162A+, består av två rader där respektive har plats för 16 tecken. På displayen visas sensordata under robotens färd och uppdateras i takt med att nya sensordata anländer. En potentiometer kopplas in för att justera kontrastspänningen och LCD:n konfigureras enligt nedan.
+
+\begin{center}
+  \begin{tabular}{l l l l l l l l}
+      \textbf{Modell} & \textbf{Bitar} & \textbf{Rader} & \textbf{Punkter} & \textbf{Pekare} & \textbf{Blink} & \textbf{Öka pekare} & \textbf{Skifta text} \\
+      \verb+JM162A+ & 8 & 2 & 5x7 & Av & Av & På & Av \\
+    \end{tabular}
+  \end{center}
+
+\subsubsection{Styrlägen}
+Styrmodulen har två olika styrlägen: autonomt eller manuellt läge.
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[Autonomt läge]
 I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som huvudmodulen utövar. Styrmodulen begär ett nytt styrkommando genom att skicka en uppåtflank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Rotera 90\textdegree vänster}, \textit{Rotera 90\textdegree höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
 
 När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen, därefter kallas den metod som sköter reglering av styrkommandot. 
@@ -237,7 +287,14 @@ För att hantera det sensorfel som gyrot för med sig följer ytterligare en reg
 
 Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen reglering sker. 
 
-\subsubsection*{Manuellt läge}
+\item[Manuellt läge] I manuellt läge styrs roboten via styrkommandon från datormodulen. Dess styrkommandon skickas till huvudmodulen, därefter vidarebefordras de till styrmodulen via I\textsuperscript{2}C-bussen. När styrmodulen tar emot ett styrkommando och befinner sig i manuellt läge sker körningen helt utan reglering. 
+
+  Styrmodulen fortsätter med samma styrkommando tills nästa har skickats. Med andra ord krävs det ett stoppkommando för att stanna roboten. Stoppkommandot skickar per automatik när datormodulens piltangent har släppts upp och behöver inte därför inte tas hänsyn till. 
+
+  När ett styrkommando skickas till styrmodulen i manuellt läge tolkas även den tredje byten i sändningen som den önskade hastigheten. Hastigheten tas emot som ett heltal i intervallet noll till 100. Det skalas därefter till motsvarande intervall för pulsbreddsmoduleringen.
+
+  \end{description}
+
 
 
 
