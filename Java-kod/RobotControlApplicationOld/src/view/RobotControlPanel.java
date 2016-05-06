@@ -22,6 +22,7 @@ import control.Handler;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import serialCOM.ControlSettingID;
+import serialCOM.Colors;
 import serialCOM.CommunicationID;
 
 /**

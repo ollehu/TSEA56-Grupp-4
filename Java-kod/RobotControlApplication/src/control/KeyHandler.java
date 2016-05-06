@@ -105,6 +105,9 @@ public class KeyHandler {
 	//================================================================================
     // Internal methods
     //================================================================================
+	/**
+	 * Binds all permanent keybinds
+	 */
 	private void bindPermanentKeys() {
 		JPanel bindPanel = animator.getRobotStatusPanel();
 	
