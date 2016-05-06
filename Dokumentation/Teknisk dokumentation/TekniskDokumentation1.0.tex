@@ -102,16 +102,16 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 \textit{Bakgrund och syfte}
 
-Projektets syfte är att konstruera en undsättningsrobot. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet på en nivå där resultatet ska kunna återskapas. Innehållet består av detaljerade beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt implementationen.
+Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet på en nivå där resultatet ska kunna återskapas. Innehållet består av detaljerade beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt implementationen av dessa.
 
 \section{Produkten}
 \textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
 
-Produkten som konstruerats är en undsättningsrobot. Den består av fyra hjul, ett chassi och en gripklo som ska kunna greppa en förnödenhet att leverera till en nödställd. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade via en I\textsuperscript{2}C-buss medan kommunikationen med datormodulen sker via Bluetooth\textsuperscript{\circledR}, enligt figur \ref{overview}. Gripklon kontrolleras av styrmodulen medan det är sensormodulen som tar in data från sensorerna.
+Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi med fyra hjul, ett batteri, en av/på-brytare samt en gripklo. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade via en I\textsuperscript{2}C-buss för kommunikation dem emellan. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. En övergripande bild av produkten återfinns i figur \ref{overview}. Gripklon kontrolleras av styrmodulen och sensormodulen tar in data från sensorerna. För att fästa sensorerna på chassit används 3D-printade fästen.
 
 Varje modul har en processor samt annan nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Tanken med roboten är att den ska söka av en labyrint bestående av 40 cm breda korridorer och identifiera en nödställd som sänder ut IR-ljus. Det ska den klara i både manuellt och autonomt läge. När målet är identifierat ska kortaste vägen mellan labyrintens ingång och målet bestämmas. Då ska roboten hämta en förnödenhet vid starten och köra kortaste vägen till den nödställda och lämna av förnödenheten. 
+Robotens uppgift är att söka av en labyrint bestående av 40 cm breda korridorer med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat ska kortaste vägen mellan labyrintens ingång och målet bestämmas. Efter det ska roboten hämta en förnödenhet vid starten, köra kortaste vägen till den nödställda och lämna av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Roboten kartlägger labyrinten internt under tiden den utforskar den och lagrar informationen för att kunna skicka den till datormodulen för uppritning. 
 
 
 \begin{figure}[!htbp]
@@ -123,7 +123,6 @@ Tanken med roboten är att den ska söka av en labyrint bestående av 40 cm bred
 
 \pagebreak
 
-Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. Denna är beroede av sensorer för att få en uppfattning om sin omgivning samt en styrenhet för att kunna röra sig i förhållande till sin omgivning. Navigationen pågår tills den detekterar en nödställd. Då ser den till att finna den kortaste vägen ut för att där hämta en förnödenhet med gripklon som den sedan åker och lämnar till den nödställde. 
 
 \section{Teori}
 Nedan följer en sammanfattning av den teori som robotens reglering och optimering bygger på.
