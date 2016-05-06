@@ -130,8 +130,33 @@ Nedan följer en sammanfattning av den teori som robotens reglering och optimeri
 \subsection{Optimering}
 
 
-\subsection{Reglering}
-\label{subsection:reglering}
+\subsection{Reglering}\label{subsection:reglering}
+Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen, som anpassar vilken insignal som används i regleringen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor.
+
+Rotationen regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde varefter rotationen avbryts.
+
+Regleringen av rak körning innebär reglering av två utsignaler: robotens avstånd till framförvarande vägg och robotens avstånd till väggen eller väggarna i korridoren. Avståndet till framförvarande vägg $s$ regleras i förhållande till det önskade avståndet $s^0$ genom reglering av hastigheten $v$ enligt följande ekvation
+\begin{equation*}
+	v = 
+	\begin{cases}
+		v_{pref} \qquad\qquad \forall \ (s - s^0) > 20 \\
+		0.6 \cdot v_{pref} \qquad \forall \ 20 \geq (s - s^0) > 0 \\
+		0 \qquad\qquad\qquad \forall \ (s - s^0)\leq 0 \\
+	\end{cases}
+\end{equation*}
+där $v_{pref}$ är den användardefinierade maxhastigheten.
+
+Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet mellan höger och vänster hjulpar $\Delta v$ utifrån främre avståndssensor $d_1$, bakre avståndssensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
+\begin{equation*}
+	\Delta v = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
+\end{equation*}
+där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används antingen vänster eller höger avståndssensorer som insignal. Vid vänster vägg eller dubbla väggar används vänster eller vid höger vägg används höger. Vid dubbla väggar anväds dock sensorerna på båda sidor för att bestämma  $d^0$ enligt
+\begin{equation*}
+	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
+\end{equation*}
+
+Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta v = 0$.
+
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
@@ -244,6 +269,13 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
 
 
 \subsection{Datormodulen}
+
+\begin{figure}[H]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/software}}
+	\caption{Skiss över programvarans grafiska användargränssnitt\label{software}}	
+\end{figure}
 
 \section{Intermodulär kommunikation}
 I denna del förklaras hur kommunikationen mellan robotens olika moduler fungerar.
