@@ -343,8 +343,23 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
   \end{description}
 
 \subsection{Datormodulen}
+Datormodulen är skriven i Java och följer desingmönstret model-view-controller. Modulenen har två huvudsakliga syften. Dels att skicka data till roboten, för att kunna styra den manuellt och på ett enkelt sätt ändra olika inställningar hos roboten, dels att ta emot data från roboten för att presentera robotens omgivning i form av sensorvärden och kartdata. Nedan följer en beskrivning av programmets tre delar. Utöver dessa delar finns en del stödklasser, bland annat för hantering av konstanter och text.%Förklara m-v-c?
 
-<<<<<<< HEAD
+\subsubsection{Model}
+``Model''-delen av programet består av fyra huvudsakliga klasser: Log, RobotData, SensorData och MapData. 
+Log-klassen används för att spara ner relevanta händelser under testkörningar till txt-filer. 
+RobotData-klassen tar hand om den interna representationen av robotens tillstånd, det vill säga robotens nuvarande körläge, senaste skicka körkommando med mera. 
+SensorData-klassen sparar de senast mottagna sensorvärdena från roboten. 
+MapData-klassen sparar alla mottagna kartdata från roboten. De sistnämnda tre Data-klasserna används också för att, genom observatörer, ändra den grafiska ``view''-delen av programmet.
+
+\subsubsection{View}
+``View''-delen av programmet sköter programmets grafiska användargränssnitt och består av sex huvudsakliga klasser: Animator, MenuBar, MapPanel, GraphPanel, TablePanel och RobotStatusPanel. Animator-klassen samordnar de olika grafiska elementen och sköter instanseringen av användargränssnittet. 
+MenuBar-klassen hanterar menyn i huvudfönstren. Genom den kan användaren välja körläge, hantera loggar och komma åt hjälpmenyn. 
+MapPanel-klassen sköter den grafiska representationen av kartan. Varje sektion av kartan representeras med ett visuellt element med olika färg beroende på om det är en vägg, start, mål eller en vanlig ruta. Kartan expanderas dynamiskt vartefter roboten utforskar sin omgivning. 
+GraphPanel-klassen presenterar historiska sensordata i grafer och använder sig av det publika biblioteket JFreeChart 1.0.19. 
+TablePanel-klassen presenterar de senast mottagna sensorvärdena i en tabell. Denna klass låter även användaren ändra vissa reglerkonstanter hos roboten i vissa lägen.
+RobotStatusPanel-klassen visar robotens nuvarande status, det vill säga autonomt eller manuellt läge, senaste skickade styrkommandot med mera.
+
 \begin{figure}[H]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -352,7 +367,13 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
 	\caption{Skiss över programvarans grafiska användargränssnitt\label{software}}	
 \end{figure}
 
-=======
+\subsubsection{Controller}
+``Controller''-delen av programmet består av fyra olika klasser: ActionHandler, Handler, KeyHandler och SerialCommunicationsHandler. 
+ActionHandler-klassen innehåller alla de Actions som används av programmet, det vill säga alla det metoder som anropas bland annat vid knapptryckningar.
+Handler-klassen sköter samordningen av alla klasser och även programmets uppstart och instansieringen av de olika delarna.
+KeyHandler-klassen sköter alla tangentbordsanrop.
+SerialCommunicationsHandler-klassen sköter kommunikationen med roboten. Det innebär uppkoppling, sändning och mottagande av data samt nedkoppling av avslutning av kommunikationen. Detta sker med det publika biblioteket jSSC 2.8.0 tillsammans med datorns egna operativsystem för parning med FireFly-enheten.
+
 \pagebreak
 
 \section{Intermodulär kommunikation}
