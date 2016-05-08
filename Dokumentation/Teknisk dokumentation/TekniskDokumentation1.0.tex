@@ -245,17 +245,17 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstr
 \pagebreak
 
 \subsection{Sensormodulen}
-Robotens sensormodul har som uppgift att läsa av sensorerna och kommunicera datan till huvudmodulen. De sensorer som används är följande, NAMN PÅ SENSORER
+Robotens sensormodul har som uppgift att läsa av sensorerna och kommunicera datan till huvudmodulen. De sensorer som används är följande:
 \begin{description}
 	\item[Avstånd] \hfill \\
 	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
 	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
 	\item[Vinkelhastighet] \hfill \\
-	1 x Gyro/accelerometer \verb+MPU-6500+ 
+	1 x Gyro/accelerometer \verb+MLX90609+ 
 	\item[Identifierare av nödställd] \hfill \\
 	1 x IR-detektor \verb+IRM-8601-S+
 \end{description}
-och är placerade enligt figur \ref{sensors}. 
+Figur \ref{sensors} illustrerar placeringen av, de ovan angivna, sensorerna. 
 
 \begin{figure}[htbp]
 \centering
@@ -263,6 +263,53 @@ och är placerade enligt figur \ref{sensors}.
 	\input{images/sensor}	}
 	\caption{Sensorplacering \label{sensors}}
 \end{figure}
+
+Övriga komponenter som, utöver sensorerna, ingår i robotens sensormodul är följande:
+\begin{itemize}
+  \item[-] Microprocessor \verb+ATmega1284p+,
+  \item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz,
+  \item[-] Resistanser,
+  \item[-] Kondensatorer samt
+  \item[-] Studsfri tryckknapp.
+\end{itemize}
+
+Sensormodulen är ihopkoppland enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som senare har monterats på robotens chassi. Fortsättningsvis kommer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
+
+
+\subsubsection{Mjukvara}
+Sensormodulens mikroprocessor är programmerad med mjukvara för att kunna utföra sitt ändamål. Mjukvaran ifråga består följaktligen av nedanstående fil och paket: 
+
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[sensorModule.c] som innehåller modulens \textit{main}-funktion, i vilken omvandling av sensorvärden till SI-enhet sker. Den innehåller dessutom kod för I\textsuperscript{2}C-kommunikation mellan modulerna. I main-funktionens huvudloop läggs de omvandlade sensorenheterna in en array, vilken senare kommuniceras till huvudmodulen.
+  \item[sensorInit.h] är ett paket som initierar de olika gränssnitten för överföring av sensordata mellan mikroprocessorn och de olika sensorerna.
+  \item[I2C\_slave.h] är ett paket för slavarna inom I\textsuperscript{2}C-bussen, lämpligt i detta fall då sensormodulen är slav i kommunikationen med huvudmodulen.
+\end{description}
+
+\subsubsection{LIDAR-Lite v2}
+\verb+Lidar-Lite v2+ är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för denna typ av robot. Utöver att kunna mäta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 2,5 cm. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning cirka 1 cm.
+
+\subsubsection{MLX90609}
+Då korsningar kurvor och återvändsgränder kommer att finnas i labyrinten, ställer detta krav på roboten att utföra exakta svängar. För att klara av detta används \verb+MLX90609+. Genom att mäta hur snabbt roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
+
+\subsubsection{GP2D120}
+För att kunna reglera på ett önskat sätt behöver roboten veta hur den förhåller sig i förhållande till sidoväggarna. Eftersom roboten ska kunna köra i mitten av korridorer med bredden 40 cm och roboten själv är ca 20 cm bred, kommer ett avstånd mellan sidoväggarna och roboten på 10 cm vara önskvärt. För detta är IR-sensorn \verb+GP2D120+ bra, eftersom den med god precision kan mäta avstånd till objekt som befinner sig på avståndet 4-30 cm från sensorn. 
+
+Mätandet av avstånd sker genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. \verb+GP2D120+ är relativt enkel och har enbart två ingångar som ska kopplas till en 5 volts strömkälla, respektive en jord.  Utsignalen är analog i form av spänning och på grund av mängden högfrekvent brus i signalen måste den lågpassfiltreras. Lågpassfiltereringen sker genom att leda signalen genom en resistans och en kondensator.
+
+\subsubsection{IRM-8601-S}
+IR-detektorn \verb+IRM-8601-S+ används i syfte att identifiera den nödställde, vilken ska sända ut en IR-signal vars bitmönster därefter ska identiferas. Denna typ av IR-detektor är förhållandevis trivial i sitt utförande, enheten har 3 ingångar vilka ansluts med 5 V, jord och till en extern avbrottsingång på mikroprocessorn. 
+
+\subsubsection{PWM}
+Kommunikationen av sensordata mellan lasersensorn, LIDAR-Lite v2, och mikroprocessorn sker via ett PWM-gränssnitt (även kallat pulsbreddsmodulering). Längden på pulsbreddens positiva flank anger sensorns avstånd till närmaste föremål och för att kunna mäta denna så är lasersensrons trigger pin kopplat till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+
+Ett avbrott triggas så snart en flank på ingången uppstår, och en tidsangivelse tas. Tiden som insignalen ligger hög kan därefter detekteras genom att ta senaste tidangivelse för negativ flank och subtrahera denna med senaster motsvarighet för positiv flank. Genom att sedan multiplicera differensen med en skalfaktor (i detta fall 0.4) så kan ett avstånd med precisionen cm utläsas. från lasersensorn. 
+
+\subsubsection{SPI}
+Robotens vinkelhastighet kommuniceras från den gyroskopa sensorn, MLX90609, och mikroprocessorn via ett SPI-gränssnitt. Mikroprocessorn fungerar som SPI master och överföringen av data sker synkront mellan enheterna. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat variabel (av typen 8-bitars integer) i modulens \textit{main}-funktion. 
+
+\subsubsection{AD-omvandlas}
+Avståndsmätning med IR-senorerna GP2D120 genererar en utsignal i form av spänning. Då port A0-A7 på mikroprocessorn (tillika \verb+ATmega1284p+) kan användas som AD-omvandare så tillämpas denna möjlighet. Det digitala värde som erhålles efter omvandling blir därefter variabel i en tredjegradsfunktion som återger sensoravstånd i storheten mm.
+
 
 \subsection{Styrmodulen}
 
