@@ -121,18 +121,21 @@ Robotens uppgift är att söka av en labyrint med hjälp av en avsökningsalgori
 	\caption{Det totala systemet \label{overview}}	
 \end{figure}
 
+\subsection{Begränsningar}
+Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste bestå av moduler med storlek 40x40 cm.
+
 \pagebreak
 
 \section{Teori}
 \textit{Beskrivning av regleralgoritmer mm.}
 
-
+I följande avsnitt lyfts teori som är nödvändig för förståelse av implementationen.
 
 \subsection{Labyrintnavigering}
 Nedan beskrivs principer för avsökning och kartläggning av labyrinter.
 
 \subsubsection{Väggföljare}
-Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korriodens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren och svänger höger där det är möjligt, vice versa för vänstertyp.
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korriodens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren, vice versa för vänstertyp.
 
 \begin{figure}[htbp]
 	\centering
@@ -162,19 +165,15 @@ Fördelar med algoritmen är att den är enkel att implementera men avsaknaden a
 Nedan beskrivs två algoritmer för att ta fram kortaste väg.
 
 \subsubsection{Dijkstras algoritm}
-Dijkstras algoritm är en girig, bäst-först-algoritm. Algoritmen beräknar den billigaste (kortaste) vägen från startnoden till samtliga noder och fungerar på nätverk med icke-negativa bågkostnader. 
+Dijkstras algoritm är en girig, bäst-först-algoritm. Algoritmen beräknar den billigaste vägen från startnoden till samtliga noder och fungerar på nätverk med icke-negativa bågkostnader. 
 
-Vid starten definieras två mängder, en med de avsökta och en med de oavsökta noderna. De oavsökta noderna har ett oändligt nodpris och startnoden har nodpriset noll. Med ursprung i startnoden söker algoritmen igenom alla grannar. Nodpriset updateras i det fall då följande samband gäller:
+Vid starten definieras två mängder, en med de avsökta och en med de oavsökta noderna. De oavsökta noderna har ett oändligt nodpris och startnoden har nodpriset noll. Med ursprung i startnoden söker algoritmen igenom alla grannar. Nodpriset uppdateras i det fall då sambandet
 
 \begin{displaymath}
 	y_i + c_{i,j} < y_j
 \end{displaymath}
 
-där \begin{math} y_i \end{math} är den nod som söks av, \begin{math} y_j \end{math} är nodgrannen och \begin{math} c_{i,j} \end{math} är kostnaden mellan nod \begin{math} i \end{math} och \begin{math} j \end{math}.
-
-Ovanstående görs successivt med ursprung i den nod med billigast nodpris tills slutnoden har undersökts. Den kortaste vägen kan sedan nästlas upp, förutsatt att den föregångare noden som bidrog till en kortare väg sparas. 
-
-En vidareutveckling av Dijkstras algoritm är A* som, med hjälp av en heuristik, väljer vilka noder som ska avsökas vidare.
+gäller, där \begin{math} y_i \end{math} är nodpriset för den nod som söks av, \begin{math} y_j \end{math} är nodpriset för nodgrannen och \begin{math} c_{i,j} \end{math} är kostnaden mellan nod \begin{math} i \end{math} och \begin{math} j \end{math}. Ovanstående görs successivt med ursprung i den nod med billigast nodpris som även tillhör den oavsökta mängden, tills slutnoden har undersökts. Den kortaste vägen kan sedan nästlas upp, förutsatt att den föregående noden som bidrog till den kortaste vägen sparas. 
 
 \subsubsection{A*}
 A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm, med skillnaden att noder avsöks i stigande ordning enligt
@@ -186,9 +185,9 @@ där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en
 $h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras.
 
 \subsection{Reglering}\label{subsection:reglering}
-Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen, som anpassar vilken insignal som används i regleringen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor.
+Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor. Detta avgör sedan vilken insignal som används i regleringen.
 
-Rotationen regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde, varefter rotationen avbryts.
+Rotation regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde, varefter rotationen avbryts.
 
 Reglering av rak körning innebär reglering av två utsignaler: robotens avstånd till framförvarande vägg och robotens avstånd till väggen/väggarna i korridoren. Avståndet till framförvarande vägg $s$ regleras i förhållande till det önskade avståndet $s^0$ genom reglering av hastigheten $v$ enligt följande ekvation
 \begin{equation*}
@@ -201,11 +200,11 @@ Reglering av rak körning innebär reglering av två utsignaler: robotens avstå
 \end{equation*}
 där $v_{pref}$ är den användardefinierade maxhastigheten.
 
-Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet mellan höger och vänster hjulpar $\Delta v$ utifrån främre avståndssensor $d_1$, bakre avståndssensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
+Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet mellan höger och vänster hjulpar $\Delta v$ utifrån främre sidosensor $d_1$, bakre sidosensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
 \begin{equation*}
 	\Delta v = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
 \end{equation*}
-där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används antingen vänster eller höger avståndssensorer som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar anväds dock sensorerna på båda sidor för att bestämma  $d^0$ enligt
+där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar anväds dock sensorerna på båda sidor för att bestämma  $d^0$ enligt
 \begin{equation*}
 	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
 \end{equation*}
@@ -225,7 +224,7 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köra
 \end{figure}
 
 \subsection{Beskrivning av systemet}
-Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämnna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
+Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämnna intervall kommunicerar sensormodulen dessa värden till huvudmodulen, som i sin tur vidarebefordrar dem till styrmodulen. 
 
 I styrmodulen är en regleringsmodell implementerad, vilken säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta emot väggar. Önskade värden kan skrivas ut på en LCD-display, vilken också är en del av styrmodulen.
 
@@ -242,12 +241,12 @@ På systemnivå är det om målet är funnet och om kortaste väg kan garanterat
 	\caption{Övergripande blockschema för systemet}	\label{blockSystem}
 \end{figure}
 
-\section{Begränsningar}
-Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste av moduler med storlek 40x40 cm.
-
+\pagebreak
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
 I följande avsnitt beskrivs robotens moduler på ett detaljerat sätt.
+
+Nedan följer detaljerade beskrivningar av respektive modul.
 
 \subsection{Huvudmodulen}
 Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulerna, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. Vad gäller prioritering av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
