@@ -23,6 +23,8 @@
 #define sensorRotation 0x06
 #define sensorTarget 0x07
 
+#define sensorArraySize 19
+
 /************************************************************************/
 /*					     	   COMMANDS                                 */
 /************************************************************************/
@@ -62,4 +64,4 @@
 #define maxSpeed 100
 #define zeroAngVel 124
 #define moduleDepth 35
-#define minDistanceForward 24
+#define minDistanceForward 18

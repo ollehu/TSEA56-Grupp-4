@@ -27,10 +27,12 @@ volatile uint8_t prevControlCommand;
 float P = 0.45;
 float D = 1.2;
 float K = 0.7;
+float L = 1;
 
 volatile uint8_t preferredSpeed = 50;
 uint8_t preferredRotationSpeed = 70;
 uint8_t preferredDistance = 100;
+int16_t distanceDifference;
 
 /************************************************************************/
 /*                              SENSOR                                  */
@@ -47,7 +49,7 @@ int16_t convertAngle180 = 1900;
 int16_t accumulatedAngle;
 int16_t preferredAccumulatedAngle;
 
-uint8_t lastReceivedData[7];
+uint8_t lastReceivedData[9];
 
 uint16_t lidarMid = 390;
 uint16_t lidarMax;
@@ -55,6 +57,10 @@ uint16_t lidarMin;
 uint8_t lidarIncrement = 3;
 uint16_t currentLidarAngle;
 uint16_t lidarMaxDistance = 0;
+uint16_t lidarMaxAngle;
+uint8_t activeScan = 0;
+
+uint8_t accumulatedDistance = 0;
 
 /************************************************************************/
 /*                               LCD                                    */
@@ -68,6 +74,7 @@ uint8_t debugCount = 0;
 volatile uint8_t called;
 volatile uint8_t received;
 volatile uint8_t debugMode;
+volatile uint8_t difference = 0;
 
 /************************************************************************/
 /*                              HEADER                                  */
@@ -129,7 +136,7 @@ ISR(TWI_vect)
 					updateSensorData(commandSubType, commandValue);
 					dataOrder = dataOrder + 1;	
 					
-					if (dataOrder == 15){
+					if (dataOrder == sensorArraySize){
 						dataOrder = 0;
 						respondToSensorData();
 					}
@@ -250,6 +257,9 @@ void respondToSensorData()
 		} else {
 		angularVelocity = -(zeroAngVel - lastReceivedData[6]);
 	}
+	
+	//Reflex sensor
+	accumulatedDistance += lastReceivedData[8];
 	
 	switch(currControlCommand){
 		case stop:
@@ -477,13 +487,17 @@ void autonomousForward()
 	if (((oldForwardSensor - forwardSensor > moduleDepth) && 
 		 (forwardSensor > (moduleDepth - 5))) || 
 		 (forwardSensor < minDistanceForward)){
+			
+		difference = oldForwardSensor - forwardSensor;
+		madeChange = 1;
+		currControlCommand = stop;
+		oldForwardSensor = 0;
+		stopWheels();
 			 
 		if (debugMode == 0) {
 			callMainInterrupt();
 		}
-		currControlCommand = stop;
-		oldForwardSensor = 0;
-		stopWheels();
+		
 	}
 	
 	if ((sideSensors[frontLeftIndex] != maxDistance) && 
@@ -498,9 +512,16 @@ void autonomousForward()
 		backIndex = rearRightIndex;
 	}
 	
+	if (forwardSensor < moduleDepth ||
+			sideSensors[frontRightIndex] == 245 ||
+			sideSensors[frontLeftIndex]  == 245){
+			speed *= 0.6;   
+	}
+	
 	if (frontIndex == noWallsIndex){
-		rightWheelPair(preferredSpeed, 1);
-		leftWheelPair(preferredSpeed, 1);
+		rightWheelPair(speed, 1);
+		leftWheelPair(speed, 1);
+		speedLidar = lidarMid;
 	} else {
 	
 		// if both walls available, adjust preferred distance
@@ -517,21 +538,24 @@ void autonomousForward()
 	
 		uint8_t distance = (sideSensors[frontIndex] + 
 							sideSensors[backIndex])/2;
-	
+		distanceDifference = sideSensors[frontIndex] - 
+							 sideSensors[backIndex];
+							 
 		float p_out = P * (distance - preferredDistance);
-		float d_out = D * (sideSensors[frontIndex] - 
-						   sideSensors[backIndex]);
-
+		float d_out = D * (distanceDifference);
+		int16_t l_out;
+		
 		int16_t y_out = K * (p_out + d_out);
 
 		if (frontIndex == 0){
 			y_out = -y_out;
+			l_out = (lidarMid + distanceDifference);
+		} else {
+			l_out = (lidarMid - distanceDifference);
 		}
 		
-		if (forwardSensor < moduleDepth ||
-			sideSensors[frontRightIndex] == 245 ||
-			sideSensors[frontLeftIndex]  == 245){
-			speed *= 0.6;   
+		if (distanceDifference <= 40){
+			speedLidar = l_out;
 		}
 	
 		if(y_out < 0) {
@@ -594,6 +618,7 @@ void adjustRotation(void)
 	stopWheels();
 	currentLidarAngle = lidarMin;
 	lidarMaxDistance = 0;
+	activeScan = 1;
 	currControlCommand = commandScan;
 }
 
@@ -603,17 +628,30 @@ void adjustRotation(void)
 /************************************************************************/
 void autonomousScan(void)
 {
-	if (currentLidarAngle + lidarIncrement <= lidarMax){
+	if ((currentLidarAngle + lidarIncrement <= lidarMax) &&
+		(activeScan == 1)){
 		speedLidar = currentLidarAngle;
 		currentLidarAngle += lidarIncrement;
 		if (forwardSensor > lidarMaxDistance){
 			lidarMaxDistance = forwardSensor;
+			lidarMaxAngle = speedLidar;
 		}
 	} else {
-		oldForwardSensor = lidarMaxDistance;
-		speedLidar = lidarMid;
-		if (debugMode == 0){
-			callMainInterrupt();
+		activeScan = 0;
+	}
+	
+	
+	if (activeScan == 0){
+		if (currentLidarAngle - lidarIncrement >= lidarMid){
+			speedLidar = currentLidarAngle;
+			currentLidarAngle -= lidarIncrement*2;
+		} else {
+			oldForwardSensor = lidarMaxDistance;
+			forwardSensor = lidarMaxDistance;
+			speedLidar = lidarMaxAngle;
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
 		}
 	}
 }
@@ -717,18 +755,19 @@ int main(void)
 	char bottomRowMessage[16] = "";
 	char topRowMessage[16] = "";
 	
+	currControlCommand = forward;
+	
 	while(1)
 	{
 		setDebugLED(debugMode);
 		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "LiMax: %d", 
-					oldForwardSensor);
+			sprintf(topRowMessage, "D: %d", accumulatedDistance);
 			lcdWriteTopRow(topRowMessage);
 			//if (currControlCommand != stop){
-				sprintf(bottomRowMessage, "LiCurr: %d", 
-						forwardSensor);
+				sprintf(bottomRowMessage, "%u %u C: %d", 
+						sideSensors[rearRightIndex], sideSensors[frontRightIndex], forwardSensor);
 				lcdWriteBottomRow(bottomRowMessage);
 			//}
 			madeChange = 0;
