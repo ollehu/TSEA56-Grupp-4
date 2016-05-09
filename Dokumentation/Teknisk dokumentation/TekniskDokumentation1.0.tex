@@ -224,11 +224,9 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köra
 \end{figure}
 
 \subsection{Beskrivning av systemet}
-<<<<<<< HEAD
+
 Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
-=======
-Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämnna intervall kommunicerar sensormodulen dessa värden till huvudmodulen, som i sin tur vidarebefordrar dem till styrmodulen. 
->>>>>>> b5aa5b76d34bfad0a86ec1ff11a3009bcf7335b6
+
 
 I styrmodulen är en regleringsmodell implementerad, vilken säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta emot väggar. Önskade värden kan skrivas ut på en LCD-display, vilken också är en del av styrmodulen.
 
@@ -300,7 +298,7 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 29x29 fält där robotens startkorrdinater är (14,14) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej är fallet skickas informationen till datormodulen när anslutning har upprättats. 
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 29x29 fält där robotens startkoordinater är (14,14) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
 
 Återvändsgränder där mål ej hittas sparas i ett annat 29x29 fält enligt figur \ref{path} för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
 
