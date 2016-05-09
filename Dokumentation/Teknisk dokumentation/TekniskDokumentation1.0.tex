@@ -373,7 +373,7 @@ Sensormodulens mikroprocessor är programmerad med mjukvara för att kunna utfö
 \end{description}
 
 \subsubsection{LIDAR-Lite v2}
-\verb+Lidar-Lite v2+ är en kraftfull lasersensor av begränsad storlek med ett flertal funktioner ändamålsenliga för denna typ av robot. Utöver att kunna mäta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 2,5 cm. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning cirka 1 cm.
+\verb+Lidar-Lite v2+ är en kraftfull lasersensor med ett flertal funktioner ändamålsenliga för denna typ av robot. Utöver att kunna mäta avstånd, så kan den dessutom mäta hastighet och signalstyrka hos mål på upptill 40 meters avstånd. Detta med en felmarginal på 2,5 cm. Andra fördelar hos sensorn inkluderar låg strömkonsumtion och en upplösning cirka 1 cm.
 
 \subsubsection{MLX90609}
 Då korsningar kurvor och återvändsgränder kommer att finnas i labyrinten, ställer detta krav på roboten att utföra exakta svängar. För att klara av detta används \verb+MLX90609+. Genom att mäta hur snabbt roboten roterar kan den avgöra när en 90-graderssväng är genomförd och det är dags att sluta rotera. Hastigheten på rotationen kan ställas in efter önskat behov.
@@ -389,7 +389,7 @@ IR-detektorn \verb+IRM-8601-S+ används i syfte att identifiera den nödställde
 \subsubsection{PWM}
 Kommunikationen av sensordata mellan lasersensorn, LIDAR-Lite v2, och mikroprocessorn sker via ett PWM-gränssnitt (även kallat pulsbreddsmodulering). Längden på pulsbreddens positiva flank anger sensorns avstånd till närmaste föremål och för att kunna mäta denna så är lasersensrons trigger pin kopplat till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
 
-Ett avbrott triggas så snart en flank på ingången uppstår, och en tidsangivelse tas. Tiden som insignalen ligger hög kan därefter detekteras genom att ta senaste tidangivelse för negativ flank och subtrahera denna med senaster motsvarighet för positiv flank. Genom att sedan multiplicera differensen med en skalfaktor (i detta fall 0.4) så kan ett avstånd med precisionen cm utläsas. från lasersensorn. 
+Ett avbrott triggas så snart en flank på ingången uppstår, och en tidsangivelse tas. Tiden som insignalen ligger hög kan därefter detekteras genom att ta senaste tidangivelse för negativ flank och subtrahera denna med senaste motsvarighet för positiv flank. Genom att sedan multiplicera differensen med en skalfaktor (i detta fall 0.4) kan ett avstånd med precisionen cm utläsas. från lasersensorn. 
 
 \subsubsection{SPI}
 Robotens vinkelhastighet kommuniceras från den gyroskopa sensorn, MLX90609, och mikroprocessorn via ett SPI-gränssnitt. Mikroprocessorn fungerar som SPI master och överföringen av data sker synkront mellan enheterna. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat variabel (av typen 8-bitars integer) i modulens \textit{main}-funktion. 
