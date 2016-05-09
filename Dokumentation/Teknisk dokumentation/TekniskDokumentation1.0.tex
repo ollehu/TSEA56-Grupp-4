@@ -514,7 +514,7 @@ SerialCommunicationsHandler-klassen sköter kommunikationen med roboten. Det inn
 I denna del förklaras hur kommunikationen mellan robotens olika moduler fungerar.
 
 \subsection{Informationsflöde}
-Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 250. Denna uppdelning har gjorts för att underlätta felhantering.
+Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Vad varje ID innebär visas i tabell \ref{kommunikationstab}. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 250. Denna uppdelning har gjorts för att underlätta felhantering.
 
 \begin{longtable}[l]{| l | l |} \hline
 \textbf{ID} & \textbf{Datatyp} \\ \hline 
@@ -549,11 +549,11 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - Definierar vilket kommando som skickas, se tabell \ref{styrtab}.
-	\item C (1 byte) - Hastighet om manuellt läge, valfritt i autonomnt då det inte tas hänsyn till (tillåtna värden: 0-245).
+	\item C (1 byte) - Hastighet om manuellt läge, valfritt i autonomt då det inte tas hänsyn till (tillåtna värden: 0-245).
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - kartinformation}
-Huvudmodulen kommer för varje ny kartmodul skicka data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell array. För överföring av denna information används följande protokoll:
+Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell array. För överföring av denna information används protokollet nedan, figur \ref{kartdata}.
 
  \begin{figure}[H]
 \centering
@@ -664,8 +664,8 @@ Respektive segment motsvarar följande:
 \textbf{Kommando} & \textbf{Id} & \textbf{Info} & \textbf{Kommentar}\\ \hline
 
 252 & 1 & 1/0 & 1 om reglering är på, 0 annars \\ \hline
-252 & 2 & Data & Regleringfunktionens P-värde \\ \hline
-252 & 3 & Data & Regleringfunktionens D-värde \\ \hline
+252 & 2 & Data & Reglerfunktionens P-värde \\ \hline
+252 & 3 & Data & Reglerfunktionens D-värde \\ \hline
 252 & 4 & 1/0 & 1 om gripklo ska vara öppen, 0 om den ska vara stängd \\ \hline
 
 
@@ -692,7 +692,7 @@ Respektive segment motsvarar följande:
 255 & - & - & Kommando att köra framåt \\ \hline
 255 & - & Data/not care\text{*} & Hur fort roboten ska köras framåt \\ \hline
 255 & - & - & Kommando att köra bakåt \\ \hline
-255 & - & Data/not care & Hur fort roboten ska köras bekåt \\ \hline
+255 & - & Data/not care & Hur fort roboten ska köras bakåt \\ \hline
 255 & - & - & Kommando att rotera höger \\ \hline
 255 & - & Data/not care & Hur fort roboten ska rotera åt höger  \\ \hline
 255 & - & - & Kommando att rotera vänster \\ \hline
