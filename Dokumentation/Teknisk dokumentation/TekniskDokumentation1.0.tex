@@ -111,7 +111,7 @@ Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi,
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Robotens uppgift är att söka av en labyrint bestående av 40 cm breda korridorer med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställda och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationenen lagras för att kunna skickas vidare till datormodulen för uppritning. 
+Robotens uppgift är att söka av en labyrint bestående av 40 cm breda korridorer med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationenen lagras för att kunna skickas vidare till datormodulen för uppritning. 
 
 
 \begin{figure}[!htbp]
@@ -223,7 +223,7 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köra
 \end{figure}
 
 \subsection{Beskrivning av systemet}
-Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämnna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
+Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
 
 I styrmodulen är en regleringsmodell implementerad, vilken säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta emot väggar. Önskade värden kan skrivas ut på en LCD-display, vilken också är en del av styrmodulen.
 
