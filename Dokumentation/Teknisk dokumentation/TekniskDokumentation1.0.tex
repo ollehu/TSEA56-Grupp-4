@@ -102,16 +102,16 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 \textit{Bakgrund och syfte}
 
-Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet på en nivå där resultatet ska kunna återskapas. Innehållet består av detaljerade beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementarade.
+Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerede.
 
 \section{Produkten}
 \textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
 
-Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi, ett batteri, en av/på-brytare samt en gripklo. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit används 3D-printade fästen. En översiktlig bild av produkten återfinns i figur \ref{overview}.
+Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit används fästen utskrivna med 3D-skrivare. En översiktlig bild av produkten återfinns i figur \ref{overview}.
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Robotens uppgift är att söka av en labyrint bestående av 40 cm breda korridorer med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställda och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationenen lagras för att kunna skickas vidare till datormodulen för uppritning. 
+Robotens uppgift är att söka av en labyrint med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställda och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationenen lagras för att kunna skickas vidare till datormodulen för uppritning. 
 
 
 \begin{figure}[!htbp]
@@ -125,6 +125,8 @@ Robotens uppgift är att söka av en labyrint bestående av 40 cm breda korridor
 
 \section{Teori}
 \textit{Beskrivning av regleralgoritmer mm.}
+
+
 
 \subsection{Labyrintnavigering}
 Nedan beskrivs principer för avsökning och kartläggning av labyrinter.
@@ -241,7 +243,7 @@ På systemnivå är det om målet är funnet och om kortaste väg kan garanterat
 \end{figure}
 
 \section{Begränsningar}
-Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar.
+Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste av moduler med storlek 40x40 cm.
 
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
