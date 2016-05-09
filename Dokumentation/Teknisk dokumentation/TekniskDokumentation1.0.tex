@@ -128,6 +128,36 @@ Med hjälp av en avsökningsalgoritm kan roboten navigera i ett labyrintsystem. 
 \section{Teori}
 \textit{Beskrivning av regleralgoritmer mm.}
 
+\subsection{Labyrintnavigering}
+Nedan beskrivs principer för avsökning och kartläggning av labyrinter.
+
+\subsubsection{Väggföljare}
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att man alltid följer en sida av korridoren. Ifall algoritmen är av högertyp följer man höger sida av korridoren och svänger höger där det är möjligt, vice versa för vänstertyp.
+
+\begin{figure}[htbp]
+	\centering
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint1}}
+		\caption{En inte enkelt sammanhängande labyrint}	
+		\label{non-connected}
+	\end{subfigure}%
+	\begin{subfigure}{.5\linewidth}
+		\centering
+		\noindent\resizebox{.5\textwidth}{!}{
+			\input{images/labyrint2}}
+		\caption{En enkelt sammanhängande labyrint}	
+	\end{subfigure}%
+	\caption{Två exempel på labyrinter och den rutt som skulle tas av en väggföljningsalgoritm av vänstertyp}
+	\label{maze}
+\end{figure}%
+
+Fördelar med algoritmen är att den är enkel att implementera men avsaknaden av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fastna i en oändlig loop.
+
+\subsubsection{\emph{Dead-end filling}}
+\emph{Dead-end filling} är en djup-först-algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
+
 \subsection{Beräkning av kortaste väg}
 Nedan beskrivs två algoritmer för att få fram kortaste väg.
 
@@ -214,6 +244,18 @@ Roboten är begränsad till att navigera i enbart korridorer och att alla korsni
 I detta avsnitt följer en detaljerad beskrivning av systemets ingående moduler. 
 
 \subsection{Huvudmodulen}
+
+\subsubsection{Mjukvara}
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen . I huvudloopen är det endast styrläge som uppdateras.
+  \item[bluetooth.h] som är ett paket för Bluetooth\textsuperscript{\circledR}-kommunikationen.
+  \item[I2C\_master.h] som är ett paket för masterenheten på I\textsuperscript{2}C-bussen.
+  \item[searchPath.h] är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
+\end{description}
+
+
+\subsubsection{Övergripande beskrivning}
+
 Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. När det kommer till prioriteringen av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
 
 \begin{figure}[htbp]
@@ -222,11 +264,8 @@ Huvudmodulen har som uppgift att ta emot och förmedla information mellan de and
 	\caption{Intermodulär kommunikation \label{communication}}
 \end{figure}
 
-Det finns två olika körlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs val av läge med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av högerföljning. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickats från sensormodulen och på den interna kartläggningen. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}..
-
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 28x28 array. I denna lagras varje ny modul som roboten besöker och var sensorerna har registrerat väggar. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning om denna är ansluten. Är så ej fallet skickas alla ny information till datormodulen när anslutning har upprättats. Återvändsgränder där mål ej hittats och andra ointressanta vägar sparas i en annan 28x28 array för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
-
-Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstras algoritm. När målet är funnet numreras varje nod som roboten besöker från målet  med en siffra som representerar ett avstånd till målet. Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet från start till mål. Det antal steg robotens första väg från start till mål blir, återvändsgränder borträknat, sätts till den pessimistiska skattningen. Under den fortsatta utforskningen av labyrinten jämförs denna skattning med summan av köravståndet från målet  och manhattanavståndet från start till aktuell nod. Är det avståndet lika med eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet vilket inte heller görs.
+\subsubsection{Styrlägen}
+Det finns två olika körlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs val av läge med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickats från sensormodulen och på den interna kartläggningen. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
 
 \begin{figure}[htbp]
 \centering
@@ -241,6 +280,15 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstr
 	\input{images/manualMode}}
 	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
 \end{figure}
+
+\subsubsection{Intern kartläggning}
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 29x29 array. I denna lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar hur långt roboten som kortast behövde gå för att ta sig dit. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning, om denna är ansluten. Är så ej fallet skickas alla ny information till datormodulen när anslutning har upprättats. Återvändsgränder där mål ej hittats och andra ointressanta vägar sparas i en annan 29x29 array för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
+
+\subsubsection{Beräkning av kortaste väg}
+Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\textsuperscript{*}-algoritmen. När målet är funnet numreras varje nod som roboten besöker från målet med en siffra som representerar ett avstånd till målet. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet från start till mål som jämförelsevärde. Denna motsvarar det antal steg robotens första väg från start till mål blev, återvändsgränder borträknat. Under den fortsatta utforskningen av labyrinten jämförs denna skattning med summan av köravståndet från målet  och manhattanavståndet från start till aktuell nod. Är det avståndet lika med eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet, vilket inte heller görs.
+
+
+Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra.
 
 \pagebreak
 
@@ -343,8 +391,6 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
   \end{description}
 
 \subsection{Datormodulen}
-
-<<<<<<< HEAD
 \begin{figure}[H]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
@@ -352,7 +398,6 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
 	\caption{Skiss över programvarans grafiska användargränssnitt\label{software}}	
 \end{figure}
 
-=======
 \pagebreak
 
 \section{Intermodulär kommunikation}
