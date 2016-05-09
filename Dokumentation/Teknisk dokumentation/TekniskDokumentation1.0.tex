@@ -248,17 +248,6 @@ Roboten är begränsad till att navigera i enbart korridorer och att alla korsni
 I detta avsnitt följer en detaljerad beskrivning av systemets ingående moduler. 
 
 \subsection{Huvudmodulen}
-
-\subsubsection{Mjukvara}
-\begin{description}[style=unboxed, leftmargin=0cm]
-  \item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen . I huvudloopen är det endast styrläge som uppdateras.
-  \item[bluetooth.h] som är ett paket för Bluetooth\textsuperscript{\circledR}-kommunikationen.
-  \item[I2C\_master.h] som är ett paket för masterenheten på I\textsuperscript{2}C-bussen.
-  \item[searchPath.h] är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
-\end{description}
-
-
-\subsubsection{Övergripande beskrivning}
 Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. Vad gäller prioritering av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
 
 \begin{figure}[htbp]
@@ -306,7 +295,9 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 29x29 array. I denna lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar hur långt roboten som kortast behövde gå för att ta sig dit. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning, om denna är ansluten. Är så ej fallet skickas alla ny information till datormodulen när anslutning har upprättats. Återvändsgränder där mål ej hittats och andra ointressanta vägar sparas i en annan 29x29 array för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 29x29 array där robotens startkorrdinater är (14,14) och startriktningen är norrut. I denna array lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar hur långt roboten som kortast behövde gå för att ta sig dit, se figur \ref{map}. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning, om denna är ansluten. Är så ej är fallet skickas alla ny information till datormodulen när anslutning har upprättats. 
+
+Återvändsgränder där mål ej hittas sparas i en annan 29x29 array enligt figur \ref{path} för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
 
 \begin{figure}[htbp]
 \centering
@@ -316,8 +307,7 @@ Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar l
 \end{figure}
 
 \subsubsection{Beräkning av kortaste väg} \label{shortestPath}
-Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\textsuperscript{*}-algoritmen. När målet är funnet numreras varje nod som roboten besöker från målet med en siffra som representerar ett avstånd till målet. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet från start till mål som jämförelsevärde. Denna motsvarar det antal steg robotens första väg från start till mål blev, återvändsgränder borträknat. Under den fortsatta utforskningen av labyrinten jämförs denna skattning med summan av köravståndet från målet  och manhattanavståndet från start till aktuell nod. Är det avståndet lika med eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet, vilket inte heller görs.
-
+Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\textsuperscript{*}-algoritmen. När målet är funnet numreras varje nod som roboten besöker från målet med en siffra som representerar ett avstånd till målet, se figur \ref{path}. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet från start till mål som jämförelsevärde. Denna skattning motsvarar det antal steg robotens första väg från start till mål blev, återvändsgränder borträknat. Under den fortsatta utforskningen av labyrinten jämförs denna skattning med summan av köravståndet från målet, det vill säga värdet den kartmodulen skulle ha i figur \ref{path}, och manhattanavståndet från start till aktuell nod. Är det avståndet lika med eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet, vilket inte heller görs.
 
 \begin{figure}[htbp]
 \centering
@@ -327,7 +317,7 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\texts
 \end{figure}
 
 
-Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra.
+Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra enligt figur \ref{path}.
 
 \pagebreak
 
