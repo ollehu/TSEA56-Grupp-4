@@ -247,9 +247,10 @@ Roboten är begränsad till att navigera i korridorer och kräver att alla korsn
 
 \section{Modulerna}
 \textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
+I följande avsnitt beskrivs robotens moduler på ett detaljerat sätt.
 
 \subsection{Huvudmodulen}
-Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulera, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. Vad gäller prioritering av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
+Huvudmodulen har som uppgift att ta emot och förmedla information mellan de andra modulerna, hantera den interna kartläggnigen samt att ta alla övergripande beslut. Bluetooth\textsuperscript{\circledR} används för att kommunicera med datormodulen och en avbrottsstyrd I\textsuperscript{2}C-buss används för att kommunicera med sensor- och styrmodulen, vilket visas i figur \ref{communication}. Vad gäller prioritering av sensor- och styrmodul har styrmodulen kopplats till en extern avbrottsingång med högre prioritet än sensormodulen.
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
@@ -262,24 +263,24 @@ Komponenter som ingår i robotens huvudmodul är
   \item[-] Mikroprocessor \verb+ATmega1284p+
   \item[-] Kristalloscillator \verb+EXO-3+ på $14,7$ MHz
   \item[-] Bluetooth\textsuperscript{\circledR}-modul
-  \item[-] Resistanser
+  \item[-] Resistorer
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Huvudmodulen är kopplat  på ett virkort enligt kretsschemat i appendix \ref{kopplingsschema:huvudmodul}. Virkortet  är monterat på robotens chassi. Nedan beskrivs huvudmodulens olika uppgifter.
+Huvudmodulen är kopplat  på ett virkort enligt kretsschemat i appendix \ref{kopplingsschema:huvudmodul} och är monterat på robotens chassi. Nedan beskrivs huvudmodulens olika uppgifter.
 
 \subsubsection{Mjukvara}
 I huvudmodulen ingår följande mjukvara:
 
 \begin{description}[style=unboxed, leftmargin=0cm]
-  \item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen . I huvudloopen är det endast styrläge som uppdateras.
+  \item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen. I huvudloopen är det endast styrläget som uppdateras.
   \item[bluetooth.h] som är ett paket för Bluetooth\textsuperscript{\circledR}-kommunikationen.
   \item[I2C\_master.h] som är ett paket för masterenheten på I\textsuperscript{2}C-bussen.
-  \item[searchPath.h] är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
+  \item[searchPath.h] som är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
 \end{description}
 
 \subsubsection{Styrläge}
-Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickats från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
+Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
 
 \begin{figure}[htbp]
 \centering
@@ -296,9 +297,9 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 29x29 array där robotens startkorrdinater är (14,14) och startriktningen är norrut. I denna array lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar hur långt roboten som kortast behövde gå för att ta sig dit, se figur \ref{map}. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning, om denna är ansluten. Är så ej är fallet skickas alla ny information till datormodulen när anslutning har upprättats. 
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 29x29 fält där robotens startkorrdinater är (14,14) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej är fallet skickas informationen till datormodulen när anslutning har upprättats. 
 
-Återvändsgränder där mål ej hittas sparas i en annan 29x29 array enligt figur \ref{path} för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
+Återvändsgränder där mål ej hittas sparas i ett annat 29x29 fält enligt figur \ref{path} för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
 
 \begin{figure}[htbp]
 \centering
@@ -323,17 +324,18 @@ Kortaste väg från start till mål fås då genom att, för varje nod, välja d
 \pagebreak
 
 \subsection{Sensormodulen}
-Robotens sensormodul har som uppgift att läsa av sensorerna och kommunicera datan till huvudmodulen. De sensorer som används är följande:
-\begin{description}
-	\item[Avstånd] \hfill \\
-	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
-	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
-	\item[Vinkelhastighet] \hfill \\
-	1 x Gyro/accelerometer \verb+MLX90609+ 
-	\item[Identifierare av nödställd] \hfill \\
-	1 x IR-detektor \verb+IRM-8601-S+
-\end{description}
-Figur \ref{sensors} illustrerar placeringen av, de ovan angivna, sensorerna. 
+Robotens sensormodul har som uppgift att läsa av sensorerna och kommunicera datan till huvudmodulen. De sensorer som används och placeringar av dessa illustreras i figur \ref{sensors}. ÄNDRA MPU TILL MLX
+\newline
+%\begin{description}
+%	\item[Avstånd] \hfill \\
+%	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+%	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+%	\item[Vinkelhastighet] \hfill \\
+%	1 x Gyro/accelerometer \verb+MLX90609+ 
+%	\item[Identifierare av nödställd] \hfill \\
+%	1 x IR-detektor \verb+IRM-8601-S+
+%\end{description}
+%Figur \ref{sensors} illustrerar placeringen av, de ovan angivna, sensorerna. 
 
 \begin{figure}[htbp]
 \centering
@@ -345,13 +347,13 @@ Figur \ref{sensors} illustrerar placeringen av, de ovan angivna, sensorerna.
 Övriga komponenter som, utöver sensorerna, ingår i robotens sensormodul är följande:
 \begin{itemize}
   \item[-] Mikroprocessor \verb+ATmega1284p+
-  \item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz
-  \item[-] Resistanser
+  \item[-] Kristalloscillator \verb+EXO-3+ med $16$ MHz frekvens
+  \item[-] Resistorer
   \item[-] Kondensatorer
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Sensormodulen är ihopkoppland enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som senare har monterats på robotens chassi. Fortsättningsvis kommer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
+Sensormodulen är ihopkoppland enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som senare har monterats på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
 
 
 \subsubsection{Mjukvara}
