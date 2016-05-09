@@ -357,7 +357,7 @@ De komponenter som utöver sensorerna ingår i robotens sensormodul är följand
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Sensormodulen är ihopkoppland enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som senare har monterats på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
+Sensormodulen är ihopkopplad enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som är monterat på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
 
 \subsubsection{Mjukvara}
 I sensormodulen ingår följande mjukvara: 
@@ -369,17 +369,17 @@ I sensormodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{LIDAR-Lite v2, avståndssensor}
-För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden till den har reflekterats och återvänt. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. 
+För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. 
 
-Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell med sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensrons trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensrons trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
 
 \subsubsection{GP2D120, avståndssensor}
-För att mära avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltereringen sker genom att leda signalen genom en resistor och en kondensator.
+För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en resistor och en kondensator.
 
 Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet beskrivs av en tredjegradsfunktion. Genom empiriska tester kan funktionen bestämmas tillräckligt bra för att ge värden att reglera på.
 
 \subsubsection{MLX90609, gyro}
-För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med hög frekvens, vilket motsvarar integrering av vinkelhastigheten. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation. 
+För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation. 
 
 %Mikroprocessorn fungerar som SPI master och överföringen av data sker synkront mellan enheterna. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat variabel (av typen 8-bitars integer) i modulens \textit{main}-funktion. 
 
