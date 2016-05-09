@@ -1,0 +1,172 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=5em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=4em, text centered, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+%http://www.texample.net/tikz/examples/simple-flow-chart/
+
+\node[block, fill = black](1){};
+\node[block, fill = black, node distance = 4em, below of = 1](2){};
+\node[block, fill = black, node distance = 4em, below of = 2](3){};
+\node[block, node distance = 4em, below of = 3](4){};
+\node[block, fill = black, node distance = 4em, below of = 4](5){};
+\node[block, node distance = 4em, below of = 5](6){};
+\node[block, fill = black, node distance = 4em, below of = 6](7){};
+\node[block, fill = black, node distance = 4em, below of = 7](8){};
+\node[block, fill = black, node distance = 4em, below of = 8](9){};
+
+\node[block, fill = black, node distance = 4.7em, left of = 1](111){};
+\node[block, fill = black, node distance = 4em, below of = 111](112){};
+\node[block, fill = black, node distance = 4em, below of = 112](113){};
+\node[block, fill = black, node distance = 4em, below of = 113](114){};
+\node[block, fill = black, node distance = 4em, below of = 114](115){};
+\node[block, fill = black, node distance = 4em, below of = 115](116){};
+\node[block, fill = black, node distance = 4em, below of = 116](117){};
+\node[block, fill = black, node distance = 4em, below of = 117](118){};
+\node[block, fill = black, node distance = 4em, below of = 118](119){};
+
+
+\node[block, fill = black, node distance = 4.7em, right of = 1](11){};
+\node[block, node distance = 4em, below of = 11](12){};
+\node[block, node distance = 4em, below of = 12](13){};
+\node[block, node distance = 4em, below of = 13](14){};
+\node[block, fill = black, node distance = 4em, below of = 14](15){};
+\node[block, node distance = 4em, below of = 15](16){};
+\node[block, fill = black, node distance = 4em, below of = 16](17){};
+\node[block, fill = black, node distance = 4em, below of = 17](18){};
+\node[block, fill = black, node distance = 4em, below of = 18](19){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 11](21){};
+\node[block, node distance = 4em, below of = 21](22){};
+\node[block, fill = black, node distance = 4em, below of = 22](23){};
+\node[block, node distance = 4em, below of = 23](24){};
+\node[block, node distance = 4em, below of = 24](25){};
+\node[block, node distance = 4em, below of = 25](26){};
+\node[block, node distance = 4em, below of = 26](27){};
+\node[block, node distance = 4em, below of = 27](28){};
+\node[block, fill = black, node distance = 4em, below of = 28](29){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 21](31){};
+\node[block, node distance = 4em, below of = 31](32){};
+\node[block, fill = gray, node distance = 4em, below of = 32](33){};
+\node[block, fill = gray, node distance = 4em, below of = 33](34){};
+\node[block, fill = black, node distance = 4em, below of = 34](35){};
+\node[block, fill = black, node distance = 4em, below of = 35](36){};
+\node[block, fill = black, node distance = 4em, below of = 36](37){};
+\node[block, node distance = 4em, below of = 37](38){};
+\node[block, fill = black, node distance = 4em, below of = 38](39){};
+
+\node[block,fill = green, node distance = 4.7em, right of = 31](41){12};
+\node[block, node distance = 4em, below of = 41](42){11};
+\node[block, node distance = 4em, below of = 42](43){10};
+\node[block, node distance = 4em, below of = 43](44){9};
+\node[block, fill = gray, node distance = 4em, below of = 44](45){};
+\node[block, node distance = 4em, below of = 45](46){};
+\node[block, node distance = 4em, below of = 46](47){};
+\node[block, node distance = 4em, below of = 47](48){};
+\node[block, fill = black, node distance = 4em, below of = 48](49){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 41](51){};
+\node[block, fill = gray, node distance = 4em, below of = 51](52){};
+\node[block, fill = gray, node distance = 4em, below of = 52](53){};
+\node[block, node distance = 4em, below of = 53](54){8};
+\node[block, fill = gray, node distance = 4em, below of = 54](55){};
+\node[block, node distance = 4em, below of = 55](56){};
+\node[block, fill = gray, node distance = 4em, below of = 56](57){};
+\node[block, fill = black, node distance = 4em, below of = 57](58){};
+\node[block, fill = black, node distance = 4em, below of = 58](59){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 51](61){};
+\node[block, fill = gray, node distance = 4em, below of = 61](62){};
+\node[block, node distance = 4em, below of = 62](63){8};
+\node[block, node distance = 4em, below of = 63](64){7};
+\node[block, node distance = 4em, below of = 64](65){8};
+\node[block, node distance = 4em, below of = 65](66){9};
+\node[block, node distance = 4em, below of = 66](67){10};
+\node[block, fill = gray, node distance = 4em, below of = 67](68){};
+\node[block, fill = black, node distance = 4em, below of = 68](69){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 61](71){};
+\node[block, fill = black, node distance = 4em, below of = 71](72){};
+\node[block, fill = gray, node distance = 4em, below of = 72](73){};
+\node[block, node distance = 4em, below of = 73](74){6};
+\node[block, fill = gray, node distance = 4em, below of = 74](75){};
+\node[block, fill = gray, node distance = 4em, below of = 75](76){};
+\node[block, node distance = 4em, below of = 76](77){1};
+\node[block, fill = cyan, node distance = 4em, below of = 77](78){0};
+\node[block, fill = black, node distance = 4em, below of = 78](79){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 71](81){};
+\node[block, fill = gray, node distance = 4em, below of = 81](82){};
+\node[block, node distance = 4em, below of = 82](83){6};
+\node[block, node distance = 4em, below of = 83](84){5};
+\node[block, node distance = 4em, below of = 84](85){4};
+\node[block, node distance = 4em, below of = 85](86){3};
+\node[block, node distance = 4em, below of = 86](87){2};
+\node[block, fill = gray, node distance = 4em, below of = 87](88){};
+\node[block, fill = black, node distance = 4em, below of = 88](89){};
+
+
+\node[block, fill = black, node distance = 4.7em, right of = 81](91){};
+\node[block, fill = gray, node distance = 4em, below of = 91](92){};
+\node[block, node distance = 4em, below of = 92](93){7};
+\node[block, fill = gray, node distance = 4em, below of = 93](94){};
+\node[block, fill = gray, node distance = 4em, below of = 94](95){};
+\node[block, fill = gray, node distance = 4em, below of = 95](96){};
+\node[block, fill = gray, node distance = 4em, below of = 96](97){};
+\node[block, fill = gray, node distance = 4em, below of = 97](98){};
+\node[block, fill = black, node distance = 4em, below of = 98](99){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 91](101){};
+\node[block, fill = black, node distance = 4em, below of = 101](102){};
+\node[block, fill = gray, node distance = 4em, below of = 102](103){};
+\node[block, fill = black, node distance = 4em, below of = 103](104){};
+\node[block, fill = black, node distance = 4em, below of = 104](105){};
+\node[block, fill = black, node distance = 4em, below of = 105](106){};
+\node[block, fill = black, node distance = 4em, below of = 106](107){};
+\node[block, fill = black, node distance = 4em, below of = 107](108){};
+\node[block, fill = black, node distance = 4em, below of = 108](109){};
+
+
+%Top row
+\node[block, fill = black, node distance = 4em, above of = 1](700){};
+\node[block, fill = black, node distance = 4.7em, left of = 700](701){};
+\node[block, fill = black, node distance = 4.7em, right of = 700](702){};
+\node[block, fill = black, node distance = 4.7em, right of = 702](703){};
+\node[block, fill = black, node distance = 4.7em, right of = 703](704){};
+\node[block, fill = black, node distance = 4.7em, right of = 704](705){};
+\node[block, fill = black, node distance = 4.7em, right of = 705](706){};
+\node[block, fill = black, node distance = 4.7em, right of = 706](707){};
+\node[block, fill = black, node distance = 4.7em, right of = 707](708){};
+\node[block, fill = black, node distance = 4.7em, right of = 708](709){};
+\node[block, fill = black, node distance = 4.7em, right of = 709](710){};
+\node[block, fill = black, node distance = 4.7em, right of = 710](711){};
+\node[block, fill = black, node distance = 4.7em, right of = 711](712){};
+
+\node[block, fill = black, node distance = 4.7em, right of = 101](121){};
+\node[block, fill = black, node distance = 4em, below of = 121](122){};
+\node[block, fill = black, node distance = 4em, below of = 122](123){};
+\node[block, fill = black, node distance = 4em, below of = 123](124){};
+\node[block, fill = black, node distance = 4em, below of = 124](125){};
+\node[block, fill = black, node distance = 4em, below of = 125](126){};
+\node[block, fill = black, node distance = 4em, below of = 126](127){};
+\node[block, fill = black, node distance = 4em, below of = 127](128){};
+\node[block, fill = black, node distance = 4em, below of = 128](129){};
+	\end{tikzpicture}
+	
+\end{document}

@@ -311,8 +311,23 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från Dijkstr
 \subsubsection{Intern kartläggning}
 Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av en 29x29 array. I denna lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar hur långt roboten som kortast behövde gå för att ta sig dit. Efter varje ny besökt modul skickas de uppdaterade värden i arrayen till datormodulen för uppritning, om denna är ansluten. Är så ej fallet skickas alla ny information till datormodulen när anslutning har upprättats. Återvändsgränder där mål ej hittats och andra ointressanta vägar sparas i en annan 29x29 array för att förenkla avsökningen och för att ointressanta vägar ej ska besökas igen.
 
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.8\linewidth}{!}{
+	\input{images/map}}
+	\caption{Schematisk bild av den interna kartan}	\label{map}
+\end{figure}
+
 \subsubsection{Beräkning av kortaste väg}
 Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\textsuperscript{*}-algoritmen. När målet är funnet numreras varje nod som roboten besöker från målet med en siffra som representerar ett avstånd till målet. För att inte utforska mer än nödvändigt används en pessimistisk skattning av avståndet från start till mål som jämförelsevärde. Denna motsvarar det antal steg robotens första väg från start till mål blev, återvändsgränder borträknat. Under den fortsatta utforskningen av labyrinten jämförs denna skattning med summan av köravståndet från målet  och manhattanavståndet från start till aktuell nod. Är det avståndet lika med eller större än skattningen är det inte nödvändigt att utforska mer åt det hållet, vilket inte heller görs.
+
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{0.8\linewidth}{!}{
+	\input{images/path}}
+	\caption{Schematisk bild av kartan för beräkning av kortaste väg}	\label{path}
+\end{figure}
 
 
 Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra.
