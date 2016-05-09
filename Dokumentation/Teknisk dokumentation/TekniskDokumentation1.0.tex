@@ -371,7 +371,8 @@ I sensormodulen ingår följande mjukvara:
 \subsubsection{LIDAR-Lite v2, avståndssensor}
 För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. 
 
-Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensrons trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+
 
 \subsubsection{GP2D120, avståndssensor}
 För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en resistor och en kondensator.
@@ -472,7 +473,7 @@ Stykommandot \textit{Stopp} innebär att båda hjulparen stannas och ingen regle
 
 Styrmodulen fortsätter med samma styrkommando tills nästa har skickats. Med andra ord krävs det ett stoppkommando för att stanna roboten. Stoppkommandot skickas per automatik när datormodulens piltangent har släppts upp och behöver därför inte tas hänsyn till av användaren. 
 
-När ett styrkommando skickas till styrmodulen i manuellt läge tolkas även den tredje byten i sändningen som den önskade hastigheten. Hastigheten tas emot som ett heltal i intervallet noll till 100. Det skalas därefter till motsvarande intervall för pulsbreddsmoduleringen.
+När ett styrkommando skickas till styrmodulen i manuellt läge tolkas den tredje byten i sändningen som den önskade hastigheten. Hastigheten tas emot som ett heltal i intervallet noll till 100. Det skalas därefter till motsvarande intervall för pulsbreddsmoduleringen.
 
   \end{description}
 
@@ -536,7 +537,7 @@ I figur \ref{informationFlow} visualiseras informationsflödet. Där anges motta
 \end{figure}
 
 \subsubsection{Kommunikationsprotokoll - styrkommandon}
-Protokollet som används för att skicka styrkommandon både datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul finns illustrerat i figur \ref{styrdata}.
+Protokollet som används för att skicka styrkommandon, både datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul finns illustrerat i figur \ref{styrdata}.
 
 \begin{figure}[htbp]
 \centering
@@ -553,7 +554,7 @@ Respektive segment motsvarar följande:
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - kartinformation}
-Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell array. För överföring av denna information används protokollet nedan, figur \ref{kartdata}.
+Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell lista. För överföring av denna information används protokollet nedan i figur \ref{kartdata}.
 
  \begin{figure}[H]
 \centering
@@ -591,7 +592,7 @@ Respektive segment motsvarar följande:
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - styrinställningar}
-Protokollet som används för att skicka styrinställningar både datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul finns illustrerat i figur \ref{styrkomm}.
+Protokollet som används för att skicka styrinställningar, både datormodul $\rightarrow$ huvudmodul och huvudmodul $\rightarrow$ styrmodul finns illustrerat i figur \ref{styrkomm}.
 
 \begin{figure}[htbp]
 \centering
