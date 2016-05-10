@@ -38,6 +38,7 @@ public class OtherConstants {
 			{"IR B/R", new Integer(-1), "mm"},
 			{"IR B/L", new Integer(-1), "mm"},
 			{"Lidar Lite", new Integer(-1), "cm"},
+			{"Revolutions traveled", new Integer(-1), "1/16 revs"},
 			{"Angular velocity", new Integer(-1), "deg/s"}
 		};
 
