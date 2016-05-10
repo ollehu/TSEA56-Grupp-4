@@ -1,12 +1,9 @@
 package control;
 
-import java.awt.Desktop.Action;
 
 import javax.swing.ActionMap;
 import javax.swing.InputMap;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 

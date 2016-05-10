@@ -7,8 +7,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
 
+import control.ActionHandler;
 import control.Handler;
 
 public class Animator {
@@ -88,7 +88,7 @@ public class Animator {
 		constraints.gridx = 1;
 		constraints.fill = GridBagConstraints.VERTICAL;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_END;
-		tablePanel = new TablePanel();
+		tablePanel = new TablePanel(handler.getActionHandler());
 		frame.add(tablePanel, constraints);
 		
 		// add graph panel

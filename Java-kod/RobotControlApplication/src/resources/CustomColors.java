@@ -1,11 +1,6 @@
 package resources;
 
 import java.awt.Color;
-import java.awt.MultipleGradientPaint.ColorSpaceType;
-
-import javax.swing.UIManager;
-
-import com.orsoncharts.Chart3D;
 
 /**
  * All used program colors

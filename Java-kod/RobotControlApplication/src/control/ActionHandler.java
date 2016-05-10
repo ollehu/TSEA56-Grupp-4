@@ -10,12 +10,12 @@ import java.util.regex.Pattern;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import model.Log;
 import model.RobotData;
-import model.RobotStatus;
 import resources.*;
 import view.*;
 
@@ -366,12 +366,42 @@ public class ActionHandler {
 	//================================================================================
 	// Listeners
 	//================================================================================
+	/**
+	 * Detects change in the table
+	 * @author Isak
+	 *
+	 */
 	private class ControlTableListener implements TableModelListener {
 
 		@Override
 		public void tableChanged(TableModelEvent e) {
-			// TODO Auto-generated method stub
+			// get value
+			int row = e.getFirstRow();
+			int column = e.getColumn();
+			TableModel model = (TableModel) e.getSource();
 			
+			double data = Double.parseDouble((String) model.getValueAt(row, column));
+			
+			// convert and send value
+			int sendData = 0;
+			int dataID = 0;
+			if(row == 0) {
+				sendData = (int) (data * 100);
+				dataID = ControlSettingID.PROPORTIONAL;
+			} else if (row == 1) {
+				sendData = (int) (data * 100);
+				dataID = ControlSettingID.DERIVATIVE;
+			} else if (row == 2) {
+				sendData = (int) (data * 10);
+				dataID = ControlSettingID.KONSTANT;
+			} else if (row == 3) {
+				sendData = (int) (data / 10); 
+				dataID = ControlSettingID.CONSTANT_90;
+			} else if (row == 4)  {
+				sendData = (int) (data / 10); 
+				dataID = ControlSettingID.CONSTANT_180;
+			}
+			serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, dataID, sendData);
 		}
 
 		
