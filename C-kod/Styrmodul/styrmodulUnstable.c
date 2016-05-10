@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
@@ -44,7 +45,7 @@ int16_t oldForwardSensor;
 int8_t angularVelocity;
 
 int16_t convertAngle90 = 820;
-int16_t convertAngle180 = 1900;
+int16_t convertAngle180 = 1980;
 
 int16_t accumulatedAngle;
 int16_t preferredAccumulatedAngle;
@@ -91,6 +92,8 @@ void adjustRotation(void);
 void autonomousScan(void);
 void initInterrupt();
 void callMainInterrupt(void);
+uint8_t edgesToCentimeter(uint8_t edgeCount);
+uint8_t centimeterToEdges(uint8_t centimeter);
 
 /************************************************************************/
 /*	Interrupt: TWI vector - receive data from main module.
@@ -484,7 +487,7 @@ void autonomousForward()
 	uint8_t backIndex;
 	uint8_t speed = preferredSpeed;
 	
-	if (((oldForwardSensor - forwardSensor > moduleDepth) && 
+	/*if (((oldForwardSensor - forwardSensor > moduleDepth) && 
 		 (forwardSensor > (moduleDepth - 5))) || 
 		 (forwardSensor < minDistanceForward)){
 			
@@ -498,10 +501,24 @@ void autonomousForward()
 			callMainInterrupt();
 		}
 		
+	}*/
+	
+	if (((edgesToCentimeter(accumulatedDistance) >= moduleDepth) &&
+		(forwardSensor > (moduleDepth - 10))) ||
+		(forwardSensor < minDistanceForward)){
+		
+		currControlCommand = stop;
+		stopWheels();
+		
+		accumulatedDistance = 0;
+		
+		if (debugMode == 0){
+			callMainInterrupt();
+		}		
 	}
 	
 	if ((sideSensors[frontLeftIndex] != maxDistance) && 
-		(sideSensors[rearLeftIndex] != maxDistance) ){
+		(sideSensors[rearLeftIndex] != maxDistance)){
 			
 		frontIndex = frontLeftIndex;
 		backIndex = rearLeftIndex;
@@ -513,9 +530,13 @@ void autonomousForward()
 	}
 	
 	if (forwardSensor < moduleDepth ||
-			sideSensors[frontRightIndex] == 245 ||
-			sideSensors[frontLeftIndex]  == 245){
-			speed *= 0.6;   
+		sideSensors[frontRightIndex] == maxDistance ||
+		sideSensors[frontLeftIndex]  == maxDistance){
+		speed *= 0.6;
+			  
+		// Resync accumulatedDistance
+		accumulatedDistance = centimeterToEdges(moduleDepth/2 - 
+							   distanceMidToForwardSensor);
 	}
 	
 	if (frontIndex == noWallsIndex){
@@ -617,9 +638,13 @@ void adjustRotation(void)
 {
 	stopWheels();
 	currentLidarAngle = lidarMin;
-	lidarMaxDistance = 0;
-	activeScan = 1;
-	currControlCommand = commandScan;
+	//lidarMaxDistance = 0;
+	//activeScan = 1;
+	//currControlCommand = commandScan;
+	currControlCommand = stop;
+	if (debugMode == 0){
+		callMainInterrupt();
+	}
 }
 
 /************************************************************************/
@@ -742,6 +767,26 @@ void initCommandModule(void)
 }
 
 /************************************************************************/
+/*	edgedToCentimeter- Convert number of edges to centimeter.
+		edgeCount: Number of edges.										*/
+/************************************************************************/
+uint8_t edgesToCentimeter(uint8_t edgeCount)
+{
+	return (uint8_t) (wheelDiameter*M_PI*((float) edgeCount)/
+					  wheelNumberOfSections);
+}
+
+/************************************************************************/
+/*	edgedToCentimeter- Convert number of edges to centimeter.
+		edgeCount: Number of edges.										*/
+/************************************************************************/
+uint8_t centimeterToEdges(uint8_t centimeter)
+{
+	return (uint8_t) ((wheelNumberOfSections)/
+					  (wheelDiameter*M_PI*((float) centimeter)));
+}
+
+/************************************************************************/
 /*	main - Main function.
 
 	Initiate PWM, LCD, interrupt and TWI. Print data to LCD when
@@ -755,7 +800,7 @@ int main(void)
 	char bottomRowMessage[16] = "";
 	char topRowMessage[16] = "";
 	
-	currControlCommand = forward;
+	closePicker();
 	
 	while(1)
 	{
@@ -763,13 +808,11 @@ int main(void)
 		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "D: %d", accumulatedDistance);
+			sprintf(topRowMessage, "C:%u D:%u",accumulatedDistance, edgesToCentimeter(accumulatedDistance));
 			lcdWriteTopRow(topRowMessage);
-			//if (currControlCommand != stop){
-				sprintf(bottomRowMessage, "%u %u C: %d", 
-						sideSensors[rearRightIndex], sideSensors[frontRightIndex], forwardSensor);
-				lcdWriteBottomRow(bottomRowMessage);
-			//}
+			sprintf(bottomRowMessage, "%u %u C: %d", 
+					sideSensors[rearRightIndex], sideSensors[frontRightIndex], forwardSensor);
+			lcdWriteBottomRow(bottomRowMessage);
 			madeChange = 0;
 		} 
 	}
