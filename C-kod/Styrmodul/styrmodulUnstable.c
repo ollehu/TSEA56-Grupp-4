@@ -34,6 +34,7 @@ volatile uint8_t preferredSpeed = 50;
 uint8_t preferredRotationSpeed = 70;
 uint8_t preferredDistance = 100;
 int16_t distanceDifference;
+uint8_t adjustedInCorridor = 0;
 
 /************************************************************************/
 /*                              SENSOR                                  */
@@ -503,12 +504,13 @@ void autonomousForward()
 		
 	}*/
 	
-	if (((edgesToCentimeter(accumulatedDistance) >= moduleDepth) &&
+	if (((edgesToCentimeter(accumulatedDistance) >= (moduleDepth-4)) &&
 		(forwardSensor > (moduleDepth - 10))) ||
 		(forwardSensor < minDistanceForward)){
 		
 		currControlCommand = stop;
 		stopWheels();
+		adjustedInCorridor = 0;
 		
 		accumulatedDistance = 0;
 		
@@ -535,8 +537,11 @@ void autonomousForward()
 		speed *= 0.6;
 			  
 		// Resync accumulatedDistance
-		accumulatedDistance = centimeterToEdges(moduleDepth/2 - 
-							   distanceMidToForwardSensor);
+		if (adjustedInCorridor == 0){
+			accumulatedDistance = 17;
+			adjustedInCorridor = 1;
+		}
+
 	}
 	
 	if (frontIndex == noWallsIndex){
@@ -638,6 +643,7 @@ void adjustRotation(void)
 {
 	stopWheels();
 	currentLidarAngle = lidarMin;
+	accumulatedDistance = 0;
 	//lidarMaxDistance = 0;
 	//activeScan = 1;
 	//currControlCommand = commandScan;
