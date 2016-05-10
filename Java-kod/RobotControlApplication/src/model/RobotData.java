@@ -3,9 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import resources.ControlID;
 import resources.ControlSettingID;
-import resources.Converters;
 import resources.OtherConstants;
 
 public class RobotData extends Observable{

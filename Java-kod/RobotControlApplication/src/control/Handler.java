@@ -2,9 +2,7 @@ package control;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.ResourceBundle.Control;
 
-import demo.orsoncharts.swing.ExitOnClose;
 import model.*;
 import resources.ControlSettingID;
 import view.*;
