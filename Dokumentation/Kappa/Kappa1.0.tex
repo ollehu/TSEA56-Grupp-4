@@ -160,6 +160,15 @@ Arbetet följde den ordning som listats i tidplanen för att på smidigaste sät
 
 \section{Teknisk beskrivning}
 \textit{Redovisa det tekniska resultatet och förstudierna på ett lämpligt sätt. Detaljerade beskrivningar på grindnivå i hårdvaran eller på instruktionsnivå i mjukvaran är i detta sammanhang oftast ointressant. Referera den tekniska dokumentationen och förstudierna för beskrivning av detaljer. Lyft fram egna kreativa lösningar!}
+
+Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål. Huvudmodulen är det delsystem som sköter all kommunikation, både med dator via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-kommunikation. Den har även ansvar för att ta övergripande beslut speciellt om hur roboten ska utforska, alltså vilket håll roboten ska köra åt härnäst. Huvudmodulen har även hand om intern kartläggning under tiden roboten utforskar och kommunicerar denna information till datormodulen vid tillfälle. 
+
+Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Delsytem tre är styrmodulen som utför alla reglerberäkningar för att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. Datormodulen kan kommunicera styrkommandon till roboten men får främst information om karta och sensordata som den visar på skärmen. 
+
+Utförligare teknisk beskrivning finns att läsa i appendix \ref{Teknisk dokumentation}. 
+
+BILD?
+
 \pagebreak
 
 \section{Resultat}
