@@ -1,7 +1,5 @@
 package model;
 
-import java.util.Observable;
-
 public class RobotStatus {
 
 	private int index;

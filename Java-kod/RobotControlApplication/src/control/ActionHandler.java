@@ -15,7 +15,6 @@ import jssc.SerialPortException;
 import jssc.SerialPortList;
 import model.Log;
 import model.RobotData;
-import model.RobotStatus;
 import resources.*;
 import view.*;
 
