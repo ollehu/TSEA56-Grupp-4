@@ -104,9 +104,9 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \textit{Lyft gärna fram det som ni anser är utmanande/intressant i uppdraget.}
 \textit{Beskriv kortfattat dispositionen på rapporten.}
 
-Projektgruppen har haft som uppdrag att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämförs med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix \ref{}. Projektdirektivet beskriver närmare projektets förutsättningar. 
+Projektgruppen har haft som uppdrag att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämförs med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix \ref{}. Projektdirektivet beskriver projektets förutsättningar närmare. 
 
-Detta dokument beskriver projektets genomförande och dess resultat. Bifogat finns projektdokumentation som skrivits under projektets gång.
+Detta dokument beskriver projektets genomförande och dess resultat. Bifogat finns de dokument som tagits fram under projektets gång.
 
 \pagebreak
 
@@ -114,17 +114,11 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behöver ett roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde den måste även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delas grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-position.
-
-Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. 
+För att klara uppgiften behöver roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde den måste även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delas grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista se appendix \ref{Kravspec}. 
 
 %För att klara uppgifen med godkänt resultat fanns det från projektets start uppsatta krav som skulle uppfyllas. Utöver grundkraven sattes även ett antal lägre prioriterade krav upp, vilka skulle uppfyllas i mån av tid men var inte krav för ett godkänt projekt. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista av hög- och lågprioriterade, se appendix \ref{Kravspec}. 
 
 \subsection{Tillräckligt bra sensorvärden att reglera på}
-Ett 
-
-
-
 
 \subsection{Kartläggning}
 
@@ -148,17 +142,17 @@ Ett
 
 \textit{Beskriv hur projektet har bedrivits och referera bland annat till LIPS-modellen, systemskiss, projektplan och designspecifikation. Observera att designspecifikationen belyser arbetsprocessen och inte den slutliga produkten så om ni uppdaterat designspecifikationen löpande under projektet så kan ni infoga t ex den version som var aktuell vid BP3.}
 
-Projektet har bedrivits enligt projektmodellen \textit{LIPS}-modellen. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer där prioritet 1 var krav som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
+Projektet har bedrivits enligt projektmodellen \textit{LIPS}. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer där prioritet 1 var krav som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
 
 Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix \ref{Systemskiss}. 
 
 Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix \ref{Projektplan}. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
 
-Före projektets praktiska del starade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som ger en ingående beskrivning av produkten. Syftet med designspecifikationen är att använda den som underlag vid det praktiska arbetet. Den skulle vara så detaljerad att all funktionalitet samt hårdvaru-och mjukvarudesign skulle vara tillräckligt utförligt beskriven för att kunna arbeta utefter dokumentet. Designspecifikationen i sin helhet hittas i appendix \ref{Designspecifikation}. 
+Före projektets praktiska del starade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som ger en ingående beskrivning av produkten. Syftet med designspecifikationen är att använda den som underlag vid det praktiska arbetet. Den skulle vara på den detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskriven för att kunna arbeta utefter dokumentet. Designspecifikationen i sin helhet hittas i appendix \ref{Designspecifikation}. 
 
-När designspecifikationen var färdigställt började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar och jobbade mest med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som tidigt färdigställdes eftersom arbetet med integreration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var också något som tidigt började arbetas med eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas så tidigt som möjligt påbörjades även virning av hårdvara tidigt. 
+När designspecifikationen var färdigställt började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar och jobbade mest med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som tidigt färdigställdes eftersom arbetet med integreration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var också något som tidigt började arbetas med eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas i ett tidigt skede påbörjades även virning av hårdvara parallellt. 
 
-Arbetet följde tidplanens aktiviteter i den förutbestämda ordning de behöbvde utföras i. Som nämnt uppdaterades tidplanen allt eftersom aktiviteter avklarades för att bättre visa det faktiska arbetets gång. Till hjälp vid utvecklingsarbetet av mjukvara till hårdvaran användes Atmel Studio. Mjukvaran till datorn utvecklades i Java. 
+Arbetet följde den ordning som listats i tidplanen för att på smidigaste sätt ta hänsyn till de beroenden som existerade mellan aktiviteter. Som nämnt uppdaterades tidplanen allt eftersom aktiviteter avklarades för att bättre visa det faktiska arbetets gång. Till hjälp vid utvecklingsarbetet av mjukvara till hårdvaran användes Atmel Studio. Mjukvaran till datorn utvecklades i Java. 
 
 \pagebreak
 
