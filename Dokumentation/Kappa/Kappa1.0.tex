@@ -114,7 +114,7 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behöver roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde den måste även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delas grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista se appendix \ref{Kravspec}.
+För att klara uppgiften behöver roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delas grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista se appendix \ref{kravspec}.
 
 %För att klara uppgifen med godkänt resultat fanns det från projektets start uppsatta krav som skulle uppfyllas. Utöver grundkraven sattes även ett antal lägre prioriterade krav upp, vilka skulle uppfyllas i mån av tid men var inte krav för ett godkänt projekt. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista av hög- och lågprioriterade, se appendix \ref{Kravspec}. 
 
@@ -125,12 +125,12 @@ För att roboten ska ha en uppfattning om sin omgivning behövs sensorerna. Dess
 Kartläggningens utmaning var två delad. Den ena delen handlade om kravet att hålla reda på hur roboten är orienterad samt vilken position den har. För att uppdatera rätt värden behöver roboten själv hålla koll på vilket värderstreck den är riktad i och vilken position den tagit sig till. Den andra, och mer komplexa, delen var komma fram till en struktur som gör uppdraget genomförbart. Information behöver lagras på ett sätt så att det går att navigera i labyrinten på ett smidigt sätt och att beräkningen kan ske effektivt.
 
 \subsection{Kommunikation}
-För att kunna överföra information mellan de olika modulerna är det viktigt att ha ett pålitligt kommunikationssystem. Utmaningen här låg i att den var essentiell för det framtida uvekckladet eftersom det inte gick att testa modulerna tillsammans annars. Därför var det viktigt att få den att fungera i ett tidigt skede.
+För att kunna överföra information mellan de olika modulerna är det viktigt att ha ett pålitligt kommunikationssystem. Utmaningen här låg i att den var essentiell för det framtida uvecklandet eftersom det inte gick att testa modulerna tillsammans annars. Därför var det viktigt att få den att fungera i ett tidigt skede.
 
 \subsection{Representation i datormodul}
 
 \subsection{Integration av moduler}
-Även fast arbetet delats upp i olika moduler är det viktigt att ha i åtanke att dessa ska vara en del av ett större system. Detta ställer nya krav på effetiviteten hos de olika modulerna
+Trots att arbetet delats upp i olika moduler är det viktigt att ha i åtanke att dessa ska vara en del av ett större system. Detta ställer nya krav på effetiviteten hos de olika modulerna.
 
 \pagebreak
 
@@ -141,7 +141,7 @@ Komponentera som har använts under projektet finns nästan uteslutande beskrivn
 
 Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utibildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade arbetat i. 
 
-De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikaitonen, se appendix \ref{designspec}, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix \ref{förstudier}
+De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikaitonen, se appendix \ref{designspecifikation}, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix \ref{förstudier}
 
 Till förfogande hade projektgruppen även en teknisk handledare tillhandahållen av ISY, instutitionen för systemteknik på Linköpings Universitet. Handledaren kom väl till pass då hårdvara krånglade och då svårare problem behövde diskuteras.
 
@@ -155,12 +155,12 @@ I följande stycken beskrivs hur projektet genomförts i de tre olika faserna \t
 \subsection{Fas: Före}
 Projektet har bedrivits enligt projektmodellen \textit{LIPS}. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer där prioritet 1 var krav som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
 
-Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix \ref{Systemskiss}. 
+Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix \ref{systemskiss}. 
 
-Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix \ref{Projektplan}. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
+Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix \ref{projektplan}. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
 
 \subsection{Fas: Under}
-Före projektets praktiska del starade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som ger en ingående beskrivning av produkten. Syftet med designspecifikationen är att använda den som underlag vid det praktiska arbetet. Den skulle vara på den detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskriven för att kunna arbeta utefter dokumentet. Designspecifikationen i sin helhet hittas i appendix \ref{Designspecifikation}. 
+Före projektets praktiska del starade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som ger en ingående beskrivning av produkten. Syftet med designspecifikationen är att använda den som underlag vid det praktiska arbetet. Den skulle vara på den detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskriven för att kunna arbeta utefter dokumentet. Designspecifikationen i sin helhet hittas i appendix \ref{designspecifikation}. 
 
 När designspecifikationen var färdigställt började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar och jobbade mest med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som tidigt färdigställdes eftersom arbetet med integreration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var också något som tidigt började arbetas med eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas i ett tidigt skede påbörjades även virning av hårdvara parallellt. 
 
@@ -180,7 +180,7 @@ Roboten består av fyra olika delsystem, moduler, som är designade för specifi
 
 Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Delsytem tre är styrmodulen som utför alla reglerberäkningar för att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. Datormodulen kan kommunicera styrkommandon till roboten men får främst information om karta och sensordata som den visar på skärmen. 
 
-Utförligare teknisk beskrivning finns att läsa i appendix \ref{Teknisk dokumentation}. 
+Utförligare teknisk beskrivning finns att läsa i appendix \ref{TekniskDokumentation}. 
 
 BILD?
 
