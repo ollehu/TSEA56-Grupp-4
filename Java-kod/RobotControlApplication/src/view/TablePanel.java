@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -10,6 +12,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
 
+import control.ActionHandler;
 import resources.OtherConstants;
 
 public class TablePanel extends JPanel implements Observer{
@@ -23,24 +26,28 @@ public class TablePanel extends JPanel implements Observer{
 	/**
 	 * Constructor
 	 */
-	public TablePanel() {
+	public TablePanel(ActionHandler actionHandler) {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		sensorTable = new JTable(OtherConstants.SENSOR_DATA, OtherConstants.SENSOR_COLUMNS);
 		sensorTable.setCellSelectionEnabled(false);
 		add(sensorTable);
 		
-		controlTable = new JTable(OtherConstants.CONTROL_DATA, OtherConstants.CONTROL_COLUMNS);
-		controlTable.getModel().addTableModelListener(new TableModelListener() {
+		controlTable = new JTable(OtherConstants.CONTROL_DATA, OtherConstants.CONTROL_COLUMNS) {
 			
+			private static final long serialVersionUID = 1L;
+
+			public boolean isCellEditable(int row, int column) {
+		            return column == 1;
+			 }
+			
+		};
+		controlTable.getModel().addTableModelListener(actionHandler.controlTableListener);
+		controlTable.addFocusListener(new FocusAdapter() {
 			@Override
-			public void tableChanged(TableModelEvent e) {
-				int row = e.getFirstRow();
-				int column = e.getColumn();
-				TableModel model = (TableModel) e.getSource();
-				
-				double data = (double) model.getValueAt(row, column);
-			}
+		    public void focusLost(FocusEvent arg0) {
+		       controlTable.clearSelection();
+		    }
 		});
 		add(controlTable);
 	}

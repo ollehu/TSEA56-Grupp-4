@@ -153,7 +153,7 @@ public class SerialCommunicationHandler {
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						byteStringLength = 2;
 					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
-						byteStringLength = 14;
+						byteStringLength = 18;
 					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						byteStringLength = 3;
 					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
@@ -210,7 +210,7 @@ public class SerialCommunicationHandler {
 	private void updateSensorValues(byte[] receivedData) {
 
 		// convert byte to unsigned ints
-		int[] sensorValues = new int[6];
+		int[] sensorValues = new int[7];
 		int j = 0;
 
 		for(int i = 1; i < receivedData.length; i+=2) {
@@ -222,7 +222,9 @@ public class SerialCommunicationHandler {
 			} else if(i == 13){
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 124;
 				j++;
-			} else {
+			} else if(i == 15){
+				// target data
+			}	else {
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
 				j++;
 			}
