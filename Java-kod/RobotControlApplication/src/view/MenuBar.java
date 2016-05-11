@@ -25,6 +25,7 @@ public class MenuBar extends JMenuBar {
 	private JSeparator fileFirstSeparator;
 	
 	private JMenuItem selectCOMPortMenuItem;
+	private JMenuItem connectToCOMPortMenuItem;
 
 	/**
 	 * Edit menu with its items
@@ -61,6 +62,9 @@ public class MenuBar extends JMenuBar {
 		
 		selectCOMPortMenuItem = new JMenuItem(actionHandler.selectCOMPortAction);
 		fileMenu.add(selectCOMPortMenuItem);
+		
+		connectToCOMPortMenuItem = new JMenuItem(actionHandler.connectToCOMPortAction);
+		fileMenu.add(connectToCOMPortMenuItem);
 
 
 		// create edit menu and items

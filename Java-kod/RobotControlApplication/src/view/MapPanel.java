@@ -122,6 +122,8 @@ public class MapPanel extends JPanel implements Observer{
 				elementHolder[xCoordinate][yCoordinate].explore(value);
 				exploredMapElements.add(elementHolder[xCoordinate][yCoordinate]);
 				
+				System.out.println("X: " + xCoordinate + ", Y: " + yCoordinate + ", V: " + value);
+				
 				// expand boundaries if needed
 				if(xCoordinate < westMax) {
 					westMax = xCoordinate;

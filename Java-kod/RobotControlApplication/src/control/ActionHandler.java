@@ -38,6 +38,7 @@ public class ActionHandler {
 	public CommentLogAction commentLogAction = new CommentLogAction();
 
 	public SelectCOMPortAction selectCOMPortAction = new SelectCOMPortAction();
+	public ConnectToCOMPortAction connectToCOMPortAction = new ConnectToCOMPortAction();
 
 	public DebugModeAction debugModeAction = new DebugModeAction();
 	public ClearMapAction clearMapAction = new ClearMapAction();
@@ -215,31 +216,50 @@ public class ActionHandler {
 						portNames[0]);
 
 				if(selectedPort != null) {
-					// connect to port
-					try {
-						serialCOM.connectToSerialPort(selectedPort);
-
-						JOptionPane.showMessageDialog(animator.getFrame(),
-								"Port connected",
-								selectedPort,
-								JOptionPane.INFORMATION_MESSAGE);
-					} catch (SerialPortException e2) {
-						String toolTip;
-
-						if(e2.getExceptionType().equals("Port busy")) {
-							toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
-						} else {
-							toolTip = "";
-						}
-
-						JOptionPane.showMessageDialog(animator.getFrame(),
-								e2.getExceptionType() + toolTip,
-								e2.getPortName(),
-								JOptionPane.ERROR_MESSAGE);
-					}
+					serialCOM.setSelectedPortName(selectedPort);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @author Isak
+	 *
+	 */
+	private class ConnectToCOMPortAction extends AbstractAction {
+
+		public ConnectToCOMPortAction() {
+			super("Connect to selected port");
+
+			putValue(SHORT_DESCRIPTION, "Connects to the selected port");		
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				serialCOM.connectToSerialPort();
+
+				JOptionPane.showMessageDialog(animator.getFrame(),
+						"Port connected",
+						serialCOM.getSelectedPortName(),
+						JOptionPane.INFORMATION_MESSAGE);
+			} catch (SerialPortException e2) {
+				String toolTip;
+
+				if(e2.getExceptionType().equals("Port busy")) {
+					toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
+				} else {
+					toolTip = "";
+				}
+
+				JOptionPane.showMessageDialog(animator.getFrame(),
+						e2.getExceptionType() + toolTip,
+						e2.getPortName(),
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+
 	}
 
 	/**

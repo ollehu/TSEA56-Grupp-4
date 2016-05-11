@@ -22,6 +22,11 @@ public class SerialCommunicationHandler {
 	 * Serial port
 	 */
 	private static SerialPort serialPort;
+	
+	/**
+	 * Serial port name
+	 */
+	private String selectedPortName = "/dev/tty.PigBot-Bluetooth";
 
 	/**
 	 * Firefly standard values
@@ -51,8 +56,8 @@ public class SerialCommunicationHandler {
 	 * @param portName port selected by user through GUI
 	 * @throws SerialPortException
 	 */
-	public void connectToSerialPort(String portName) throws SerialPortException {
-		serialPort = new SerialPort(portName);
+	public void connectToSerialPort() throws SerialPortException {
+		serialPort = new SerialPort(selectedPortName);
 
 		// open port for communication
 		serialPort.openPort();
@@ -110,6 +115,14 @@ public class SerialCommunicationHandler {
 	//================================================================================
 	public SerialPort getSerialPort() {
 		return serialPort;
+	}
+	
+	public void setSelectedPortName(String selectedPortName) {
+		this.selectedPortName = selectedPortName;
+	}
+	
+	public String getSelectedPortName() {
+		return selectedPortName;
 	}
 
 	//================================================================================
