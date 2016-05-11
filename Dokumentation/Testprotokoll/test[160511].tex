@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+
+\begin{document}
+
+\begin{center}
+
+{\Huge\bfseries Testprotokoll}
+\vspace{4em}
+\end{center}
+
+\begin{flushleft}
+
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.4\linewidth}{!}{
+	\input{images/bana[160511]}}
+	\caption{Översikt av testbana\label{bana}}	
+\end{figure}
+
+\begin{description}
+\item[Vad som har testats] \hfill \\
+Test av reflexsensor för att se hur väl denna kan uppskatta en moduls längd (40 cm). Testade även rotation och stoppsträcka på underlaget i gamla TekNat-biblioteket. Därtill så testades också kartritningen på datormodulen. 
+\vspace{1em}
+\item[Utfall] \hfill \\
+Uppskattningen av modullängd var bra! Underlaget i TekNat-biblioteket är dock ett problem, friktionen mellan hjul och underlag är inte tillräcklig vilket gör att roboten glider vid rotation. Kartritningen ritade dessutom ut för många moduler i djup på korridoren. 
+\vspace{1em}
+\item[Eventuella komplikationer] \hfill \\
+Det faktum att roboten roterar för mycket vid rotation är ett problem (beroende på den dåliga friktionen mellan hjul och golv). Komplikationen med kartritningen kunde emellertid lösas på plats.
+\vspace{1em}
+\item[Hur arbetet fortskrider] \hfill \\
+Testkörningar av roboten i banmiljö kommer att fortsätta under veckan. Olle undersöker möjligheten att eventuellt trä gummisnoddar på hjulen för öka friktionen vid rotation. Bör vara undersökt innan slutet av denna vecka.
+\end{description}
+
+\end{flushleft}
+
+\end{document}
