@@ -100,7 +100,11 @@ ISR(USART0_RX_vect){
 
 ISR(INT1_vect){ //Interrupt from controller module
 	//1. Välj ny modul att utforska
-	explore();
+	if(!unexploredPaths() && position[0] == 14 && position[1] == 14){
+		//Do nothing...
+	} else {
+		explore();
+	}
 	
 	
 	//This should work when we are interested in testing with target

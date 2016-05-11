@@ -64,11 +64,6 @@ uint8_t oneEighty = 0x02;
 uint8_t right = 0x03;
 uint8_t left = 0x04;
 uint8_t claw = 0x09;
-	
-uint8_t forward = 0x01;
-uint8_t oneEighty = 0x02;
-uint8_t right = 0x03;
-uint8_t left = 0x04;
 
 /************************************************************************/
 /*                            SHORTEST PATH                             */
@@ -196,7 +191,7 @@ uint8_t hasFoundTarget(void)
 	
 	/*straightAhead = sensorData[10]*128 + sensorData[12];
 	
-	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead)){
+	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead*2)){
 		return 1;
 	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
 		return 2;
