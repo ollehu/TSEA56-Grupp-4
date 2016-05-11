@@ -510,7 +510,7 @@ void autonomousForward()
 		
 		currControlCommand = stop;
 		stopWheels();
-		adjustedInCorridor = 0;
+		
 		
 		accumulatedDistance = 0;
 		
@@ -560,6 +560,7 @@ void autonomousForward()
 								 sideSensors[frontLeftIndex]  + 
 								 sideSensors[rearRightIndex]  + 
 								 sideSensors[rearLeftIndex])/4;
+			adjustedInCorridor = 0;
 		}
 	
 		uint8_t distance = (sideSensors[frontIndex] + 
