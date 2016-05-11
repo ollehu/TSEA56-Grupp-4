@@ -69,7 +69,6 @@ uint8_t claw = 0x09;
 /*                            SHORTEST PATH                             */
 /************************************************************************/
 uint8_t currentCommand[3];
-uint8_t doneShortestPathInit = 0;
 uint8_t shortestPath[150][2];
 
 uint8_t s;

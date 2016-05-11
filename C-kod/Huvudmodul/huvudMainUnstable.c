@@ -8,11 +8,6 @@
 
 #include <util/delay.h>
 
-
-
- //Kommunikations-ID, styrkommando, vinkel/sträcka(1)
-uint8_t styrManuellt[] = {0x00, 0x02, 0x00}; //Kommunikations-ID, styrkommando, hastighet
-
 int SLA_sensor_R = 0xCB;
 int SLA_sensor_W = 0xCA;
 int SLA_styr_R = 0xCD;
@@ -27,6 +22,11 @@ uint8_t computerMessage[3];
 volatile int sleep = 0;
 volatile int autodrive = 0;
 uint8_t switchMode[3] = {0xFC, 0x01, 0x00};
+	
+uint8_t status = 0;
+
+uint8_t closeClaw[3] = {0xFF, 0x09, 0x00};
+uint8_t stopCommand[3] = {0xFF, 0x00, 0x00};
 
 /*void btSend(unsigned char data)
 {
@@ -98,13 +98,93 @@ ISR(USART0_RX_vect){
 	}*/
 }
 
+ISR(INT0_vect){
+	switch(status){
+		case 0:
+			PORTD |= ~(1<<PORTD6);
+			PORTD |= ~(1<<PORTD7);
+			
+			status = 1;
+			explore();
+			break;
+		case 1:
+			//Do nothing...
+			PORTD |= (1<<PORTD6);
+			PORTD |= ~(1<<PORTD7);
+			
+			break;
+		case 2:
+			PORTD |= ~(1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+			
+			status = 3;
+			shortestPathInit();
+			Master(3,SLA_sensor_R,closeClaw);
+			break;
+		case 3:
+			//Do nothing...
+			PORTD |= (1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+			
+			break;
+	}
+}
+
 ISR(INT1_vect){ //Interrupt from controller module
-	//1. Välj ny modul att utforska
+	switch(status){
+		case 0:
+			//Do nothing...
+			PORTD |= ~(1<<PORTD6);
+			PORTD |= ~(1<<PORTD7);
+			
+			break;
+		case 1:
+			PORTD |= (1<<PORTD6);
+			PORTD |= ~(1<<PORTD7);
+			
+			if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
+				status = 2;
+				Master(3,SLA_styr_W,openClaw);
+			} else {
+				explore();
+			}
+			
+			break;
+		case 2:
+			//Do nothing...
+			PORTD |= ~(1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+			
+			break;
+		case 3:
+			PORTD |= (1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+		
+			if(lastCommand[1] == claw){
+				returnStart = nrOfCoordinates - 1;
+			}
+
+			if (returnStart != 0xFF){
+				if(returnStart == -1){
+					Master(3,SLA_styr_W,stopCommand);
+					PORTD |= (1<<PORTD4);
+				} else {
+					returnToStart();
+				}
+			} else if(goTheShortestPath){				
+				shortestPathToTarget();
+			}
+			
+			break;
+	}
+		
+	// Välj ny modul att utforska
+	/*
 	if(!unexploredPaths() && position[0] == 14 && position[1] == 14){
 		//Do nothing...
 	} else {
 		explore();
-	}
+	}*/
 	
 	
 	//This should work when we are interested in testing with target
@@ -194,15 +274,16 @@ void sendMap(void)
 }
 
 int main(void)
-{
-	/*for (int i = 0; i < 8; i++ ) {
-		sensorData[ i ] = i+2;
-	}*/
-	
+{	
 	TWISetup();
 	interruptSetup();
 	btInit();
 	searchPathInit();
+	
+	DDRD |= (1<<DDD7)|(1<<DDD6)|(1<<DDD4);
+	PORTD |= ~(1<<PORTD7);
+	PORTD |= ~(1<<PORTD6);
+	PORTD |= ~(1<<PORTD4);
 	
 	sei();
 	
@@ -241,9 +322,9 @@ int main(void)
 		
 		
 		if (autodrive == 0) { // Manual mode
-			//Do nothing
-			} else if (autodrive == 1) { // Autonomous mode
-			//sendMap();
+			//Do nothing...
+		} else if (autodrive == 1) { // Autonomous mode
+			//Do nothing...
 		}
 		
 	}
