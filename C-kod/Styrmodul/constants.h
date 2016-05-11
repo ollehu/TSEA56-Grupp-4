@@ -25,6 +25,9 @@
 
 #define sensorArraySize 19
 
+#define wheelDiameter 6.2
+#define wheelNumberOfSections 16.0
+
 /************************************************************************/
 /*					     	   COMMANDS                                 */
 /************************************************************************/
@@ -63,5 +66,6 @@
 #define maxDistance 245
 #define maxSpeed 100
 #define zeroAngVel 124
-#define moduleDepth 35
+#define moduleDepth 40
 #define minDistanceForward 18
+#define distanceMidToForwardSensor 6
