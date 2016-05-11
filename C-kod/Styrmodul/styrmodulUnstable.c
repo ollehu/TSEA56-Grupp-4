@@ -345,13 +345,6 @@ void respondToControlData(uint8_t command, uint8_t value)
 				rightWheelPair(value, 0);
 				leftWheelPair(value*0.6, 0);
 				break;
-			case commandClaw:
-				if (value == 1){
-					openPicker();
-				} else {
-					closePicker();
-				}
-				break;
 			default:
 				stopWheels();
 				break;
@@ -459,6 +452,17 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 			break;
 		case 10:
 			convertAngle180 = 10 * value;
+			break;
+		case 11:
+			if (value == 1){
+				openPicker();
+			} else {
+				closePicker();
+			}
+			break;
+		case 14:
+			preferredRotationSpeed = value;
+			break;
 		default:
 			break;
 	}
