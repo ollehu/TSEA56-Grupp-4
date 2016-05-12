@@ -181,6 +181,7 @@ public class SerialCommunicationHandler {
 					try {
 						receivedData = serialPort.readBytes(byteStringLength, 70);
 					} catch (SerialPortTimeoutException e) {
+						e.printStackTrace();
 						return;
 					}
 

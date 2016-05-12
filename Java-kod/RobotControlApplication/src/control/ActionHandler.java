@@ -5,6 +5,7 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
@@ -70,6 +71,8 @@ public class ActionHandler {
 	 * Listeners
 	 */
 	public ControlTableListener controlTableListener = new ControlTableListener();
+	
+	public ComboBoxListener comboBoxListener = new ComboBoxListener();
 	
 	/**
 	 * Initialize action handler
@@ -420,10 +423,30 @@ public class ActionHandler {
 			} else if (row == 4)  {
 				sendData = (int) (data / 10); 
 				dataID = ControlSettingID.CONSTANT_180;
+			} else if (row == 5)  {
+				sendData = (int) data; 
+				dataID = ControlSettingID.SPEED;
+			} else if (row == 6)  {
+				sendData = (int) data; 
+				dataID = ControlSettingID.ROTATION_SPEED;
 			}
 			serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, dataID, sendData);
 		}
+	}
+	
+	/**
+	 * Detects change in comboboxes
+	 */
+	private class ComboBoxListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox<Integer> changedBox = (JComboBox)e.getSource();
+	        Integer selectedInteger = (Integer) changedBox.getSelectedItem();
+	        
+	        robotData.update(ControlSettingID.CURRENT_HEAT, selectedInteger);
+	        serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.CURRENT_HEAT, selectedInteger);
+		}
 		
 	}
 }

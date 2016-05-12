@@ -104,6 +104,7 @@ public class MenuBar extends JMenuBar {
 		saveLogMenuItem.setVisible(state);
 		commentLogMenuItem.setVisible(state);
 		fileFirstSeparator.setVisible(state);
+		debugModeMenuItem.setSelected(state);
 	}
 	
 }

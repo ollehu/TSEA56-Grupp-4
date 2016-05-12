@@ -18,8 +18,10 @@ public class ControlSettingID {
 	
 	public static final int KONSTANT = 4;
 	
-	public static final int SPEED = 6;
+	public static final int SPEED = 5;
 	
+	public static final int ROTATION_SPEED = 14;
+
 	/**
 	 * Trigger next control decision (only available in debug mode)
 	 */
@@ -42,5 +44,8 @@ public class ControlSettingID {
 	public static final int CLAW = 11;
 	
 	public static final int LAST_CONTROL_COMMAND = 12;
+	
+	public static final int CURRENT_HEAT = 13;
+	
 }
 
