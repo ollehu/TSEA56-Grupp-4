@@ -93,6 +93,10 @@ public class RobotData extends Observable{
 		
 		} else if(identifier == ControlSettingID.LAST_CONTROL_COMMAND) {
 			return 4;
+			
+		} else if(identifier == ControlSettingID.CURRENT_HEAT) {
+			return 5;
+			
 		} else {
 			return -1;
 		}

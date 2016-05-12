@@ -11,10 +11,11 @@ public class OtherConstants {
 	 * Robot status names
 	 */
 	public static final String[] ROBOT_STATUS_NAMES = {"Autonomous mode", 
-			"Debug mode",
-			"Claw",
-			"Speed",
-			"Last command"
+														"Debug mode",
+														"Claw",
+														"Speed",
+														"Last command",
+														"Current heat"
 	};
 	
 	public static final String[][] ROBOT_STATUS_STATES = {{"off", "on"},
@@ -24,7 +25,16 @@ public class OtherConstants {
 															{"none", "forward", "backward", "left", 
 																"right", "forwards right", "forwards left", 
 																"backwards right", "backwards left", 
-																"none", "stop"}
+																"none", "stop"},
+															null
+	};
+	
+	public static final boolean[] ROBOT_STATUS_VISIBILITY = {true,
+															true,
+															true,
+															true,
+															true,
+															false
 	};
 	
 	/**
@@ -38,8 +48,8 @@ public class OtherConstants {
 			{"IR B/R", new Integer(-1), "mm"},
 			{"IR B/L", new Integer(-1), "mm"},
 			{"Lidar Lite", new Integer(-1), "cm"},
-			{"Revolutions traveled", new Integer(-1), "1/16 revs"},
-			{"Angular velocity", new Integer(-1), "deg/s"}
+			{"Angular velocity", new Integer(-1), "deg/s"},
+			{"Revolutions traveled", new Integer(-1), "1/16 revs"}
 		};
 
 	
@@ -50,8 +60,10 @@ public class OtherConstants {
 			{"P", new Double(0.45)},
 			{"D", new Double(1.2)},
 			{"K", new Double(0.7)},
-			{"90", new Integer(780)},
-			{"180", new Integer(1800)}
+			{"90", new Integer(720)},
+			{"180", new Integer(1740)},
+			{"Speed", new Integer(50)},
+			{"Rotation speed", new Integer(70)}
 		};
 	
 	/**
@@ -65,8 +77,8 @@ public class OtherConstants {
 			"",
 			"C - open/close claw",
 			"",
-			"Shift - increase speed",
-			"Ctrl - decrease speed"};
+			"X - increase speed",
+			"Z - decrease speed"};
 	
 }
 

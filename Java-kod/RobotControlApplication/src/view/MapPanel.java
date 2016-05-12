@@ -66,7 +66,7 @@ public class MapPanel extends JPanel implements Observer{
 		for(int x = 0; x < X_MAX; x++) {
 			for(int y = 0; y < Y_MAX; y++) {
 				constraints.gridx = x;
-				constraints.gridy = y;
+				constraints.gridy = Y_MAX - y + 1;
 				
 				elementHolder[x][y] = new MapVisualElement();
 				add(elementHolder[x][y], constraints);
@@ -122,8 +122,6 @@ public class MapPanel extends JPanel implements Observer{
 				elementHolder[xCoordinate][yCoordinate].explore(value);
 				exploredMapElements.add(elementHolder[xCoordinate][yCoordinate]);
 				
-				System.out.println("X: " + xCoordinate + ", Y: " + yCoordinate + ", V: " + value);
-				
 				// expand boundaries if needed
 				if(xCoordinate < westMax) {
 					westMax = xCoordinate;
@@ -135,6 +133,8 @@ public class MapPanel extends JPanel implements Observer{
 				} else if(yCoordinate > northMax) {
 					northMax = yCoordinate;
 				}
+				
+				//TODO add set preferred size using a panel inside panel
 				
 				// adjust width and height of all added elements
 				int nextWidth = WIDTH / (eastMax - westMax + 1);

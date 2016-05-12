@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import org.jfree.chart.*;
 import org.jfree.chart.axis.ValueAxis;
@@ -101,12 +102,18 @@ public class GraphPanel extends JPanel implements Observer{
 		if(o instanceof model.SensorData) {
 			if(arg instanceof int[]) {
 				double timeStamp = getTimeStamp();
-				int[] sensorValues = (int[]) arg;
-				
-				// add IR sensor and Lidar values
-				for(int index = 0; index < 6; index++) {
-					dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
-				}
+//				SwingUtilities.invokeLater(new Runnable() {
+					
+//					@Override
+//					public void run() {
+						int[] sensorValues = (int[]) arg;
+						
+						// add IR sensor and Lidar values
+						for(int index = 0; index < 6; index++) {
+							dataSeriesList.get(index).add(timeStamp, sensorValues[index]);
+						}
+//					}
+//				});
 			}
 		}
 	}
