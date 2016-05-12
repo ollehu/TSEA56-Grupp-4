@@ -62,10 +62,11 @@ public class ActionHandler {
 	//	public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
 
 	public SendControlSettingAction clawAction = new SendControlSettingAction("","",ControlSettingID.CLAW);
+	
 	public SendControlSettingAction startRunAction = new SendControlSettingAction("Start run", "Starts an autonomous run",
-																					ControlSettingID.NEXT_DECISION);
+																					ControlSettingID.START_RUN);
 	public SendControlSettingAction nextDecisionAction = new SendControlSettingAction("Next decision", "Commands robot to take next autonomous decision",
-			ControlSettingID.NEXT_DECISION);
+																						ControlSettingID.NEXT_DECISION);
 	
 	/**
 	 * Listeners
@@ -353,7 +354,8 @@ public class ActionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(controlSetting == ControlSettingID.NEXT_DECISION) {
+			if(controlSetting == ControlSettingID.NEXT_DECISION ||
+					controlSetting == ControlSettingID.START_RUN) {
 				serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, controlSetting, 1);
 
 			} else {

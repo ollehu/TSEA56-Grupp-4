@@ -24,9 +24,14 @@ public class RobotStatusPanel extends JPanel implements Observer{
 	private ActionHandler actionHandler;
 	
 	/**
-	 * Button used to start run or trigger next decision
+	 * Button used to start run 
 	 */
-	private JButton startRunNextMoveButton;
+	private JButton startRunButton;
+	
+	/**
+	 * Button used to trigger next decision
+	 */
+	private JButton nextDecisionButton;
 	
 	/**
 	 * Items used to select heat
@@ -60,9 +65,14 @@ public class RobotStatusPanel extends JPanel implements Observer{
 		constraints.fill = GridBagConstraints.BOTH;
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
 		
-		// add start run/next decision button
-		startRunNextMoveButton = new JButton(actionHandler.startRunAction);
-		add(startRunNextMoveButton, constraints);
+		// add start run button
+		startRunButton = new JButton(actionHandler.startRunAction);
+		add(startRunButton, constraints);
+		
+		// add next decision button
+		constraints.gridy++;
+		nextDecisionButton = new JButton(actionHandler.nextDecisionAction);
+		add(nextDecisionButton, constraints);
 		
 		// add current heat panel
 		constraints.gridy++;
@@ -72,7 +82,7 @@ public class RobotStatusPanel extends JPanel implements Observer{
 		currentHeatComboBox = new JComboBox<>(availableHeats);
 		currentHeatComboBox.addActionListener(actionHandler.comboBoxListener);
 		currentHeatPanel.add(currentHeatComboBox);
-		add(currentHeatPanel, constraints);
+//		add(currentHeatPanel, constraints);
 		
 		// add robot statuses
 		int index = 0;
@@ -110,7 +120,7 @@ public class RobotStatusPanel extends JPanel implements Observer{
 	 * Sets autonomous mode
 	 */
 	public void setAutonomousMode(boolean state) {
-		startRunNextMoveButton.setVisible(state);
+		startRunButton.setVisible(state);
 		currentHeatPanel.setVisible(state);
 	}
 	
@@ -118,10 +128,6 @@ public class RobotStatusPanel extends JPanel implements Observer{
 	 * Sets debug mode
 	 */
 	public void setDebugMode(boolean state) {
-		if(state) {
-			startRunNextMoveButton.setAction(actionHandler.nextDecisionAction);
-		} else {
-			startRunNextMoveButton.setAction(actionHandler.startRunAction);
-		}
+		nextDecisionButton.setVisible(state);
 	}
 }

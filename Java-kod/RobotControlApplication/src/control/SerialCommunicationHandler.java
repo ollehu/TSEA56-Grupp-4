@@ -69,7 +69,12 @@ public class SerialCommunicationHandler {
 		// add port listener
 		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
 		// ping robot
-		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+//		try {
+//		    Thread.sleep(1000);                 //1000 milliseconds is one second.
+//		} catch(InterruptedException ex) {
+//		    Thread.currentThread().interrupt();
+//		}
+		
 
 	}
 
@@ -153,12 +158,22 @@ public class SerialCommunicationHandler {
 	 */
 	private class PortReader implements SerialPortEventListener {
 
+		public PortReader() {
+			super();
+			
+			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		}
+		
 		@Override
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
 					byte[] communicationsIDByte = serialPort.readBytes(1);
 					int communicationsID = Byte.toUnsignedInt(communicationsIDByte[0]);
+					
+					if(communicationsID <= 245) {
+						return;
+					}
 
 					// get byte string length
 					int byteStringLength = 100;
@@ -184,7 +199,7 @@ public class SerialCommunicationHandler {
 						e.printStackTrace();
 						return;
 					}
-
+					
 					// respond to received data
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						updateControlSettings(receivedData);
