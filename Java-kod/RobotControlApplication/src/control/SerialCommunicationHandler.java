@@ -67,27 +67,27 @@ public class SerialCommunicationHandler {
 		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
 		// add port listener (making sure ping happens when the listener is ready)
-		Thread listenerThread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				try {
-					serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-				} catch (SerialPortException e) {
-					e.printStackTrace();
-				}
-				// ping robot
-				sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-			}
-		});
-		listenerThread.start();
+//		Thread listenerThread = new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				try {
+//					serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+//				} catch (SerialPortException e) {
+//					e.printStackTrace();
+//				}
+//				// ping robot
+//				sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+//			}
+//		});
+//		listenerThread.start();
 		
-//		try {
-//			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-//		} finally {
-//			// ping robot
-//			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-//		}
+		try {
+			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		} finally {
+			// ping robot
+			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		}
 	}
 
 	/**
