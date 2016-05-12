@@ -114,20 +114,20 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behöver roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delas grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de mest utmärkande kraven, för en fullständig lista se appendix \ref{kravspec}.
+För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{kravspec}.
 
 \subsection{Tillräckligt bra sensorvärden}
-För att roboten ska ha en uppfattning om sin omgivning behövs sensorerna. Dessa behöver sedan läsas av tillräckligt ofta och översättas med tillräcklig precision för att de ska göra nytta i regleringen. 
+För att roboten skulle ha en uppfattning om sin omgivning behövdes sensorerna. Dessa behövde sedan läsas av tillräckligt ofta och översättas med tillräcklig precision för att de skulle göra nytta i regleringen. 
 
 \subsection{Kartläggning}
-Kartläggningens utmaning var två delad. Den ena delen handlade om kravet att hålla reda på hur roboten är orienterad samt vilken position den har. För att uppdatera rätt värden behöver roboten själv hålla koll på vilket värderstreck den är riktad i och vilken position den tagit sig till. Den andra, och mer komplexa, delen var komma fram till en struktur som gör uppdraget genomförbart. Information behöver lagras på ett sätt så att det går att navigera i labyrinten på ett smidigt sätt och att beräkningen kan ske effektivt.
+Kartläggningens utmaning var tvådelad. Den ena delen handlade om att hålla reda på hur roboten är orienterad samt vilken position den har. För att uppdatera rätt värden behövde roboten själv hålla koll på vilket värderstreck den var riktad i och vilken position den tagit sig till. Den andra, och mer komplexa, delen var utmaningen att komma fram till en struktur som gjorde uppdraget genomförbart. Information behövde lagras på ett sätt så att det gick att navigera i labyrinten på ett smidigt sätt och att beräkningen kunde ske effektivt.
 
 \subsection{Kommunikation}
-För att kunna överföra information mellan de olika modulerna är det viktigt att ha ett pålitligt kommunikationssystem. Utmaningen här låg i att den var essentiell för det framtida uvecklandet eftersom det inte gick att testa modulerna tillsammans annars. Därför var det viktigt att få den att fungera i ett tidigt skede.
+För att kunna överföra information mellan de olika modulerna var det viktigt att ha ett pålitligt kommunikationssystem. Utmaningen här låg i att den var essentiell för det framtida uvecklandet eftersom det inte gick att testa modulerna tillsammans annars. Därför var det viktigt att få denna del att fungera i ett tidigt skede.
 
 \subsection{Integration av moduler}
 
-Trots att arbetet delats upp i olika moduler är det viktigt att ha i åtanke att dessa ska vara en del av ett större system. Modulerna kan fungera felfritt var och en för sig men motverka varandra vid integrering. Detta kan exempelvis ske om en moduls avbrott upptar för mycket tid, vilket gör att de andra modulerna tappar effektivitet. 
+Trots att arbetet delats upp i olika moduler var det viktigt att ha i åtanke att dessa skulle vara en del av ett större system. Trots att modulerna kunde fungera felfritt var och en för sig var det fanns det en möjlighet att de skulle motverka varandra vid integrering av dem. Ett identifierat problemområde var att en moduls avbrott skulle kunna ta upp för mycket tid, vilket skulle medföra att de andra modulerna tappade effektivitet. 
 
 
 \pagebreak
@@ -174,9 +174,11 @@ Som avslut verifierades alla krav och produkten testades mot andra robotar som k
 \section{Teknisk beskrivning}
 \textit{Redovisa det tekniska resultatet och förstudierna på ett lämpligt sätt. Detaljerade beskrivningar på grindnivå i hårdvaran eller på instruktionsnivå i mjukvaran är i detta sammanhang oftast ointressant. Referera den tekniska dokumentationen och förstudierna för beskrivning av detaljer. Lyft fram egna kreativa lösningar!}
 
-Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål. Huvudmodulen är det delsystem som sköter all kommunikation, både med dator via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix \ref{Kommunikation}. Huvudmodulen har även ansvar för att ta övergripande beslut speciellt om hur roboten ska utforska, alltså vilket håll roboten ska köra åt härnäst, enligt algoritmer beskrivna i förstudien som rör reglering, se appendix \ref{Reglering}. Huvudmodulen har slutligen också hand om intern kartläggning under tiden roboten utforskar och kommunicerar denna information till datormodulen vid tillfälle. 
+Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål monterade på ett chassi. Huvudmodulen är det delsystem som sköter all kommunikation, både med dator via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix \ref{Kommunikation}. Huvudmodulen har även ansvar för att ta övergripande beslut speciellt om hur roboten ska utforska, alltså vilket håll roboten ska köra åt härnäst, enligt algoritmer beskrivna i förstudien som rör reglering, se appendix \ref{Reglering}. Huvudmodulen har slutligen också hand om intern kartläggning under tiden roboten utforskar och kommunicerar denna information till datormodulen vid tillfälle. 
 
 Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix \ref{Sensorer}. Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in används en PD-regulator i enlighet med resultatet i förstudien i appendix \ref{Reglering}. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. Datormodulen kan kommunicera styrkommandon till roboten men får främst information om karta och sensordata som den visar på skärmen. 
+
+För att lösa problemet med att fästa sensorerna på roboten designades fästen som sedan skrevs ut med en 3D-skrivare. Detta gjorde att sensorerna enkelt och snyggt kunde fästas på roboten. Ett annat problem var att vid höga hastigheter gav hjulen på chassit inte tillräckligt hög friktion mot golvet och gled en del. För att öka friktionen knöts ballonger runt hjulen.
 
 Utförligare teknisk beskrivning finns att läsa i appendix \ref{TekniskDokumentation}. 
 
@@ -188,6 +190,8 @@ BILD?
 \textit{Beskriv kortfattat hur produkten används, hänvisa till användarmanualen.}
 \textit{Beskriv vilken prestanda produkten har och hur det har testats, hänvisa till eventuella testprotokoll.}
 \textit{Kommentera om produkten klarade de kraven som ställdes upp i kravspecifikationen. }
+
+Alla de krav med prioritet 1 som initialt ställdes upp i kravspecifikationen har uppfyllts. 
 
 \pagebreak
 
