@@ -66,16 +66,28 @@ public class SerialCommunicationHandler {
 		// byte data transfer
 		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
-		// add port listener
-		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-		// ping robot
-//		try {
-//		    Thread.sleep(1000);                 //1000 milliseconds is one second.
-//		} catch(InterruptedException ex) {
-//		    Thread.currentThread().interrupt();
-//		}
+		// add port listener (making sure ping happens when the listener is ready)
+		Thread listenerThread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+				} catch (SerialPortException e) {
+					e.printStackTrace();
+				}
+				// ping robot
+				sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+			}
+		});
+		listenerThread.start();
 		
-
+//		try {
+//			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+//		} finally {
+//			// ping robot
+//			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+//		}
 	}
 
 	/**
@@ -157,12 +169,6 @@ public class SerialCommunicationHandler {
 	 *
 	 */
 	private class PortReader implements SerialPortEventListener {
-
-		public PortReader() {
-			super();
-			
-			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-		}
 		
 		@Override
 		public void serialEvent(SerialPortEvent event) {
