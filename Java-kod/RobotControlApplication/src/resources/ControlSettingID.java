@@ -27,6 +27,8 @@ public class ControlSettingID {
 	 */
 	public static final int NEXT_DECISION = 6;
 	
+	public static final int START_RUN = 15;
+	
 	/**
 	 * Debug mode on = 1, off = 0
 	 */

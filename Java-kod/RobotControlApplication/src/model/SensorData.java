@@ -14,7 +14,10 @@ public class SensorData extends Observable{
 	 * @param sensorValues
 	 */
 	public void update(int[] sensorValues) {
-		int accumulatedRotation = values[values.length - 1];
+		int accumulatedRotation = 0;
+		if(values != null) {
+			accumulatedRotation = values[values.length - 1];
+		} 
 		
 		values = sensorValues;
 		
