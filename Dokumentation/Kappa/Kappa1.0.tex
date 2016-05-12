@@ -191,6 +191,7 @@ BILD?
 \textit{Beskriv vilken prestanda produkten har och hur det har testats, hänvisa till eventuella testprotokoll.}
 \textit{Kommentera om produkten klarade de kraven som ställdes upp i kravspecifikationen. }
 
+\subsection{Beskrivning av produkten}
 Roboten har olika körningar den kan genomföra. Dessa är söka av labyrint och köra kortaste väg och lämna förnödenhet efter att labyrinten är utforskad. Vilken körning den ska göra ställs in med knapptryck på en knapp monterad på roboten. 
 
 Roboten kan både köra autonomt och styras manuellt från dator. I manuellt läge kan styrkommandon skickas genom att använda piltangenterna. Manuellt kan även körningar i autonomt läge startas istället för att trycka på den monterade knappen. 
@@ -199,7 +200,13 @@ På dator går utvalda sensorvärden att se i grafer och robotens utforskade del
 
 Mer om hur roboten kan användas och felsökas finns att läsa i appendix \ref{}
 
-Alla de krav med prioritet 1 som initialt ställdes upp i kravspecifikationen har uppfyllts. 
+\subsection{Robotens prestanda}
+Roboten kan ta sig fram med en hastighet av i storleksordningen 1 m/s. Detta är \textcolor{red}{60 }\% av maxhastigheten. Vid sväng används en hastighet \textcolor{red}{70 }\% av maxhastigheten för svängar på 90 respektive 180 grader. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan kan hålla sig ifrån väggen ändå. Sensordata processas och skickas i en sådan takt så att reglering sker felfritt. Robotens beslutsfattande sker så snabbt att det inte märks med blotta ögat utan det ser ut som att den endast kör på. 
+
+\subsection{Test}
+Testnign av robotens funktionalitet skedde i olika steg. För att testa I\textsuperscript{2}C-kommunikationen användes först en färdigprogrammerad I/O-enhet tillsammans med huvudmodulens processor. När den verkade fungera användes en annan processor för att testa ytterligare implementationer.  Parallellt med detta konfigurerades sensorerna så att de skulle ge ut korrekta sensorvärden. Först när detta var klart testades regleringen. När regleringen fungerade påbörjades bantester för att testa avsökningsalgoritmen. För protokoll över bantester se \ref{}. 
+
+Alla de krav med prioritet 1 som initialt ställdes upp i kravspecifikationen har uppfyllts. Inga prioritet 2 krav har implementerats.
 
 \pagebreak
 
@@ -212,6 +219,23 @@ Reflektera över resultatet såväl tekniskt som över genomförandet. Referera 
 Vad skulle ni göra annorlunda om ni skulle göra om samma uppdrag?
 Vad skulle ni vilja utveckla om ni fick mer tid?
 Hur skulle ni tänka er att ändra uppgiften för att göra den ännu mer intressant?}
+
+\subsection{Slutsatser}
+
+Gruppen har arbetat effektivt från start. Arbetet med dokumenten i början speciellt designspecifikation och projektplan har varit till god hjälp som underlag för det praktiska arbetet. Hade mindre tid lagts på dessa dokument hade kanske inte projektet gått så smidigt som det gjort från start. Det praktiska arbetet har med parindelning och realtivt jämn arbetsfördelning flutit på utan några större problem på gruppnivå. Om problem uppstått har gruppen tillsammans försökt lösa dem. Modulindelningen har inte hindrat arbetet i stor utsträckning då resterande gruppmedlemmar kunde skriva dokumenattion och kod vid tillfällen då roboten var upptagen.
+Mest nöjda förslag : 
+\begin{itemize}
+\item Arbetsmässigt : Gruppen har samarbetat bra och tagit ansvar vilket har gjort att arbetet flutit på väldigt bra och aktiviteter har blivit gjorda i tid. 
+\item Produktmässigt: Roboten snabb. Avsökningsalgoritmen fungerade från början vid testning. IR-sensorer bra
+\end{itemize}
+
+En utvärdering av projektets delar och stösta problem går att läsa i appendix \ref{}
+
+\subsection{Framtida arbete}
+
+Hade projektet gjorts om från början hade bantester tidigare kommit med i tidplanen. Nu blev det en stor post efter ett tag då det upptäcktes att alla aktiviteter inte tog så lång tid som det initialt antogs göra och denna tog mer tid. Att från start använda ett pålitligare sätt att mäta avlagd sträcka än lasersensorn hade varit idé att göra, alltså från början göra bättre undersökningar om alternativ av sensorer och hur pålitliga dessa är. Att vara fler än en person som kan varje specifik del kod. I projektet var det en medlem som i princip ensam arbetade med datormodulens kod. Arbetsbördan hade kunnat fördelas bättre om fler var insatta i denna kod och kunde hjälpa de övriga gruppmedlemmarna. Detta gäller all kod. Något som hade underlättat arbetet hade varit att från början sätta upp standard för testprotokol och vara noga med att fylla i dem så inte samma fel felsöks flera gånger när en lösning funnits tidigare exempelvis.
+Hade projektet haft mer tid till förfogande hade en bättre optimerad avsökning varit något som hade varit kul att ta fram. Även att uppfylla krav med prioritet 2 hade varit något att utveckla. Datorprogrammet hade kunnat bli ännu snyggare grafiskt och reglering av öppna rum hade kunnat möjliggöra ett annat avsökningssätt. 
+
 
 \pagebreak
 
