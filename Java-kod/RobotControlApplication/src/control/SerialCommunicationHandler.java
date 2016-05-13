@@ -66,11 +66,28 @@ public class SerialCommunicationHandler {
 		// byte data transfer
 		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
-		// add port listener
-		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-		// ping robot
-		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-
+		// add port listener (making sure ping happens when the listener is ready)
+//		Thread listenerThread = new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				try {
+//					serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+//				} catch (SerialPortException e) {
+//					e.printStackTrace();
+//				}
+//				// ping robot
+//				sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+//			}
+//		});
+//		listenerThread.start();
+		
+		try {
+			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		} finally {
+			// ping robot
+			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		}
 	}
 
 	/**
@@ -152,13 +169,17 @@ public class SerialCommunicationHandler {
 	 *
 	 */
 	private class PortReader implements SerialPortEventListener {
-
+		
 		@Override
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
 					byte[] communicationsIDByte = serialPort.readBytes(1);
 					int communicationsID = Byte.toUnsignedInt(communicationsIDByte[0]);
+					
+					if(communicationsID <= 245) {
+						return;
+					}
 
 					// get byte string length
 					int byteStringLength = 100;
@@ -181,9 +202,10 @@ public class SerialCommunicationHandler {
 					try {
 						receivedData = serialPort.readBytes(byteStringLength, 70);
 					} catch (SerialPortTimeoutException e) {
+						e.printStackTrace();
 						return;
 					}
-
+					
 					// respond to received data
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						updateControlSettings(receivedData);

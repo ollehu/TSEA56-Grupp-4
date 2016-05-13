@@ -369,10 +369,15 @@ I sensormodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{LIDAR-Lite v2, avståndssensor}
-För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. 
+För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. Den kan dock ge felaktiga värden när den opererar i en omgivning som grottsystemet. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
 
 Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
 
+\subsubsection{SFH300, reflexsensor}
+För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, och fästa skiva på ett av hjulen kan kört avstånd bestämmas.
+
+Hjulens omkrets kan mätas och därefter divideras med 16. På så sätt erhålls hur långt roboten åker per tårtbit.
+Då utsignalen är analog krävs AD-omvandling, varefter ett digitalt värde mellan 0 och 255 erhålls. Genom experiment kan ett lämpligt referensvärde hittas där värden över detta tolkas som svart yta och lägre värden tolkas som vit yta. Detta fungerar eftersom vita ytor reflekterar mycket mer ljus än vad svarta ytor gör. Genom att räkna hur många ljusskiftningar som har skett kan sedan kört avstånd erhållas.
 
 \subsubsection{GP2D120, avståndssensor}
 För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en resistor och en kondensator.
@@ -380,24 +385,10 @@ För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell
 Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet beskrivs av en tredjegradsfunktion. Genom empiriska tester kan funktionen bestämmas tillräckligt bra för att ge värden att reglera på.
 
 \subsubsection{MLX90609, gyro}
-För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat 8-bitars heltalsvariabel i modulens \textit{main}-funktion. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation. 
-
-%Mikroprocessorn fungerar som SPI master och överföringen av data sker synkront mellan enheterna. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat variabel (av typen 8-bitars integer) i modulens \textit{main}-funktion. 
+För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat 8-bitars heltalsvariabel i modulens \textit{main}-funktion. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation.  
 
 \subsubsection{IRM-8601-S, IR-detektor}
 Då den nödställde sänder ut en IR-signal krävs identifikation av bitmönster. För detta ändamål används IR-detektorn \verb+IRM-8601-S+. Bitmönstret identifieras genom att ansluta insignalen till den externa avbrottsingången, INT0, på mikroprocessorn. TIMER0 används därefter för att räkna tiden på de höga bitarna hos insignalen som IR-detektorn identifierar. Stämmer tiden för de höga bitarna överens med det bitmönster som den nödställde ska sända ut är den nödställde funnen.
-
-%\subsubsection{PWM}
-%Kommunikationen av sensordata mellan lasersensorn, LIDAR-Lite v2, och mikroprocessorn sker via ett PWM-gränssnitt (även kallat pulsbreddsmodulering). Längden på pulsbreddens positiva flank anger sensorns avstånd till närmaste föremål och för att kunna mäta denna så är lasersensrons trigger pin kopplat till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
-
-%Ett avbrott triggas så snart en flank på ingången uppstår, och en tidsangivelse tas. Tiden som insignalen ligger hög kan därefter detekteras genom att ta senaste tidangivelse för negativ flank och subtrahera denna med senaste motsvarighet för positiv flank. Genom att sedan multiplicera differensen med en skalfaktor (i detta fall 0.4) kan ett avstånd med precisionen cm utläsas. från lasersensorn. 
-
-%\subsubsection{SPI}
-%Robotens vinkelhastighet kommuniceras från den gyroskopa sensorn, MLX90609, och mikroprocessorn via ett SPI-gränssnitt. Mikroprocessorn fungerar som SPI master och överföringen av data sker synkront mellan enheterna. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat variabel (av typen 8-bitars integer) i modulens \textit{main}-funktion. 
-
-%\subsubsection{AD-omvandlas}
-%Avståndsmätning med IR-senorerna GP2D120 genererar en utsignal i form av spänning. Då port A0-A7 på mikroprocessorn (tillika \verb+ATmega1284p+) kan användas som AD-omvandare så tillämpas denna möjlighet. Det digitala värde som erhålles efter omvandling blir därefter variabel i en tredjegradsfunktion som återger sensoravstånd i storheten mm.
-
 
 \subsection{Styrmodulen}
 
@@ -549,26 +540,26 @@ Protokollet som används för att skicka styrkommandon, både datormodul $\right
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
-	\item B (1 byte) - Definierar vilket kommando som skickas, se tabell \ref{styrtab}.
+	\item B (1 byte) - Definierar vilket kommando som skickas, se tabell \ref{tab}.
 	\item C (1 byte) - Hastighet om manuellt läge, valfritt i autonomt då det inte tas hänsyn till (tillåtna värden: 0-245).
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - kartinformation}
-Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell lista. För överföring av denna information används protokollet nedan i figur \ref{kartdata}.
+Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar upp den nya informationen grafiskt. Varje kartmodul representeras av en position i en tvådimensionell lista. För överföring av denna information används protokollet i figur \ref{kartdata}.
 
- \begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/mapdata}}
 	\caption{Protokoll för överföring av kartdata \label{kartdata}}	
-\end{figure} 
+\end{figure}
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - x-koordinat (tillåtna värden: 0-28).
 	\item C (1 byte) - y-koordinat (tillåtna värden: 0-28).
-	\item D (1 byte) - Information om vad som finns i noden, se tabell \ref{maptab}.
+	\item D (1 byte) - Information om vad som finns i noden, se tabell \ref{tab}.
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - sensordata}
@@ -586,7 +577,7 @@ Respektive segment motsvarar följande:
 	\item A - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B - Sensordatapaket
 	\begin{itemize}
-	\item ID (1 byte) - identifierar sensorn, se tabell \ref{sensortab}.
+	\item ID (1 byte) - identifierar sensorn, se tabell \ref{tab}.
 	\item Data (1 byte) - sensorns värde (tillåtna värden: 0-245).
 	\end{itemize}
 \end{itemize}
@@ -598,69 +589,20 @@ Protokollet som används för att skicka styrinställningar, både datormodul $\
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/controlldata}}
-	\caption{Protokoll för överföring av styrkommandon\label{styrkomm}}	
+	\caption{Protokoll för överföring av styrinställning{styrkomm}}	
 \end{figure}
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
-	\item B (1 byte) - Definierar vilken styrinställning som skickas, se tabell \ref{styrinsttab}.
-	\item C (4 byte) - 0/1 om av/på, annars flyttal (C float).
+	\item B (1 byte) - Definierar vilken styrinställning som skickas, se tabell \ref{tab}.
+	\item C (1 byte) - 0/1 om av/på, annars flyttal (C float).
 \end{itemize}
 
-\subsection{Tabeller}
-
-\begin{longtable}[l]{| l | l |} \hline
-\textbf{ID} & \textbf{Kartinformation} \\ \hline 
-244 & Vägg \\ \hline
-243 & Mål \\ \hline
-242 & Start \\ \hline
-[0,225] & Där roboten åkt \\ \hline
-
-\caption{Tabell över kartvärden }\label{maptab}
-\end{longtable}
-
-\begin{longtable}[l]{| l | l | c |} \hline
-\textbf{ID} & \textbf{Sensor} & \textbf{Enhet} \\ \hline 
-1 & IR-sensor höger-fram & cm \\ \hline
-2 & IR-sensor vänster-fram  & cm \\ \hline
-3 & IR-sensor höger-bak  & cm  \\ \hline
-4 & IR-sensor vänster-bak  &  cm \\ \hline
-5 & Lasersensor (high) & cm  \\ \hline
-6 & Lasersensor (low) & cm  \\ \hline
-7 & Rotation kring z-axeln & rad/s \\ \hline
-8 & IR-sensor för mål & 0/1 \\ \hline
-\caption{Tabell över sensorerna}\label{sensortab}
-\end{longtable}
-
-\begin{longtable}[l]{| l | l |} \hline
-\textbf{ID} & \textbf{Styrkommando} \\ \hline 
-1 & Kör fram \\ \hline
-2 & Kör bak \\ \hline
-3 & Rotera åt höger \\ \hline
-4 & Rotera åt vänster \\ \hline
-5 & Fram och höger \\ \hline
-6 & Fram och vänster \\ \hline
-7 & Bak och höger \\ \hline
-8 & Bak och vänster \\ \hline
-9 & Gripklo öppna/stäng \\ \hline
-
-\caption{Tabell över styrkommandon}\label{styrtab}
-\end{longtable}
-
-\begin{longtable}[l]{| l | l |} \hline
-\textbf{ID} & \textbf{Styrinställning} \\ \hline 
-1 & Reglering av/på \\ \hline
-2 & P-värde \\ \hline
-3 & D-värde \\ \hline
-4 & K-värde \\ \hline
-
-\caption{Tabell över styrinställningar}\label{styrinsttab}
-\end{longtable}
-
+\pagebreak
 
 \begin{table}[h]
-\begin{tabular}{|l|l|l|l|l|} \hline
+\begin{tabular}{|p{6em}|p{1em}|p{6em}|p{25em}|} \hline
 
 \textbf{Kommando} & \textbf{Id} & \textbf{Info} & \textbf{Kommentar}\\ \hline
 
@@ -669,41 +611,46 @@ Respektive segment motsvarar följande:
 252 & 3 & Data & Reglerfunktionens D-värde \\ \hline
 252 & 4 & 1/0 & 1 om gripklo ska vara öppen, 0 om den ska vara stängd \\ \hline
 
+\end{tabular}
 
-253 & 1 & 1 & Data för främre högra IR-sensorn kommer skickas härnäst \\ \hline
-253 & 2 & Data & Värde på den främre högra IR-sensorn \\ \hline
-253 & 3 & 2 & Data för främre vänstra IR-sensorn kommer skickas härnäst \\ \hline
-253 & 4 & Data & Värde på den främre vänstra IR-sensorn \\ \hline
-253 & 5 & 3 & Data för bakre högra IR-sensorn kommer skickas härnäst \\ \hline
-253 & 6 & Data & Värde på den bakre högra IR-sensorn \\ \hline
-253 & 7 & 4 & Data för bakre vänstra IR-sensorn kommer skickas härnäst \\ \hline
-253 & 8 & Data & Värde på den bakre vänstra IR-sensorn \\ \hline
+\begin{tabular}{|p{6em}|p{1em}|p{6em}|p{25em}|} \hline
+253\text{*}  & 1 & Data & Värde på den främre högra IR-sensorn \\ \hline
+ & 2 & Data & Värde på den främre vänstra IR-sensorn \\ \hline
+ & 3 & Data & Värde på den bakre högra IR-sensorn \\ \hline
+ & 4 & Data & Värde på den bakre vänstra IR-sensorn \\ \hline
 
-253 & 9 & 5 & LIDAR-Lite's 8 mest signifikanta bitar kommer skickas härnäst \\ \hline
-253 & 10 & Data & Värde på LIDAR-Lite's 8 mest signifikanta bitar \\ \hline
-253 & 11 & 6 & LIDAR-Lite's 8 minst signifikanta bitar kommer skickas härnäst \\ \hline
-253 & 12 & Data & Värde på LIDAR-Lite's 8 minst signifikanta bitar \\ \hline
+ & 5 & Data &  Värde på LIDAR-Lite's 8 mest signifikanta bitar \\ \hline
+ & 6 & Data &  Värde på LIDAR-Lite's 8 minst signifikanta bitar \\ \hline
 
-253 & 13 & 7 & Data för gyrot kommer skickas härnäst \\ \hline
-253 & 14 & Data & Värde på gyrot \\ \hline
+ & 7 & Data & Värde på gyrot \\ \hline
 
-253 & 15 & 8 & Data för IR-detektorn kommer skickas härnäst \\ \hline
-253 & 16 & 1/0 & 1 skickas om målet är upptäckt, 0 annars \\ \hline
+ & 8 & Data & Värde för IR-detektorn (1 om målet är upptäckt, 0 annars) \\ \hline
+  & 9 & Data & Antal flanker reflexsensorn detekterat sen sist\\ \hline
+\end{tabular}
+
+\begin{tabular}{|p{6em}|p{1em}|p{6em}|p{25em}|} \hline
 
 255 & - & - & Kommando att köra framåt \\ \hline
-255 & - & Data/not care\text{*} & Hur fort roboten ska köras framåt \\ \hline
+255 & - & Data/--\text{**} & Hur fort roboten ska köras framåt \\ \hline
 255 & - & - & Kommando att köra bakåt \\ \hline
-255 & - & Data/not care & Hur fort roboten ska köras bakåt \\ \hline
+255 & - & Data/--\text{**}  & Hur fort roboten ska köras bakåt \\ \hline
 255 & - & - & Kommando att rotera höger \\ \hline
-255 & - & Data/not care & Hur fort roboten ska rotera åt höger  \\ \hline
+255 & - & Data/--\text{**}  & Hur fort roboten ska rotera åt höger  \\ \hline
 255 & - & - & Kommando att rotera vänster \\ \hline
-255 & - & Data/not care & Hur fort roboten ska rotera åt vänster  \\ \hline
+255 & - & Data/--\text{**} & Hur fort roboten ska rotera åt vänster  \\ \hline
+
 
 \end{tabular}
+
+\text{*} Gäller för alla efterföljande sensorer då alla värden skickas i samma paket \\*
+\text{**} Reagerar på data vid manuellt läge och ignorerar data vid autonomt
+
+\caption{Tabell över informationsflödet} \label{tab}
 \end{table}
 
-\text{*} Reagerar på data vid manuellt läge och ignorerar data vid autonomt
 
+
+\pagebreak
 \section{Slutsatser}
 \textit{Vilka förbättringar skulle kunna göras?}
 
