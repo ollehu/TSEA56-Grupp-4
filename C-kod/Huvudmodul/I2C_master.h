@@ -37,10 +37,10 @@ void TWISetup(){
 
 void interruptSetup(){
 	//Rising edge INT1 & INT2
-	EICRA = (1<<ISC21)|(1<<ISC20)|(1<<ISC11)|(1<<ISC10);
+	EICRA = (1<<ISC21)|(1<<ISC20)|(1<<ISC11)|(1<<ISC10)|(1<<ISC01)|(1<<ISC00);
 	
 	//Enable interrupt INT1 & INT2
-	EIMSK = (1<<INT2)|(1<<INT1);
+	EIMSK = (1<<INT2)|(1<<INT1)|(1<<INT0);
 }
 
 void Master(int times, uint8_t SLA, uint8_t *data){
