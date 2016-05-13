@@ -114,7 +114,7 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{kravspec}.
+För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{Kravspecifikation}.
 
 \subsection{Tillräckligt bra sensorvärden}
 För att roboten skulle ha en uppfattning om sin omgivning behövdes sensorerna. Dessa behövde sedan läsas av tillräckligt ofta och översättas med tillräcklig precision för att de skulle göra nytta i regleringen. 
@@ -174,7 +174,14 @@ Som avslut verifierades alla krav och produkten testades mot andra robotar som k
 \section{Teknisk beskrivning}
 \textit{Redovisa det tekniska resultatet och förstudierna på ett lämpligt sätt. Detaljerade beskrivningar på grindnivå i hårdvaran eller på instruktionsnivå i mjukvaran är i detta sammanhang oftast ointressant. Referera den tekniska dokumentationen och förstudierna för beskrivning av detaljer. Lyft fram egna kreativa lösningar!}
 
-Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål monterade på ett chassi. Huvudmodulen är det delsystem som sköter all kommunikation, både med dator via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix \ref{Kommunikation}. Huvudmodulen har även ansvar för att ta övergripande beslut speciellt om hur roboten ska utforska, alltså vilket håll roboten ska köra åt härnäst, enligt algoritmer beskrivna i förstudien som rör reglering, se appendix \ref{Reglering}. Huvudmodulen har slutligen också hand om intern kartläggning under tiden roboten utforskar och kommunicerar denna information till datormodulen vid tillfälle. 
+Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål monterade på ett chassi, se figur \ref{overview}. Huvudmodulen är det delsystem som sköter all kommunikation, både med dator via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix \ref{Kommunikation}. Huvudmodulen har även ansvar för att ta övergripande beslut speciellt om hur roboten ska utforska, alltså vilket håll roboten ska köra åt härnäst, enligt algoritmer beskrivna i förstudien som rör reglering, se appendix \ref{Reglering}. Huvudmodulen har slutligen också hand om intern kartläggning under tiden roboten utforskar och kommunicerar denna information till datormodulen vid tillfälle. 
+
+\begin{figure}[!htbp]
+\centering
+\noindent\resizebox{.7\linewidth}{!}{
+	\input{images/overview}}
+	\caption{Det totala systemet \label{overview}}	
+\end{figure}
 
 Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix \ref{Sensorer}. Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in används en PD-regulator i enlighet med resultatet i förstudien i appendix \ref{Reglering}. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. Datormodulen kan kommunicera styrkommandon till roboten men får främst information om karta och sensordata som den visar på skärmen. 
 
@@ -234,7 +241,11 @@ En utvärdering av projektets delar och stösta problem går att läsa i appendi
 \subsection{Framtida arbete}
 
 Hade projektet gjorts om från början hade bantester tidigare kommit med i tidplanen. Nu blev det en stor post efter ett tag då det upptäcktes att alla aktiviteter inte tog så lång tid som det initialt antogs göra och denna tog mer tid. Att från start använda ett pålitligare sätt att mäta avlagd sträcka än lasersensorn hade varit idé att göra, alltså från början göra bättre undersökningar om alternativ av sensorer och hur pålitliga dessa är. Att vara fler än en person som kan varje specifik del kod. I projektet var det en medlem som i princip ensam arbetade med datormodulens kod. Arbetsbördan hade kunnat fördelas bättre om fler var insatta i denna kod och kunde hjälpa de övriga gruppmedlemmarna. Detta gäller all kod. Något som hade underlättat arbetet hade varit att från början sätta upp standard för testprotokol och vara noga med att fylla i dem så inte samma fel felsöks flera gånger när en lösning funnits tidigare exempelvis.
-Hade projektet haft mer tid till förfogande hade en bättre optimerad avsökning varit något som hade varit kul att ta fram. Även att uppfylla krav med prioritet 2 hade varit något att utveckla. Datorprogrammet hade kunnat bli ännu snyggare grafiskt och reglering av öppna rum hade kunnat möjliggöra ett annat avsökningssätt. 
+
+\subsection{Utvecklingsmöjligheter}
+Om gruppen hade haft mer tid till förfogande, eller om någon vill ta vid där detta projekt avslutas, finns det några punkter med utvecklingsmöjligheter. Ett mindre prioriterat krav, som i genomfört projekt inte har uppfyllts, är att roboten ska klara av att navigera i öppna rum. Det är något som är relevant för en undsättningsrobot eftersom grottsystem sällan består enbart av korridorer. Att roboten skulle klara av att genomföra svängar som kan vara av godtycklig vinkel, inte bara 90 och 180 grader, är också en kvalitet som skulle höja robotens verkliga förmåga som undsättare. 
+
+Att förbättra datorprogrammet och göra det snyggare grafiskt är också något som kan utvecklas. Ju mer användarvänligt och visuellt attraktivt programmet är, desto roligare är det för en användare att använda produkten. En bättre optimerad avsökning kan även vara värd att arbeta på, såväl som att uppfylla de krav av lägre prioritet som i detta projekt inte har blivit uppfyllda. 
 
 
 \pagebreak
