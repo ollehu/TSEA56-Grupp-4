@@ -102,7 +102,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 \textit{Bakgrund och syfte}
 
-Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerede.
+Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerade.
 
 \section{Produkten}
 \textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
@@ -111,7 +111,7 @@ Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi 
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Robotens uppgift är att söka av en labyrint med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställda och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationenen lagras för att kunna skickas vidare till datormodulen för uppritning. 
+Robotens uppgift är att söka av en labyrint med hjälp av en avsökningsalgoritm och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationen lagras för att kunna skickas vidare till datormodulen för uppritning. 
 
 
 \begin{figure}[!htbp]
@@ -211,6 +211,8 @@ där $K, P, D > 0$ är konstanter som används för att justera regleringen. Ber
 
 Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta v = 0$.
 
+\pagebreak
+
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
@@ -268,7 +270,7 @@ Komponenter som ingår i robotens huvudmodul är
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Huvudmodulen är virat på ett virkort enligt kretsschemat i appendix \ref{kopplingsschema:huvudmodul} och är monterat på robotens chassi. 
+Huvudmodulen är virad på ett virkort enligt kretsschemat i appendix \ref{kopplingsschema:huvudmodul} och är monterat på robotens chassi. 
 
 Nedan beskrivs huvudmodulens olika uppgifter.
 
@@ -283,7 +285,7 @@ I huvudmodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{Styrläge}
-Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
+Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}..
 
 \begin{figure}[htbp]
 \centering
@@ -300,9 +302,9 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 29x29 fält där robotens startkoordinater är (14,14) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 31x17 fält där robotens startkoordinater är (16,0) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
 
-Återvändsgränder där mål ej hittas sparas i ett annat 29x29 fält, markerade röda i figur \ref{path}, för att förenkla beräkningen av kortaste väg. 
+Återvändsgränder där mål ej hittas sparas i ett annat 31x17 fält, markerade röda i figur \ref{path}, för att förenkla beräkningen av kortaste väg. 
 
 \begin{figure}[htbp]
 \centering
@@ -369,9 +371,9 @@ I sensormodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{LIDAR-Lite v2, avståndssensor}
-För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. Den kan dock ge felaktiga värden när den opererar i en omgivning som grottsystemet. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
+För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm.  \textcolor{red}{Den kan dock ge felaktiga värden när den opererar i en omgivning som grottsystemet. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.}
 
-Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersenorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersensorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
 
 \subsubsection{SFH300, reflexsensor}
 För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, och fästa skiva på ett av hjulen kan kört avstånd bestämmas.
@@ -433,7 +435,7 @@ Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och se
 \end{center}
 
 \subsubsection{LCD-display}
-LCD-displayen, \verb+JM162A+, består av två rader där respektive har plats för 16 tecken. På displayen visas sensordata under robotens färd och uppdateras i takt med att nya sensordata anländer. En potentiometer kopplas in för att justera kontrastspänningen och LCD:n konfigureras enligt nedan.
+LCD-displayen, \verb+JM162A+, består av två rader där respektive har plats för 16 tecken. På displayen visas sensordata under robotens färd som uppdateras i takt med att nya sensordata anländer. En potentiometer kopplas in för att justera kontrastspänningen och LCD:n konfigureras enligt nedan.
 
 \begin{center}
   \begin{tabular}{l l l l l l l l}
