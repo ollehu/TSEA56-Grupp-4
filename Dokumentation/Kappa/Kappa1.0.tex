@@ -104,7 +104,6 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \textit{Lyft gärna fram det som ni anser är utmanande/intressant i uppdraget.}
 \textit{Beskriv kortfattat dispositionen på rapporten.}
 
-
 Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix \ref{}.
 
 \begin{figure}[!htbp]
@@ -124,13 +123,13 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde måste den även bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en har ett unikt index, baserat på dess x- och y-koordinat. Även att rita upp en karta som representerar grottsystemets utformning var ett grundkrav. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{Kravspecifikation}.
+För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav. Det skulle vara möjligt att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{Kravspecifikation}.
 
 \subsection{Tillräckligt bra sensorvärden}
 För att roboten skulle ha en uppfattning om sin omgivning behövdes sensorerna. Dessa behövde sedan läsas av tillräckligt ofta och översättas med tillräcklig precision för att de skulle göra nytta i regleringen. 
 
 \subsection{Kartläggning}
-Kartläggningens utmaning var tvådelad. Den ena delen handlade om att hålla reda på hur roboten är orienterad samt vilken position den har. För att uppdatera rätt värden behövde roboten själv hålla koll på vilket värderstreck den var riktad i och vilken position den tagit sig till. Den andra, och mer komplexa, delen var utmaningen att komma fram till en struktur som gjorde uppdraget genomförbart. Information behövde lagras på ett sätt så att det gick att navigera i labyrinten på ett smidigt sätt och att beräkningen kunde ske effektivt.
+Kartläggningens utmaning var tvådelad. Den ena delen handlade om att hålla reda på hur roboten var orienterad samt vilken position den hade. För att uppdatera rätt värden behövde roboten själv hålla koll på vilket värderstreck den var riktad i och vilken position den tagit sig till. Den andra, och mer komplexa, delen var utmaningen att komma fram till en representation som gjorde uppdraget genomförbart. Information behövde lagras på ett sådant sätt att det gick att navigera i labyrinten på ett smidigt sätt och att beräkningen kunde ske effektivt.
 
 \subsection{Kommunikation}
 För att kunna överföra information mellan de olika modulerna var det viktigt att ha ett pålitligt kommunikationssystem. Utmaningen här låg i att den var essentiell för det framtida uvecklandet eftersom det inte gick att testa modulerna tillsammans annars. Därför var det viktigt att få denna del att fungera i ett tidigt skede.
