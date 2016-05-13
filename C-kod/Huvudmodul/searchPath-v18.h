@@ -778,6 +778,8 @@ void updateTargetFound()
 	target[1] = position[1];
 	target[2] = map[position[0]][position[1]];
 	
+	sendMapCoordinate(target[0],target[1]);
+	
 	path[target[0]][target[1]] = targetPathValue;
 	path[position[0]][position[1]] = path[target[0]][target[1]] + 1;
 	
