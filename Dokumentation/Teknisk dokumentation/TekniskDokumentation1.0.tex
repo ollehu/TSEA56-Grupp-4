@@ -450,7 +450,7 @@ Styrmodulen har två olika styrlägen: autonomt eller manuellt läge.
   \item[Autonomt läge]
 I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som är implementerad på huvudmodulen. Styrmodulen begär ett nytt styrkommando genom att skicka en positiv flank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Rotera 90\textdegree\ vänster}, \textit{Rotera 90\textdegree\ höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
 
-När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen, därefter kallas den metod som sköter reglering av styrkommandot. 
+När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen. Därefter kallas den metod som sköter reglering av styrkommandot. 
 
 Styrkommandot \textit{Fram} innebär att roboten ska flytta sig en modul föröver. Modullängden är densamma för hela banan och satt till $40$ cm. Roboten beräknar tillryggalagd sträcka genom att beräkna antalet varv hjulen roterar och under färden sker reglering enligt avsnitt \ref{subsection:reglering}. När modulen är avverkad kallas återigen huvudmodulen för ett nytt styrkommando. Tack vare hastigheten hos I\textsuperscript{2}C-bussen och fördröjningen hos PWM-styrningen agerar roboten på nästa kommando utan ett ryck emellan. 
 
@@ -476,12 +476,12 @@ Datormodulen är skriven i Java och följer desingmönstret model-view-controlle
 \subsubsection{Model}
 ``Model''-delen av programet består av fyra huvudsakliga klasser: Log, RobotData, SensorData och MapData. 
 Log-klassen används för att spara ner relevanta händelser under testkörningar till txt-filer. 
-RobotData-klassen tar hand om den interna representationen av robotens tillstånd, det vill säga robotens nuvarande körläge, senaste skickade körkommando med mera. 
+RobotData-klassen tar hand om den interna representationen av robotens tillstånd, det vill säga robotens nuvarande körläge, senast skickade körkommando med mera. 
 SensorData-klassen sparar de senast mottagna sensorvärdena från roboten. 
 MapData-klassen sparar alla mottagna kartdata från roboten. De sistnämnda tre data-klasserna används också för att, genom observatörer, ändra den grafiska ``view''-delen av programmet.
 
 \subsubsection{View}
-``View''-delen av programmet sköter programmets grafiska användargränssnitt och består av sex huvudsakliga klasser: Animator, MenuBar, MapPanel, GraphPanel, TablePanel och RobotStatusPanel. Animator-klassen samordnar de olika grafiska elementen och sköter instanseringen av användargränssnittet. 
+``View''-delen av programmet sköter programmets grafiska användargränssnitt och består av sex huvudsakliga klasser: Animator, MenuBar, MapPanel, GraphPanel, TablePanel och RobotStatusPanel. Animator-klassen samordnar de olika grafiska elementen och sköter instansieringen av användargränssnittet. 
 MenuBar-klassen hanterar menyn i huvudfönstret. Genom den kan användaren välja körläge, hantera loggar och komma åt hjälpmenyn. 
 MapPanel-klassen sköter den grafiska representationen av kartan. Varje sektion av kartan representeras med ett visuellt element med olika färg beroende på om det är en vägg, start, mål eller en vanlig ruta. Kartan expanderas dynamiskt allteftersom roboten utforskar sin omgivning. 
 GraphPanel-klassen presenterar historiska sensordata i grafer och använder sig av det publika biblioteket JFreeChart 1.0.19. 
@@ -497,7 +497,7 @@ RobotStatusPanel-klassen visar robotens nuvarande status, det vill säga autonom
 
 \subsubsection{Controller}
 ``Controller''-delen av programmet består av fyra olika klasser: ActionHandler, Handler, KeyHandler och SerialCommunicationsHandler. 
-ActionHandler-klassen innehåller alla de Actions som används av programmet, det vill säga alla det metoder som anropas bland annat vid knapptryckningar.
+ActionHandler-klassen innehåller alla de Actions som används av programmet, det vill säga alla de metoder som anropas bland annat vid knapptryckningar.
 Handler-klassen sköter samordningen av alla klasser och även programmets uppstart och instansieringen av de olika delarna.
 KeyHandler-klassen sköter alla tangentbordsanrop.
 SerialCommunicationsHandler-klassen sköter kommunikationen med roboten. Det innebär uppkoppling, sändning och mottagande av data samt nedkoppling av avslutning av kommunikationen. Detta sker med det publika biblioteket jSSC 2.8.0 tillsammans med datorns egna operativsystem för parning med FireFly-enheten.
@@ -559,8 +559,8 @@ Huvudmodulen skickar för varje ny kartmodul data till datormodulen som ritar up
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
-	\item B (1 byte) - x-koordinat (tillåtna värden: 0-28).
-	\item C (1 byte) - y-koordinat (tillåtna värden: 0-28).
+	\item B (1 byte) - x-koordinat (tillåtna värden: 0-30).
+	\item C (1 byte) - y-koordinat (tillåtna värden: 0-16).
 	\item D (1 byte) - Information om vad som finns i noden, se tabell \ref{tab}.
 \end{itemize}
 
