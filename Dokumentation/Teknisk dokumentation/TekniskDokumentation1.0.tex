@@ -608,15 +608,15 @@ Protokollet som används för att skicka positionsinformation finns illustrerat 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
-	\input{images/kartdata}}
+	\input{images/mapdata}}
 	\caption{Protokoll för överföring av positionsinformation \label{positionInfo}}	
 \end{figure}
 
 Respektive segment motsvarar följande: 
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
-	\item B (1 byte) - x-koordinat.
-	\item C (1 byte) - y-koordinat.
+	\item B (1 byte) - x-koordinat (tillåtna värden: 0-30).
+	\item C (1 byte) - y-koordinat (tillåtna värden: 0-16).
 	\item D (1 byte) - riktning.
 \end{itemize}
 
