@@ -23,9 +23,10 @@ uint8_t position[2] = {14,14}; //Where the robot is right now (is updated after 
 /************************************************************************/
 /*                           INTERNAL MAP                               */
 /************************************************************************/
-uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)	
-uint8_t map[28][28]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
-uint8_t path[28][28]; //FF initial value, F1 blocked way, >0 steps from target
+uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)
+uint8_t dim = 29;
+uint8_t map[29][29]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
+uint8_t path[29][29]; //FF initial value, F1 blocked way, >0 steps from target
 
 uint16_t straightAhead = 0; //Value straight ahead (Lidar)
 uint16_t oldStraighAhead = 0;
@@ -178,7 +179,7 @@ uint8_t hasFoundTarget(void)
 {
 	//Göra skillnad på tre tillstånd: Målet ej hittat, ser målet, vet precis vilken kartmodul målet befinner sig i
 	
-	return 0;
+	//return 0;
 	
 	/*if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
 		return 1;
@@ -188,15 +189,15 @@ uint8_t hasFoundTarget(void)
 		return 0;
 	}*/
 	
-	/*straightAhead = sensorData[10]*128 + sensorData[12];
+	straightAhead = sensorData[10]*128 + sensorData[12];
 	
-	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead*2)){
+	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead)){
 		return 1;
 	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
 		return 2;
 	} else {
 		return 0;
-	}*/
+	}
 }
 
 /************************************************************************/
@@ -309,13 +310,13 @@ void readSensors()
 	//Send map
 	
 	sendMapCoordinate(position[0], position[1]);
-	if (position[0] + 1 < 28){
+	if (position[0] + 1 < dim){
 		sendMapCoordinate(position[0] + 1, position[1]);
 	}
 	if (position[0] - 1 >= 0){
 		sendMapCoordinate(position[0] - 1, position[1]);
 	}
-	if (position[1] + 1 < 28){
+	if (position[1] + 1 < dim){
 		sendMapCoordinate(position[0], position[1] + 1);
 	}
 	if (position[0] - 1 >= 0){
@@ -345,8 +346,8 @@ void sendMapCoordinate(uint8_t x, uint8_t y)
 void searchPathInit() //Fills map and path, sets initial values 
 {
 	//Fill path with 255, map with 0
-	for(int i = 0;i<28;i++){
-		for(int j = 0;j<28;j++){
+	for(int i = 0;i<dim;i++){
+		for(int j = 0;j<dim;j++){
 			path[i][j] = initialValue;
 			map[i][j] = initialValue;
 		}
@@ -603,7 +604,7 @@ void explore(void)
 	
 	if(hasFoundTarget() == 1){ 
 		//Update map with the right number and target with the right 
-		//updateTargetFound(); //Only just when the target has been found			
+		updateTargetFound(); //Only just when the target has been found			
 	} 
 	
 	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) && readSensorsF == 0) {
@@ -639,7 +640,7 @@ void explore(void)
 		uint8_t * temp;
 	
 		if(hasFoundTarget()){
-			//temp = exploreTargetFound();
+			temp = exploreTargetFound();
 		} else {
 			temp = findTarget();
 		}
@@ -744,7 +745,7 @@ uint8_t distanceToTarget(uint8_t x, uint8_t y)
 /************************************************************************/
 void updateTargetFound()
 {
-	switch(direction){
+	/*switch(direction){
 		case 0:
 			map[position[0]][position[1]+1] = targetValue;
 			target[0] = position[0];
@@ -769,8 +770,13 @@ void updateTargetFound()
 			target[1] = position[1];
 			target[2] = map[position[0]][position[1]] + 1;
 			break;
-		}
-
+		}*/
+	
+	
+	map[position[0]][position[1]] = targetValue;
+	target[0] = position[0];
+	target[1] = position[1];
+	target[2] = map[position[0]][position[1]];
 	
 	path[target[0]][target[1]] = targetPathValue;
 	path[position[0]][position[1]] = path[target[0]][target[1]] + 1;
