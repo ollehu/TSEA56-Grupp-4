@@ -516,6 +516,7 @@ Eftersom flera olika typer av data skickas mellan de olika modulerna inleds komm
 254 & Kartinformation \\ \hline
 253 & Sensordata \\ \hline
 252 & Styrinställning \\ \hline
+251 & Positionsinformation \\ \hline
 
 \caption{Tabell över kommunikations-ID}\label{kommunikationstab}
 \end{longtable}
@@ -591,7 +592,7 @@ Protokollet som används för att skicka styrinställningar, både datormodul $\
 \centering
 \noindent\resizebox{.8\linewidth}{!}{
 	\input{images/controlldata}}
-	\caption{Protokoll för överföring av styrinställning{styrkomm}}	
+	\caption{Protokoll för överföring av styrinställning \label{styrkomm}}	
 \end{figure}
 
 Respektive segment motsvarar följande: 
@@ -599,6 +600,24 @@ Respektive segment motsvarar följande:
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - Definierar vilken styrinställning som skickas, se tabell \ref{tab}.
 	\item C (1 byte) - 0/1 om av/på, annars flyttal (C float).
+\end{itemize}
+
+\subsubsection{Kommunikationsprotokoll - Positionsinformation}
+Protokollet som används för att skicka positionsinformation finns illustrerat i figur \ref{positionInfo}.
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.8\linewidth}{!}{
+	\input{images/kartdata}}
+	\caption{Protokoll för överföring av positionsinformation \label{positionInfo}}	
+\end{figure}
+
+Respektive segment motsvarar följande: 
+\begin{itemize}
+	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
+	\item B (1 byte) - x-koordinat.
+	\item C (1 byte) - y-koordinat.
+	\item D (1 byte) - riktning.
 \end{itemize}
 
 \pagebreak
