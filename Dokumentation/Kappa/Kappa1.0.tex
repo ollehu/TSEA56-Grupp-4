@@ -137,7 +137,7 @@ För att kunna överföra information mellan de olika modulerna var det viktigt 
 
 \subsection{Integration av moduler}
 
-Trots att arbetet delats upp i olika moduler var det viktigt att ha i åtanke att dessa skulle vara en del av ett större system. Trots att modulerna kunde fungera felfritt var och en för sig var det fanns det en möjlighet att de skulle motverka varandra vid integrering av dem. Ett identifierat problemområde var att en moduls avbrott skulle kunna ta upp för mycket tid, vilket skulle medföra att de andra modulerna tappade effektivitet. 
+Trots att arbetet delats upp i olika moduler var det viktigt att ha i åtanke att dessa skulle vara en del av ett större system. Även om modulerna kunde fungera felfritt var och en för sig fanns det en möjlighet att de skulle motverka varandra vid integrering av dem. Ett identifierat problemområde var att en moduls avbrott skulle kunna ta upp för mycket tid, vilket skulle medföra att de andra modulerna tappade effektivitet. 
 
 
 \pagebreak
@@ -145,9 +145,9 @@ Trots att arbetet delats upp i olika moduler var det viktigt att ha i åtanke at
 \section{Kunskapsbas}
 \textit{Beskriv kortfattat och referera litteratur, datablad och dokumentation som ni använt er av för att genomföra projektet.}
 
-Komponentera som har använts under projektet finns nästan uteslutande beskrivna i datablad på kurshemsidans portal för datablad Vanheden\ref{hemsidan}. Där finns datablad för alla använda sensorer och för mikroprocessorn \verb+ATmega1284p+ som används av alla robotens moduler.
+Komponenterna som har använts under projektet finns nästan uteslutande beskrivna i datablad på kurshemsidans portal för datablad Vanheden\ref{hemsidan}. Där finns datablad för alla använda sensorer och för mikroprocessorn \verb+ATmega1284p+ som används av alla robotens moduler.
 
-Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utibildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade arbetat i. 
+Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utibildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade arbetat med. 
 
 De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikaitonen, se appendix \ref{designspecifikation}, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix \ref{förstudier}
 
@@ -161,7 +161,7 @@ Till förfogande hade projektgruppen även en teknisk handledare tillhandahålle
 I följande avsnitt beskrivs hur projektet genomförts i de tre olika faserna \textit{före}, \textit{under} och \textit{efter}.
 
 \subsection{Fas: Före}
-Projektet har bedrivits enligt projektmodellen \textit{LIPS}. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer där prioritet 1 var krav som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
+Projektet har bedrivits enligt projektmodellen \textit{LIPS}. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer: krav av prioritet 1 som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
 
 Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix \ref{systemskiss}. 
 
@@ -208,6 +208,7 @@ BILD?
 \textit{Beskriv vilken prestanda produkten har och hur det har testats, hänvisa till eventuella testprotokoll.}
 \textit{Kommentera om produkten klarade de kraven som ställdes upp i kravspecifikationen. }
 
+I detta avsnitt beskrivs resultatet av projektet.
 \subsection{Beskrivning av produkten}
 Roboten har olika körningar den kan genomföra. Dessa är söka av labyrint och köra kortaste väg och lämna förnödenhet efter att labyrinten är utforskad. Vilken körning den ska göra ställs in med knapptryck på en knapp monterad på roboten. 
 
@@ -218,10 +219,10 @@ På dator går utvalda sensorvärden att se i grafer och robotens utforskade del
 Mer om hur roboten kan användas och felsökas finns att läsa i appendix \ref{}
 
 \subsection{Robotens prestanda}
-Roboten kan ta sig fram med en hastighet av i storleksordningen 1 m/s. Detta är \textcolor{red}{60 }\% av maxhastigheten. Vid sväng används en hastighet \textcolor{red}{70 }\% av maxhastigheten för svängar på 90 respektive 180 grader. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan kan hålla sig ifrån väggen ändå. Sensordata processas och skickas i en sådan takt så att reglering sker felfritt. Robotens beslutsfattande sker så snabbt att det inte märks med blotta ögat utan det ser ut som att den endast kör på. 
+Roboten kan ta sig fram med en hastighet av i storleksordningen 1 m/s. Detta är \textcolor{red}{60 }\% av maxhastigheten. Vid sväng används en hastighet \textcolor{red}{70 }\% av maxhastigheten för svängar på 90 respektive 180 grader. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan hålla sig ifrån väggen ändå. Sensordata processas och skickas i en sådan takt så att reglering sker felfritt. Robotens beslutsfattande sker så snabbt att det inte märks med blotta ögat utan det ser ut som att den endast kör på. 
 
 \subsection{Test}
-Testnign av robotens funktionalitet skedde i olika steg. För att testa I\textsuperscript{2}C-kommunikationen användes först en färdigprogrammerad I/O-enhet tillsammans med huvudmodulens processor. När den verkade fungera användes en annan processor för att testa ytterligare implementationer.  Parallellt med detta konfigurerades sensorerna så att de skulle ge ut korrekta sensorvärden. Först när detta var klart testades regleringen. När regleringen fungerade påbörjades bantester för att testa avsökningsalgoritmen. För protokoll över bantester se \ref{}. 
+Testning av robotens funktionalitet skedde i olika steg. För att testa I\textsuperscript{2}C-kommunikationen användes först en färdigprogrammerad I/O-enhet tillsammans med huvudmodulens processor. När den verkade fungera användes en annan processor för att testa ytterligare implementationer.  Parallellt med detta konfigurerades sensorerna så att de skulle ge ut korrekta sensorvärden. Först när detta var klart testades regleringen. När regleringen fungerade påbörjades bantester för att testa avsökningsalgoritmen. För protokoll över bantester se \ref{}. 
 
 Alla de krav med prioritet 1 som initialt ställdes upp i kravspecifikationen har uppfyllts. Inga prioritet 2 krav har implementerats.
 
