@@ -118,15 +118,20 @@ ISR(INT0_vect){
 			PORTD |= (1<<PORTD7);
 			
 			status = 3;
-			shortestPathInit();
 			Master(3,SLA_sensor_R,closeClaw);
 			break;
 		case 3:
+			shortestPathInit();
+			shortestPathToTarget();
+			status = 4;
+			break;
+		case 4:
 			//Do nothing...
 			PORTD |= (1<<PORTD6);
 			PORTD |= (1<<PORTD7);
 			
 			break;
+		
 	}
 }
 
@@ -157,6 +162,9 @@ ISR(INT1_vect){ //Interrupt from controller module
 			
 			break;
 		case 3:
+			//Do nothing...
+			break;
+		case 4:
 			PORTD |= (1<<PORTD6);
 			PORTD |= (1<<PORTD7);
 		
