@@ -216,7 +216,7 @@ Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet 
 \section{Systemet}
 \textit{Ett översiktligt blockschema och en beskrivning av hela systemet.}
 
-Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köras manuellt och autonomt, något som bestäms av en brytare på roboten. Kommunikationen med datormodulen är dubbelriktad via Bluetooth\textsuperscript{\circledR}. Roboten ska klara sitt uppdrag utan kommunikation med datormodulen, det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix [??].
+Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köras manuellt och autonomt, något som bestäms av en brytare på roboten. Kommunikationen med datormodulen är dubbelriktad via Bluetooth\textsuperscript{\circledR}. Roboten ska klara sitt uppdrag utan kommunikation med datormodulen, det vill säga att kartläggning, styrning och optimering av kortaste väg sker lokalt hos roboten. Banan är uppbyggd enligt banspecifikationen och uppdraget utförs enligt tävlingsreglerna, se appendix B.
 
 \begin{figure}[htbp]
 \centering
@@ -270,7 +270,7 @@ Komponenter som ingår i robotens huvudmodul är
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Huvudmodulen är virad på ett virkort enligt kretsschemat i appendix \ref{kopplingsschema:huvudmodul} och är monterat på robotens chassi. 
+Huvudmodulen är virad på ett virkort enligt kretsschemat i appendix J och är monterat på robotens chassi. 
 
 Nedan beskrivs huvudmodulens olika uppgifter.
 
@@ -324,7 +324,7 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\texts
 \end{figure}
 
 
-Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra enligt figur \ref{path}. De orange- och rödmarkerade kartmodulerna är implementerade med högre siffror än vad roboten skulle kunna köra  enligt tävlingsreglerna, se appendix \ref{}.
+Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra enligt figur \ref{path}. De orange- och rödmarkerade kartmodulerna är implementerade med högre siffror än vad roboten skulle kunna köra  enligt tävlingsreglerna, se appendix B.
 
 \pagebreak
 
@@ -359,7 +359,7 @@ De komponenter som utöver sensorerna ingår i robotens sensormodul är följand
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Sensormodulen är ihopkopplad enligt kopplingsschema i appendix [??]. Den är sammankopplad på ett separat virkort, som är monterat på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
+Sensormodulen är ihopkopplad enligt kopplingsschema i appendix J. Den är sammankopplad på ett separat virkort, som är monterat på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
 
 \subsubsection{Mjukvara}
 I sensormodulen ingår följande mjukvara: 
@@ -371,9 +371,9 @@ I sensormodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{LIDAR-Lite v2, avståndssensor}
-För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm.  \textcolor{red}{Den kan dock ge felaktiga värden när den opererar i en omgivning som grottsystemet. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.}
+För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. Den kan dock ge felaktiga värden när den opererar i en omgivning som labyrinten. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
 
-Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersensorns externa avbrottsingångar, se kopplingsschema i Appendix [??]. 
+Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersensorns externa avbrottsingångar, se kopplingsschema i Appendix J. 
 
 \subsubsection{SFH300, reflexsensor}
 För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, och fästa skiva på ett av hjulen kan kört avstånd bestämmas.
@@ -408,7 +408,7 @@ De komponenter som ingår i styrmodulen är
   \item[-] Studsfri tryckknapp
 \end{itemize}
 
-Styrmodulen kopplas enligt kretsschemat i appendix \ref{kopplingsschema:styrmodul}. Kopplingen sker på ett virkort som sedan monteras på robotens chassi. Härefter följer detaljerade beskrivningar av styrmodulens olika delar.
+Styrmodulen kopplas enligt kretsschemat i appendix J. Kopplingen sker på ett virkort som sedan monteras på robotens chassi. Härefter följer detaljerade beskrivningar av styrmodulens olika delar.
 
 \subsubsection{Mjukvara}
 Mjukvaran till styrmodulen består av följande filer:

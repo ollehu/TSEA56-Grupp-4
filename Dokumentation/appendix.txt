@@ -1,3 +1,14 @@
-Appendix A - Kravspecifikation
-Appendix B - Tidsplan
-Appendix C - Banspecifikation och tävligsregler
+Appendix A - Projektdirektiv
+Appendix B - Banspecifikation och tävlingsregler
+Appendix C - Kravspecifikation
+Appendix D - Projektplan
+Appendix E - Tidsplan
+Appendix F - Systemskiss
+Appendix G - Förstudie, reglerteknik
+Appendix H - Förstudie, kommunikation
+Appendix I - Förstudie, sensorer
+Appendix J - Designspecifikation
+Appendix K - Teknisk dokumentation
+Appendix L - Användarhandledning
+Appendix M - Testprotokoll
+Appendix N - Efterstudie
