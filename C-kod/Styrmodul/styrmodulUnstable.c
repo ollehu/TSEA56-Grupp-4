@@ -23,17 +23,20 @@
 /************************************************************************/
 uint8_t autonomousMode = 1;
 volatile uint8_t currControlCommand = stop;
-volatile uint8_t prevControlCommand;
+volatile uint8_t adjustRotationMode = 0; // 0 = no adjust, 1 = adjust after, 2 = adjust before, 3 = compensate
 
 float P = 0.45;
 float D = 1.2;
 float K = 0.7;
 float L = 1;
+float K_Adjust = 1;
 
-volatile uint8_t preferredSpeed = 50;
-uint8_t preferredRotationSpeed = 70;
+volatile uint8_t preferredSpeed = 70;
+uint8_t preferredRotationSpeed = 35;
+uint8_t preferredAdjustSpeed = 25;
 uint8_t preferredDistance = 100;
-int16_t distanceDifference;
+int8_t lastDistanceDifference;
+int8_t preferredDistanceDifference = 5;
 uint8_t adjustedInCorridor = 0;
 
 /************************************************************************/
@@ -45,7 +48,7 @@ int16_t oldForwardSensor;
 
 int8_t angularVelocity;
 
-int16_t convertAngle90 = 820;
+int16_t convertAngle90 = 990;
 int16_t convertAngle180 = 1980;
 
 int16_t accumulatedAngle;
@@ -63,6 +66,8 @@ uint16_t lidarMaxAngle;
 uint8_t activeScan = 0;
 
 uint8_t accumulatedDistance = 0;
+
+uint8_t targetDetected = 0; 
 
 /************************************************************************/
 /*                               LCD                                    */
@@ -262,6 +267,8 @@ void respondToSensorData()
 		angularVelocity = -(zeroAngVel - lastReceivedData[6]);
 	}
 	
+	targetDetected = lastReceivedData[7];
+	
 	//Reflex sensor
 	accumulatedDistance += lastReceivedData[8];
 	
@@ -277,6 +284,9 @@ void respondToSensorData()
 			break;
 		case commandScan:
 			autonomousScan();
+			break;
+		case commandAdjust:
+			autonomousAdjust();
 			break;
 		default:
 			break;
@@ -382,6 +392,26 @@ void respondToControlData(uint8_t command, uint8_t value)
 				break;
 			default:
 				break;
+		}
+		
+		//if (currControlCommand == rotation){
+		//	adjustRotationMode = 2;
+		//}
+		
+		// determine adjusted rotation
+		if((currControlCommand == rotation) && (labs(lastDistanceDifference) > preferredDistanceDifference)) {
+			if(((sideSensors[0] != maxDistance) &&
+			(sideSensors[2] != maxDistance)) ||
+			((sideSensors[1] != maxDistance) &&
+			(sideSensors[3] != maxDistance))) {
+				adjustRotationMode = 2;
+				currControlCommand = commandAdjust;
+			//} else if(forwardSensor <= moduleDepth) {
+				//adjustRotationMode = 1;
+			} else {
+				adjustRotationMode = 0;
+				//preferredAccumulatedAngle = preferredAccumulatedAngle + K_Adjust * lastDistanceDifference;
+			}
 		}
 	}
 }
@@ -491,6 +521,7 @@ void autonomousForward()
 	uint8_t frontIndex = noWallsIndex;
 	uint8_t backIndex;
 	uint8_t speed = preferredSpeed;
+	uint8_t distance = preferredDistance;
 	
 	/*if (((oldForwardSensor - forwardSensor > moduleDepth) && 
 		 (forwardSensor > (moduleDepth - 5))) || 
@@ -533,16 +564,17 @@ void autonomousForward()
 				   
 		frontIndex = frontRightIndex;
 		backIndex = rearRightIndex;
+		distance += 20;
 	}
 	
 	if (forwardSensor < moduleDepth ||
 		sideSensors[frontRightIndex] == maxDistance ||
 		sideSensors[frontLeftIndex]  == maxDistance){
-		speed *= 0.6;
+		speed *= 0.4;
 			  
 		// Resync accumulatedDistance
 		if (adjustedInCorridor == 0){
-			accumulatedDistance = 17;
+			accumulatedDistance = 16;
 			adjustedInCorridor = 1;
 		}
 
@@ -567,12 +599,18 @@ void autonomousForward()
 			adjustedInCorridor = 0;
 		}
 	
-		uint8_t distance = (sideSensors[frontIndex] + 
+		uint8_t averageDistance = (sideSensors[frontIndex] + 
 							sideSensors[backIndex])/2;
-		distanceDifference = sideSensors[frontIndex] - 
+		int8_t distanceDifference = sideSensors[frontIndex] - 
 							 sideSensors[backIndex];
+		
+		// save lastDistanceDifference
+		lastDistanceDifference = distanceDifference;
 							 
-		float p_out = P * (distance - preferredDistance);
+		float p_out = P * (averageDistance - distance);
+		if (distanceDifference > 40){
+			distanceDifference = 0;
+		}
 		float d_out = D * (distanceDifference);
 		int16_t l_out;
 		
@@ -580,14 +618,14 @@ void autonomousForward()
 
 		if (frontIndex == 0){
 			y_out = -y_out;
-			l_out = (lidarMid + distanceDifference);
+			// l_out = (lidarMid + distanceDifference);
 		} else {
-			l_out = (lidarMid - distanceDifference);
+			// l_out = (lidarMid - distanceDifference);
 		}
 		
-		if (distanceDifference <= 40){
+		/*if (distanceDifference <= 40){
 			speedLidar = l_out;
-		}
+		}*/
 	
 		if(y_out < 0) {
 		
@@ -629,7 +667,15 @@ void autonomousForward()
 void autonomousRotate()
 {
 	if(labs(accumulatedAngle) > labs(preferredAccumulatedAngle)){
-		adjustRotation();
+		if(adjustRotationMode == 1) {
+			currControlCommand = commandAdjust;
+		} else {
+			currControlCommand = stop;
+			stopWheels();
+			if (debugMode == 0){
+			callMainInterrupt();
+			}
+		}
 	} else if (preferredAccumulatedAngle > 0){
 		rightWheelPair(preferredRotationSpeed, 1);
 		leftWheelPair(preferredRotationSpeed, 0);
@@ -642,19 +688,53 @@ void autonomousRotate()
 }
 
 /************************************************************************/
-/*	adjustRotation - Adjust robot after 90 or 180 degrees rotation.     */
+/*	autonomousAdjust - autonomously adjust angle to wall.
+
+	Autonomously adjust the angle to the wall or compensate the
+	preferred accumulated angle (preferredAccumulatedAngle) 
+
+	Called either before or after rotation, depending on adjust 
+	rotation mode (adjustRotationMode). 
+	
+	Before autonomousAdjust is called, autonomousAdjustMode should
+	be updated.
+																		*/
 /************************************************************************/
-void adjustRotation(void)
+void autonomousAdjust()
 {
-	stopWheels();
-	currentLidarAngle = lidarMin;
-	accumulatedDistance = 0;
-	//lidarMaxDistance = 0;
-	//activeScan = 1;
-	//currControlCommand = commandScan;
-	currControlCommand = stop;
-	if (debugMode == 0){
-		callMainInterrupt();
+	uint8_t frontIndex;
+	uint8_t backIndex;
+	
+	if ((sideSensors[frontLeftIndex] != maxDistance) &&
+		(sideSensors[rearLeftIndex] != maxDistance)){
+					
+		lastDistanceDifference = sideSensors[rearLeftIndex] -
+									sideSensors[frontLeftIndex];
+	} else if ((sideSensors[frontRightIndex] != maxDistance) &&
+			   (sideSensors[rearRightIndex] != maxDistance)){
+		lastDistanceDifference = sideSensors[frontRightIndex] -
+									sideSensors[rearRightIndex];
+	}
+	
+	if(labs(lastDistanceDifference) <= preferredDistanceDifference) {
+		if(adjustRotationMode == 2) {
+			adjustRotationMode = 1;
+			currControlCommand = rotation;
+		} else {
+			currControlCommand = stop;
+			stopWheels();
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		}
+	} else {
+		if (lastDistanceDifference < 0){
+			rightWheelPair(preferredAdjustSpeed, 1);
+			leftWheelPair(preferredAdjustSpeed, 0);
+			} else {
+			rightWheelPair(preferredAdjustSpeed, 0);
+			leftWheelPair(preferredAdjustSpeed, 1);
+		}
 	}
 }
 
@@ -707,11 +787,16 @@ void initInterrupt()
 void callMainInterrupt(void)
 {
 
+	stopWheels();
+	currentLidarAngle = lidarMin;
+	currControlCommand = stop;
 	called += 1;
+	
 	PORTB |= (1<<PORTB4);
 	PORTB &= ~(1<<PORTB4);
-	currControlCommand = stop;
-	stopWheels();
+	
+	adjustRotationMode = 0;
+	accumulatedDistance = 0;
 }
 
 /************************************************************************/
@@ -819,10 +904,10 @@ int main(void)
 		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "C:%u D:%u",accumulatedDistance, edgesToCentimeter(accumulatedDistance));
+			sprintf(topRowMessage, "C:%u D:%u",abs(lastDistanceDifference), adjustRotationMode);
 			lcdWriteTopRow(topRowMessage);
-			sprintf(bottomRowMessage, "%u %u C: %d", 
-					sideSensors[rearRightIndex], sideSensors[frontRightIndex], forwardSensor);
+			sprintf(bottomRowMessage, "CC:%u Target: %u", 
+					currControlCommand,targetDetected);
 			lcdWriteBottomRow(bottomRowMessage);
 			madeChange = 0;
 		} 
