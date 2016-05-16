@@ -104,7 +104,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \textit{Lyft gärna fram det som ni anser är utmanande/intressant i uppdraget.}
 \textit{Beskriv kortfattat dispositionen på rapporten.}
 
-Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix \ref{}.
+Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
 
 \begin{figure}[!htbp]
 \centering
@@ -129,7 +129,7 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \textit{Redogör kort för kravbilden och referera till projektdirektiv och kravspecifikation för att läsa detaljer.}
 \textit{Lägg återigen mest fokus på det som ni ansåg utmanande/intressant.}
 
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix \ref{Kravspecifikation}.
+För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
 
 \subsection{Tillräckligt bra sensorvärden}
 För att roboten skulle ha en uppfattning om sin omgivning behövde sensorerna vara precisa i sina mätningar. Dessa behövde sedan läsas av tillräckligt ofta för att kunna reglera efter dem samtidigt som de inte fick läsas av så ofta att operationerna tog för mycket tid av huvudprocessorn.
@@ -156,7 +156,7 @@ Komponenterna som har använts under projektet finns nästan uteslutande beskriv
 
 Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utibildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade erfarenhet av. 
 
-De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikaitonen, se appendix \ref{designspecifikation}, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix \ref{förstudier}
+De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikationen, se appendix J, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix G, H och I.
 
 Till förfogande hade projektgruppen även en teknisk handledare tillhandahållen av ISY, instutitionen för systemteknik på Linköpings Universitet. Handledaren kom väl till pass då hårdvara krånglade och då svårare problem behövde diskuteras.
 
@@ -170,32 +170,32 @@ I följande avsnitt beskrivs hur projektet genomförts i de tre olika faserna \t
 \subsection{Fas: Före}
 Projektet har bedrivits enligt projektmodellen \textit{LIPS}. (referens?) Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer: krav av prioritet 1 som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
 
-Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix \ref{systemskiss}. 
+Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix F. 
 
-Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix \ref{projektplan}. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
+Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix D. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
 
 \subsection{Fas: Under}
-Före projektets praktiska del startade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som gav en ingående beskrivning av produkten. Syftet med designspecifikationen var att använda den som underlag vid det praktiska arbetet. Den skulle vara på den detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskrivna för att kunna arbeta efter dokumentet. Designspecifikationen i sin helhet hittas i appendix \ref{designspecifikation}. 
+Före projektets praktiska del startade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som gav en ingående beskrivning av produkten. Syftet med designspecifikationen var att använda den som underlag vid det praktiska arbetet. Den skulle vara på den detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskrivna för att kunna arbeta efter dokumentet. Designspecifikationen i sin helhet hittas i appendix D. 
 
 När designspecifikationen var färdigställd började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar, och jobbade mest, med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som färdigställdes tidigt eftersom arbetet med integreration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var något som projektgruppen började med tidigt eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas i ett tidigt skede påbörjades även virning av hårdvara parallellt med nämda aktiviteter. 
 
 Arbetet följde den ordning som listats i tidplanen för att på smidigaste sätt ta hänsyn till de beroenden som existerade mellan aktiviteter. Som nämnt uppdaterades tidplanen allt eftersom aktiviteter avklarades för att bättre visa det faktiska arbetets gång. Till hjälp vid utvecklingsarbetet av mjukvara till hårdvaran användes Atmel Studio. Mjukvaran till datorn utvecklades i Java. 
 
 \subsection{Fas: Efter}
-När roboten var färdigbyggd och det praktiska arbetet var klart skrevs en teknisk dokumentation, se appendix \ref{TekniskDokumentation}. Denna redogör för hur roboten är konstruerad och vilka designbeslut som tagits. Även en användarhandledning, se appendix \ref{Anvandarhandledning}, skrevs. Den beskriver hur roboten används på bästa sätt och ska underlätta för de som ska använda roboten efter avslutat projekt.
+När roboten var färdigbyggd och det praktiska arbetet var klart skrevs en teknisk dokumentation, se appendix K. Denna redogör för hur roboten är konstruerad och vilka designbeslut som tagits. Även en användarhandledning, se appendix L, skrevs. Den beskriver hur roboten används på bästa sätt och ska underlätta för de som ska använda roboten efter avslutat projekt.
 
-Alla uppsatta krav, se appendix \ref{kravspec}, verifierades och produkten testades mot andra robotar som konstruerats med utgångspunkt från samma projektdirektiv. För att utvärdera arbetet skrevs en efterstudie där gruppen reflekterade över vad som gick bra, vad som gick bra och vilka förbättringsmöjligheter som finns inför vidareutveckling av produkten.
+Alla uppsatta krav, se appendix C, verifierades och produkten testades mot andra robotar som konstruerats med utgångspunkt från samma projektdirektiv. För att utvärdera arbetet skrevs en efterstudie där gruppen reflekterade över vad som gick bra, vad som gick bra och vilka förbättringsmöjligheter som finns inför vidareutveckling av produkten.
 
 \pagebreak
 
 \section{Teknisk beskrivning}
 \textit{Redovisa det tekniska resultatet och förstudierna på ett lämpligt sätt. Detaljerade beskrivningar på grindnivå i hårdvaran eller på instruktionsnivå i mjukvaran är i detta sammanhang oftast ointressant. Referera den tekniska dokumentationen och förstudierna för beskrivning av detaljer. Lyft fram egna kreativa lösningar!}
 
-Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål och sitter monterade på ett chassi, se figur \ref{overview}. Nedan följer en beskrivning av modulerna samt hur gruppen har hanterat tekniska utmaningar. En utförligare teknisk beskrivning finns att läsa i appendix \ref{TekniskDokumentation}. 
+Roboten består av fyra olika delsystem, moduler, som är designade för specifika ändamål och sitter monterade på ett chassi, se figur \ref{overview}. Nedan följer en beskrivning av modulerna samt hur gruppen har hanterat tekniska utmaningar. En utförligare teknisk beskrivning finns att läsa i appendix K. 
 
 
 \subsection{Huvudmodulen}
-Huvudmodulen är det delsystem som sköter all kommunikation, både med datormodulen via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix \ref{Kommunikation}. Huvudmodulen har även ansvar för att ta övergripande beslut, speciellt hur roboten ska utforska grottsystemet, alltså vilket håll roboten ska köra åt härnäst. Besluten tar den enligt de algoritmer som finns beskrivna i förstudien som rör reglering, se appendix \ref{Reglering}. Huvudmodulen har slutligen hand om intern kartläggning under tiden roboten utforskar omgivningen och kommunicerar informationen till datormodulen. 
+Huvudmodulen är det delsystem som sköter all kommunikation, både med datormodulen via blåtand och mellan övriga moduler i form av I\textsuperscript{2}C-protokoll. Protokollet valdes utifrån resultatet i förstudien som inriktade sig på kommunikation, se appendix H. Huvudmodulen har även ansvar för att ta övergripande beslut, speciellt hur roboten ska utforska grottsystemet, alltså vilket håll roboten ska köra åt härnäst. Besluten tar den enligt de algoritmer som finns beskrivna i förstudien som rör reglering, se appendix G.Huvudmodulen har slutligen hand om intern kartläggning under tiden roboten utforskar omgivningen och kommunicerar informationen till datormodulen. 
 
 \begin{figure}[!htbp]
 \centering
@@ -205,10 +205,10 @@ Huvudmodulen är det delsystem som sköter all kommunikation, både med datormod
 \end{figure}
 
 \subsection{Sensormodulen}
-Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix \ref{Sensorer}. 
+Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix I. 
 
 \subsection{Styrmodulen}
-Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in används en PD-regulator i enlighet med resultatet i förstudien i appendix \ref{Reglering}. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. 
+Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att kunna reglera rakt i korridor och svänga utifrån sensorvärden den fått in används en PD-regulator i enlighet med resultatet i förstudien i appendix G. Styrbeslut får den levererat från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. 
 
 \subsection{Datormodulen}
 Datormodulen kan kommunicera styrkommandon till roboten men får främst information om karta och sensordata som den visar på skärmen. 
@@ -233,7 +233,7 @@ Roboten kan både köra autonomt och styras manuellt från en dator. I manuellt 
 
 På uppkopplad dator går utvalda sensorvärden att se i kontinuerligt uppdaterade grafer. När roboten kör autonomt visas även de delar av grottsystemet som är utforskade på datorn, vilket ger en bra bild av omgivningen kring den nödställde.
 
-Mer om hur roboten används och felsöka finns att läsa i appendix \ref{}.
+Mer om hur roboten används och felsöks finns att läsa i appendix L.
 
 \subsection{Robotens prestanda}
 Roboten kan ta sig fram med en hastighet av i storleksordningen 1 m/s. Det motsvarar \textcolor{red}{60 }\% av dess maxhastighet. Vid svängar med 90 och 180 grader används en hastighet som motsvarar \textcolor{red}{70 }\% av maxhastigheten. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan reglera även vid avvikande utseende av banan. Sensordata processas och skickas i tillräckligt hög takt för att reglering hela tiden sker med uppdaterade sensorvärden. Robotens beslutsfattande sker i storleksordningen hundradelar, vilket gör att det det är omöjligt att med blotta ögat se när den stannar för att ``tänka''. Det är därmed mycket tillfredställande att kolla på roboten i aktion.
@@ -266,7 +266,7 @@ Mest nöjda förslag :
 \item Produktmässigt: Roboten snabb. Avsökningsalgoritmen fungerade från början vid testning. IR-sensorer bra
 \end{itemize}
 
-En utvärdering av projektets delar och stösta problem går att läsa i appendix \ref{}
+En utvärdering av projektets delar och stösta problem går att läsa i appendix N.
 
 \subsection{Att tänka på till nästa gång}
 
