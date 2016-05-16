@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import model.MapElement;
 
-public class MapPanel extends JPanel implements Observer{
+public class AdaptiveMapPanel extends JPanel implements Observer{
 
 	private MapVisualElement[][] elementHolder;
 	
@@ -30,8 +30,8 @@ public class MapPanel extends JPanel implements Observer{
 	public static final int X_MAX = 29;
 	public static final int Y_MAX = 29;
 	
-	public static final int WIDTH = 400;
-	public static final int HEIGHT = 400;
+	public static final int WIDTH_MAX = 600;
+	public static final int HEIGHT_MAX = 400;
 	
 	/**
 	 * To paint current square (not yet used)
@@ -48,9 +48,9 @@ public class MapPanel extends JPanel implements Observer{
 	private int eastMax = 15;
 	
 	
-	public MapPanel() {
+	public AdaptiveMapPanel() {
 		setLayout(new GridBagLayout());
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setPreferredSize(new Dimension(WIDTH_MAX, HEIGHT_MAX));
 		
 		constraints = new GridBagConstraints();
 		constraints.insets = new Insets(2, 2, 2, 2);
@@ -134,16 +134,32 @@ public class MapPanel extends JPanel implements Observer{
 					northMax = yCoordinate;
 				}
 				
-				//TODO add set preferred size using a panel inside panel
-				
 				// adjust width and height of all added elements
-				int nextWidth = WIDTH / (eastMax - westMax + 1);
-				int nextHeight = HEIGHT / (northMax - southMax + 1);
+				int numberOfElementsWidth = eastMax - westMax + 1;
+				int numberOfElementsHeight = northMax - southMax + 1;
+				
+				int nextWidth = WIDTH_MAX / numberOfElementsWidth;
+				int nextHeight = HEIGHT_MAX / numberOfElementsHeight;
 				
 				int nextDimension = Integer.min(nextWidth, nextHeight);
 				
 				for(MapVisualElement element : exploredMapElements) {
 					element.setDimension(nextDimension, nextDimension);
+				}
+				
+				// adjust panel size
+				if(numberOfElementsHeight < numberOfElementsWidth) {
+					int height = nextDimension * numberOfElementsHeight;
+					
+					setPreferredSize(new Dimension(WIDTH_MAX, height));
+
+				} else if (numberOfElementsHeight > numberOfElementsWidth){
+					int width = nextDimension * numberOfElementsWidth;
+					
+					setPreferredSize(new Dimension(width, HEIGHT_MAX));
+
+				} else {
+					setPreferredSize(new Dimension(WIDTH_MAX, HEIGHT_MAX));
 				}
 				
 				repaint();
