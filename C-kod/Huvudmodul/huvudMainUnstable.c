@@ -70,6 +70,12 @@ ISR(USART0_RX_vect){
 				}
 				
 				sendMap();
+
+			} else if (computerMessage[0] == 252 &&
+				computerMessage[1] == 15) {
+				//ISR(INT0_vect);
+				//EIFR |= (1<<INTF0);
+				INT0_vect();
 				
 			} else {
 				Master(3,SLA_styr_W,computerMessage);
