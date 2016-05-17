@@ -27,25 +27,25 @@ public class AdaptiveMapPanel extends JPanel implements Observer{
 	/**
 	 * Constants for initiation 
 	 */
-	public static final int X_MAX = 29;
-	public static final int Y_MAX = 29;
+	public static final int X_MAX = 31;
+	public static final int Y_MAX = 18;
 	
-	public static final int WIDTH_MAX = 600;
-	public static final int HEIGHT_MAX = 400;
+	public static final int WIDTH_MAX = MapVisualElement.ELEMENT_WIDTH*X_MAX;
+	public static final int HEIGHT_MAX = MapVisualElement.ELEMENT_HEIGHT*Y_MAX;
 	
 	/**
 	 * To paint current square (not yet used)
 	 */
-	private int currentX = 15;
-	private int currentY = 15;
+	private int lastX = 16;
+	private int lastY = 1;
 	
 	/**
 	 * Variables for boundaries
 	 */
-	private int northMax = 15;
-	private int southMax = 15;
-	private int westMax = 15;
-	private int eastMax = 15;
+	private int northMax = 1;
+	private int southMax = 1;
+	private int westMax = 16;
+	private int eastMax = 16;
 	
 	
 	public AdaptiveMapPanel() {
@@ -83,13 +83,13 @@ public class AdaptiveMapPanel extends JPanel implements Observer{
 		}
 		
 		// reset boundaries
-		currentX = 15;
-		currentY = 15;
+		lastX = 16;
+		lastY = 1;
 		
-		northMax = 15;
-		southMax = 15;
-		westMax = 15;
-		eastMax = 15;
+		northMax = 1;
+		southMax = 1;
+		westMax = 16;
+		eastMax = 16;
 		
 		exploredMapElements.clear();
 	}
@@ -119,7 +119,19 @@ public class AdaptiveMapPanel extends JPanel implements Observer{
 				constraints.gridx = xCoordinate;
 				constraints.gridy = yCoordinate;
 				
-				elementHolder[xCoordinate][yCoordinate].explore(value);
+				if(value == 241) {
+					elementHolder[lastX][lastY].setCurrent(false);
+					
+					System.out.println("Current X: " + xCoordinate + " Y: " + yCoordinate);
+					
+					elementHolder[xCoordinate][yCoordinate].setCurrent(true);
+					lastX = xCoordinate;
+					lastY = yCoordinate;
+
+				} else {
+					elementHolder[xCoordinate][yCoordinate].explore(value);
+
+				}
 				exploredMapElements.add(elementHolder[xCoordinate][yCoordinate]);
 				
 				// expand boundaries if needed

@@ -302,9 +302,9 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 31x17 fält där robotens startkoordinater är (16,0) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 31x18 fält där robotens startkoordinater är (16,0) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
 
-Återvändsgränder där mål ej hittas sparas i ett annat 31x17 fält, markerade röda i figur \ref{path}, för att förenkla beräkningen av kortaste väg. 
+Återvändsgränder där mål ej hittas sparas i ett annat 31x18 fält, markerade röda i figur \ref{path}, för att förenkla beräkningen av kortaste väg. 
 
 \begin{figure}[htbp]
 \centering
@@ -561,7 +561,7 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - x-koordinat (tillåtna värden: 0-30).
-	\item C (1 byte) - y-koordinat (tillåtna värden: 0-16).
+	\item C (1 byte) - y-koordinat (tillåtna värden: 0-17).
 	\item D (1 byte) - Information om vad som finns i noden, se tabell \ref{tab}.
 \end{itemize}
 
@@ -616,7 +616,7 @@ Respektive segment motsvarar följande:
 \begin{itemize}
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - x-koordinat (tillåtna värden: 0-30).
-	\item C (1 byte) - y-koordinat (tillåtna värden: 0-16).
+	\item C (1 byte) - y-koordinat (tillåtna värden: 0-17).
 	\item D (1 byte) - riktning.
 \end{itemize}
 
@@ -639,14 +639,11 @@ Respektive segment motsvarar följande:
  & 2 & Data & Värde på den främre vänstra IR-sensorn \\ \hline
  & 3 & Data & Värde på den bakre högra IR-sensorn \\ \hline
  & 4 & Data & Värde på den bakre vänstra IR-sensorn \\ \hline
-
  & 5 & Data &  Värde på LIDAR-Lite's 8 mest signifikanta bitar \\ \hline
  & 6 & Data &  Värde på LIDAR-Lite's 8 minst signifikanta bitar \\ \hline
-
  & 7 & Data & Värde på gyrot \\ \hline
-
  & 8 & Data & Värde för IR-detektorn (1 om målet är upptäckt, 0 annars) \\ \hline
-  & 9 & Data & Antal flanker reflexsensorn detekterat sen sist\\ \hline
+ & 9 & Data & Antal flanker reflexsensorn detekterat sen sist\\ \hline
 \end{tabular}
 
 \begin{tabular}{|p{6em}|p{1em}|p{6em}|p{25em}|} \hline
@@ -660,7 +657,6 @@ Respektive segment motsvarar följande:
 255 & - & - & Kommando att rotera vänster \\ \hline
 255 & - & Data/--\text{**} & Hur fort roboten ska rotera åt vänster  \\ \hline
 
-
 \end{tabular}
 
 \text{*} Gäller för alla efterföljande sensorer då alla värden skickas i samma paket \\*
@@ -669,11 +665,17 @@ Respektive segment motsvarar följande:
 \caption{Tabell över informationsflödet} \label{tab}
 \end{table}
 
-
-
 \pagebreak
 \section{Slutsatser}
 \textit{Vilka förbättringar skulle kunna göras?}
+
+Gruppen känner sig nöjd med uppnått resultat men ser samtidigt utvecklingmöjligheter av produkter inom några områden. 
+
+En av de naturligt följande förbättringarna är att få roboten att kunna navigera i öppna rum, vilket var ett krav av prioritet 2. Nu är roboten begränsad till att operera i en omgivning bestående av ett layrintsystem med vinkelräta svängar. För att utöka dess användningsområde kan även produkten utvecklas så att den kan reglera vid alla typer av svängar, inte bara vinkelräta.
+
+Något som gruppen hade velat utveckla i mån av mer tid är kartläggning i tre dimensioner. Det hade bidragit till en bättre användarupplevelse. I övrigt är gruppen nöjd med robotens funktioner. 
+
+Förbättringspotential finns även i de redan existerande funktionerna. Roboten skulle kunna göras smartare genom att förbättra avsökningsalgoritmen. Den är tillräcklig för att uppfylla kraven i projektet men den kan till exempel inte koppla ihop olika delar av en utforskad labyrint, vilket skulle göra stor skillnad i en stor och komplicerad bana. 
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
@@ -681,7 +683,6 @@ Respektive segment motsvarar följande:
 \bibliography{references}
 
 \pagebreak
-
 
 \appendix
 

@@ -85,7 +85,7 @@ public class Animator {
 		
 		// add map panel
 		mapPanel = new JPanel();
-		mapPanel.setPreferredSize(new Dimension(AdaptiveMapPanel.WIDTH_MAX + 10, AdaptiveMapPanel.HEIGHT_MAX + 10));
+		mapPanel.setPreferredSize(new Dimension(AdaptiveMapPanel.WIDTH_MAX, AdaptiveMapPanel.HEIGHT_MAX));
 		mapPanel.setLayout(new GridBagLayout());
 		frame.add(mapPanel, constraints);
 		adaptiveMapPanel = new AdaptiveMapPanel();
