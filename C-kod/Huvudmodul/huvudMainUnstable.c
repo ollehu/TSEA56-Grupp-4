@@ -173,7 +173,7 @@ ISR(INT1_vect){ //Interrupt from controller module
 				} else {
 					returnToStart();
 				}
-			} else if(goTheShortestPath){				
+			} else {				
 				shortestPathToTarget();
 			}
 			

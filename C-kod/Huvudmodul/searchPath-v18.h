@@ -78,7 +78,6 @@ uint8_t dist;
 
 int nrOfCoordinates = 0;
 int returnStart = 0xFF;
-int goTheShortestPath = 0;
 
 /************************************************************************/
 /*                              HEADER                                  */
