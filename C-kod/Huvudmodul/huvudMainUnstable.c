@@ -25,7 +25,7 @@ uint8_t switchMode[3] = {0xFC, 0x01, 0x00};
 	
 uint8_t status = 0;
 
-uint8_t closeClaw[3] = {0xFF, 0x09, 0x00};
+uint8_t closeClaw[3] = {0xFC, 0x0B, 0x00};
 uint8_t stopCommand[3] = {0xFF, 0x00, 0x00};
 
 /*void btSend(unsigned char data)
@@ -65,9 +65,11 @@ ISR(USART0_RX_vect){
 				computerMessage[1] == 8   &&
 				computerMessage[2] == 1){
 				
-				//for(int i = 0; i<3;i++){
-				//	btSend(switchMode[i]);
-				//}
+				for(int i = 0; i<3;i++){
+					btSend(switchMode[i]);
+				}
+				
+				sendMap();
 				
 			} else {
 				Master(3,SLA_styr_W,computerMessage);
@@ -101,54 +103,46 @@ ISR(USART0_RX_vect){
 ISR(INT0_vect){
 	switch(status){
 		case 0:
-			PORTD |= ~(1<<PORTD6);
-			PORTD |= ~(1<<PORTD7);
-			
 			status = 1;
+			
+			PORTD |= (1<<PORTD6);
+			PORTD &= ~(1<<PORTD7);
+			
 			explore();
 			break;
 		case 1:
 			//Do nothing...
-			PORTD |= (1<<PORTD6);
-			PORTD |= ~(1<<PORTD7);
-			
 			break;
-		case 2:
-			PORTD |= ~(1<<PORTD6);
+		case 2:			
+			status = 3;
+			PORTD |= (1<<PORTD6);
 			PORTD |= (1<<PORTD7);
 			
-			status = 3;
-			Master(3,SLA_sensor_R,closeClaw);
+			Master(3,SLA_styr_W,closeClaw);
 			break;
 		case 3:
 			shortestPathInit();
 			shortestPathToTarget();
 			status = 4;
+			PORTD |= (1<<PORTD6);
+			PORTD |= (1<<PORTD7);
 			break;
 		case 4:
 			//Do nothing...
-			PORTD |= (1<<PORTD6);
-			PORTD |= (1<<PORTD7);
-			
 			break;
-		
 	}
 }
 
 ISR(INT1_vect){ //Interrupt from controller module
 	switch(status){
 		case 0:
-			//Do nothing...
-			PORTD |= ~(1<<PORTD6);
-			PORTD |= ~(1<<PORTD7);
-			
+			//Do nothing...			
 			break;
-		case 1:
-			PORTD |= (1<<PORTD6);
-			PORTD |= ~(1<<PORTD7);
-			
-			if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
+		case 1:			
+			if((map[position[0]][position[1]] == startPositionValue[0]) && (hasFoundTarget() >= 1) && !unexploredPaths()){
 				status = 2;
+				PORTD &= ~(1<<PORTD6);
+				PORTD |= (1<<PORTD7);
 				Master(3,SLA_styr_W,openClaw);
 			} else {
 				explore();
@@ -157,20 +151,14 @@ ISR(INT1_vect){ //Interrupt from controller module
 			break;
 		case 2:
 			//Do nothing...
-			PORTD |= ~(1<<PORTD6);
-			PORTD |= (1<<PORTD7);
-			
 			break;
 		case 3:
 			//Do nothing...
-			break;
+			break; 
 		case 4:
-			PORTD |= (1<<PORTD6);
-			PORTD |= (1<<PORTD7);
-		
-			if(lastCommand[1] == claw){
+			/*if(lastCommand[1] == claw){
 				returnStart = nrOfCoordinates - 1;
-			}
+			}*/
 
 			if (returnStart != 0xFF){
 				if(returnStart == -1){
@@ -185,66 +173,7 @@ ISR(INT1_vect){ //Interrupt from controller module
 			
 			break;
 	}
-		
-	// Välj ny modul att utforska
-	/*
-	if(!unexploredPaths() && position[0] == 14 && position[1] == 14){
-		//Do nothing...
-	} else {
-		explore();
-	}*/
-	
-	
-	//This should work when we are interested in testing with target
-	/*if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
-		goTheShortestPath = 1;
-	}
-	
-	if(lastCommand[1] == claw){
-		returnStart = nrOfCoordinates - 1;
-	}
 
-	if (returnStart != 0xFF){
-		returnToStart();
-		
-	} else if(goTheShortestPath){
-		if(!doneShortestPathInit){
-			doneShortestPathInit = 1;
-			shortestPathInit();
-		}
-		
-		shortestPathToTarget();
-	} else {
-		explore();
-	}*/		
-	
-	
-	
-	
-	
-	
-	/*if (sensorData[10]*128 + sensorData[12] < preferredForwardDistance)
-	{
-		if(sensorData[4] == 245){
-			uint8_t autonomousControl[3] = {controlCommandType, commandLeft, 0x03};
-			Master(3,SLA_styr_W,autonomousControl);
-		} else if(sensorData[2] == 245){
-			uint8_t autonomousControl[3] = {controlCommandType, commandRight, 0x03};
-			Master(3,SLA_styr_W,autonomousControl);
-		} else {
-			if (sensorData[2] > sensorData[4]){
-				uint8_t autonomousControl[3] = {controlCommandType, commandReverseRight, 0x03};
-				Master(3,SLA_styr_W,autonomousControl);
-			} else {
-				uint8_t autonomousControl[3] = {controlCommandType, commandReverseLeft, 0x03};
-				Master(3,SLA_styr_W,autonomousControl);	
-			}
-		}
-	} else {
-		uint8_t autonomousControl[3] = {controlCommandType, commandForward, 0x03};
-		Master(3,SLA_styr_W,autonomousControl);
-	}*/
-	
 	//SENSORDATA KOMMER I AVBROTTET FRÅN SENSORMODULEN!
 }
 
@@ -271,12 +200,14 @@ void sendMap(void)
 {
 	uint8_t i;
 	uint8_t j;
-	for(i = 0; i < 28; ++i){
-		for(j = 0; j < 28; ++j){
-			btSend(0xFE);
-			btSend(i);
-			btSend(j);
-			btSend(map[i][j]);
+	for(i = 0; i < dimx; i++){
+		for(j = 0; j < dimy; j++){
+			if (map[i][j] != initialValue){
+				btSend(0xFE);
+				btSend(i);
+				btSend(j);
+				btSend(map[i][j]);
+			}
 		}
 	}
 }
@@ -289,9 +220,9 @@ int main(void)
 	searchPathInit();
 	
 	DDRD |= (1<<DDD7)|(1<<DDD6)|(1<<DDD4);
-	PORTD |= ~(1<<PORTD7);
-	PORTD |= ~(1<<PORTD6);
-	PORTD |= ~(1<<PORTD4);
+	PORTD &= ~(1<<PORTD7);
+	PORTD &= ~(1<<PORTD6);
+	PORTD &= ~(1<<PORTD4);
 	
 	sei();
 	
