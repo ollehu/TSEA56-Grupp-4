@@ -10,23 +10,20 @@
 //TWI
 int SLA_styr_W = 0xCC;
 
-//////////////////////////////////////////////////////////////////////////
-uint8_t keepExploring = 1;
-//////////////////////////////////////////////////////////////////////////
-
 /************************************************************************/
 /*                       POSITION AND ORIENTATION                       */
 /************************************************************************/
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
-uint8_t position[2] = {14,14}; //Where the robot is right now (is updated after command is sent)
+uint8_t position[2] = {16,1}; //Where the robot is right now (is updated after command is sent)
 	
 /************************************************************************/
 /*                           INTERNAL MAP                               */
 /************************************************************************/
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)
-uint8_t dim = 29;
-uint8_t map[29][29]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
-uint8_t path[29][29]; //FF initial value, F1 blocked way, >0 steps from target
+uint8_t dimx = 31;
+uint8_t dimy = 18;
+uint8_t map[31][18]; //F5: initial value, F4: wall, F3: target, F2: start, [0,225] steps from start
+uint8_t path[31][18]; //FF initial value, F1 blocked way, >0 steps from target
 
 uint16_t straightAhead = 0; //Value straight ahead (Lidar)
 uint16_t oldStraighAhead = 0;
@@ -47,8 +44,6 @@ uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at a
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
 uint8_t z[2] = {0xFF,0xFF}; //Estimations of shortest path (optimistic, pessimistic)
 
-uint8_t readSensorsF = 0;
-
 /************************************************************************/
 /*                            CONTROLLER                                */
 /************************************************************************/
@@ -57,7 +52,7 @@ uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
 uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
 uint8_t rotate180[3] = {0xFF, 0x02, 0xB4};
-uint8_t openClaw[3] = {0xFF, 0x09, 0x01};
+uint8_t openClaw[3] = {0xFC, 0x0B, 0x01};
 uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t forward = 0x01;
@@ -310,13 +305,13 @@ void readSensors()
 	//Send map
 	
 	sendMapCoordinate(position[0], position[1]);
-	if (position[0] + 1 < dim){
+	if (position[0] + 1 < dimx){
 		sendMapCoordinate(position[0] + 1, position[1]);
 	}
 	if (position[0] - 1 >= 0){
 		sendMapCoordinate(position[0] - 1, position[1]);
 	}
-	if (position[1] + 1 < dim){
+	if (position[1] + 1 < dimy){
 		sendMapCoordinate(position[0], position[1] + 1);
 	}
 	if (position[0] - 1 >= 0){
@@ -324,6 +319,17 @@ void readSensors()
 	}
 	
 	
+}
+
+/************************************************************************/
+/*	sendPositionInfo - sends position information to the computer			*/
+/************************************************************************/
+void sendPositionInformation(void)
+{
+	btSend(0xFE);
+	btSend(position[0]);
+	btSend(position[1]);
+	btSend(0xF1);
 }
 
 /************************************************************************/
@@ -346,16 +352,16 @@ void sendMapCoordinate(uint8_t x, uint8_t y)
 void searchPathInit() //Fills map and path, sets initial values 
 {
 	//Fill path with 255, map with 0
-	for(int i = 0;i<dim;i++){
-		for(int j = 0;j<dim;j++){
+	for(int i = 0;i<dimx;i++){
+		for(int j = 0;j<dimy;j++){
 			path[i][j] = initialValue;
 			map[i][j] = initialValue;
 		}
 	}
 	
 	//Set start value for map
-	map[14][14] = startPositionValue[0];
-	map[14][13] = startPositionValue[1];
+	map[16][1] = startPositionValue[0];
+	map[16][0] = wallValue;
 }
 
 /************************************************************************/
@@ -363,7 +369,7 @@ void searchPathInit() //Fills map and path, sets initial values
 
 	rotation:	0x02	180 degrees
 				0x03	right turn
-				0x04	left turn
+				0x04	lefft turn
 																		*/
 /************************************************************************/
 void newDirection(uint8_t rotation, uint8_t degrees)
@@ -607,29 +613,16 @@ void explore(void)
 		updateTargetFound(); //Only just when the target has been found			
 	} 
 	
-	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) && readSensorsF == 0) {
+	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty))) {
 		//straightAhead = sensorData[10]*256 + sensorData[12];
 		
-		if(hasFoundTarget() == 1){
-			if (lastCommand[1] == 0x03){
-				lastCommand[1] = 0x04;
-				readSensorsF = 1;
-			} else {
-				lastCommand[1] == 0x03;
-			}
-		} else {
-			lastCommand[1] = 0x01;
-		}
+		lastCommand[1] = 0x01;
 		
 		Master(3,SLA_styr_W,lastCommand);
 		for (int k = 0; k < 3; k++)	{
 			btSend(lastCommand[k]);
 		}
 	} else if (unexploredPaths()) {
-	
-		if(readSensorsF == 1){
-			readSensorsF = 0;
-		}
 	
 		if((hasFoundWayBack)){
 			hasFoundWayBack = 0;
@@ -645,14 +638,6 @@ void explore(void)
 			temp = findTarget();
 		}
 	
-		if ((hasFoundTarget() == 0) && (position[0] == 14) && (position[1] == 14)){
-			if (lastCommand[0] != 0){
-				lastCommand[1] = 0x00;
-				Master(3,SLA_styr_W,lastCommand);
-				keepExploring = 0;
-			}
-		}
-	
 		lastCommand[0] = temp[0];
 		lastCommand[1] = temp[1];
 		lastCommand[2] = temp[2];
@@ -664,11 +649,7 @@ void explore(void)
 			}
 		}
 	
-	} else {
-		if(readSensorsF == 1){
-			readSensorsF = 0;
-		}
-	
+	} else {	
 		////////////////////////////////////////////////////////
 		if((hasFoundWayBack)){
 			hasFoundWayBack = 0;
@@ -682,15 +663,7 @@ void explore(void)
 			temp = findWayBack();
 		} else {
 			hasFoundWayBack = 1;
-			temp = findWayBack(0x01);
-		}
-	
-		if ((hasFoundTarget() == 0) && (position[0] == 14) && (position[1] == 14)){
-			if (lastCommand[0] != 0){
-				lastCommand[1] = 0x00;
-				Master(3,SLA_styr_W,lastCommand);
-				keepExploring = 0;
-			}
+			temp = findWayBack();
 		}
 	
 		lastCommand[0] = temp[0];
@@ -714,7 +687,7 @@ void explore(void)
 		}
 	} else {
 		updateCoordinates();
-
+		sendPositionInformation();
 	}
 }
 
@@ -744,40 +717,12 @@ uint8_t distanceToTarget(uint8_t x, uint8_t y)
 																		*/
 /************************************************************************/
 void updateTargetFound()
-{
-	/*switch(direction){
-		case 0:
-			map[position[0]][position[1]+1] = targetValue;
-			target[0] = position[0];
-			target[1] = position[1]+1;
-			target[2] = map[position[0]][position[1]] + 1;
-			break;
-		case 1:
-			map[position[0]+1][position[1]] = targetValue;
-			target[0] = position[0]+1;
-			target[1] = position[1];
-			target[2] = map[position[0]][position[1]] + 1;
-			break;
-		case 2:
-			map[position[0]][position[1]-1] = targetValue;
-			target[0] = position[0];
-			target[1] = position[1]-1;
-			target[2] = map[position[0]][position[1]] + 1;
-			break;
-		case 3:
-			map[position[0]-1][position[1]] = targetValue;
-			target[0] = position[0]-1;
-			target[1] = position[1];
-			target[2] = map[position[0]][position[1]] + 1;
-			break;
-		}*/
-	
-	
+{	
+	target[2] = map[position[0]][position[1]];
 	map[position[0]][position[1]] = targetValue;
 	target[0] = position[0];
 	target[1] = position[1];
-	target[2] = map[position[0]][position[1]];
-	
+	 
 	sendMapCoordinate(target[0],target[1]);
 	
 	path[target[0]][target[1]] = targetPathValue;
@@ -817,6 +762,12 @@ uint8_t * exploreTargetFound()
 				path[position[0]][position[1]+1] = blockedWayValue;
 				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){
+				return rotateRight;
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
+				return oneForward;
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
+				return rotateLeft;
 			} else {
 				path[position[0]+1][position[1]] = blockedWayValue;
 				path[position[0]][position[1]+1] = blockedWayValue;
@@ -844,6 +795,12 @@ uint8_t * exploreTargetFound()
 				path[position[0]][position[1]-1] = blockedWayValue;
 				path[position[0]+1][position[1]] = blockedWayValue;
 				path[target[0]][target[1]] = targetPathValue;
+				return rotateLeft;
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
+				return rotateRight;
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){
+				return oneForward;
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
 				return rotateLeft;
 			} else {
 				path[position[0]][position[1]-1] = blockedWayValue;
@@ -873,7 +830,13 @@ uint8_t * exploreTargetFound()
 				path[position[0]][position[1]-1] = blockedWayValue;
 				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else {
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
+				return rotateRight;
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
+				return oneForward;
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){
+				return rotateLeft;
+			}else {
 				path[position[0]-1][position[1]] = blockedWayValue;
 				path[position[0]][position[1]-1] = blockedWayValue;
 				path[position[0]+1][position[1]] = blockedWayValue;
@@ -901,7 +864,13 @@ uint8_t * exploreTargetFound()
 				path[position[0]-1][position[1]] = blockedWayValue;
 				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else {
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
+				return rotateRight;
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
+				return oneForward;
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
+				return rotateLeft;
+			}else {
 				path[position[0]][position[1]+1] = blockedWayValue;
 				path[position[0]-1][position[1]] = blockedWayValue;
 				path[position[0]][position[1]-1] = blockedWayValue;
@@ -924,7 +893,8 @@ uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
 	
-	if(distanceToTarget(position[0],position[1]) == 1){
+	if(distanceToTarget(position[0],position[1]) == 0){
+		returnStart = nrOfCoordinates - 1;
 		return openClaw;
 	} else {
 		switch(direction){
@@ -1073,10 +1043,10 @@ void shortestPathToTarget()
 	lastCommand[1] = temp[1];
 	lastCommand[2] = temp[2];
 	if(lastCommand[1] != 0){
-		//Master(3,...,lastCommand);
-		/*for (int k = 0; k < 3; k++)	{
-			btSend(lastCommand[i]);
-		}*/
+		Master(3,SLA_styr_W,lastCommand);
+		for (int k = 0; k < 3; k++)	{
+			btSend(lastCommand[k]);
+		}
 	}
 	
 	if((hasFoundWayBack)){
@@ -1088,6 +1058,7 @@ void shortestPathToTarget()
 		newDirection(lastCommand[1],lastCommand[2]);
 	} else if (lastCommand[1] != claw){
 		newCoordinates();
+		sendPositionInformation();
 	}
 }
 
@@ -1099,8 +1070,8 @@ void shortestPathToTarget()
 /************************************************************************/
 void shortestPathInit()
 {
-	shortestPath[0][0] = 14;
-	shortestPath[0][1] = 14;
+	shortestPath[0][0] = 16;
+	shortestPath[0][1] = 1;
 	direction = 0;
 }
 
@@ -1188,24 +1159,21 @@ uint8_t * findStart()
 																		*/
 /************************************************************************/
 void returnToStart()
-{
-	if(returnStart == -1){
-		uint8_t temp = 0;
-		while(1);
-	}
-	
+{	
 	uint8_t * temp = findStart();
 	lastCommand[0] = temp[0];
 	lastCommand[1] = temp[1];
 	lastCommand[2] = temp[2];
-	//Master(3,SLA_styr_W,lastCommand);
-	/*for (int k = 0; k < 3; k++)	{
-	btSend(lastCommand[i]);
-	}*/
+	
+	Master(3,SLA_styr_W,lastCommand);
+	for (int k = 0; k < 3; k++)	{
+		btSend(lastCommand[k]);
+	}
 	
 	if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 		newDirection(lastCommand[1],lastCommand[2]);
 	} else if (lastCommand[1] != claw){
 		newCoordinates();
+		sendPositionInformation();
 	}
 }

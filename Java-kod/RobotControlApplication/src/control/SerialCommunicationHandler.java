@@ -180,7 +180,7 @@ public class SerialCommunicationHandler {
 					if(communicationsID <= 245) {
 						return;
 					}
-
+					
 					// get byte string length
 					int byteStringLength = 100;
 
@@ -202,7 +202,7 @@ public class SerialCommunicationHandler {
 					try {
 						receivedData = serialPort.readBytes(byteStringLength, 70);
 					} catch (SerialPortTimeoutException e) {
-						e.printStackTrace();
+//						e.printStackTrace();
 						return;
 					}
 					

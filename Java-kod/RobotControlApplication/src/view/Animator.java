@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -7,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import control.ActionHandler;
 import control.Handler;
@@ -33,7 +35,8 @@ public class Animator {
 	/**
 	 * Panel containing map
 	 */
-	private MapPanel mapPanel;
+	private JPanel mapPanel;
+	private AdaptiveMapPanel adaptiveMapPanel;
 
 	/**
 	 * Panel containing sensor value graphs
@@ -81,8 +84,12 @@ public class Animator {
 		constraints.anchor = GridBagConstraints.FIRST_LINE_START;
 		
 		// add map panel
-		mapPanel = new MapPanel();
+		mapPanel = new JPanel();
+		mapPanel.setPreferredSize(new Dimension(AdaptiveMapPanel.WIDTH_MAX, AdaptiveMapPanel.HEIGHT_MAX));
+		mapPanel.setLayout(new GridBagLayout());
 		frame.add(mapPanel, constraints);
+		adaptiveMapPanel = new AdaptiveMapPanel();
+		mapPanel.add(adaptiveMapPanel);
 		
 		// add table panel
 		constraints.gridx = 1;
@@ -140,8 +147,8 @@ public class Animator {
 		return tablePanel;
 	}
 	
-	public MapPanel getMapPanel() {
-		return mapPanel;
+	public AdaptiveMapPanel getMapPanel() {
+		return adaptiveMapPanel;
 	}
 	
 	public JFrame getFrame() {
