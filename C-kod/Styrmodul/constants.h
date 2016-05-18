@@ -42,6 +42,9 @@
 #define commandReverseLeft 0x08
 #define commandClaw 0x09
 #define commandScan 0x0A
+#define commandAdjust 0x0B
+#define commandHalfForward 0x0C
+#define  commandHalfBackward 0x0D
 #define stop 0x00
 #define forward 0x01
 #define rotation 0x02

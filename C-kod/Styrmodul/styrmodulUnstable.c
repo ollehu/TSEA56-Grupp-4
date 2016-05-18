@@ -103,6 +103,7 @@ int16_t convertAngle(int8_t value);
 void respondToSettingsData(uint8_t identifier, uint8_t value);
 void autonomousForward();
 void autonomousRotate();
+void autonomousAdjust();
 void adjustRotation(void);
 void autonomousScan(void);
 void initInterrupt();
@@ -410,12 +411,8 @@ void respondToControlData(uint8_t command, uint8_t value)
 				break;
 		}
 		
-		//if (currControlCommand == rotation){
-		//	adjustRotationMode = 2;
-		//}
-		
 		// determine adjusted rotation
-		if((currControlCommand == rotation) && (labs(lastDistanceDifference) > preferredDistanceDifference)) {
+		if(currControlCommand == rotation) {
 			if(((sideSensors[0] != maxDistance) &&
 			(sideSensors[2] != maxDistance)) ||
 			((sideSensors[1] != maxDistance) &&
@@ -633,20 +630,12 @@ void autonomousForward()
 			distanceDifference = 0;
 		}
 		d_out = D * ((float) distanceDifference);
-		int16_t l_out;
 		
 		int16_t y_out = (int16_t) (K * (p_out + d_out));
 
 		if (frontIndex == 0){
 			//y_out = -y_out;
-			// l_out = (lidarMid + distanceDifference);
-		} else {
-			// l_out = (lidarMid - distanceDifference);
 		}
-		
-		/*if (distanceDifference <= 40){
-			speedLidar = l_out;
-		}*/
 	
 		if(y_out < 0) {
 		
@@ -731,8 +720,6 @@ void autonomousRotate()
 /************************************************************************/
 void autonomousAdjust()
 {
-	uint8_t frontIndex;
-	uint8_t backIndex;
 	
 	if ((sideSensors[frontLeftIndex] != maxDistance) &&
 		(sideSensors[rearLeftIndex] != maxDistance)){
