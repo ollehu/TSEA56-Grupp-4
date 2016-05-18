@@ -34,12 +34,18 @@ float L = 1;
 float K_Adjust = 1;
 
 volatile uint8_t preferredSpeed = 70;
+uint8_t preferredHalfModuleSpeed = 40;
 uint8_t preferredRotationSpeed = 35;
 uint8_t preferredAdjustSpeed = 25;
 uint8_t preferredDistance = 120;
 int8_t lastDistanceDifference;
 int8_t preferredDistanceDifference = 5;
-uint8_t adjustedInCorridor = 0;
+volatile uint8_t openLeft = 0;
+volatile uint8_t openRight = 0;
+uint8_t preHalfModuleDistance;
+
+uint8_t direction = 1;
+uint8_t controlOn = 1;
 
 /************************************************************************/
 /*                              SENSOR                                  */
@@ -67,7 +73,7 @@ uint16_t lidarMaxDistance = 0;
 uint16_t lidarMaxAngle;
 uint8_t activeScan = 0;
 
-uint8_t accumulatedDistance = 0;
+volatile uint8_t accumulatedDistance = 0;
 
 uint8_t targetDetected = 0; 
 
@@ -102,6 +108,7 @@ void respondToControlData(uint8_t command, uint8_t value);
 int16_t convertAngle(int8_t value);
 void respondToSettingsData(uint8_t identifier, uint8_t value);
 void autonomousForward();
+void autonomousHalfModule(void);
 void autonomousRotate();
 void autonomousAdjust();
 void adjustRotation(void);
@@ -289,6 +296,9 @@ void respondToSensorData()
 		case forward:
 			autonomousForward();
 			break;
+		case halfModule:
+			autonomousHalfModule();
+			break;
 		case rotation:
 			autonomousRotate();
 			break;
@@ -375,7 +385,11 @@ void respondToControlData(uint8_t command, uint8_t value)
 				if (oldForwardSensor == 0){
 					oldForwardSensor = forwardSensor;
 				}
+				openLeft = 1;
+				openRight = 1;
 				currControlCommand = forward;
+				direction = 1;
+				controlOn = 1;
 				break;
 			case commandReverse:
 				currControlCommand = rotation;
@@ -398,12 +412,14 @@ void respondToControlData(uint8_t command, uint8_t value)
 				accumulatedAngle = 0;
 				break;
 			case commandHalfForward:
-				callMainInterrupt();
+				currControlCommand = halfModule;
+				direction = 1;
+				preHalfModuleDistance = forwardSensor;
 				break;
 			case commandHalfBackward:
-				callMainInterrupt();
+				currControlCommand = halfModule;
+				direction = 0;
 				break;
-			
 			case commandStop:
 				currControlCommand = stop;
 				break;
@@ -559,8 +575,7 @@ void autonomousForward()
 		currControlCommand = stop;
 		stopWheels();
 		
-		
-		accumulatedDistance = 0;
+		//accumulatedDistance = 0;
 		
 		if (debugMode == 0){
 			callMainInterrupt();
@@ -586,11 +601,31 @@ void autonomousForward()
 		speed *= 0.4;
 			  
 		// Resync accumulatedDistance
-		if (adjustedInCorridor == 0){
-			accumulatedDistance = 16;
-			adjustedInCorridor = 1;
-		}
+		//if (adjustedInCorridor == 0){
+		//	accumulatedDistance = 16;
+		//	adjustedInCorridor = 1;
+		//}
 
+	}
+	
+	//Adjust in corridor
+	if (sideSensors[frontLeftIndex] == maxDistance){
+		if (openLeft == 0){
+			openLeft = 1;
+			accumulatedDistance = 16;
+		}
+	} else {
+		openLeft = 0;
+	}
+	
+	if (sideSensors[frontRightIndex] == maxDistance){
+		if (openRight == 0){
+			openRight = 1;
+			accumulatedDistance = 16;
+			
+		}
+	} else {
+		openRight = 0;
 	}
 	
 	if (frontIndex == noWallsIndex){
@@ -614,7 +649,7 @@ void autonomousForward()
 			//	(backIndex == rearRightIndex)){
 			//		distance += 20;
 			//	}
-			adjustedInCorridor = 0;
+			//adjustedInCorridor = 0;
 		}
 	
 		uint8_t averageDistance = (sideSensors[frontIndex] + 
@@ -634,7 +669,7 @@ void autonomousForward()
 		int16_t y_out = (int16_t) (K * (p_out + d_out));
 
 		if (frontIndex == 0){
-			//y_out = -y_out;
+			y_out = -y_out;
 		}
 	
 		if(y_out < 0) {
@@ -666,6 +701,39 @@ void autonomousForward()
 			}
 		}
 	}
+}
+
+/************************************************************************/
+/*	autonomousHalfModule - autonomously moves half a module.
+																		*/
+/************************************************************************/
+void autonomousHalfModule(void)
+{
+	
+	if (direction == 1){
+		if (edgesToCentimeter(accumulatedDistance) >= halfModuleDepth){
+			currControlCommand = stop;
+			stopWheels();
+	
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		} 
+		
+	} else {
+		if (forwardSensor >= preHalfModuleDistance){
+			currControlCommand = stop;
+			stopWheels();
+						
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		}
+	} 
+	
+	rightWheelPair(preferredHalfModuleSpeed, direction);
+	leftWheelPair(preferredHalfModuleSpeed, direction);
+	
 }
 
 /************************************************************************/
@@ -920,9 +988,9 @@ int main(void)
 		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "P:%d D:%d", (int8_t) p_out, (int8_t) d_out);
+			sprintf(topRowMessage, "T:%d", targetDetected);
 			lcdWriteTopRow(topRowMessage);
-			sprintf(bottomRowMessage, "L:%u R: %u", 
+			sprintf(bottomRowMessage, "LS:%u RS: %u", 
 					rightSpeed,leftSpeed);
 			lcdWriteBottomRow(bottomRowMessage);
 			madeChange = 0;
