@@ -8,24 +8,24 @@
 
 #include <util/delay.h>
 
-int SLA_sensor_R = 0xCB;
-int SLA_sensor_W = 0xCA;
-int SLA_styr_R = 0xCD;
+uint8_t SLA_sensor_R = 0xCB;
+uint8_t SLA_sensor_W = 0xCA;
+uint8_t SLA_styr_R = 0xCD;
 
-int counterComputer = 0;
-int sendToComputer = 1; //How often sensor data is sent to the computer
+uint8_t counterComputer = 0;
+uint8_t sendToComputer = 1; //How often sensor data is sent to the computer
 
-int data = 0;
-int recieved;
+uint8_t data = 0;
 uint8_t computerMessage[3];
 
-volatile int sleep = 0;
-volatile int autodrive = 0;
+volatile uint8_t sleep = 0;
+volatile uint8_t autodrive = 0;
+volatile uint8_t debugMode = 0;
 uint8_t switchMode[3] = {0xFC, 0x01, 0x00};
 	
 uint8_t status = 0;
 
-uint8_t closeClaw[3] = {0xFC, 0x0B, 0x00};
+uint8_t closeClaw[3] = {0xFF, 0x09, 0x00};
 uint8_t stopCommand[3] = {0xFF, 0x00, 0x00};
 
 /*void btSend(unsigned char data)
@@ -65,12 +65,14 @@ ISR(USART0_RX_vect){
 				computerMessage[1] == 8   &&
 				computerMessage[2] == 1){
 				
-				for(int i = 0; i<3;i++){
+				// send mode
+				for(int i = 0; i<3; i++){
 					btSend(switchMode[i]);
 				}
 				
+				// send entire explored map
 				sendMap();
-
+				
 			} else if (computerMessage[0] == 252 &&
 				computerMessage[1] == 15) {
 				//ISR(INT0_vect);
@@ -78,8 +80,7 @@ ISR(USART0_RX_vect){
 				INT0_vect();
 				
 			} else {
-				Master(3,SLA_styr_W,computerMessage);
-				
+				Master(3,SLA_styr_W,computerMessage);	
 			}
 			data = 0;
 		}
@@ -109,46 +110,53 @@ ISR(USART0_RX_vect){
 ISR(INT0_vect){
 	switch(status){
 		case 0:
-			status = 1;
-			
-			PORTD |= (1<<PORTD6);
+			PORTD &= ~(1<<PORTD6);
 			PORTD &= ~(1<<PORTD7);
 			
+			status = 1;
 			explore();
 			break;
 		case 1:
 			//Do nothing...
-			break;
-		case 2:			
-			status = 3;
 			PORTD |= (1<<PORTD6);
+			PORTD &= ~(1<<PORTD7);
+			
+			break;
+		case 2:
+			PORTD &= ~(1<<PORTD6);
 			PORTD |= (1<<PORTD7);
 			
-			Master(3,SLA_styr_W,closeClaw);
+			status = 3;
+			Master(3,SLA_sensor_R,closeClaw);
 			break;
 		case 3:
 			shortestPathInit();
 			shortestPathToTarget();
 			status = 4;
-			PORTD |= (1<<PORTD6);
-			PORTD |= (1<<PORTD7);
 			break;
 		case 4:
 			//Do nothing...
+			PORTD |= (1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+			
 			break;
+		
 	}
 }
 
 ISR(INT1_vect){ //Interrupt from controller module
 	switch(status){
 		case 0:
-			//Do nothing...			
+			//Do nothing...
+			PORTD &= ~(1<<PORTD6);
+			PORTD &= ~(1<<PORTD7);
 			break;
-		case 1:			
-			if((map[position[0]][position[1]] == startPositionValue[0]) && (hasFoundTarget() >= 1) && !unexploredPaths()){
+		case 1:
+			PORTD |= (1<<PORTD6);
+			PORTD &= ~(1<<PORTD7);
+			
+			if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
 				status = 2;
-				PORTD &= ~(1<<PORTD6);
-				PORTD |= (1<<PORTD7);
 				Master(3,SLA_styr_W,openClaw);
 			} else {
 				explore();
@@ -157,14 +165,20 @@ ISR(INT1_vect){ //Interrupt from controller module
 			break;
 		case 2:
 			//Do nothing...
+			PORTD &= ~(1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+			
 			break;
 		case 3:
 			//Do nothing...
-			break; 
+			break;
 		case 4:
-			/*if(lastCommand[1] == claw){
+			PORTD |= (1<<PORTD6);
+			PORTD |= (1<<PORTD7);
+		
+			if(lastCommand[1] == claw){
 				returnStart = nrOfCoordinates - 1;
-			}*/
+			}
 
 			if (returnStart != 0xFF){
 				if(returnStart == -1){
@@ -173,13 +187,72 @@ ISR(INT1_vect){ //Interrupt from controller module
 				} else {
 					returnToStart();
 				}
-			} else {				
+			} else if(goTheShortestPath){				
 				shortestPathToTarget();
 			}
 			
 			break;
 	}
+		
+	// Välj ny modul att utforska
+	/*
+	if(!unexploredPaths() && position[0] == 14 && position[1] == 14){
+		//Do nothing...
+	} else {
+		explore();
+	}*/
+	
+	
+	//This should work when we are interested in testing with target
+	/*if((map[position[0]][position[1]] == startPositionValue[0]) && hasFoundTarget() && !unexploredPaths()){
+		goTheShortestPath = 1;
+	}
+	
+	if(lastCommand[1] == claw){
+		returnStart = nrOfCoordinates - 1;
+	}
 
+	if (returnStart != 0xFF){
+		returnToStart();
+		
+	} else if(goTheShortestPath){
+		if(!doneShortestPathInit){
+			doneShortestPathInit = 1;
+			shortestPathInit();
+		}
+		
+		shortestPathToTarget();
+	} else {
+		explore();
+	}*/		
+	
+	
+	
+	
+	
+	
+	/*if (sensorData[10]*128 + sensorData[12] < preferredForwardDistance)
+	{
+		if(sensorData[4] == 245){
+			uint8_t autonomousControl[3] = {controlCommandType, commandLeft, 0x03};
+			Master(3,SLA_styr_W,autonomousControl);
+		} else if(sensorData[2] == 245){
+			uint8_t autonomousControl[3] = {controlCommandType, commandRight, 0x03};
+			Master(3,SLA_styr_W,autonomousControl);
+		} else {
+			if (sensorData[2] > sensorData[4]){
+				uint8_t autonomousControl[3] = {controlCommandType, commandReverseRight, 0x03};
+				Master(3,SLA_styr_W,autonomousControl);
+			} else {
+				uint8_t autonomousControl[3] = {controlCommandType, commandReverseLeft, 0x03};
+				Master(3,SLA_styr_W,autonomousControl);	
+			}
+		}
+	} else {
+		uint8_t autonomousControl[3] = {controlCommandType, commandForward, 0x03};
+		Master(3,SLA_styr_W,autonomousControl);
+	}*/
+	
 	//SENSORDATA KOMMER I AVBROTTET FRÅN SENSORMODULEN!
 }
 
@@ -189,26 +262,24 @@ ISR(INT2_vect){ //Interrupt from sensor module
 	//Get data from module
 	Master(19,SLA_sensor_R,sensorData);
 	
-	//send the collected data to styr module
+	//send the collected data to controller module
 	if (autodrive == 1){
 		Master(19,SLA_styr_W,sensorData);
 	}
-	//send the collected data to the computer
-
-		for(int i = 0; i < 19; i++){
-			btSend(sensorData[i]);
-		}
-
 	
+	//send the collected data to the computer
+	for(int i = 0; i < 19; i++){
+		btSend(sensorData[i]);
+	}
 }
 
 void sendMap(void)
 {
 	uint8_t i;
 	uint8_t j;
-	for(i = 0; i < dimx; i++){
-		for(j = 0; j < dimy; j++){
-			if (map[i][j] != initialValue){
+	for(i = 0; i < dim; ++i){
+		for(j = 0; j < dim; ++j){
+			if(map[i][j] != 0xF5) {
 				btSend(0xFE);
 				btSend(i);
 				btSend(j);

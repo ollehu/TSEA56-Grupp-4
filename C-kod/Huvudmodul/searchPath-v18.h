@@ -52,14 +52,16 @@ uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
 uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
 uint8_t rotate180[3] = {0xFF, 0x02, 0xB4};
-uint8_t openClaw[3] = {0xFC, 0x0B, 0x01};
+uint8_t openClaw[3] =  {0xFC, 0x0B, 0x01};
+uint8_t halfForward[3] = {0xFF, 0x0C, 0x01};
+uint8_t halfBackward[3] = {0xFF, 0x0D, 0x01};
 uint8_t falseCommand[3] = {0,0,0};
 
 uint8_t forward = 0x01;
 uint8_t oneEighty = 0x02;
 uint8_t right = 0x03;
 uint8_t left = 0x04;
-uint8_t claw = 0x09;
+uint8_t claw = 0x0B;
 
 /************************************************************************/
 /*                            SHORTEST PATH                             */
@@ -78,7 +80,6 @@ uint8_t dist;
 
 int nrOfCoordinates = 0;
 int returnStart = 0xFF;
-int goTheShortestPath = 0;
 
 /************************************************************************/
 /*                              HEADER                                  */
@@ -606,14 +607,20 @@ uint8_t * findWayBack()
 																		*/
 /************************************************************************/
 void explore(void)
-{
+{ 
 	
 	if(hasFoundTarget() == 1){ 
 		//Update map with the right number and target with the right 
 		updateTargetFound(); //Only just when the target has been found			
 	} 
 	
-	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty))) {
+	if ((sensorData[16] == 1) && (hasFoundTarget() == 0)){
+		readSensors();
+		lastCommand[0] = oneForward [0];
+		lastCommand[1] = oneForward [1];
+		lastCommand[2] = oneForward [2];
+		Master(3,SLA_styr_W,lastCommand);
+	} else if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty))) {
 		//straightAhead = sensorData[10]*256 + sensorData[12];
 		
 		lastCommand[1] = 0x01;
@@ -893,9 +900,15 @@ uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
 	
-	if(distanceToTarget(position[0],position[1]) == 0){
-		returnStart = nrOfCoordinates - 1;
-		return openClaw;
+	if(distanceToTarget(position[0],position[1]) == 1){
+		if(lastCommand[1] == oneForward[1]){
+			return halfForward;
+		} else if(lastCommand[1] == halfForward[1]){
+			return openClaw;
+		} else {
+			returnStart = nrOfCoordinates - 1;
+			return halfBackward;
+		}
 	} else {
 		switch(direction){
 			case 0:
@@ -1047,6 +1060,17 @@ void shortestPathToTarget()
 		for (int k = 0; k < 3; k++)	{
 			btSend(lastCommand[k]);
 		}
+		
+		if (lastCommand[1] == openClaw[1]){
+			lastCommand[0] = halfBackward[0];
+			lastCommand[1] = halfBackward[1];
+			lastCommand[2] = halfBackward[2];
+			Master(3,SLA_styr_W,lastCommand);
+			
+			for (int k = 0; k < 3; k++)	{
+				btSend(lastCommand[k]);
+			}
+		}
 	}
 	
 	if((hasFoundWayBack)){
@@ -1056,7 +1080,7 @@ void shortestPathToTarget()
 	
 	if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 		newDirection(lastCommand[1],lastCommand[2]);
-	} else if (lastCommand[1] != claw){
+	} else if ((lastCommand[1] != claw) && (lastCommand[1] != halfForward[1]) && (lastCommand[1] != halfBackward[1])){
 		newCoordinates();
 		sendPositionInformation();
 	}
@@ -1172,7 +1196,7 @@ void returnToStart()
 	
 	if((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty)) {
 		newDirection(lastCommand[1],lastCommand[2]);
-	} else if (lastCommand[1] != claw){
+	} else if  ((lastCommand[1] != claw) && (lastCommand[1] != halfForward[1]) && (lastCommand[1] != halfBackward[1])){
 		newCoordinates();
 		sendPositionInformation();
 	}
