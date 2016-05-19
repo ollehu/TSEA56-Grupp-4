@@ -1,0 +1,28 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\begin{document}
+	
+\begin{tikzpicture}[scale=1]
+\draw[thick]  (3,0) -- (4,0);	
+\draw[thick]  (8,3) -- (8,4);	
+\draw[thick]  (1,7) -- (4,7);	
+
+\draw[thick,pattern=north west lines, pattern color=black]	 	(0,0) -- (3,0) -- (3,1) -- (1,1) -- (1,7) -- (0,7) -- (0,0);
+\draw[thick,pattern=north west lines, pattern color=black]	 	(4,0) -- (4,3) -- (8,3) -- (8,0) -- (4,0);
+\draw[thick,pattern=north west lines, pattern color=black]	 	(2,2) -- (2,3) -- (3,3) -- (3,2) -- (2,2);
+\draw[thick,pattern=north west lines, pattern color=black]	 	(2,4) -- (2,6) -- (3,6) -- (3,4) -- (2,4);
+\draw[thick,pattern=north west lines, pattern color=black]	 	(4,4) -- (4,7) -- (8,7) -- (8,4) -- (4,4);
+
+\node at (1.5,1.5)[color=red] {X};
+\node at (2.5,1.5)[color=blue] {1};
+\node at (3.5,1.5)[color=blue] {3};
+\node at (3.5,2.5)[color=blue] {2};
+\node at (3.5,0.5)[color=blue] {4};
+
+\draw[thick,->]  (7.8,3.5) -- (7.3,3.5);	
+	\end{tikzpicture}
+	
+\end{document}
