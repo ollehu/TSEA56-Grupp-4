@@ -182,8 +182,58 @@ Roboten används genom att följa instruktionerna nedan.
 
 
 \section{Datormodul}
-\subsection{Autonomt läge}
-\subsection{Manuellt läge}
+\subsection{Grafiskt gränssnitt}
+Datormodulens gränssnitt är indelat i fem olika delar: en meny, en kartpanel, en tabellpanel, en grafpanel och robotens statuspanel.
+
+\subsubsection{Meny} Låter användaren justera olika inställningar för programmet. Under fliken \emph{File}  finns:
+\begin{description}
+	\item[Save log] - sparar nuvarande loggfil och öppnar en ny (endast tillgänglig i debug-läge).
+	\item[Comment log] - sparar en kommentar till nuvarande loggfil (endast tillgänglig i debug-läge).
+	\item[Select serial port] - låter användaren välja vilken serieport programmet ska använda.
+	\item[Connect to selected port] - kopplar upp mot den valda serieporten. Kopplar upp mot en förprogrammerad port om inte en annan port valts. 
+\end{description}
+
+Under fliken \emph{Edit} finns:
+\begin{description}
+	\item[Debug mode] - väljer debug-läge av/på (endast tillgänglig i autonomt läge).
+	\item [Clear map] - rensar programkartan. OBS! Påverkar inte robotens interna kartan.
+\end{description}
+
+Utöver oven nämnda två finns även en hjälpmeny där användaren kan komma åt användarhandledningen och öppna en lista över alla tangentbordgenvägar.
+
+\paragraph{Kartpanel} Visar alla de moduler som roboten har besökt samt alla intilligande moduler. Innan startad körning är alltså kartan blank. Modulerna representeras med olika färger beroende på deras egenskaper:
+\begin{itemize}
+	\item Grön - modulen där körningen startade
+	\item Röd - modulen där målet identifierats
+	\item Blå - utforskad, öppen modul
+	\item Gul - robotens nuvarande position
+	\item Svart - väggmodul
+	\item Grå - outforskad, öppen modul
+\end{itemize}
+
+\paragraph{Tabellpanel} Visar de senaste mottagna sensorvärdena för alla sensorer. I debug-läge visas även en tabell där användaren kan ändra vissa parametrar hos roboten. Dessa ändras genom att ändra tabellvärdet och trycka Enter.
+
+\paragraph{Grafpanel}
+Visar tre grafer med  de senaste 100 mottagna mätvärdena från:
+\begin{enumerate}
+	\item Sidledes avståndssensorer
+	\item Främre avståndssensorn
+	\item Rotationshastigheten
+\end{enumerate}
+
+\paragraph{Robotens statuspanel}
+Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i debug-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
+
+\subsection{Övrigt}
+\paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för blåtandskommunikation.
+\paragraph{Kortkommandon}\label{kortkommandon}
+\begin{description}
+	\item[W] - kör roboten framåt (fungerar endast i manuellt läge).
+	\item[A] - roterar roboten åt vänster (fungerar endast i manuellt läge).
+	\item[S] - kör roboten bakåt (fungerar endast i manuellt läge).
+	\item[D] - roterar roboten åt vänster (fungerar endast i manuellt läge).
+	\item[C] - öppnar/stänger robotens klo (fungerar endast i manuellt läge).
+\end{description}
 
 
 \end{document}
