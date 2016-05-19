@@ -3,6 +3,7 @@
 \usepackage{extras} % Se extras.sty
 
 \begin{document}
+
 \begin{titlepage}
 \begin{center}
 
@@ -109,8 +110,43 @@ Denna användarhandledning kommer tillämpa förkortningar för att ge användar
 \end{itemize}
 
 \section{Roboten}
-Nedan följer en användarhandledning för själva roboten. Kapitlet är uppdelat i två delar. Dioder och brytare beskriver de fysiska komponenter som är monterade på roboten. Styrning de fysiska skomponenter som är placerade på chassit 
+Nedan följer en användarhandledning för själva roboten. Kapitlet är uppdelat i två delar. Dioder och brytare beskriver de fysiska komponenter som är monterade på roboten. Styrning ger en förklaring till hur roboten ska användas i autonomt respektive manuellt läge.
+
 \subsection{Dioder och brytare}
+Hädanefter numreras dioder och brytare enligt figur \ref{picTop} och nedan följer en förklaring av respektive.
+
+De dioder som är placerade på robotens övre modul visar båda styrläge och status under uppdraget.
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[Diod 1] visar ifall roboten befinner sig i autonomt eller manuellt läge. 
+    \begin{itemize}
+      \setlength\itemsep{-0.5em}
+      \item[-] På: Autonomt läge 
+      \item[-] Av: Manuellt läge
+    \end{itemize}
+  \item[Diod 2] visar ifall roboten befinner sig i \textit{debug}-läge läge eller inte.
+    \begin{itemize}
+      \setlength\itemsep{-0.5em}
+      \item[-] På: \textit{debug}-läge
+      \item[-] Av: Vanligt läge
+    \end{itemize}
+  \item[Diod 3] visar ifall roboten är klar med uppdraget eller inte.
+    \begin{itemize}
+      \setlength\itemsep{-0.5em}
+      \item[-] På: Roboten är klar med uppdraget
+      \item[-] Av: Roboten är ännu inte klar med uppdraget
+    \end{itemize}
+  \item[Diod 4 och 5] visar tillsammans statusen för roboten under uppdragets genomförande. Dioderna räknas upp binärt i takt med att ett moment har avklarats. Diod 5 är minst signifikant bit. De möjliga kombinationer som dioderna kan anta och dess beskrivning återfinns nedan.
+    \hspace{1em}
+    \begin{tabular}{c c p{6cm}}
+	Diod 5 & Diod 6 & Beskrivning \\ \hline
+	Av & Av & Väntar på startkommando \\
+	Av & På & Söker efter målet \\
+	På & Av & Har funnit målet och återkommit till startposition. Gripklon inväntar en förnödenhet. \\
+	På & På & Klon är stängd och roboten är redo för att färdas kortaste vägen till målet.
+
+    \end{tabular}
+\end{description}
+
 
 \subsection{Styrning}
 
