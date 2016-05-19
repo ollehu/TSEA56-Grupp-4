@@ -95,6 +95,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \end{table}
 
 \pagebreak
+\pagenumbering{arabic}
+
 \section{Inledning}
 Undsättningsroboten PigBot är en robot för undsättning av nödställda. Den är autonom konstruktion vilket innebär att PigBot självständigt kan navigera, och identifiera nödställda, i en labyrint utan att användarens ingripanden krävs.
 
@@ -135,9 +137,9 @@ De dioder som är placerade på robotens övre modul visar båda styrläge och s
       \item[-] På: Roboten är klar med uppdraget
       \item[-] Av: Roboten är ännu inte klar med uppdraget
     \end{itemize}
-  \item[Diod 4 och 5] visar tillsammans statusen för roboten under uppdragets genomförande. Dioderna räknas upp binärt i takt med att ett moment har avklarats. Diod 5 är minst signifikant bit. De möjliga kombinationer som dioderna kan anta och dess beskrivning återfinns nedan.
-    \hspace{1em}
-    \begin{tabular}{c c p{6cm}}
+  \item[Diod 4 och 5] visar tillsammans statusen för roboten under uppdragets genomförande. Dioderna räknas upp binärt i takt med att ett moment har avklarats. Diod 5 är mest signifikant bit. De möjliga kombinationer som dioderna kan anta och dess beskrivning återfinns nedan.
+
+    \hspace{2em}\begin{tabular}{c c p{8cm}}
 	Diod 5 & Diod 6 & Beskrivning \\ \hline
 	Av & Av & Väntar på startkommando \\
 	Av & På & Söker efter målet \\
@@ -147,14 +149,41 @@ De dioder som är placerade på robotens övre modul visar båda styrläge och s
     \end{tabular}
 \end{description}
 
+De brytare som finns kopplade på robotens övre modul nollställer robotens moduler eller skickar ett startkommando. 
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[Brytare 1] Sätter roboten i autonomt eller manuellt läge. 
+    \begin{itemize}
+      \setlength\itemsep{-0.5em}
+      \item[-] Föröver: Autonomt läge
+      \item[-] Akteröver: Manuellt läge
+    \end{itemize}
+  \item[Brytare 2] nollställer sensormodulen, det understa virkortet.
+  \item[Brytare 3] nollställer styrmodulen, det översta virkortet.
+  \item[Brytare 4] nollställer huvudmodulen, det mellersta kortet.
+  \item[Brytare 5] skickar ett startkommando till roboten.
+\end{description}
+
+Den ordning brytarna sitter i är även den ordning man nollställer hela roboten ($1 \rightarrow 2 \rightarrow 3$) och sedan startar roboten ($4$).
 
 \subsection{Styrning}
+Roboten används genom att följa instruktionerna nedan.
+\begin{enumerate}
+    \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
+  \item Koppla på ett laddat batteri med spänningsnivå $7.2$ V och slå på batterispänningen.
+  \item Slå över brytare 1 till autonomt läge.
+    \renewcommand*\labelenumi{(\theenumi)\vspace{1pt} - }
+  \item Valfritt: Koppla upp mot roboten med en dator.
+    \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
+  \item Nollställ roboten genom att aktivera brytarna 1,2 och 3 i den ordningen. Nu ska endast diod 1 vara aktiv.
+  \item Placera roboten vid labyrintens start och aktivera brytare 5. 
+  \item När roboten har identifierat målet, återkommit till startposition och öppnat gripklon ska ett objekt placeras däremellan och brytare 5 aktiveras.
+  \item Aktivera brytare 5 för att roboten ska navigera till målet och släppa objektet. 
+\end{enumerate}
 
 
 \section{Datormodul}
 \subsection{Autonomt läge}
 \subsection{Manuellt läge}
 
-\pagenumbering{arabic}
 
 \end{document}
