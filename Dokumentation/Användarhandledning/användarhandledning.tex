@@ -155,18 +155,19 @@ De dioder som är placerade på robotens övre modul visar båda styrläge och s
 \subsection{Grafiskt gränssnitt}
 Datormodulens gränssnitt är indelat i fem olika delar: en meny, en kartpanel, en tabellpanel, en grafpanel och robotens statuspanel.
 
-\paragraph{Meny} Låter användaren justera olika inställningar för programmet. Under fliken "File" finns:
-\begin{itemize}
-	\item \textbf{Save log} - sparar nuvarande loggfil och öppnar en ny (endast tillgänglig i debug-läge).
-	\item Comment log - sparar en kommentar till nuvarande loggfil (endast tillgänglig i debug-läge).
-	\item Select serial port - låter användaren välja vilken serieport programmet ska använda.
-	\item Connect to selected port - kopplar upp mot den valda serieporten. Kopplar upp mot en förprogrammerad port om inte en annan port valts. 
-\end{itemize}
+\subsubsection{Meny} Låter användaren justera olika inställningar för programmet. Under fliken \emph{File}  finns:
+\begin{description}
+	\item[Save log] - sparar nuvarande loggfil och öppnar en ny (endast tillgänglig i debug-läge).
+	\item[Comment log] - sparar en kommentar till nuvarande loggfil (endast tillgänglig i debug-läge).
+	\item[Select serial port] - låter användaren välja vilken serieport programmet ska använda.
+	\item[Connect to selected port] - kopplar upp mot den valda serieporten. Kopplar upp mot en förprogrammerad port om inte en annan port valts. 
+\end{description}
 
-\begin{itemize}
-	\item Debug mode - väljer debug-läge av/på (endast tillgänglig i autonomt läge).
-	\item Clear map - rensar programkartan. OBS! Påverkar inte robotens interna karta.
-\end{itemize}
+Under fliken \emph{Edit} finns:
+\begin{description}
+	\item[Debug mode] - väljer debug-läge av/på (endast tillgänglig i autonomt läge).
+	\item [Clear map] - rensar programkartan. OBS! Påverkar inte robotens interna kartan.
+\end{description}
 
 Utöver oven nämnda två finns även en hjälpmeny där användaren kan komma åt användarhandledningen och öppna en lista över alla tangentbordgenvägar.
 
@@ -191,11 +192,18 @@ Visar tre grafer med  de senaste 100 mottagna mätvärdena från:
 \end{enumerate}
 
 \paragraph{Robotens statuspanel}
-Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp "Start run" som låter användaren starta en körning. Är roboten i debug-läge visas även en "Next decision" som aktiverar nästa styrbeslut hos roboten. 
+Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i debug-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
 
 \subsection{Övrigt}
 \paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för blåtandskommunikation.
 \paragraph{Kortkommandon}\label{kortkommandon}
+\begin{description}
+	\item[W] - kör roboten framåt (fungerar endast i manuellt läge).
+	\item[A] - roterar roboten åt vänster (fungerar endast i manuellt läge).
+	\item[S] - kör roboten bakåt (fungerar endast i manuellt läge).
+	\item[D] - roterar roboten åt vänster (fungerar endast i manuellt läge).
+	\item[C] - öppnar/stänger robotens klo (fungerar endast i manuellt läge).
+\end{description}
 
 \pagenumbering{arabic}
 
