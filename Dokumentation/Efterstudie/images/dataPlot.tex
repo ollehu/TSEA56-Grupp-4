@@ -1,0 +1,23 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+\usepackage{pgfplots}
+\begin{document}
+	
+\begin{tikzpicture}[scale=1]
+
+  \begin{axis}[xlabel={Vecka},ylabel={Ackumulerad tid [h]}, legend pos = north west, width = \textwidth, legend cell align = left]
+
+    \addplot table[x index= 0, y index = 1, col sep = comma] {data.txt};
+    \addlegendentry{Projekterad tid};
+
+    \addplot table[x index = 2, y index = 3, col sep = comma] {data.txt};
+    \addlegendentry{Rapporterad tid};
+
+  \end{axis}
+\end{tikzpicture}
+\end{document}
