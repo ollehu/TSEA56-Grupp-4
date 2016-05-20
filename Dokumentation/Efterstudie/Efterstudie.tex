@@ -103,7 +103,44 @@ Vid projektets start tilldelades gruppen en buffert på 230 timmar per person. D
 Generellt sett har alla gruppmedlemmar tagit ansvar och drivit arbetet framåt. Vid projektets start hade medlemmarna dock olika förkunskaper, vilket ledde till att de som hade mest kunskap tog på sig att genomföra mer arbete. Under projektets gång jämnade det ut sig mer och mer och medlemmarna fördjupade sig inom olika områden. Det blev också så att några lade mer tid under vissa veckor medan andra mer under andra veckor, vilket är naturligt eftersom olika områden kräver olika mycket tid vid olika tillfällen.
 
 \subsection{Tidsåtgång jämfört med planerad tid}
-Det var svårt att innan projektet hade startat ta ställning till om 230 timmar per person skulle vara tillräckligt med tid. Det visade sig också att vissa aktiviteter tog mycker mer tid än de var planerade för medan andra aktiviteter gick betydligt snabbare att genomföra. Totalt sett stämde den planerade tidsåtgången ganska väl med den faktiska tidsåtgången, se figur \ref{}.
+Det var svårt att innan projektet hade startat ta ställning till om 230 timmar per person skulle vara tillräckligt med tid. Det visade sig också att vissa aktiviteter tog mycker mer tid än de var planerade för medan andra aktiviteter gick betydligt snabbare att genomföra. Totalt sett det stämde den planerade tidsåtgången ganska väl med den faktiska tidsåtgången, se tabell \ref{tid}.
+
+\begin{table}[h]
+\begin{tabular}{|l|l|l|l|l|} \hline
+
+\textbf{Typ av aktivitet} & \textbf{Uppskattad tid [h]} & \textbf{Verklig tid [h]} & \textbf{Skillnad [h]} \\ \hline
+Huvudmodul & 360 & - & -\\ \hline
+Sensormodul & 165 & -& -\\ \hline
+Styrmodul & 155 & - & - \\ \hline
+Datormodul & 75 & - & -\\ \hline
+Integration och tester & 80 & - & -\\ \hline
+Övriga aktiviteter & 545 & - & -\\ \hline
+\end{tabular}
+\caption{Uppskattad och verklig tid av aktiviteter} \label{tid}
+\end{table}
+
+Projektet planerades framtungt, alltså med stor del av tiden i början av projektet, eftersom gruppen inte ville riskera tidsbrist i slutskedet. Hur väl planeringen vecka för vecka stämde med utfallet visas i figur \ref{tidPlot}.
+
+
+
+
+\begin{tikzpicture}[scale=1]
+
+  \begin{axis}[xlabel={Vecka},ylabel={Ackumulerad tid [h]}, legend pos = north west, width = \textwidth, legend cell align = left]
+
+    \addplot table[x index= 0, y index = 1, col sep = comma] {images/data.txt};
+    \addlegendentry{Projekterad tid};
+
+    \addplot table[x index = 2, y index = 3, col sep = comma] {images/data.txt};
+    \addlegendentry{Rapporterad tid};
+
+  \end{axis}
+\end{tikzpicture}
+
+
+
+
+\pagebreak
 
 \section{Analys av arbete och problem}
 Under projektets gång uppkom en del problem, både när det gäller tekniken och kommunikationen. Detta avsnitt beskriver hur detta hanterades och förebyggdes. 
@@ -121,10 +158,10 @@ Efterfasen bestod precis som den förberedande fasen till stor del av dokumentat
 \subsection{Hur använde vi projektmodellen?} 
 Projektet genomfördes enligt LIPS-modellen. Den låg som grund till alla dokument som skrevs och var bra att ha som utgångspunkt i projektets moment. 
 
-\subsection{Hur fungerade relationen med beställaren}
+\subsection{Hur fungerade relationen med beställaren?}
 Relationen med beställaren var god under hela projektet. Under mötena under projektets gång gavs konstruktiv kritik och beställaren hade hela tiden en positiv inställning till nya idéer. 
 
-\subsection{Hur fungerade relationen med handledaren}
+\subsection{Hur fungerade relationen med handledaren?}
 Kontakten med handledaren fungerade mycket bra. Förutom att handledaren tillhandahöll material var han även  tillmötesgående och var alltid öppen för att diskutera problem eller alternativa lösningar under hela projektet. På grund av vissa omständigheter var handledaren inte alltid tillgänglig vissa perioder men då togs hjälp av andra handledare. Önskvärt hade kanske varit att endast ha kontakt med en handledare men det löste sig väldigt bra ändå.
 
 \subsection{Tekniska framgångar och problem}
@@ -143,9 +180,28 @@ Kontakten med handledaren fungerade mycket bra. Förutom att handledaren tillhan
 Ett problem som uppstod på var när alla moduler skulle integreras med varandra. De fungerade var för sig men vid integreringen störde modulerna varandra vilket gjorde att roboten inte betedde sig som önskat.
 
 \begin{enumerate}
-  \item Regleringen (olika hastigheter vid olika tillfällen, räta upp sig innan/efter svängar, olika friktion i olika lokaler, att generellt undvika väggar osv)
-  \item Integration av moduler
-  \item 
+  
+  \item Integration av moduler\\
+  a) Systemintegrationsfel\\
+  b) Olika. \\
+  c) Timingfel på sensormodulen, syntes först vid integration. Avsökning beroende av reglering. Reglering beroende av sensordata.\\
+  d) Ändrade tiden mellan avbrott, låg i avbrott hela tiden innan. Mycket tester fixade reglering.\\
+  e) 200 timmar.
+  
+   \item Regleringen (olika hastigheter vid olika tillfällen, räta upp sig innan/efter svängar, olika friktion i olika lokaler, att generellt undvika väggar osv)\\
+  a) Mjukvarufel \\
+  b) Kör in i väggar, rätar inte upp sig på rätt sätt, håller inte rätt avstånd etc.\\
+  c) Logiskt fel i programmering. \\
+  d) Tester, diskutera/fundera vad som kan vara upphov till problemen. Mest konstanter som behövde ändras.\\
+  e) 50-100 timmar.
+  
+  \item Beräkning av kortaste väg\\
+  a) Mjukvarufel, integrationsproblem\\
+  b) Tar felaktiga beslut. Skattningar får ej önskad effekt. \\
+  c) Logiskt fel i programmering, ej optimal reglering.\\
+  d) Tänkte igenom fall som inte hade tagits hänsyn till. Mycket tester.\\
+  e) 50 timmar.
+  
 \end{enumerate}
 
 Några tekniska framgångar som är värda att nämnas är:
@@ -155,17 +211,21 @@ Några tekniska framgångar som är värda att nämnas är:
 \item Avsökningsalgoritmen fungerade direkt när den implementerades, vilet fås se som en bedrift med tanke på hur omfattande algoritmen är. 
 \end{itemize} 
 
+\pagebreak
+
 \section{Måluppfyllelse}
 I följande avsnitt beskrivs det huruvida projektets mål har uppnåtts och hur omgivningen har påverkat projektets utfalll.
 
 \subsection{Vad har uppnåtts?}
-Alla krav av prioritet 1 har uppnåtts. Några av kraven av prioritet två har det börjat att arbetas med men inget av dem har blivit uppfyllt.
+Alla krav av prioritet 1 och ett av krav av prioritet 2 har uppnåtts. Några av de övriga kraven av prioritet två har det börjat att arbetas med men inget av dem har blivit uppfyllt.
 
 \subsection{Hur fungerade leveransen?}
 Skrivs efter tävling?
 
 \subsection{Hur har studiesituationen påverkat projektet?}
-Samtliga i gruppen har läst en kurs parallellt med projektet och några har även haft andra engagemang på skolan. Projektet har dock inte lidit speciellt mycket av detta eftersom projektet oftast har prioriterats högre än övriga aktiviteter. Däremot har projektet påverkat resultatet i den parallella kursen som alla i gruppen hade behövt lägga mer tid på.  
+Samtliga i gruppen har läst en kurs parallellt med projektet och några har även haft andra engagemang på skolan. Projektet har dock inte lidit speciellt mycket av detta eftersom projektet oftast har prioriterats högre än övriga aktiviteter. Däremot har projektet påverkat resultatet i den parallella kursen som alla i gruppen hade behövt lägga mer tid på. 
+
+ \pagebreak 
 
 \section{Sammanfattning}
 Överlag är alla i gruppen mycket nöjda med projektets arbetsgång och resultat. Det har varit en rolig och lärorik kurs som har ställt krav på teknisk kunskap så väl som att arbeta i ett större projekt. Nedan sammanfattas de enligt gruppen viktigaste erfarenheterna och råd till de som ska genomföra ett liknande projekt i framtiden.

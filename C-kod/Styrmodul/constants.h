@@ -44,10 +44,11 @@
 #define commandScan 0x0A
 #define commandAdjust 0x0B
 #define commandHalfForward 0x0C
-#define  commandHalfBackward 0x0D
+#define commandHalfBackward 0x0D
 #define stop 0x00
 #define forward 0x01
 #define rotation 0x02
+#define halfModule 0x03
 
 /************************************************************************/
 /*					     	   TWI                                      */
@@ -69,6 +70,7 @@
 #define maxDistance 245
 #define maxSpeed 100
 #define zeroAngVel 124
-#define moduleDepth 40
 #define minDistanceForward 18
+#define moduleDepth 40
+#define halfModuleDepth 15
 #define distanceMidToForwardSensor 6

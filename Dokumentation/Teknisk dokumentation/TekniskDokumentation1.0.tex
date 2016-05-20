@@ -122,7 +122,7 @@ Robotens uppgift är att söka av en labyrint med hjälp av en avsökningsalgori
 \end{figure}
 
 \subsection{Begränsningar}
-Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste bestå av moduler med storlek 40x40 cm.
+Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste bestå av moduler med storlek 40x40 centimeter.
 
 \pagebreak
 
@@ -227,7 +227,7 @@ Roboten i sin miljö finns illustrerad i figur \ref{system}. Den kan både köra
 
 \subsection{Beskrivning av systemet}
 
-Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. Med jämna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
+Roboten navigerar med hjälp av värden som fås från sensormodulens sensorer. En lasersensor som är fäst på ett servo mäter avstånd framåt, fyra IR-sensorer mäter robotens avstånd till sidoväggarna, ett gyroskop mäter robotens vinkelhastighet och en IR-detektor identifierar den nödställde. En reflexsensor sitter monterad mot hjulet för att beräkna tillryggalagd sträcka. Med jämna intervall kommunicerar sensormodulen dessa värden till huvudmodulen som i sin tur vidarebefordrar dem till styrmodulen. 
 
 
 I styrmodulen är en regleringsmodell implementerad, vilken säkerställer att roboten färdas i mitten av korridorerna samt kan rotera både 90 och 180 grader utan att stöta emot väggar. Önskade värden kan skrivas ut på en LCD-display, vilken också är en del av styrmodulen.
@@ -285,7 +285,7 @@ I huvudmodulen ingår följande mjukvara:
 \end{description}
 
 \subsubsection{Styrläge}
-Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}..
+Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
 
 \begin{figure}[htbp]
 \centering
@@ -302,7 +302,7 @@ Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läg
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
-Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 31x18 fält där robotens startkoordinater är (16,0) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit, se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
+Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar labyrinten. Den interna kartan representeras av ett 31x18 fält där robotens startkoordinater är (16,0) och startriktningen är norrut. I fältet lagras varje ny kartmodul som roboten besöker och var sensorerna har registrerat väggar. Längs den tillryggalagda sträckan får varje kartmodul ett värde som motsvarar den kortaste distansen roboten behöver gå för att ta sig dit (med befintlig avsökningsalgoritm), se figur \ref{map}. Efter varje besökt modul med outforskade vägar skickas de uppdaterade värdena i fältet till datormodulen för uppritning, förutsatt att den är ansluten. Är så ej fallet skickas informationen till datormodulen när anslutning har upprättats. 
 
 Återvändsgränder där mål ej hittas sparas i ett annat 31x18 fält, markerade röda i figur \ref{path}, för att förenkla beräkningen av kortaste väg. 
 
@@ -365,31 +365,31 @@ Sensormodulen är ihopkopplad enligt kopplingsschema i appendix J. Den är samma
 I sensormodulen ingår följande mjukvara: 
 
 \begin{description}[style=unboxed, leftmargin=0cm]
-  \item[sensorModule.c] som innehåller modulens \textit{main}-funktion, i vilken omvandling av sensorvärden till SI-enhet sker. Den innehåller dessutom kod för I\textsuperscript{2}C-kommunikation mellan modulerna. I main-funktionens huvudloop läggs de omvandlade sensorenheterna in i en array, vilken senare kommuniceras till huvudmodulen.
+  \item[sensorModule.c] som innehåller modulens \textit{main}-funktion, i vilken omvandling av sensorvärden till SI-enhet sker. Den innehåller dessutom kod för I\textsuperscript{2}C-kommunikation mellan modulerna. I main-funktionens huvudloop läggs de omvandlade sensorenheterna in i ett fält, vilket senare kommuniceras till huvudmodulen.
   \item[sensorInit.h] som är ett paket som initierar de olika gränssnitten för överföring av sensordata mellan mikroprocessorn och de olika sensorerna.
   \item[I2C\_slave.h] som är ett paket för slavarna inom I\textsuperscript{2}C-bussen, lämpligt i detta fall då sensormodulen är slav i kommunikationen med huvudmodulen.
 \end{description}
 
-\subsubsection{LIDAR-Lite v2, avståndssensor}
-För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ m uppmätas med en felmarginal på $2.5$ cm. Den kan dock ge felaktiga värden när den opererar i en omgivning som labyrinten. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
+\subsubsection{\texttt{Lidar-Lite v2}, avståndssensor}
+För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ meter uppmätas med en felmarginal på $2,5$ centimeter. Den kan dock ge felaktiga värden när den opererar i en omgivning som labyrinten. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
 
-Kommunikationen av sensordata mellan \verb+LIDAR-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersensorns externa avbrottsingångar, se kopplingsschema i Appendix J. 
+Kommunikationen av sensordata mellan \verb+Lidar-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av lasersensorns externa avbrottsingångar, se kopplingsschema i Appendix J. 
 
-\subsubsection{SFH300, reflexsensor}
-För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, och fästa skiva på ett av hjulen kan kört avstånd bestämmas.
+\subsubsection{\texttt{SFH300}, reflexsensor}
+För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, och fästa skiva på ett av hjulen kan tillryggalagt avstånd bestämmas.
 
 Hjulens omkrets kan mätas och därefter divideras med 16. På så sätt erhålls hur långt roboten åker per tårtbit.
-Då utsignalen är analog krävs AD-omvandling, varefter ett digitalt värde mellan 0 och 255 erhålls. Genom experiment kan ett lämpligt referensvärde hittas där värden över detta tolkas som svart yta och lägre värden tolkas som vit yta. Detta fungerar eftersom vita ytor reflekterar mycket mer ljus än vad svarta ytor gör. Genom att räkna hur många ljusskiftningar som har skett kan sedan kört avstånd erhållas.
+Då utsignalen är analog krävs AD-omvandling, varefter ett digitalt värde mellan 0 och 255 erhålls. Genom experiment kan ett lämpligt referensvärde hittas där värden över detta tolkas som svart yta och lägre värden tolkas som vit yta. Detta fungerar eftersom vita ytor reflekterar mycket mer ljus än vad svarta ytor gör. Genom att räkna hur många ljusskiftningar som har skett kan sedan tillryggalagt avstånd erhållas.
 
-\subsubsection{GP2D120, avståndssensor}
-För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en resistor och en kondensator.
+\subsubsection{\texttt{GP2D120}, avståndssensor}
+För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en RC-krets. 
 
 Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet beskrivs av en tredjegradsfunktion. Genom empiriska tester kan funktionen bestämmas tillräckligt bra för att ge värden att reglera på.
 
-\subsubsection{MLX90609, gyro}
+\subsubsection{\texttt{MLX90609}, gyro}
 För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten som kommuniceras till mikroprocessorn skickas som två separata byte från den gyroskopa sensorn. De fyra högsta bitarna från den första byten läggs tillsammans med de fyra lägsta bitarna från den andra byten på en separat 8-bitars heltalsvariabel i modulens \textit{main}-funktion. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation.  
 
-\subsubsection{IRM-8601-S, IR-detektor}
+\subsubsection{\texttt{IRM-8601-S}, IR-detektor}
 Då den nödställde sänder ut en IR-signal krävs identifikation av bitmönster. För detta ändamål används IR-detektorn \verb+IRM-8601-S+. Bitmönstret identifieras genom att ansluta insignalen till den externa avbrottsingången, INT0, på mikroprocessorn. TIMER0 används därefter för att räkna tiden på de höga bitarna hos insignalen som IR-detektorn identifierar. Stämmer tiden för de höga bitarna överens med det bitmönster som den nödställde ska sända ut är den nödställde funnen.
 
 \subsection{Styrmodulen}
@@ -423,7 +423,7 @@ Mjukvaran till styrmodulen består av följande filer:
 
 
 \subsubsection{PWM}
-Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284p+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att de delar samma inställningar gällande frekvens och periodtid men styrs med olika arbetscykler. Gripklon och servot för den främre sensorn delar i sin tur även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och därför utnyttjas möjligheten att konfigurera om dem så att enbart de nödvändiga används. Nedan finns mer detaljerade konfigurationer. 
+Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284p+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att de delar samma inställningar gällande frekvens och periodtid men styrs med olika arbetscykler. Gripklon och servot för den främre sensorn delar i sin tur även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och därför utnyttjas möjligheten att konfigurera om dem så att enbart de nödvändiga används. Nedan finns konfigurationerna med detaljerat beskrivna. 
 
 \begin{center}
 \begin{tabular}{l l l l l}
@@ -448,11 +448,15 @@ LCD-displayen, \verb+JM162A+, består av två rader där respektive har plats f�
 Styrmodulen har två olika styrlägen: autonomt eller manuellt läge.
 \begin{description}[style=unboxed, leftmargin=0cm]
   \item[Autonomt läge]
-I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som är implementerad på huvudmodulen. Styrmodulen begär ett nytt styrkommando genom att skicka en positiv flank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Rotera 90\textdegree\ vänster}, \textit{Rotera 90\textdegree\ höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
+    I autonomt läge agerar styrmodulen på beslut som tas från huvudmodulen. Målet är att navigera modulvis genom den avsökningalgoritm som är implementerad på huvudmodulen. Styrmodulen begär ett nytt styrkommando genom att skicka en positiv flank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Huvudmodulen tar därefter ett beslut om vilket styrkommando som ska skickas. De möjliga styrkommandona är \textit{Fram}, \textit{Halv fram}, \textit{Halv bak}, \textit{Rotera 90\textdegree\ vänster}, \textit{Rotera 90\textdegree\ höger}, \textit{Rotera 180\textdegree} och \textit{Stopp}. 
 
 När ett styrkommando tas emot av styrmodulen sker regleringen i samband med inkommande sensordata. För att regleringen ska agera snabbt nog behöver sensordata skickas i takten $30$ Hz. När sensordata tas emot sparas samtliga värden lokalt i styrmodulen. Därefter kallas den metod som sköter reglering av styrkommandot. 
 
-Styrkommandot \textit{Fram} innebär att roboten ska flytta sig en modul föröver. Modullängden är densamma för hela banan och satt till $40$ cm. Roboten beräknar tillryggalagd sträcka genom att beräkna antalet varv hjulen roterar och under färden sker reglering enligt avsnitt \ref{subsection:reglering}. När modulen är avverkad kallas återigen huvudmodulen för ett nytt styrkommando. Tack vare hastigheten hos I\textsuperscript{2}C-bussen och fördröjningen hos PWM-styrningen agerar roboten på nästa kommando utan ett ryck emellan. 
+Styrkommandot \textit{Fram} innebär att roboten ska flytta sig en modul föröver. Modullängden är densamma för hela banan och satt till $40$ centimeter. Roboten beräknar tillryggalagd sträcka genom att beräkna antalet varv hjulen roterar och under färden sker reglering enligt avsnitt \ref{subsection:reglering}. När modulen är avverkad kallas återigen huvudmodulen för ett nytt styrkommando. Tack vare hastigheten hos I\textsuperscript{2}C-bussen och fördröjningen hos PWM-styrningen agerar roboten på nästa kommando utan ett ryck emellan. 
+
+Styrkommandot \textit{Halv fram} tas emot när roboten befinner sig framför målet och ska lämna förnödenheten. Styrmodulen agerar på samma sätt som vid kommandot \textit{Fram} fast med halverad önskad sträcka. När styrkommandot tas emot sparas främre sensorns värde, för att sedan jämföras med i nästa styrkommando, se nedan.
+
+Styrkommandot \textit{Halv bak} tas alltid emot efter ett kommando av typen \textit{Halv fram}. Båda hjulparen drivs bakåt och roboten jämför det främre sensorvärdet med det som sparades vid \textit{Halv fram}, för att försäkra sig om att den är tillbaka en halv modul. 
 
 Styrkommandot \textit{Rotera 90\textdegree\ vänster/höger} innebär en vinkelrät rotation åt respektive håll. Här förutsätts roboten befinna sig mitt i en modul och behöver med andra ord inte reglera sig i vertikal- eller horisontellt led. Regleringen av rotation sker med hjälp av det gyro som förmedlar vinkelhastighet till sensormodulen. När en rotation påbörjas summeras vinkelhastigheterna hos styrmodulen i takt med varenda nytt sensordata. Nivån som summationen sker till byter endast tecken mellan vänster- och högerrotation. Det är rotationsregleringen som sätter kravet att sensordata ska skickas med $30$ Hz för att minimera felet vid snabba rotationer. 
 
@@ -639,8 +643,8 @@ Respektive segment motsvarar följande:
  & 2 & Data & Värde på den främre vänstra IR-sensorn \\ \hline
  & 3 & Data & Värde på den bakre högra IR-sensorn \\ \hline
  & 4 & Data & Värde på den bakre vänstra IR-sensorn \\ \hline
- & 5 & Data &  Värde på LIDAR-Lite's 8 mest signifikanta bitar \\ \hline
- & 6 & Data &  Värde på LIDAR-Lite's 8 minst signifikanta bitar \\ \hline
+ & 5 & Data &  Värde på \verb+Lidar-Lite v2+:s 8 mest signifikanta bitar \\ \hline
+ & 6 & Data &  Värde på \verb+Lidar-Lite v2+:s 8 minst signifikanta bitar \\ \hline
  & 7 & Data & Värde på gyrot \\ \hline
  & 8 & Data & Värde för IR-detektorn (1 om målet är upptäckt, 0 annars) \\ \hline
  & 9 & Data & Antal flanker reflexsensorn detekterat sen sist\\ \hline
