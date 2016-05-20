@@ -574,6 +574,8 @@ void updateCoordinates() //Updates map, path and position variables
 uint8_t * findWayBack()
 {	
 	if((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0]) || (map[position[0]+1][position[1]] == targetValue)){
+	//(map[position[0]+1][position[1]] == targetValue) ersätts med ((map[position[0]+1][position[1]] == targetValue) && (map[position[0]][position[1]] == target[2] - 1))
+	//((map[position[0]][position[1]] == targetValue) && (map[position[0]+1][position[1]] == target[2] - 1)) läggs till			
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
 				//Rotate right
