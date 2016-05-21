@@ -1,8 +1,5 @@
 package control;
 
-import java.util.Observable;
-import java.util.Observer;
-
 import jssc.*;
 import model.*;
 import resources.*;
@@ -25,6 +22,11 @@ public class SerialCommunicationHandler {
 	 * Serial port
 	 */
 	private static SerialPort serialPort;
+	
+	/**
+	 * Serial port name
+	 */
+	private String selectedPortName = "/dev/tty.PigBot-Bluetooth";
 
 	/**
 	 * Firefly standard values
@@ -54,8 +56,8 @@ public class SerialCommunicationHandler {
 	 * @param portName port selected by user through GUI
 	 * @throws SerialPortException
 	 */
-	public void connectToSerialPort(String portName) throws SerialPortException {
-		serialPort = new SerialPort(portName);
+	public void connectToSerialPort() throws SerialPortException {
+		serialPort = new SerialPort(selectedPortName);
 
 		// open port for communication
 		serialPort.openPort();
@@ -64,11 +66,28 @@ public class SerialCommunicationHandler {
 		// byte data transfer
 		serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN | 
 				SerialPort.FLOWCONTROL_RTSCTS_OUT);
-		// add port listener
-		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-		// ping robot
-		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
-
+		// add port listener (making sure ping happens when the listener is ready)
+//		Thread listenerThread = new Thread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				try {
+//					serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+//				} catch (SerialPortException e) {
+//					e.printStackTrace();
+//				}
+//				// ping robot
+//				sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+//			}
+//		});
+//		listenerThread.start();
+		
+		try {
+			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		} finally {
+			// ping robot
+			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		}
 	}
 
 	/**
@@ -114,6 +133,14 @@ public class SerialCommunicationHandler {
 	public SerialPort getSerialPort() {
 		return serialPort;
 	}
+	
+	public void setSelectedPortName(String selectedPortName) {
+		this.selectedPortName = selectedPortName;
+	}
+	
+	public String getSelectedPortName() {
+		return selectedPortName;
+	}
 
 	//================================================================================
 	// Internal methods
@@ -142,21 +169,25 @@ public class SerialCommunicationHandler {
 	 *
 	 */
 	private class PortReader implements SerialPortEventListener {
-
+		
 		@Override
 		public void serialEvent(SerialPortEvent event) {
 			if(event.isRXCHAR() && event.getEventValue() > 0) {
 				try {
 					byte[] communicationsIDByte = serialPort.readBytes(1);
 					int communicationsID = Byte.toUnsignedInt(communicationsIDByte[0]);
-
+					
+					if(communicationsID <= 245) {
+						return;
+					}
+					
 					// get byte string length
 					int byteStringLength = 100;
 
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						byteStringLength = 2;
 					} else if(communicationsID == CommunicationID.SENSOR_DATA) {
-						byteStringLength = 14;
+						byteStringLength = 18;
 					} else if(communicationsID == CommunicationID.MAP_DATA) {
 						byteStringLength = 3;
 					} else if(communicationsID == CommunicationID.CONTROL_DATA) {
@@ -171,9 +202,10 @@ public class SerialCommunicationHandler {
 					try {
 						receivedData = serialPort.readBytes(byteStringLength, 70);
 					} catch (SerialPortTimeoutException e) {
+//						e.printStackTrace();
 						return;
 					}
-
+					
 					// respond to received data
 					if(communicationsID == CommunicationID.CONTROL_SETTING) {
 						updateControlSettings(receivedData);
@@ -213,7 +245,7 @@ public class SerialCommunicationHandler {
 	private void updateSensorValues(byte[] receivedData) {
 
 		// convert byte to unsigned ints
-		int[] sensorValues = new int[6];
+		int[] sensorValues = new int[7];
 		int j = 0;
 
 		for(int i = 1; i < receivedData.length; i+=2) {
@@ -225,7 +257,9 @@ public class SerialCommunicationHandler {
 			} else if(i == 13){
 				sensorValues[j] = Byte.toUnsignedInt(receivedData[i]) - 124;
 				j++;
-			} else {
+			} else if(i == 15){
+				// target data
+			}	else {
 				sensorValues[j] =  Byte.toUnsignedInt(receivedData[i]);
 				j++;
 			}

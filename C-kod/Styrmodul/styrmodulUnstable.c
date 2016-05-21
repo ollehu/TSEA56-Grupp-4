@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
@@ -22,15 +23,29 @@
 /************************************************************************/
 uint8_t autonomousMode = 1;
 volatile uint8_t currControlCommand = stop;
-volatile uint8_t prevControlCommand;
+volatile uint8_t adjustRotationMode = 0; // 0 = no adjust, 1 = adjust after, 2 = adjust before, 3 = compensate
+volatile uint8_t forwardsSinceLeftWallLost = 0;
+volatile uint8_t forwardsSinceRightWallLost = 0;
 
 float P = 0.45;
 float D = 1.2;
 float K = 0.7;
+float L = 1;
+float K_Adjust = 1;
 
-volatile uint8_t preferredSpeed = 50;
-uint8_t preferredRotationSpeed = 70;
-uint8_t preferredDistance = 100;
+volatile uint8_t preferredSpeed = 70;
+uint8_t preferredHalfModuleSpeed = 40;
+uint8_t preferredRotationSpeed = 35;
+uint8_t preferredAdjustSpeed = 25;
+uint8_t preferredDistance = 120;
+int8_t lastDistanceDifference;
+int8_t preferredDistanceDifference = 5;
+volatile uint8_t openLeft = 0;
+volatile uint8_t openRight = 0;
+uint8_t preHalfModuleDistance;
+
+uint8_t direction = 1;
+uint8_t controlOn = 1;
 
 /************************************************************************/
 /*                              SENSOR                                  */
@@ -41,13 +56,13 @@ int16_t oldForwardSensor;
 
 int8_t angularVelocity;
 
-int16_t convertAngle90 = 820;
-int16_t convertAngle180 = 1900;
+int16_t convertAngle90 = 990;
+int16_t convertAngle180 = 1980;
 
 int16_t accumulatedAngle;
 int16_t preferredAccumulatedAngle;
 
-uint8_t lastReceivedData[7];
+uint8_t lastReceivedData[9];
 
 uint16_t lidarMid = 390;
 uint16_t lidarMax;
@@ -55,6 +70,12 @@ uint16_t lidarMin;
 uint8_t lidarIncrement = 3;
 uint16_t currentLidarAngle;
 uint16_t lidarMaxDistance = 0;
+uint16_t lidarMaxAngle;
+uint8_t activeScan = 0;
+
+volatile uint8_t accumulatedDistance = 0;
+
+uint8_t targetDetected = 0; 
 
 /************************************************************************/
 /*                               LCD                                    */
@@ -68,6 +89,14 @@ uint8_t debugCount = 0;
 volatile uint8_t called;
 volatile uint8_t received;
 volatile uint8_t debugMode;
+volatile uint8_t difference = 0;
+
+float p_out;
+float d_out;
+uint8_t speed;
+int16_t y_out;
+uint8_t leftSpeed;
+uint8_t rightSpeed;
 
 /************************************************************************/
 /*                              HEADER                                  */
@@ -79,11 +108,15 @@ void respondToControlData(uint8_t command, uint8_t value);
 int16_t convertAngle(int8_t value);
 void respondToSettingsData(uint8_t identifier, uint8_t value);
 void autonomousForward();
+void autonomousHalfModule(void);
 void autonomousRotate();
+void autonomousAdjust();
 void adjustRotation(void);
 void autonomousScan(void);
 void initInterrupt();
 void callMainInterrupt(void);
+uint8_t edgesToCentimeter(uint8_t edgeCount);
+uint8_t centimeterToEdges(uint8_t centimeter);
 
 /************************************************************************/
 /*	Interrupt: TWI vector - receive data from main module.
@@ -129,7 +162,7 @@ ISR(TWI_vect)
 					updateSensorData(commandSubType, commandValue);
 					dataOrder = dataOrder + 1;	
 					
-					if (dataOrder == 15){
+					if (dataOrder == sensorArraySize){
 						dataOrder = 0;
 						respondToSensorData();
 					}
@@ -251,6 +284,11 @@ void respondToSensorData()
 		angularVelocity = -(zeroAngVel - lastReceivedData[6]);
 	}
 	
+	targetDetected = lastReceivedData[7];
+	
+	//Reflex sensor
+	accumulatedDistance += lastReceivedData[8];
+	
 	switch(currControlCommand){
 		case stop:
 			stopWheels();
@@ -258,11 +296,17 @@ void respondToSensorData()
 		case forward:
 			autonomousForward();
 			break;
+		case halfModule:
+			autonomousHalfModule();
+			break;
 		case rotation:
 			autonomousRotate();
 			break;
 		case commandScan:
 			autonomousScan();
+			break;
+		case commandAdjust:
+			autonomousAdjust();
 			break;
 		default:
 			break;
@@ -331,13 +375,6 @@ void respondToControlData(uint8_t command, uint8_t value)
 				rightWheelPair(value, 0);
 				leftWheelPair(value*0.6, 0);
 				break;
-			case commandClaw:
-				if (value == 1){
-					openPicker();
-				} else {
-					closePicker();
-				}
-				break;
 			default:
 				stopWheels();
 				break;
@@ -348,7 +385,11 @@ void respondToControlData(uint8_t command, uint8_t value)
 				if (oldForwardSensor == 0){
 					oldForwardSensor = forwardSensor;
 				}
+				openLeft = 1;
+				openRight = 1;
 				currControlCommand = forward;
+				direction = 1;
+				controlOn = 1;
 				break;
 			case commandReverse:
 				currControlCommand = rotation;
@@ -370,11 +411,36 @@ void respondToControlData(uint8_t command, uint8_t value)
 				preferredAccumulatedAngle = convertAngle(-1);
 				accumulatedAngle = 0;
 				break;
+			case commandHalfForward:
+				currControlCommand = halfModule;
+				direction = 1;
+				preHalfModuleDistance = forwardSensor;
+				break;
+			case commandHalfBackward:
+				currControlCommand = halfModule;
+				direction = 0;
+				break;
 			case commandStop:
 				currControlCommand = stop;
 				break;
 			default:
 				break;
+		}
+		
+		// determine adjusted rotation
+		if(currControlCommand == rotation) {
+			if(((sideSensors[0] != maxDistance) &&
+			(sideSensors[2] != maxDistance)) ||
+			((sideSensors[1] != maxDistance) &&
+			(sideSensors[3] != maxDistance))) {
+				adjustRotationMode = 2;
+				currControlCommand = commandAdjust;
+			} else if(forwardSensor <= moduleDepth) {
+				adjustRotationMode = 1;
+			} else {
+				adjustRotationMode = 0;
+				//preferredAccumulatedAngle = preferredAccumulatedAngle + K_Adjust * lastDistanceDifference;
+			}
 		}
 	}
 }
@@ -445,6 +511,17 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 			break;
 		case 10:
 			convertAngle180 = 10 * value;
+			break;
+		case 11:
+			if (value == 1){
+				openPicker();
+			} else {
+				closePicker();
+			}
+			break;
+		case 14:
+			preferredRotationSpeed = value;
+			break;
 		default:
 			break;
 	}
@@ -473,21 +550,40 @@ void autonomousForward()
 	uint8_t frontIndex = noWallsIndex;
 	uint8_t backIndex;
 	uint8_t speed = preferredSpeed;
+	uint8_t distance = preferredDistance;
 	
-	if (((oldForwardSensor - forwardSensor > moduleDepth) && 
+	/*if (((oldForwardSensor - forwardSensor > moduleDepth) && 
 		 (forwardSensor > (moduleDepth - 5))) || 
 		 (forwardSensor < minDistanceForward)){
+			
+		difference = oldForwardSensor - forwardSensor;
+		madeChange = 1;
+		currControlCommand = stop;
+		oldForwardSensor = 0;
+		stopWheels();
 			 
 		if (debugMode == 0) {
 			callMainInterrupt();
 		}
+		
+	}*/
+	
+	if (((edgesToCentimeter(accumulatedDistance) >= (moduleDepth-4)) &&
+		(forwardSensor > (moduleDepth - 10))) ||
+		(forwardSensor < minDistanceForward)){
+		
 		currControlCommand = stop;
-		oldForwardSensor = 0;
 		stopWheels();
+		
+		//accumulatedDistance = 0;
+		
+		if (debugMode == 0){
+			callMainInterrupt();
+		}		
 	}
 	
 	if ((sideSensors[frontLeftIndex] != maxDistance) && 
-		(sideSensors[rearLeftIndex] != maxDistance) ){
+		(sideSensors[rearLeftIndex] != maxDistance)){
 			
 		frontIndex = frontLeftIndex;
 		backIndex = rearLeftIndex;
@@ -496,11 +592,46 @@ void autonomousForward()
 				   
 		frontIndex = frontRightIndex;
 		backIndex = rearRightIndex;
+		distance += 20;
+	}
+	
+	if (forwardSensor < moduleDepth ||
+		sideSensors[frontRightIndex] == maxDistance ||
+		sideSensors[frontLeftIndex]  == maxDistance){
+		speed *= 0.4;
+			  
+		// Resync accumulatedDistance
+		//if (adjustedInCorridor == 0){
+		//	accumulatedDistance = 16;
+		//	adjustedInCorridor = 1;
+		//}
+
+	}
+	
+	//Adjust in corridor
+	if (sideSensors[frontLeftIndex] == maxDistance){
+		if (openLeft == 0){
+			openLeft = 1;
+			accumulatedDistance = 16;
+		}
+	} else {
+		openLeft = 0;
+	}
+	
+	if (sideSensors[frontRightIndex] == maxDistance){
+		if (openRight == 0){
+			openRight = 1;
+			accumulatedDistance = 16;
+			
+		}
+	} else {
+		openRight = 0;
 	}
 	
 	if (frontIndex == noWallsIndex){
-		rightWheelPair(preferredSpeed, 1);
-		leftWheelPair(preferredSpeed, 1);
+		rightWheelPair(speed, 1);
+		leftWheelPair(speed, 1);
+		speedLidar = lidarMid;
 	} else {
 	
 		// if both walls available, adjust preferred distance
@@ -509,52 +640,100 @@ void autonomousForward()
 			sideSensors[rearRightIndex] != maxDistance &&
 			sideSensors[rearLeftIndex] != maxDistance ){
 			
-			preferredDistance = (sideSensors[frontRightIndex] + 
-								 sideSensors[frontLeftIndex]  + 
-								 sideSensors[rearRightIndex]  + 
-								 sideSensors[rearLeftIndex])/4;
+			//distance = (sideSensors[frontRightIndex] + 
+			//					 sideSensors[frontLeftIndex]  + 
+			//					 sideSensors[rearRightIndex]  + 
+			//					 sideSensors[rearLeftIndex])/4;
+								 
+			//if ((frontIndex == frontRightIndex) &&
+			//	(backIndex == rearRightIndex)){
+			//		distance += 20;
+			//	}
+			//adjustedInCorridor = 0;
 		}
 	
-		uint8_t distance = (sideSensors[frontIndex] + 
+		uint8_t averageDistance = (sideSensors[frontIndex] + 
 							sideSensors[backIndex])/2;
-	
-		float p_out = P * (distance - preferredDistance);
-		float d_out = D * (sideSensors[frontIndex] - 
-						   sideSensors[backIndex]);
-
-		int16_t y_out = K * (p_out + d_out);
+		int8_t distanceDifference = sideSensors[frontIndex] - 
+							 sideSensors[backIndex];
+		
+		// save lastDistanceDifference
+		lastDistanceDifference = distanceDifference;
+							 
+		p_out = P * ((float) (averageDistance - distance));
+		if (distanceDifference > 60){
+			distanceDifference = 0;
+		}
+		d_out = D * ((float) distanceDifference);
+		
+		int16_t y_out = (int16_t) (K * (p_out + d_out));
 
 		if (frontIndex == 0){
 			y_out = -y_out;
-		}
-		
-		if (forwardSensor < moduleDepth ||
-			sideSensors[frontRightIndex] == 245 ||
-			sideSensors[frontLeftIndex]  == 245){
-			speed *= 0.6;   
 		}
 	
 		if(y_out < 0) {
 		
 			if (speed - y_out > maxSpeed){
 				rightWheelPair(maxSpeed + y_out, 1);
+				rightSpeed = maxSpeed + y_out;
 				leftWheelPair(maxSpeed, 1);
+				leftSpeed = maxSpeed;
 			} else {
 				rightWheelPair(speed + y_out/2, 1);
+				rightSpeed = speed + y_out/2;
 				leftWheelPair(speed - y_out/2, 1);
+				leftSpeed = speed - y_out/2;
 			}
 	
 		} else {
 		
 			if (speed + y_out > maxSpeed){
 				rightWheelPair(maxSpeed, 1);
+				rightSpeed = maxSpeed;
 				leftWheelPair(maxSpeed - y_out, 1);
+				leftSpeed = maxSpeed-y_out;
 			} else {
 				rightWheelPair(speed + y_out/2, 1);
+				rightSpeed = speed + y_out/2;
 				leftWheelPair(speed - y_out/2, 1);
+				leftSpeed = speed - y_out/2;
 			}
 		}
 	}
+}
+
+/************************************************************************/
+/*	autonomousHalfModule - autonomously moves half a module.
+																		*/
+/************************************************************************/
+void autonomousHalfModule(void)
+{
+	
+	if (direction == 1){
+		if (edgesToCentimeter(accumulatedDistance) >= halfModuleDepth){
+			currControlCommand = stop;
+			stopWheels();
+	
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		} 
+		
+	} else {
+		if (forwardSensor >= preHalfModuleDistance){
+			currControlCommand = stop;
+			stopWheels();
+						
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		}
+	} 
+	
+	rightWheelPair(preferredHalfModuleSpeed, direction);
+	leftWheelPair(preferredHalfModuleSpeed, direction);
+	
 }
 
 /************************************************************************/
@@ -574,7 +753,15 @@ void autonomousForward()
 void autonomousRotate()
 {
 	if(labs(accumulatedAngle) > labs(preferredAccumulatedAngle)){
-		adjustRotation();
+		if(adjustRotationMode == 1) {
+			currControlCommand = commandAdjust;
+		} else {
+			currControlCommand = stop;
+			stopWheels();
+			if (debugMode == 0){
+			callMainInterrupt();
+			}
+		}
 	} else if (preferredAccumulatedAngle > 0){
 		rightWheelPair(preferredRotationSpeed, 1);
 		leftWheelPair(preferredRotationSpeed, 0);
@@ -587,14 +774,52 @@ void autonomousRotate()
 }
 
 /************************************************************************/
-/*	adjustRotation - Adjust robot after 90 or 180 degrees rotation.     */
+/*	autonomousAdjust - autonomously adjust angle to wall.
+
+	Autonomously adjust the angle to the wall or compensate the
+	preferred accumulated angle (preferredAccumulatedAngle) 
+
+	Called either before or after rotation, depending on adjust 
+	rotation mode (adjustRotationMode). 
+	
+	Before autonomousAdjust is called, autonomousAdjustMode should
+	be updated.
+																		*/
 /************************************************************************/
-void adjustRotation(void)
+void autonomousAdjust()
 {
-	stopWheels();
-	currentLidarAngle = lidarMin;
-	lidarMaxDistance = 0;
-	currControlCommand = commandScan;
+	
+	if ((sideSensors[frontLeftIndex] != maxDistance) &&
+		(sideSensors[rearLeftIndex] != maxDistance)){
+					
+		lastDistanceDifference = sideSensors[rearLeftIndex] -
+									sideSensors[frontLeftIndex];
+	} else if ((sideSensors[frontRightIndex] != maxDistance) &&
+			   (sideSensors[rearRightIndex] != maxDistance)){
+		lastDistanceDifference = sideSensors[frontRightIndex] -
+									sideSensors[rearRightIndex];
+	}
+	
+	if(labs(lastDistanceDifference) <= preferredDistanceDifference) {
+		if(adjustRotationMode == 2) {
+			adjustRotationMode = 1;
+			currControlCommand = rotation;
+		} else {
+			currControlCommand = stop;
+			stopWheels();
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
+		}
+	} else {
+		if (lastDistanceDifference < 0){
+			rightWheelPair(preferredAdjustSpeed, 1);
+			leftWheelPair(preferredAdjustSpeed, 0);
+			} else {
+			rightWheelPair(preferredAdjustSpeed, 0);
+			leftWheelPair(preferredAdjustSpeed, 1);
+		}
+	}
 }
 
 /************************************************************************/
@@ -603,17 +828,30 @@ void adjustRotation(void)
 /************************************************************************/
 void autonomousScan(void)
 {
-	if (currentLidarAngle + lidarIncrement <= lidarMax){
+	if ((currentLidarAngle + lidarIncrement <= lidarMax) &&
+		(activeScan == 1)){
 		speedLidar = currentLidarAngle;
 		currentLidarAngle += lidarIncrement;
 		if (forwardSensor > lidarMaxDistance){
 			lidarMaxDistance = forwardSensor;
+			lidarMaxAngle = speedLidar;
 		}
 	} else {
-		oldForwardSensor = lidarMaxDistance;
-		speedLidar = lidarMid;
-		if (debugMode == 0){
-			callMainInterrupt();
+		activeScan = 0;
+	}
+	
+	
+	if (activeScan == 0){
+		if (currentLidarAngle - lidarIncrement >= lidarMid){
+			speedLidar = currentLidarAngle;
+			currentLidarAngle -= lidarIncrement*2;
+		} else {
+			oldForwardSensor = lidarMaxDistance;
+			forwardSensor = lidarMaxDistance;
+			speedLidar = lidarMaxAngle;
+			if (debugMode == 0){
+				callMainInterrupt();
+			}
 		}
 	}
 }
@@ -633,11 +871,16 @@ void initInterrupt()
 void callMainInterrupt(void)
 {
 
+	stopWheels();
+	currentLidarAngle = lidarMin;
+	currControlCommand = stop;
 	called += 1;
+	
 	PORTB |= (1<<PORTB4);
 	PORTB &= ~(1<<PORTB4);
-	currControlCommand = stop;
-	stopWheels();
+	
+	adjustRotationMode = 0;
+	accumulatedDistance = 0;
 }
 
 /************************************************************************/
@@ -704,6 +947,26 @@ void initCommandModule(void)
 }
 
 /************************************************************************/
+/*	edgedToCentimeter- Convert number of edges to centimeter.
+		edgeCount: Number of edges.										*/
+/************************************************************************/
+uint8_t edgesToCentimeter(uint8_t edgeCount)
+{
+	return (uint8_t) (wheelDiameter*M_PI*((float) edgeCount)/
+					  wheelNumberOfSections);
+}
+
+/************************************************************************/
+/*	edgedToCentimeter- Convert number of edges to centimeter.
+		edgeCount: Number of edges.										*/
+/************************************************************************/
+uint8_t centimeterToEdges(uint8_t centimeter)
+{
+	return (uint8_t) ((wheelNumberOfSections)/
+					  (wheelDiameter*M_PI*((float) centimeter)));
+}
+
+/************************************************************************/
 /*	main - Main function.
 
 	Initiate PWM, LCD, interrupt and TWI. Print data to LCD when
@@ -717,20 +980,19 @@ int main(void)
 	char bottomRowMessage[16] = "";
 	char topRowMessage[16] = "";
 	
+	closePicker();
+	
 	while(1)
 	{
 		setDebugLED(debugMode);
 		setAutonomousLED(autonomousMode);
 	
 		if (madeChange >= 1){
-			sprintf(topRowMessage, "LiMax: %d", 
-					oldForwardSensor);
+			sprintf(topRowMessage, "T:%d", targetDetected);
 			lcdWriteTopRow(topRowMessage);
-			//if (currControlCommand != stop){
-				sprintf(bottomRowMessage, "LiCurr: %d", 
-						forwardSensor);
-				lcdWriteBottomRow(bottomRowMessage);
-			//}
+			sprintf(bottomRowMessage, "LS:%u RS: %u", 
+					rightSpeed,leftSpeed);
+			lcdWriteBottomRow(bottomRowMessage);
 			madeChange = 0;
 		} 
 	}

@@ -7,10 +7,7 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Observable;
-import java.util.Observer;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Log {

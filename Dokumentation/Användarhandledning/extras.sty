@@ -1,0 +1,92 @@
+% Smått o gott
+
+\usepackage[margin=3cm]{geometry}
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{ragged2e}
+\usepackage{titling}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{pbox}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{amsmath}
+\usepackage{tabu}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{parskip}
+\usepackage{standalone}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+\usetikzlibrary{patterns}
+\usepackage{enumitem}
+\def\arraystretch{1.5}
+\graphicspath{ {images/} }
+\setlength{\LTpost}{0pt}
+\pagenumbering{roman}
+\setlength{\LTpost}{0pt}%
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsfonts}
+\usepackage{lipsum}
+\setlipsumdefault{1}
+\usepackage{cprotect}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usetikzlibrary{decorations.pathmorphing}
+\usepackage{stringenc}
+\usepackage{pdfescape}
+%\DeclareUnicodeCharacter{C2A0}{ }
+%\DeclareUnicodeCharacter{00A0}{ }
+\usepackage{placeins}
+\usepackage{epstopdf}
+\usepackage{import}
+\usepackage{textcomp}
+\usepackage[Q=yes]{examplep}
+\pagestyle{fancy}
+
+\chead{Undsättningsrobot}
+\rhead{\today}
+\lhead{}
+\lfoot{
+	TSEA56 
+	\\
+	LIPS Användarhandledning
+}
+\rfoot{
+	Projektgrupp 4
+	\\
+	e-post: isast763@student.liu.se
+}
+
+
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}\PackageWarning{TODO:}{#1!}}
+\makeatletter
+\def\nobreakhline{%
+  \noalign{\ifnum0=`}\fi
+    \penalty\@M
+    \futurelet\@let@token\LT@@nobreakhline}
+\def\LT@@nobreakhline{%
+  \ifx\@let@token\hline
+    \global\let\@gtempa\@gobble
+    \gdef\LT@sep{\penalty\@M\vskip\doublerulesep}% <-- change here
+  \else
+    \global\let\@gtempa\@empty
+    \gdef\LT@sep{\penalty\@M\vskip-\arrayrulewidth}% <-- change here
+  \fi
+  \ifnum0=`{\fi}%
+  \multispan\LT@cols
+     \unskip\leaders\hrule\@height\arrayrulewidth\hfill\cr
+  \noalign{\LT@sep}%
+  \multispan\LT@cols
+     \unskip\leaders\hrule\@height\arrayrulewidth\hfill\cr
+  \noalign{\penalty\@M}%
+  \@gtempa}
+\makeatother

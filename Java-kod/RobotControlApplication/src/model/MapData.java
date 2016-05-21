@@ -2,6 +2,8 @@ package model;
 
 import java.util.Observable;
 
+import view.AdaptiveMapPanel;
+
 public class MapData extends Observable{
 	
 	private MapElement[][] mapElements;
@@ -10,7 +12,7 @@ public class MapData extends Observable{
 	 * Constructor
 	 */
 	public MapData() {
-		mapElements = new MapElement[29][29];
+		mapElements = new MapElement[AdaptiveMapPanel.X_MAX][AdaptiveMapPanel.Y_MAX];
 	}
 	
 	/**

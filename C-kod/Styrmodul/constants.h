@@ -23,6 +23,11 @@
 #define sensorRotation 0x06
 #define sensorTarget 0x07
 
+#define sensorArraySize 19
+
+#define wheelDiameter 6.2
+#define wheelNumberOfSections 16.0
+
 /************************************************************************/
 /*					     	   COMMANDS                                 */
 /************************************************************************/
@@ -37,9 +42,13 @@
 #define commandReverseLeft 0x08
 #define commandClaw 0x09
 #define commandScan 0x0A
+#define commandAdjust 0x0B
+#define commandHalfForward 0x0C
+#define commandHalfBackward 0x0D
 #define stop 0x00
 #define forward 0x01
 #define rotation 0x02
+#define halfModule 0x03
 
 /************************************************************************/
 /*					     	   TWI                                      */
@@ -61,5 +70,7 @@
 #define maxDistance 245
 #define maxSpeed 100
 #define zeroAngVel 124
-#define moduleDepth 35
-#define minDistanceForward 24
+#define minDistanceForward 18
+#define moduleDepth 40
+#define halfModuleDepth 15
+#define distanceMidToForwardSensor 6

@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+
+\begin{document}
+
+\begin{center}
+
+{\Huge\bfseries Testprotokoll}
+\vspace{4em}
+\end{center}
+
+\begin{flushleft}
+
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.4\linewidth}{!}{
+	\input{images/bana[160513]}}
+	\caption{Översikt av testbana\label{bana}}	
+\end{figure}
+
+\begin{description}
+\item[Vad som har testats] \hfill \\
+Förjustering och efterjustering av reglering testades samtidigt som måluppritning på karta i datormodulen i banan i figur \ref{bana}. 
+
+\vspace{1em}
+\item[Utfall] \hfill \\
+Rroboten körde på direkt efter rotation. Målet markerades två gånger på datorns karta. Avsökningsalgoritmen verkade få fnatt. Var trodde roboten den var? 
+
+\vspace{1em}
+\item[Eventuella komplikationer] \hfill \\
+\begin{itemize}
+	\item På kartan var målet placerat både i ruta 1 och 2 markerade i figur \ref{bana}. På riktigt var den i ruta 1. Den placerades ut när det riktigta målet upptäcktes.
+	\item Roboten körde inte riktigt som tanken är. Var befinner den sig?
+	\item Efterrotationen fungerade inte då den körde på direkt efter rotation istället för att räta upp sig.
+\end{itemize}
+
+\vspace{1em}
+\pagebreak
+\item[Hur arbetet fortskrider] \hfill \\
+\begin{itemize}
+	\item Oklart... Börja med att titta vilka koordinater som datorn tar emot när rutorna ritas upp, dvs implementera så att det skrivs ut på väl valt ställe. \emph{Isak} fixar.
+	\item Skicka position och riktining till datorn för att i kartan markera var den tror att den är någonstans. \emph{Elena} lägger in så att datan skickas, \emph{Isak} ser till att det tolkas på datorsidan.
+	\item Jämförelse behöver ske med nya värden, inte de som justerats ned till noll under förregleringen. \emph{Olle} fixar.
+\end{itemize}
+
+
+\end{description}
+
+\end{flushleft}
+
+\end{document}

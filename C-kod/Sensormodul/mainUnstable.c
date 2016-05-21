@@ -21,7 +21,6 @@
 #include "sensorInit.h"
 #include "I2C_slave.h"
 
-
 /************************************************************************/
 /*                            CONTROLLERS                               */
 /************************************************************************/
@@ -31,6 +30,7 @@ volatile const uint8_t adc1 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc2 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(0<<MUX0);
 volatile const uint8_t adc3 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc4 = (1<<ADLAR) | (1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+volatile const uint8_t adc5 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(0<<MUX0);
 
 /************************************************************************/
 /*                            VARIABLES	                                */
@@ -57,6 +57,9 @@ double Distance_1 = 0;
 double Distance_2 = 0;
 double Distance_3 = 0;
 double Distance_4 = 0;
+uint8_t wheel_sensor = 0;
+uint8_t lastWheelSensor = 0;
+uint8_t wheel_counter = 0;
 
 uint16_t forwardDistance;
 uint16_t forwardDistanceMED;
@@ -71,7 +74,7 @@ uint8_t answer;
 /*                              ARRAYS	                                */
 /************************************************************************/
 
-uint8_t sensorData[15];
+uint8_t sensorData[19];
 uint8_t SI_IR1_array[5];
 uint8_t SI_IR2_array[5];
 uint8_t SI_IR3_array[5];
@@ -134,6 +137,7 @@ ISR(TWI_vect){
 		} else if ((TWSR & 0xF8) == 0xC0){
 			//SLA_R, last byte transmitted
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWIE);
+			wheel_counter = 0;
 			break;
 		}
 		
@@ -240,6 +244,7 @@ ISR(ADC_vect){ //IR-SENSOR
 	if(ADMUX == adc1){
 		Distance_1 = ADCH;
 		ADMUX = adc2;	
+		PORTB ^= (1<<PORTB0);
 	}
 	else if(ADMUX == adc2){
 		Distance_2 = ADCH;
@@ -249,9 +254,21 @@ ISR(ADC_vect){ //IR-SENSOR
  		Distance_3 = ADCH;
 		ADMUX = adc4;
 	}
-	else{
+	else if(ADMUX == adc4){
 		Distance_4 = ADCH;
-		ADMUX = adc1;	
+		ADMUX = adc5;	
+	}
+	else{
+		if ((ADCH >= 160) && (lastWheelSensor == 0)){
+			wheel_counter = wheel_counter + 1;
+			lastWheelSensor = 245;
+		}
+		else if ((ADCH <= 60) && (lastWheelSensor == 245)){
+			wheel_counter = wheel_counter + 1;
+			lastWheelSensor = 0;
+		}
+		wheel_sensor = ADCH;
+		ADMUX = adc1;
 	}
 }
 
@@ -320,7 +337,7 @@ uint8_t get8Bit(float in)
 	if (in > 255){
 		return 255;
 	} else {
-		return (uint8_t) in;
+		return (uint8_t) in;	
 	}
 }
 
@@ -400,6 +417,7 @@ int main (void)
 			forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
 			forwardDistanceLOW = (forwardDistanceMED & 0x7F);
 			forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
+			
 		
 			sensorData[1] = 1; 
 			sensorData[2] = getMedianIR(SI_IR2_array);	// Front right 
@@ -417,6 +435,8 @@ int main (void)
 			sensorData[14] = answer;					// Angular velocity
 			sensorData[15] = 8;
 			sensorData[16] = target_detected;			// Detection of target
+			sensorData[17] = 9;
+			sensorData[18] = wheel_counter;
 				
 			if (getMax(sensorData) > 245){
 				forwardDistanceHIGH = 245;

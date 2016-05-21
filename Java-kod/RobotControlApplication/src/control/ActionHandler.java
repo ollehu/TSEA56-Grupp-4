@@ -5,17 +5,18 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.regex.Pattern;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 import model.Log;
 import model.RobotData;
-import model.RobotStatus;
 import resources.*;
 import view.*;
 
@@ -38,6 +39,7 @@ public class ActionHandler {
 	public CommentLogAction commentLogAction = new CommentLogAction();
 
 	public SelectCOMPortAction selectCOMPortAction = new SelectCOMPortAction();
+	public ConnectToCOMPortAction connectToCOMPortAction = new ConnectToCOMPortAction();
 
 	public DebugModeAction debugModeAction = new DebugModeAction();
 	public ClearMapAction clearMapAction = new ClearMapAction();
@@ -60,15 +62,18 @@ public class ActionHandler {
 	//	public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
 
 	public SendControlSettingAction clawAction = new SendControlSettingAction("","",ControlSettingID.CLAW);
+	
 	public SendControlSettingAction startRunAction = new SendControlSettingAction("Start run", "Starts an autonomous run",
-																					ControlSettingID.NEXT_DECISION);
+																					ControlSettingID.START_RUN);
 	public SendControlSettingAction nextDecisionAction = new SendControlSettingAction("Next decision", "Commands robot to take next autonomous decision",
-			ControlSettingID.NEXT_DECISION);
+																						ControlSettingID.NEXT_DECISION);
 	
 	/**
 	 * Listeners
 	 */
 	public ControlTableListener controlTableListener = new ControlTableListener();
+	
+	public ComboBoxListener comboBoxListener = new ComboBoxListener();
 	
 	/**
 	 * Initialize action handler
@@ -215,31 +220,50 @@ public class ActionHandler {
 						portNames[0]);
 
 				if(selectedPort != null) {
-					// connect to port
-					try {
-						serialCOM.connectToSerialPort(selectedPort);
-
-						JOptionPane.showMessageDialog(animator.getFrame(),
-								"Port connected",
-								selectedPort,
-								JOptionPane.INFORMATION_MESSAGE);
-					} catch (SerialPortException e2) {
-						String toolTip;
-
-						if(e2.getExceptionType().equals("Port busy")) {
-							toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
-						} else {
-							toolTip = "";
-						}
-
-						JOptionPane.showMessageDialog(animator.getFrame(),
-								e2.getExceptionType() + toolTip,
-								e2.getPortName(),
-								JOptionPane.ERROR_MESSAGE);
-					}
+					serialCOM.setSelectedPortName(selectedPort);
 				}
 			}
 		}
+	}
+	
+	/**
+	 * 
+	 * @author Isak
+	 *
+	 */
+	private class ConnectToCOMPortAction extends AbstractAction {
+
+		public ConnectToCOMPortAction() {
+			super("Connect to selected port");
+
+			putValue(SHORT_DESCRIPTION, "Connects to the selected port");		
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			try {
+				serialCOM.connectToSerialPort();
+
+				JOptionPane.showMessageDialog(animator.getFrame(),
+						"Port connected",
+						serialCOM.getSelectedPortName(),
+						JOptionPane.INFORMATION_MESSAGE);
+			} catch (SerialPortException e2) {
+				String toolTip;
+
+				if(e2.getExceptionType().equals("Port busy")) {
+					toolTip = "! Try 'lsof | grep ...' in console \nif the problem persists";
+				} else {
+					toolTip = "";
+				}
+
+				JOptionPane.showMessageDialog(animator.getFrame(),
+						e2.getExceptionType() + toolTip,
+						e2.getPortName(),
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+
 	}
 
 	/**
@@ -330,7 +354,8 @@ public class ActionHandler {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(controlSetting == ControlSettingID.NEXT_DECISION) {
+			if(controlSetting == ControlSettingID.NEXT_DECISION ||
+					controlSetting == ControlSettingID.START_RUN) {
 				serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, controlSetting, 1);
 
 			} else {
@@ -366,14 +391,64 @@ public class ActionHandler {
 	//================================================================================
 	// Listeners
 	//================================================================================
+	/**
+	 * Detects change in the table
+	 * @author Isak
+	 *
+	 */
 	private class ControlTableListener implements TableModelListener {
 
 		@Override
 		public void tableChanged(TableModelEvent e) {
-			// TODO Auto-generated method stub
+			// get value
+			int row = e.getFirstRow();
+			int column = e.getColumn();
+			TableModel model = (TableModel) e.getSource();
 			
+			double data = Double.parseDouble((String) model.getValueAt(row, column));
+			
+			// convert and send value
+			int sendData = 0;
+			int dataID = 0;
+			if(row == 0) {
+				sendData = (int) (data * 100);
+				dataID = ControlSettingID.PROPORTIONAL;
+			} else if (row == 1) {
+				sendData = (int) (data * 100);
+				dataID = ControlSettingID.DERIVATIVE;
+			} else if (row == 2) {
+				sendData = (int) (data * 10);
+				dataID = ControlSettingID.KONSTANT;
+			} else if (row == 3) {
+				sendData = (int) (data / 10); 
+				dataID = ControlSettingID.CONSTANT_90;
+			} else if (row == 4)  {
+				sendData = (int) (data / 10); 
+				dataID = ControlSettingID.CONSTANT_180;
+			} else if (row == 5)  {
+				sendData = (int) data; 
+				dataID = ControlSettingID.SPEED;
+			} else if (row == 6)  {
+				sendData = (int) data; 
+				dataID = ControlSettingID.ROTATION_SPEED;
+			}
+			serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, dataID, sendData);
 		}
+	}
+	
+	/**
+	 * Detects change in comboboxes
+	 */
+	private class ComboBoxListener implements ActionListener {
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JComboBox<Integer> changedBox = (JComboBox)e.getSource();
+	        Integer selectedInteger = (Integer) changedBox.getSelectedItem();
+	        
+	        robotData.update(ControlSettingID.CURRENT_HEAT, selectedInteger);
+	        serialCOM.sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.CURRENT_HEAT, selectedInteger);
+		}
 		
 	}
 }

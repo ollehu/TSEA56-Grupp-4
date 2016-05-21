@@ -3,9 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Observable;
 
-import resources.ControlID;
 import resources.ControlSettingID;
-import resources.Converters;
 import resources.OtherConstants;
 
 public class RobotData extends Observable{
@@ -95,6 +93,10 @@ public class RobotData extends Observable{
 		
 		} else if(identifier == ControlSettingID.LAST_CONTROL_COMMAND) {
 			return 4;
+			
+		} else if(identifier == ControlSettingID.CURRENT_HEAT) {
+			return 5;
+			
 		} else {
 			return -1;
 		}
