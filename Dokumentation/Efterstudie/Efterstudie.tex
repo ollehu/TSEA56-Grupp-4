@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-
+\usepackage{pgfplotstable}
 \usepackage{extras} % Se extras.sty
 
 \begin{document}
@@ -123,20 +123,22 @@ Projektet planerades framtungt, alltså med stor del av tiden i början av proje
 
 
 
+\begin{figure}
+  \centering
+\begin{tikzpicture}[scale=0.7]
 
-\begin{tikzpicture}[scale=1]
+  \begin{axis}[xlabel={Vecka},ylabel={Ackumulerad tid [h]}, legend pos = north west, width = \textwidth, legend cell align = left,xmin=0,ymin=0]
 
-  \begin{axis}[xlabel={Vecka},ylabel={Ackumulerad tid [h]}, legend pos = north west, width = \textwidth, legend cell align = left]
-
-    \addplot table[x index= 0, y index = 1, col sep = comma] {images/data.txt};
+    \addplot[blue, mark=*, mark indices={2,3,4,5,6,7,8,9}] table[x index= 0, y index = 1, col sep = comma, mark repeat=1, mark phase = 2] {images/data.txt};
     \addlegendentry{Projekterad tid};
 
-    \addplot table[x index = 2, y index = 3, col sep = comma] {images/data.txt};
+    \addplot[red, mark=square*, mark indices={2,3,4,5,6,7}] table[x index = 2, y index = 3, col sep = comma, mark=*]{images/data.txt};
     \addlegendentry{Rapporterad tid};
 
   \end{axis}
 \end{tikzpicture}
-
+\caption{Planerad mot rapporterad tid} \label{tidPlot}
+\end{figure}
 
 
 
@@ -208,7 +210,7 @@ Några tekniska framgångar som är värda att nämnas är:
 \begin{itemize}
 \item Fästena av IR-sensorerna som skrevs ut med hjälp av 3D-skrivare.
 \item Regleringen implementerades bra vilket gjorde att roboten var snabb och aldrig behövde stanna upp för att tänka. Det var därmed mycket tillfredställande att se roboten köra. 
-\item Avsökningsalgoritmen fungerade direkt när den implementerades, vilet fås se som en bedrift med tanke på hur omfattande algoritmen är. 
+\item Avsökningsalgoritmen fungerade direkt när den implementerades, vilket fås se som en bedrift med tanke på hur omfattande algoritmen är. 
 \end{itemize} 
 
 \pagebreak
