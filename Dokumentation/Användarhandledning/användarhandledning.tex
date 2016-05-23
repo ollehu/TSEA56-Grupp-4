@@ -47,7 +47,7 @@ Version 1.0
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & - & - \\ \hline
+Granskad & OHU & 2016-05-23 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -103,7 +103,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & - & Första utkastet & Grupp 4 & - \\ \hline
+1.0 & 2016-05-23 & Första utkastet & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -212,7 +212,7 @@ För att justera kontrasten på LCD-displayen används den potentiometer som syn
 
 
 \subsection{Styrning}
-Roboten används genom att följa instruktionerna nedan.
+Roboten används autonomt genom att följa instruktionerna nedan.
 \begin{enumerate}
     \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
   \item Koppla på ett laddat batteri med spänningsnivå $7.2$ V och slå på batterispänningen.
@@ -226,6 +226,8 @@ Roboten används genom att följa instruktionerna nedan.
   \item När roboten har identifierat målet, återkommit till startposition och öppnat gripklon ska ett objekt placeras däremellan och brytare 5 aktiveras.
   \item Aktivera brytare 5 för att roboten ska navigera till målet och släppa objektet. 
 \end{enumerate}
+
+För manuell körning krävs det att brytare 1 är inställd rätt och att roboten är uppkopplad mot en datormodul. Följ därefter de kortkommandon som finns i avsnitt \ref{shortcuts}.
 
 
 \section{Datormodul}
@@ -242,15 +244,15 @@ Datormodulens GUI är indelat i fem olika delar: en meny, en kartpanel, en tabel
 
 \subsubsection{Meny} Låter användaren justera olika inställningar för programmet. Under fliken \emph{File}  finns:
 \begin{description}
-	\item[Save log] - sparar nuvarande loggfil och öppnar en ny (endast tillgänglig i debug-läge).
-	\item[Comment log] - sparar en kommentar till nuvarande loggfil (endast tillgänglig i debug-läge).
+  \item[Save log] - sparar nuvarande loggfil och öppnar en ny (endast tillgänglig i \textit{debug}-läge).
+  \item[Comment log] - sparar en kommentar till nuvarande loggfil (endast tillgänglig i \textit{debug}-läge).
 	\item[Select serial port] - låter användaren välja vilken serieport programmet ska använda.
 	\item[Connect to selected port] - kopplar upp mot den valda serieporten. Kopplar upp mot en förprogrammerad port om inte en annan port valts. 
 \end{description}
 
 Under fliken \emph{Edit} finns:
 \begin{description}
-	\item[Debug mode] - väljer debug-läge av/på (endast tillgänglig i autonomt läge).
+  \item[Debug mode] - väljer \textit{debug}-läge av/på (endast tillgänglig i autonomt läge).
 	\item [Clear map] - rensar programkartan (påverkar inte robotens interna karta).
 \end{description}
 
@@ -258,28 +260,29 @@ Utöver oven nämnda två finns även en hjälpmeny där användaren kan komma �
 
 \paragraph{Kartpanel} Visar alla de moduler som roboten har besökt samt alla intilligande moduler. Innan startad körning är alltså kartan blank. Modulerna representeras med olika färger beroende på deras egenskaper:
 \begin{itemize}
-  \item[-] \makebox[1cm][l]{Grön} - modulen där körningen startade
-  \item[-] \makebox[1cm][l]{Röd} - modulen där målet identifierats
-  \item[-] \makebox[1cm][l]{Blå} - utforskad, öppen modul
-  \item[-] \makebox[1cm][l]{Gul} - robotens nuvarande position
-  \item[-] \makebox[1cm][l]{Svart} - väggmodul
-  \item[-] \makebox[1cm][l]{Grå} - outforskad, öppen modul
+  \item[-] \makebox[1cm][l]{Grön} - modulen där körningen startade.
+  \item[-] \makebox[1cm][l]{Röd} - modulen där målet identifierats.
+  \item[-] \makebox[1cm][l]{Blå} - utforskad, öppen modul.
+  \item[-] \makebox[1cm][l]{Gul} - robotens nuvarande position.
+  \item[-] \makebox[1cm][l]{Svart} - väggmodul.
+  \item[-] \makebox[1cm][l]{Grå} - outforskad, öppen modul.
 \end{itemize}
 
-\paragraph{Tabellpanel} Visar de senaste mottagna sensorvärdena för alla sensorer. I debug-läge visas även en tabell där användaren kan ändra vissa parametrar hos roboten. Dessa ändras genom att ändra tabellvärdet och trycka Enter.
+\paragraph{Tabellpanel} Visar de senaste mottagna sensorvärdena för alla sensorer. I \textit{debug}-läge visas även en tabell där användaren kan ändra vissa parametrar hos roboten. Dessa ändras genom att ändra tabellvärdet och trycka Enter.
 
 \paragraph{Grafpanel}
 Visar tre grafer med  de senaste 100 mottagna mätvärdena från:
-\begin{enumerate}
-	\item Sidledes avståndssensorer
-	\item Främre avståndssensorn
-	\item Rotationshastigheten
-\end{enumerate}
+\begin{itemize}
+  \item[-] Sidledes avståndssensorer,
+  \item[-] Främre avståndssensorn,
+  \item[-] Rotationshastigheten.
+\end{itemize}
 
 \paragraph{Robotens statuspanel}
-Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i debug-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
+Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i \textit{debug}-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
 
 \subsection{Övrigt}
+\label{shortcuts}
 \paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för Bluetooth\textsuperscript{\circledR}-kommunikation.
 \paragraph{Kortkommandon}\label{kortkommandon}
 \begin{description}
