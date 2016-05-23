@@ -111,17 +111,17 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \pagenumbering{arabic}
 
 \section{Inledning}
-Undsättningsroboten PigBot är en robot för undsättning av nödställda. Det är en autonom konstruktion vilket innebär att PigBot självständigt kan navigera, och identifiera nödställda, i en labyrint utan att användarens ingripanden krävs.
+Undsättningsroboten PigBot är en robot för undsättning av nödställda. Den autonoma konstruktionen gör att PigBot självständigt kan navigera och identifiera nödställda i en labyrint, utan att användarens ingripanden krävs.
 
-Denna användarhandledning har för avsikt att ingående instruera användaren vilka användningsområden undsättningsroboten, PigBot, besitter. Här ges en ingående beskrivning hur PigBot kan kopplas samman med en extern datormodul, och hur det grafiska gränssnittet på datormodulen fungerar och bör användas. Andarhandledningen ska dessutom demonstrera hur hårdvaran på PigBot fungerar, detta ur ett användarmässigt perspektiv. 
+Denna användarhandledning har för avsikt att ingående instruera användaren vilka användningsområden undsättningsroboten PigBot besitter. Här ges en ingående beskrivning hur PigBot kan kopplas samman med en extern datormodul samt hur det grafiska gränssnittet på datormodulen fungerar och bör användas. Användarhandledningen ska dessutom demonstrera hur hårdvaran på PigBot fungerar, detta ur ett användarmässigt perspektiv. 
 
-För att bruka PigBot krävs en dator med möjligthet till parning via Bluetooth\textsuperscript{\circledR}. Om användaren förfogar över en dator som inte har denna möjlighet krävs dessutom en Bluetooth\textsuperscript{\circledR}-adapter för att kunna ansluta till PigBot.
+För att bruka PigBot till fullo krävs en dator med möjligthet till parning via Bluetooth\textsuperscript{\circledR}. Om användaren förfogar över en dator som inte har denna möjlighet krävs dessutom en Bluetooth\textsuperscript{\circledR}-adapter för att kunna ansluta till PigBot.
 
 \subsection{Förkortningar}
 Denna användarhandledning kommer tillämpa förkortningar för att ge användaren bättre översikt i sin handledning. Samtliga förkortningar är emellertid listade nedan:
 
 \begin{itemize}
-\item GUI - Står för "graphical user interface" vilket är engelska för grafiskt användargränssnitt. Detta är den mjukvara som ska underlätta interaktionen mellan användaren och PigBot.
+  \item[-] GUI - Står för \textit{Graphical User Interface} vilket är engelska för grafiskt användargränssnitt. Detta är den mjukvara som ska underlätta interaktionen mellan användaren och PigBot.
 \end{itemize}
 
 \pagebreak
@@ -129,7 +129,7 @@ Denna användarhandledning kommer tillämpa förkortningar för att ge användar
 \section{Roboten}
 Nedan följer en användarhandledning för själva roboten. Kapitlet är uppdelat i två delar. Dioder och brytare beskriver de fysiska komponenter som är monterade på roboten. Styrning ger en förklaring till hur roboten ska användas i autonomt respektive manuellt läge.
 
-\subsection{Dioder och brytare}
+\subsection{Dioder, brytare och display}
 Hädanefter numreras dioder och brytare enligt figur \ref{picTop} och nedan följer en förklaring av respektive.
 
 \begin{figure}[htbp]
@@ -186,6 +186,31 @@ De brytare som finns kopplade på robotens övre modul nollställer robotens mod
 
 Den ordning brytarna sitter i är även i den ordning användaren ska nollställa hela roboten, ($1 \rightarrow 2 \rightarrow 3$). Varpå roboten startas ($4$).
 
+Utöver dioder och brytare finns även en LCD-display monterad på det övre kortet. LCD-displayen visar information om måldetektion, främre sensorvärde och tillryggalagd sträcka enligt figur \ref{lcd}.
+
+\begin{figure}[htbp]
+	\centering
+	\input{images/lcd}
+	\caption{\textit{LCD-displayen under färd} \label{lcd}}
+\end{figure}
+
+\begin{description}[style=unboxed, leftmargin=0cm]
+  \item[Target] visar ifall roboten, för tillfället, set målet framför sig.
+  \item[Forw] visar det avstånd roboten har rakt föröver till nästa vägg i centimeter.
+  \item[Trip] visar den totala tillryggalagda sträckan i meter.
+\end{description}
+
+För att justera kontrasten på LCD-displayen används den potentiometer som syns i bild \ref{lcdPot}. Om LCD-displayen inte visar någon information tror att roboten är aktiv, justera då kontrasten.
+
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.35]{images/RobotLCD.pdf}
+	\caption{\textit{LCD-displayen med tillhörande potentiometer} \label{lcdPot}}
+\end{figure}
+
+
+
 \subsection{Styrning}
 Roboten används genom att följa instruktionerna nedan.
 \begin{enumerate}
@@ -193,6 +218,7 @@ Roboten används genom att följa instruktionerna nedan.
   \item Koppla på ett laddat batteri med spänningsnivå $7.2$ V och slå på batterispänningen.
   \item Slå över brytare 1 till autonomt läge.
     \renewcommand*\labelenumi{(\theenumi)\vspace{1pt} - }
+
   \item Valfritt: Koppla upp mot roboten med en dator.
     \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
   \item Nollställ roboten genom att aktivera brytarna 1,2 och 3 i den ordningen. Nu ska endast diod 1 vara aktiv.
@@ -225,19 +251,19 @@ Datormodulens GUI är indelat i fem olika delar: en meny, en kartpanel, en tabel
 Under fliken \emph{Edit} finns:
 \begin{description}
 	\item[Debug mode] - väljer debug-läge av/på (endast tillgänglig i autonomt läge).
-	\item [Clear map] - rensar programkartan. OBS! Påverkar inte robotens interna kartan.
+	\item [Clear map] - rensar programkartan (påverkar inte robotens interna karta).
 \end{description}
 
 Utöver oven nämnda två finns även en hjälpmeny där användaren kan komma åt användarhandledningen och öppna en lista över alla tangentbordgenvägar.
 
 \paragraph{Kartpanel} Visar alla de moduler som roboten har besökt samt alla intilligande moduler. Innan startad körning är alltså kartan blank. Modulerna representeras med olika färger beroende på deras egenskaper:
 \begin{itemize}
-	\item Grön - modulen där körningen startade
-	\item Röd - modulen där målet identifierats
-	\item Blå - utforskad, öppen modul
-	\item Gul - robotens nuvarande position
-	\item Svart - väggmodul
-	\item Grå - outforskad, öppen modul
+  \item[-] \makebox[1cm][l]{Grön} - modulen där körningen startade
+  \item[-] \makebox[1cm][l]{Röd} - modulen där målet identifierats
+  \item[-] \makebox[1cm][l]{Blå} - utforskad, öppen modul
+  \item[-] \makebox[1cm][l]{Gul} - robotens nuvarande position
+  \item[-] \makebox[1cm][l]{Svart} - väggmodul
+  \item[-] \makebox[1cm][l]{Grå} - outforskad, öppen modul
 \end{itemize}
 
 \paragraph{Tabellpanel} Visar de senaste mottagna sensorvärdena för alla sensorer. I debug-läge visas även en tabell där användaren kan ändra vissa parametrar hos roboten. Dessa ändras genom att ändra tabellvärdet och trycka Enter.
