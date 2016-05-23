@@ -1,6 +1,5 @@
 \frametitle{PigBot}
-\begin{itemize}
-    \item[-] Tre stycken \Verb+ATmega1284p+
-    \item[-] Åtta stycken sensorer
-    \item[-] Osv\ldots
-  \end{itemize}
+\begin{columns}
+     \input{images/overview.pdf}
+  \end{columns}
+
