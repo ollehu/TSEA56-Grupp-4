@@ -9,12 +9,19 @@
 
 {\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Användarhandledning}
 
-\vspace{5em}
+\begin{figure}[!htbp]
+  \begin{center}
+\noindent\resizebox{0.8\linewidth}{!}{
 
-Version 1.0
 
-\vspace{5em}
-Grupp 4 \\
+  \includegraphics{images/RobotFront2}}
+  \end{center}
+\end{figure}
+
+
+  \begin{minipage}{0.5\textwidth}
+    \centering
+ Grupp 4 \\
 \begin{tabular}{rl}
 Hynén Ulfsjöö, Olle&\verb+ollul666+
 \\
@@ -29,11 +36,14 @@ Inge, Zimon&\verb+zimin415+
 Strömberg, Isak&\verb+isast763+
 \\
 \end{tabular}
+\end{minipage}%
+\begin{minipage}{0.5\textwidth}
+  \centering
+Version 1.0
 
-\vspace{5em}
 \today
+\vspace{2em}
 
-\vspace{16em}
 Status
 \begin{longtable}{|l|l|l|} \hline
 
@@ -41,9 +51,12 @@ Granskad & - & - \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
+\end{minipage}
+
 
 \end{center}
 \end{titlepage}
+
 
 \pagebreak
 \begin{center}
@@ -98,9 +111,9 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \pagenumbering{arabic}
 
 \section{Inledning}
-Undsättningsroboten PigBot är en robot för undsättning av nödställda. Den är autonom konstruktion vilket innebär att PigBot självständigt kan navigera, och identifiera nödställda, i en labyrint utan att användarens ingripanden krävs.
+Undsättningsroboten PigBot är en robot för undsättning av nödställda. Det är en autonom konstruktion vilket innebär att PigBot självständigt kan navigera, och identifiera nödställda, i en labyrint utan att användarens ingripanden krävs.
 
-Denna användarhandledning har för avsikt att ingående instruera användaren vilka användningsområden undsättningsroboten, PigBot, besitter. Här ges en ingående beskrivning hur PigBot kan kopplas samman med en extern datormodul, och hur det grafiska gränssnittet på datormodulen fungerar och bör användas. Andarhandledningen ska dessutom demonstrera hur hårdvåran på PigBot fungerar, detta ur ett användarmässigt perspektiv. 
+Denna användarhandledning har för avsikt att ingående instruera användaren vilka användningsområden undsättningsroboten, PigBot, besitter. Här ges en ingående beskrivning hur PigBot kan kopplas samman med en extern datormodul, och hur det grafiska gränssnittet på datormodulen fungerar och bör användas. Andarhandledningen ska dessutom demonstrera hur hårdvaran på PigBot fungerar, detta ur ett användarmässigt perspektiv. 
 
 För att bruka PigBot krävs en dator med möjligthet till parning via Bluetooth\textsuperscript{\circledR}. Om användaren förfogar över en dator som inte har denna möjlighet krävs dessutom en Bluetooth\textsuperscript{\circledR}-adapter för att kunna ansluta till PigBot.
 
@@ -111,11 +124,19 @@ Denna användarhandledning kommer tillämpa förkortningar för att ge användar
 \item GUI - Står för "graphical user interface" vilket är engelska för grafiskt användargränssnitt. Detta är den mjukvara som ska underlätta interaktionen mellan användaren och PigBot.
 \end{itemize}
 
+\pagebreak
+
 \section{Roboten}
 Nedan följer en användarhandledning för själva roboten. Kapitlet är uppdelat i två delar. Dioder och brytare beskriver de fysiska komponenter som är monterade på roboten. Styrning ger en förklaring till hur roboten ska användas i autonomt respektive manuellt läge.
 
 \subsection{Dioder och brytare}
 Hädanefter numreras dioder och brytare enligt figur \ref{picTop} och nedan följer en förklaring av respektive.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.4]{Images/RobotTopInfo}
+	\caption{\textit{Illustration av PigBots olika tryckknappar och dioder.} \label{picTop}}
+\end{figure}
 
 De dioder som är placerade på robotens övre modul visar båda styrläge och status under uppdraget.
 \begin{description}[style=unboxed, leftmargin=0cm]
@@ -163,7 +184,7 @@ De brytare som finns kopplade på robotens övre modul nollställer robotens mod
   \item[Brytare 5] skickar ett startkommando till roboten.
 \end{description}
 
-Den ordning brytarna sitter i är även den ordning man nollställer hela roboten ($1 \rightarrow 2 \rightarrow 3$) och sedan startar roboten ($4$).
+Den ordning brytarna sitter i är även i den ordning användaren ska nollställa hela roboten, ($1 \rightarrow 2 \rightarrow 3$). Varpå roboten startas ($4$).
 
 \subsection{Styrning}
 Roboten används genom att följa instruktionerna nedan.
@@ -182,8 +203,16 @@ Roboten används genom att följa instruktionerna nedan.
 
 
 \section{Datormodul}
+Detta kapitel behandlar det GUI som medföljer PigBot. Gränssnittet är fristående från robototen och körs på användarens externa datormodul.
+
 \subsection{Grafiskt gränssnitt}
-Datormodulens gränssnitt är indelat i fem olika delar: en meny, en kartpanel, en tabellpanel, en grafpanel och robotens statuspanel.
+Datormodulens GUI är indelat i fem olika delar: en meny, en kartpanel, en tabellpanel, en grafpanel och robotens statuspanel. Figur \ref{DebugOff} visar programmet i sin helhet.
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[scale=0.35]{Images/computerDebugOff}
+	\caption{\textit{GUI med tillhörande paneler efter rutt i ett bansystem.} \label{DebugOff}}
+\end{figure}
 
 \subsubsection{Meny} Låter användaren justera olika inställningar för programmet. Under fliken \emph{File}  finns:
 \begin{description}
@@ -225,7 +254,7 @@ Visar tre grafer med  de senaste 100 mottagna mätvärdena från:
 Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i debug-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
 
 \subsection{Övrigt}
-\paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för blåtandskommunikation.
+\paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för Bluetooth\textsuperscript{\circledR}-kommunikation.
 \paragraph{Kortkommandon}\label{kortkommandon}
 \begin{description}
 	\item[W] - kör roboten framåt (fungerar endast i manuellt läge).
