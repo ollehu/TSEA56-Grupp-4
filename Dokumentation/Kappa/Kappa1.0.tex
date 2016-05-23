@@ -6,7 +6,7 @@
 \begin{titlepage}
 \begin{center}
 
-{\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Kappa}
+{\Large\bfseries Konstruktion av en autonom undsättningsrobot \\ \small \bfseries Kandidatprojekt i elektronik vid Linköpings universitet}
 
 \vspace{5em}
 
@@ -50,7 +50,7 @@ Godkänd & - & - \\ \hline
 \section*{PROJEKTIDENTITET}
 2016/VT, Undsättningsrobot Gr. 4
 
-Linköpings tekniska högskola, ISY
+Tekniska högskolan vid Linköpings universitet
 \vspace{5em}
 %\begin{center}
 
@@ -91,7 +91,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & - &  Första utkastet & Grupp 4 & - \\ \hline
+1.0 & 2016-05-18 &  Första utkastet & Grupp 4 & LG \\ \hline
 \end{tabular}
 \end{table}
 
@@ -105,13 +105,13 @@ Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning fö
 \begin{figure}[!htbp]
 \centering
 \noindent\resizebox{.7\linewidth}{!}{
-	\input{images/overview}}
+	\includegraphics{images/robot}}
 	\caption{Roboten i en labyrint \label{scene}}	
 \end{figure}
 
 I figur \ref{scene} befinner sig roboten i en exempelbana där den testats. För att konstruera roboten har hårdvara, till exempel sensorer och mikroprocessorer tillhandahållits av beställare, liksom den nödvändiga programvaran för att utveckla mjukvara.
 
-Projektet var komplext och ställde höga krav på kompetens inom elektroteknik och samarbetsförmåga. Det som var mest utmanande var att lyckas med samarbetet och att få ihop alla delar till en fungerande enhet utan att fel uppstod. 
+Projektet var komplext och ställde höga krav på samarbetsförmåga och kompetens inom elektroteknik. Det som var mest utmanande var att lyckas med samarbetet och att få ihop alla delar till en fungerande enhet utan att fel uppstod. 
 
 Det var intressant att det var flera grupper som genomförde samma projekt och därefter tävlade mot varandra. Eftersom det finns många sätt att lyckas med projektet var det intressant att jämföra lösningar mellan grupperna.
 
@@ -120,13 +120,13 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \pagebreak
 
 \section{Problemformulering}
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40x40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
+För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen att bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40 x 40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
 
 \subsection{Tillräckligt bra sensorvärden}
-För att roboten skulle ha en uppfattning om sin omgivning behövde sensorerna vara precisa i sina mätningar. Dessa behövde sedan läsas av tillräckligt ofta för att robotens rörelser skulle kunna regleras på ett tillfredställande sätt samtidigt som de inte kunde läsas av obegränsad antal gånger per sekund på grund av hårdvarubegränsningar.
+För att roboten skulle ha en uppfattning om sin omgivning behövde sensorerna vara precisa i sina mätningar. Dessa behövde sedan läsas av tillräckligt ofta för att robotens rörelser skulle kunna regleras på ett tillfredställande sätt samtidigt som de inte kunde läsas av obegränsat antal gånger per sekund på grund av hårdvarubegränsningar.
 
 \subsection{Kartläggning}
-Kartläggningens utmaning var tvådelad. Den ena delen handlade om att hålla reda på hur roboten var orienterad samt vilken position den hade. För att uppdatera rätt värden behövde roboten själv hålla koll på vilket värderstreck den var riktad i och vilken position den tagit sig till. Den andra delen, och mer komplexa, var att komma fram till en representation som gjorde uppdraget genomförbart. Kartinformationen behövde lagras på ett sådant sätt att kartläggningen blev smidig, samtidigt som avståndsberäkningar behövde kunna göras effektiva.
+Kartläggningens utmaning var tvådelad. Den ena delen handlade om att hålla reda på hur roboten var orienterad samt vilken position den hade. För att uppdatera rätt värden behövde roboten själv veta vilket väderstreck den var riktad i och vilken position den tagit sig till. Den andra delen, och mer komplexa, var att komma fram till en representation som gjorde uppdraget genomförbart. Kartinformationen behövde lagras på ett sådant sätt att kartläggningen blev smidig, samtidigt som avståndsberäkningar behövde kunna göras effektiva.
 
 \subsection{Kommunikation}
 För att kunna överföra information mellan de olika modulerna var det viktigt att ha ett pålitligt kommunikationssystem. Utan kommunikationssystem skulle det inte gå att testa de olika modulerna tillsammans. Därför var det viktigt att få denna del att fungera i ett tidigt skede.
@@ -135,19 +135,19 @@ För att kunna överföra information mellan de olika modulerna var det viktigt 
 Trots att arbetet delats upp i olika moduler var det viktigt att ha i åtanke att dessa skulle vara en del av ett större system. Även om modulerna kunde fungera felfritt var och en för sig fanns det en möjlighet att de skulle motverka varandra vid integrering av dem. Ett identifierat problemområde var att en moduls avbrott skulle kunna ta upp för mycket tid, vilket skulle medföra att de andra modulerna tappade effektivitet. 
 
 \subsection{Samarbete}
-En förutsättning för att att projektet skulle lyckas var att samarbetet fungerade och att alla tog ansvar för att driva arbetet framåt. Om en eller flera gruppmedlem gör mer/mindre än de övriga kan konflikter lätt uppstå, vilket tar fokus från det essentiella i projektet.
+En förutsättning för att projektet skulle lyckas var att samarbetet fungerade och att alla tog ansvar för att driva arbetet framåt. Om en eller flera gruppmedlemmar gör mer/mindre än de övriga kan konflikter lätt uppstå, vilket tar fokus från det essentiella i projektet.
 
 
 \pagebreak
 
 \section{Kunskapsbas}
-Komponenterna som har använts under projektet finns nästan uteslutande beskrivna i datablad på kurshemsidans portal för datablad, Vanheden\cite{hemsidan}. Där finns datablad för alla använda sensorer och för mikroprocessorn \verb+ATmega1284p+ som används av alla robotens moduler.
+Komponenterna som har använts under projektet finns nästan uteslutande beskrivna i datablad på kurshemsidans portal för datablad, Vanheden \cite{hemsidan}. Där finns datablad för alla använda sensorer och för mikroprocessorn \verb+ATmega1284p+ som används av alla robotens moduler.
 
-Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utibildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade erfarenhet av. 
+Tack vare tidigare lästa kurser fanns en god kunskapsbas hos projektmedlemmarna vid projektets start. I de fall då nödvändig kunskap saknades utbildade medlemmarna sig på egen hand inom det aktuella området. Detta gällde främst programmering i C, som ingen i projektgruppen tidigare hade erfarenhet av. 
 
 De dokument som skrevs innan det praktiska arbetet påbörjades utgjorde också en viktig del och underlättade arbetet betydligt. Det dokument som användes mest var designspecifikationen, se appendix J, som i sin tur byggde på de tre förstudierna som genomfördes före projektets start. Förstudierna finns att läsa i appendix G, H och I.
 
-Till förfogande hade projektgruppen även en teknisk handledare tillhandahållen av ISY, instutitionen för systemteknik på Linköpings Universitet. Handledaren bidrog med råd och hjälp då hårdvara krånglade och då svårare problem behövde diskuteras.
+Till förfogande hade projektgruppen även en teknisk handledare tillhandahållen av ISY, Instutitionen för systemteknik på Linköpings universitet. Handledaren bidrog med råd och hjälp då hårdvara krånglade och då svårare problem behövde diskuteras.
 
 \pagebreak
 
@@ -155,23 +155,23 @@ Till förfogande hade projektgruppen även en teknisk handledare tillhandahålle
 I följande avsnitt beskrivs hur projektet genomförts i de tre olika faserna \textit{före}, \textit{under} och \textit{efter}.
 
 \subsection{Fas: Före}
-Projektet har bedrivits enligt projektmodellen \textit{LIPS}. \cite{LIPS} Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer: krav av prioritet 1 som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
+Projektet har bedrivits enligt projektmodellen \textit{LIPS}. \cite{LIPS} Ett projektdirektiv tilllhandahölls av projektets beställare och var utgångspunkt vid framtagandet av projektets krav. Kraven delades in i tre olika prioriteringsnivåer: krav av prioritet 1 som måste uppfyllas, krav av prioritet 2 som borde uppfyllas i mån av tid och krav av prioritet 3 som kan ses som utvecklingsmöjligheter. Kravens prioritering bestämdes utifrån projektdirektivet och projektgruppens intresseområden. 
 
 Efter att kravspecifikationen färdigställts och godkänts av beställare påbörjades den förberedande fasen av projektet. En systemskiss upprättades där produktens övergripande funktionalitet och design beskrevs som ett första förslag på robotens utformning. En detaljerad beskrivning finns i appendix F. 
 
 Systemskissen låg sedan till grund för arbetet med projektplanen, där projektets aktiviteter togs fram. För att enklare kunna planera projektet identifierades alla aktiviteters föregångare för att tydligt kunna se vilka aktiviteter som behövde slutföras innan en annan kunde påbörjas. Lista över aktiviteter tillsammans med resten av projektplanen återfinns i appendix D. Där finns även tidplanen, vilken beskriver vilka aktiviteter som planerades att genomföras och hur dessa var beroende av varandra. Tidplanen uppdaterades kontinuerligt under projektets gång.
 
 \subsection{Fas: Under}
-Före projektets praktiska del startade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som gav en ingående beskrivning av produkten. Syftet med designspecifikationen var att använda den som underlag vid det praktiska arbetet. Den skulle vara på sådan detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskrivna för att kunna arbeta efter dokumentet. Designspecifikationen i sin helhet hittas i appendix D. 
+Innan projektets praktiska del startade gjordes, i par om två projektmedlemmar, förstudier inom områdena reglering, sensorer och kommunikation. Förstudierna låg sedan till grund för designspecifikationen som gav en ingående beskrivning av produkten. Syftet med designspecifikationen var att använda den som underlag vid det praktiska arbetet. Den skulle vara på sådan detaljnivå att all funktionalitet samt hård- och mjukvarudesign skulle vara tillräckligt utförligt beskrivna för att kunna arbeta efter dokumentet. Designspecifikationen i sin helhet hittas i appendix D. 
 
-När designspecifikationen var färdigställd började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar, och jobbade mest, med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som färdigställdes tidigt eftersom arbetet med integreration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var något som projektgruppen började med tidigt eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas i ett tidigt skede påbörjades även virning av hårdvara parallellt med nämda aktiviteter. 
+När designspecifikationen var färdigställd började det praktiska arbetet. Eftersom roboten hade tre tydligt förutbestämda delsystem föll det sig naturligt att det par som arbetat med respektive förstudie bar huvudansvar, och jobbade mest, med just det delsystemet hos roboten. Mjukvara för busskommunikation var något som färdigställdes tidigt eftersom arbetet med integration av moduler skulle kunna påbörjas så tidigt som möjligt. Även avläsning av sensorer var något som projektgruppen började med tidigt eftersom regleringen var beroende av att erhålla korrekta sensorvärden. För att mjukvaran skulle kunna testas i ett tidigt skede påbörjades även virning av hårdvara parallellt med nämnda aktiviteter. 
 
 Arbetet följde den ordning som listats i tidplanen för att på smidigaste sätt ta hänsyn till de beroenden som existerade mellan aktiviteter. Som nämnt uppdaterades tidplanen allt eftersom aktiviteter avklarades för att bättre visa det faktiska arbetets gång. Till hjälp vid utvecklingsarbetet av mjukvara till hårdvaran användes Atmel Studio. Mjukvaran till datorn utvecklades i Eclipse. 
 
 \subsection{Fas: Efter}
 När roboten var färdigbyggd och det praktiska arbetet var klart skrevs en teknisk dokumentation, se appendix K. Denna redogör för hur roboten är konstruerad och vilka designbeslut som tagits. Även en användarhandledning, se appendix L, skrevs. Den beskriver hur roboten används på bästa sätt och ska underlätta för de som ska använda roboten efter avslutat projekt.
 
-Alla uppsatta krav, se appendix C, verifierades och produkten testades mot andra robotar som konstruerats med utgångspunkt från samma projektdirektiv. För att utvärdera arbetet skrevs en efterstudie där gruppen reflekterade över vad som gick bra, vad som gick bra och vilka förbättringsmöjligheter som finns inför vidareutveckling av produkten.
+Alla uppsatta krav, se appendix C, verifierades och produkten testades mot andra robotar som konstruerats med utgångspunkt från samma projektdirektiv. För att utvärdera arbetet skrevs en efterstudie där gruppen reflekterade över vad som gick bra och vilka förbättringsmöjligheter som finns inför vidareutveckling av produkten.
 
 \pagebreak
 
@@ -207,7 +207,7 @@ För att lösa problemet med att fästa sensorerna på roboten designades fäste
 I detta avsnitt beskrivs resultatet av projektet.
 
 \subsection{Beskrivning av produkten}
-Roboten har två olika körlägen som används i olika syften. Det körläge som används initialt för att klara uppgiften är att söka av grottsystemet. När det är gjort används det andra körläget, vilket hittar den kortaste vägen till den nödställde samt att lämna förnödenheten till den nödställde. Vilket körläge som ska vara aktivierat bestäms av en knapp, monterad på roboten, som kan tryckas in för att skifta läge. 
+Roboten har två olika körlägen som används i olika syften. Det körläge som används initialt för att klara uppgiften är att söka av grottsystemet. När det är gjort används det andra körläget, vilket hittar den kortaste vägen till den nödställde samt lämnar förnödenheten till den nödställde. Vilket körläge som ska vara aktivierat bestäms av en knapp, monterad på roboten, som kan tryckas in för att skifta läge. 
 
 %Dessa är söka av labyrint och köra kortaste väg och lämna förnödenhet efter att labyrinten är utforskad. 
 
@@ -218,7 +218,7 @@ På uppkopplad dator går utvalda sensorvärden att se i kontinuerligt uppdatera
 Mer om hur roboten används och felsöks finns att läsa i appendix L.
 
 \subsection{Robotens prestanda}
-Roboten kan ta sig fram med en hastighet av ca 1 m/s. Vid autonomt körning kör dock roboten i en hastighet motsvarande ungefär 70 av dess maxhastighet. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan reglera även vid avvikande utseende av banan. Sensordata processas och skickas i tillräckligt hög takt för att reglering hela tiden sker med uppdaterade sensorvärden. Robotens beslutsfattande sker i storleksordningen hundradelar, vilket gör att det det är omöjligt att med blotta ögat se när den stannar för att ``tänka''. %Det är därmed mycket tillfredställande att kolla på roboten i aktion.
+Roboten kan ta sig fram med en hastighet av ca 1 m/s. Vid autonom körning kör dock roboten i en hastighet motsvarande ungefär 70 \% av dess maxhastighet. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan reglera även vid avvikande utseende av banan. Sensordata processas och skickas i tillräckligt hög takt för att reglering hela tiden sker med uppdaterade sensorvärden. Robotens beslutsfattande sker i storleksordningen hundradelar, vilket gör att det är omöjligt att med blotta ögat se när den stannar för att ``tänka''. %Det är därmed mycket tillfredställande att kolla på roboten i aktion.
 
 \subsection{Test}
 Testning av robotens funktionalitet skedde i olika steg. För att testa I\textsuperscript{2}C-kommunikationen användes först en färdigprogrammerad I/O-enhet tillsammans med huvudmodulens processor. När den fungerade användes en annan processor för att testa ytterligare implementationer. Parallellt konfigurerades sensorerna så att de skulle ge korrekta sensorvärden. Först när detta var klart testades regleringen. När regleringen fungerade påbörjades bantester för att testa avsökningsalgoritmen. För protokoll över bantester se appendix M. 
@@ -230,31 +230,26 @@ Alla de krav med prioritet 1 som initialt ställdes upp i kravspecifikationen ha
 \section{Slutsatser}
 I detta avsnitt presenteras projektets slutsatser samt dess framtida utvecklingsmöjligheter.
 
-\subsection{Slutsatser}
-Gruppen har arbetat effektivt från start. Arbetet med dokumenten i början speciellt designspecifikation och projektplan har varit till god hjälp som underlag för det praktiska arbetet. Hade mindre tid lagts på dessa dokument hade kanske inte projektet gått så smidigt som det gjort från start. Det praktiska arbetet har, med parindelning och realtivt jämn arbetsfördelning, flutit på utan några större problem på gruppnivå. Om problem uppstått har gruppen försökt lösa dem tillsammans. Modulindelningen har inte hindrat arbetet i stor utsträckning då resterande gruppmedlemmar kunde skriva dokumenatation och kod vid tillfällen då roboten var upptagen. 
+\subsection{Genomförandet}
+Gruppen har arbetat effektivt från start. Arbetet med dokumenten i början speciellt designspecifikation och projektplan har varit till god hjälp som underlag för det praktiska arbetet. Hade mindre tid lagts på dessa dokument hade kanske inte projektet gått så smidigt som det gjort från start. Det praktiska arbetet har, med parindelning och relativt jämn arbetsfördelning, flutit på utan några större problem på gruppnivå. Om problem uppstått har gruppen försökt lösa dem tillsammans. Modulindelningen har inte hindrat arbetet i stor utsträckning då resterande gruppmedlemmar kunde skriva dokumenatation och kod vid tillfällen då roboten var upptagen. 
 
-Det gruppen är mest nöjd med på det arbetesmässiga planet är hur det interna samarbetet har fungerat. Alla har tagit ansvar och drivit arbetet framåt vilket har gjort att arbetet har flutit på bra och aktiviteterna har blivit gjorda i tid. En bra kommunikationen har varit bidragande till ett bra arbetsklimat och att gruppen även har träffats vid sidan av arbetet med projektet har höjt sammanhållningen.
+Det gruppen är mest nöjd med på det arbetsmässiga planet är hur det interna samarbetet har fungerat. Alla har tagit ansvar och drivit arbetet framåt vilket har gjort att arbetet har flutit på bra och aktiviteterna har blivit gjorda i tid. En bra kommunikation har varit bidragande till ett bra arbetsklimat och att gruppen även har träffats vid sidan av arbetet med projektet har höjt sammanhållningen.
 
-När det gäller själva produkten är robotens snabbhet något gruppen är nöjd med. Den behöver inte stanna upp för att tänka tillräckligt länge för att det mänskliga ögat ska notera det, vilket gör att roboten kör på ett tillfredsställande sätt. Den kör även med hög hastighet, speciellt på längre raksträckor, vilket är viktigt eftersom tävlingen vid projektetes slut bedömer tiden roboten tar på sig. 
+När det gäller själva produkten är robotens snabbhet något gruppen är nöjd med. Den behöver inte stanna upp för att tänka tillräckligt länge för att det mänskliga ögat ska notera det, vilket gör att roboten kör på ett tillfredsställande sätt. Den kör även med hög hastighet, speciellt på längre raksträckor, vilket är viktigt eftersom tävlingen vid projektets slut bedömde tiden roboten tog på sig att utföra uppdraget. 
 
-Att robotens avsökningsalgoritm fungerade direkt då den testades på bana är något annat gruppen är stolt över. Med tanke på hur omfattande algoritmen var fås det ses som en bedrift att den fungerade på en gång. 
+Att robotens avsökningsalgoritm fungerade så bra som den gjorde direkt då den testades på bana är något annat gruppen är stolt över. Med tanke på hur omfattande algoritmen var får det ses som en bedrift att den fungerade på en gång. 
 
-Gruppen känner sig även nöjd med sensorerna i allmänhet, i synnerhet IR-sensorerna. Efter mycket kalibrering och testning gav de mycket bra värden, vilket underlättade regleringen för styrmodulen.
+Gruppen känner sig även nöjd med sensorerna i allmänhet och IR-sensorerna i synnerhet. Efter mycket kalibrering och testning gav de mycket bra värden, vilket underlättade regleringen för styrmodulen.
 
-\begin{itemize}
-\item Arbetsmässigt: Gruppen har samarbetat bra och tagit ansvar vilket har gjort att arbetet flutit på väldigt bra och aktiviteter har blivit gjorda i tid. 
-\item Produktmässigt: Roboten snabb. Avsökningsalgoritmen fungerade från början vid testning. IR-sensorer bra
-\end{itemize}
-
-En utvärdering av projektets delar och stösta problem går att läsa i appendix N.
+En utvärdering av projektets delar och största problem går att läsa i appendix N.
 
 \subsection{Att tänka på till nästa gång}
-Hade projektet genomförts igen hade en del saker kunnat göras annorlunda. En längre tanke om aktiviteterna i projektplanen hade varit en sak att fokusera på för då hade det kanske insetts att vissa aktiviteter gick in i varandra och på så sätt hade dessa kunnat formuleras om. En annan sak är att från start använda ett pålitligare sätt att mäta avlagd sträcka än lasersensorn, alltså från början göra mer omfattande undersökningar om alternativ av sensorer. En tredje sak hade varit att försäkra sig om att det fölr varje modul finns två personer som är insatta i hur varje del av koden fungerar för att minska beroendet av en viss person. I detta projekt har situationen inte skapat några problem utan enbart utgjort en risk. Den fjärde och sista punkten hade varit att från början sätta upp standard för testprotokoll och dokumenterat hur diverse problem lösts. Detta för att inte samma sak felsöks flera gånger när en lösning funnits tidigare. 
+Hade projektet genomförts igen hade en del saker kunnat göras annorlunda. Att lägga mer fokus på aktiviteterna i projektplanen hade gjort att gruppen kunnat inse vilka aktiviteter som gick in i varandra och på så sätt hade dessa kunnat formuleras om. En annan sak är att från start använda ett pålitligare sätt att mäta avlagd sträcka än lasersensorn, alltså från början göra mer omfattande undersökningar om det fanns andra alternativ än lasersensorn. En tredje sak hade varit att försäkra sig om att det för varje modul finns två personer som är insatta i hur varje del av koden fungerar för att minska beroendet av en viss person. I detta projekt har situationen inte skapat några problem utan enbart utgjort en risk. Den fjärde och sista punkten hade varit att från början sätta upp standard för testprotokoll och dokumenterat hur diverse problem lösts för att inte samma sak felsöks flera gånger när en lösning funnits tidigare. 
 
 \subsection{Utvecklingsmöjligheter}
 Hade gruppen haft mer tid till förfogande, eller om någon vill ta vid där detta projekt avslutas, finns det några funktioner med utvecklingsmöjligheter. Ett mindre prioriterat krav, som i genomfört projekt inte har uppfyllts, är att roboten ska klara av att navigera i öppna rum. Det är något som är relevant för en undsättningsrobot eftersom grottsystem sällan består av enbart korridorer. En annan kvalitet som skulle höja robotens förmåga som undsättare är att roboten skulle klara av att genomföra svängar som kan vara av godtycklig vinkel, inte bara 90 och 180 grader. 
 
-En annan utvecklingsmöjlighet är att förbättra datorprogrammet och göra det snyggare grafiskt. Ju mer användarvänligt och visuellt attraktivt programmet är, desto roligare är det för en användare att använda produkten. En bättre optimerad avsökning kan även vara värd att arbeta på.
+En annan utvecklingsmöjlighet är att förbättra datorprogrammet och göra det snyggare grafiskt. Ju mer användarvänligt och visuellt attraktivt programmet är, desto roligare är det för en användare att använda produkten. Även en bättre optimerad avsökning kan vara värd att arbeta på.
 
 \subsection{Utveckla uppgiften}
 En utvecklingsmöjlighet med uppgiften, som inte nödvändigtvis försvårar den, kunde vara att istället för att en nödställd ska identifieras utöka antalet nödställda. Ytterligare en rolig grej hade varit om inte alla delar av labyrinten var på samma nivå, alltså att den skulle ha två våningar. 
