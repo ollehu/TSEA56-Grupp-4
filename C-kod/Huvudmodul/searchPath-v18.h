@@ -695,6 +695,9 @@ void explore(void)
 	} else {
 		updateCoordinates();
 		sendPositionInformation();
+if(hasFoundTarget >= 1){
+			updateShortestPathEstimation();
+		}
 	}
 }
 

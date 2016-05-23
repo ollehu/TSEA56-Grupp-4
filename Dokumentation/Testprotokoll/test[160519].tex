@@ -1,0 +1,56 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+
+\begin{document}
+
+\begin{center}
+
+{\Huge\bfseries Testprotokoll}
+\vspace{4em}
+\end{center}
+
+\begin{flushleft}
+
+
+\begin{figure}[htbp]
+\centering
+\noindent\resizebox{.4\linewidth}{!}{
+	\input{images/bana[160519]}}
+	\caption{Översikt av testbana\label{bana}}	
+\end{figure}
+
+\begin{description}
+\item[Vad som har testats] \hfill \\
+Det har i tre omgångar testats huruvida avsökningsagoritmen kan hantera att målet är placerat i ett hörn.
+
+\vspace{1em}
+\item[Utfall 1] \hfill \\
+I en första körning placerade den ut väggar i sin karta på de positioner markerade med 1, 2, 3 och 4 i figur \ref{bana}. Till följd av detta stannaden den där utan att säga att den var klar.
+
+Efter detta justerades det i hur värden i den interna kartan uppdateras då målets ruta markeras med en siffra skild från de som används för uppräkningen.
+
+\item[Utfall 2] \hfill \\
+I andra körningen blev kartan rätt men roboten stannade i den modul markerad med 1 i figur \ref{bana} utan att säga att den är klar med avsökningen.
+
+För att lösa detta justerades det så att det är okej att köra in i den ruta som målet står i då implementationen byggt på att det inte varit okej att ställa sig i den ruta som målet är i.
+
+\item[Utfall 3] \hfill \\
+I den tredje körningen blev kartan rätt och de moduler markerade med 1, 2, 3 och 4 i figur \ref{bana} blev avsökta (precis som de ska). Dock stannade roboten i den modul målet befinner sig i.
+
+\pagebreak
+\vspace{1em}
+\item[Eventuella komplikationer] \hfill \\
+Avsökningsalgoritmen tillåter inte att roboten på vägen tillbaka går genom målrutan.
+
+\vspace{1em}
+
+\item[Hur arbetet fortskrider] \hfill \\
+\emph{Elena} och \emph{Lovisa} ska titta på hur det är implementerat att roboten ska ta sin väg tillbaka.
+
+
+\end{description}
+
+\end{flushleft}
+
+\end{document}
