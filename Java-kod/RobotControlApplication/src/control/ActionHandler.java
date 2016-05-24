@@ -56,10 +56,10 @@ public class ActionHandler {
 	public ChangeRobotSpeedAction increaseSpeedAction = new ChangeRobotSpeedAction(true);
 	public ChangeRobotSpeedAction decreaseSpeedAction = new ChangeRobotSpeedAction(false);
 	
-	//	public SendControlCommandAction forwardsRightAction = new SendControlCommandAction(ControlID.FORWARDS_RIGHT);
-	//	public SendControlCommandAction forwardsLeftAction = new SendControlCommandAction(ControlID.FORWARDS_LEFT);
-	//	public SendControlCommandAction backwardsLeftAction = new SendControlCommandAction(ControlID.BACKWARDS_LEFT);
-	//	public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
+		public SendControlCommandAction forwardsRightAction = new SendControlCommandAction(ControlID.FORWARDS_RIGHT);
+		public SendControlCommandAction forwardsLeftAction = new SendControlCommandAction(ControlID.FORWARDS_LEFT);
+		public SendControlCommandAction backwardsLeftAction = new SendControlCommandAction(ControlID.BACKWARDS_LEFT);
+		public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
 
 	public SendControlSettingAction clawAction = new SendControlSettingAction("","",ControlSettingID.CLAW);
 	

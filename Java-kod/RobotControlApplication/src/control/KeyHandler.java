@@ -32,6 +32,7 @@ public class KeyHandler {
 		actionMap.put("rotate left", actionHandler.rotateLeftAction);
 		actionMap.put("backwards", actionHandler.backwardsAction);
 		actionMap.put("rotate right", actionHandler.rotateRightAction);
+
 		actionMap.put("stop", actionHandler.stopAction);
 		
 		actionMap.put("increase speed", actionHandler.increaseSpeedAction);
@@ -88,6 +89,11 @@ public class KeyHandler {
 		inputMap.put(KeyStroke.getKeyStroke('a'), "none");
 		inputMap.put(KeyStroke.getKeyStroke('s'), "none");
 		inputMap.put(KeyStroke.getKeyStroke('d'), "none");
+		
+		inputMap.put(KeyStroke.getKeyStroke("W + A"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("W + D"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("S + A"), "none");
+		inputMap.put(KeyStroke.getKeyStroke("S + D"), "none");
 		
 		inputMap.put(KeyStroke.getKeyStroke("released W"), "none");
 		inputMap.put(KeyStroke.getKeyStroke("released A"), "none");
