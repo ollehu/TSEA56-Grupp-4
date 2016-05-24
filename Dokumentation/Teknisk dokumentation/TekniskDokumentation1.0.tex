@@ -511,7 +511,8 @@ I denna del förklaras hur kommunikationen mellan robotens olika moduler fungera
 \subsection{Informationsflöde}
 Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Vad varje ID innebär visas i tabell \ref{kommunikationstab}. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 250. Denna uppdelning har gjorts för att underlätta felsökning.
 
-\begin{longtable}[l]{| l | l |} \hline
+\begin{longtable}[c]{| l | l |} \hline
+  \centering
 \textbf{ID} & \textbf{Datatyp} \\ \hline 
 255 & Styrkommando \\ \hline
 254 & Kartinformation \\ \hline
@@ -631,7 +632,7 @@ Respektive segment motsvarar följande:
 252 & 1 & 0/1 & 1 om reglering är på, 0 annars \\ \hline
 252 & 2 & Data & Reglerfunktionens P-värde \\ \hline
 252 & 3 & Data & Reglerfunktionens D-värde \\ \hline
-225 & 9 & 0/1 & 1 om gripklo ska vara öppen, 0 om den ska vara stängd \\ \hline
+252 & 9 & 0/1 & 1 om gripklo ska vara öppen, 0 om den ska vara stängd \\ \hline
 
 \end{tabular}
 
@@ -652,8 +653,8 @@ Respektive segment motsvarar följande:
 255 & 0 & - & Kommando att stanna \\ \hline
 255 & 1 & Data/-\textsuperscript{**}   & Kommando att köra framåt \\ \hline
 255 & 2 & - & Kommando att rotera 180 grader\\ \hline
-255 & 3 & \textcolor{red}{Data/-\textsuperscript{**}}    & Kommando att rotera höger \\ \hline
-255 & 4 & \textcolor{red}{Data/-\textsuperscript{**}}    & Kommando att rotera vänster \\ \hline
+255 & 3 & Data/-\textsuperscript{**}    & Kommando att rotera höger \\ \hline
+255 & 4 & Data/-\textsuperscript{**}    & Kommando att rotera vänster \\ \hline
 255 & 12 & - & Kommando att köra en halv modul framåt\\ \hline
 255 & 13 & - & Kommando att köra en halv modul bakåt \\ \hline
 \end{tabular}

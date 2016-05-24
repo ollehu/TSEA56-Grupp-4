@@ -29,8 +29,8 @@
 \node[block] (dator) at (15,0) {Datormodul};
 
 
-\draw[-latex, bend left] (huvud) edge node[above]{Kartinformation} node[below]{Sensordata}(dator);
-\draw[-latex, bend left] (dator) edge node[below]{Styrkommandon} node[above]{Styrinställningar} (huvud);
+\draw[-latex, bend left] (huvud) edge node[above,sloped]{Kartinformation} node[below]{Sensordata}(dator);
+\draw[-latex, bend left] (dator) edge node[below]{Styrkommandon} node[above, midway, sloped]{Styrinställningar} (huvud);
 
 \draw[-latex, bend left] (huvud) edge node[below]{Sensordata}(styr);
 \draw[-latex] (huvud) edge node[above]{Styrkommandon} (styr);
