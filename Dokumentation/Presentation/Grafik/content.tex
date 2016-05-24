@@ -16,7 +16,7 @@
 \end{frame}
 
 
-\begin{frame}{PigBot}
+\begin{frame}{PigBot}{Grupp 4}
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \includegraphics[width=0.9\textwidth]{images/RobotFront.pdf}
@@ -27,7 +27,7 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{PigBot}
+\begin{frame}[fragile]{PigBot}{Grupp 4}
   \begin{itemize}
     \item[-] Undsättningsrobot på prototypnivå
 \pause
@@ -40,7 +40,7 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{PigBot}
+\begin{frame}[fragile]{PigBot}{Grupp 4}
 \centering
     \includegraphics[scale=0.7]{images/overview.pdf}
 
@@ -48,14 +48,20 @@
 \end{frame}
 
 
-\begin{frame}[fragile]{PigBot}
+\begin{frame}[fragile]{PigBot}{Grupp 4}
+
+PigBot är upbyggd av moduler, vardera med följande funktion:
   \begin{itemize}
-    \item[-] Tre stycken \Verb+ATmega1284p+
 \pause
-    \item[-] Åtta stycken sensorer
-    \item[-] Osv\ldots
+    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
+\pause
+    \item[-] Styrmodul - sköter reglering av roboten och rotation av roboten samt skriver ut sensordata till en LCD-display
+\pause
+    \item[-] Huvudmodul - Upprättar kommunikationen via Bluetooth\textsuperscript{\circledR} för att kommunicera kartdata
   \end{itemize}
 \end{frame}
+
+
 
 \end{document}
 
