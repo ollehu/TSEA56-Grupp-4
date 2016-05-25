@@ -8,6 +8,7 @@ public class SensorData extends Observable{
 	 * Last sensor values
 	 */
 	private int[] values;
+	private int[] oldLidarValues = new int[5];
 	
 	/**
 	 * Update sensor values and notify
@@ -20,6 +21,20 @@ public class SensorData extends Observable{
 		} 
 		
 		values = sensorValues;
+		
+		// take lidar average
+		for(int index = 0; index < oldLidarValues.length - 1; index++) {
+			oldLidarValues[index + 1] = oldLidarValues[index];
+		}
+		oldLidarValues[0] = values[4];
+		
+		int lidarAverage = 0;
+		for(int value : oldLidarValues) {
+			lidarAverage += value;
+		}
+		lidarAverage /= oldLidarValues.length;
+		
+		values[4] = lidarAverage;
 		
 		values[values.length - 1] += accumulatedRotation;
 		

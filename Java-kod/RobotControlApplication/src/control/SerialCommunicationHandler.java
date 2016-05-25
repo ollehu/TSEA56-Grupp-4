@@ -60,7 +60,17 @@ public class SerialCommunicationHandler {
 		serialPort = new SerialPort(selectedPortName);
 
 		// open port for communication
-		serialPort.openPort();
+		
+		boolean failedToConnect = true;
+		while(failedToConnect) {
+			try {
+				serialPort.openPort();
+				failedToConnect = false;
+			} catch (Exception e) {
+				failedToConnect = true;
+			}
+		}
+			
 		// baundRate, numberOfDataBits, numberOfStopBits, parity
 		serialPort.setParams(baudRate, numberOfDataBits, numberOfStopBits, numberOfParityBits);
 		// byte data transfer

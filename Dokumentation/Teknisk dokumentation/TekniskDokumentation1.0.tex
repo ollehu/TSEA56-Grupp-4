@@ -201,12 +201,10 @@ Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet
 \begin{equation*}
 	\Delta v = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
 \end{equation*}
-där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar anväds dock sensorerna på båda sidor för att bestämma  $d^0$ enligt
+där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar används dock sensorerna på båda sidor för att uppdatera  $d^0$ enligt
 \begin{equation*}
 	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
 \end{equation*}
-
-\textcolor{red}{Hur bestäms d\textsuperscript{0} om man bara ha en vägg?}
 
 Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta v = 0$.
 
