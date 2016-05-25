@@ -29,6 +29,11 @@ public class ActionHandler {
 	private Log log;
 	private RobotData robotData;
 	private SerialCommunicationHandler serialCOM;
+	
+	/**
+	 * Internal variables
+	 */
+	protected boolean[] directionKeysPressed = new boolean[11];
 
 	/**
 	 * Menu actions
@@ -47,19 +52,26 @@ public class ActionHandler {
 	/** 
 	 * Robot control actions
 	 */
-	public SendControlCommandAction rotateLeftAction = new SendControlCommandAction(ControlID.ROTATE_LEFT);
-	public SendControlCommandAction rotateRightAction = new SendControlCommandAction(ControlID.ROTATE_RIGHT);
-	public SendControlCommandAction forwardsAction = new SendControlCommandAction(ControlID.FORWARDS);
-	public SendControlCommandAction backwardsAction = new SendControlCommandAction(ControlID.BACKWARDS);
-	public SendControlCommandAction stopAction = new SendControlCommandAction(ControlID.STOP);
+	public SendControlCommandAction pressedLeftAction = new SendControlCommandAction(true, ControlID.ROTATE_LEFT);
+	public SendControlCommandAction pressedRightAction = new SendControlCommandAction(true, ControlID.ROTATE_RIGHT);
+	public SendControlCommandAction pressedForwardsAction = new SendControlCommandAction(true, ControlID.FORWARDS);
+	public SendControlCommandAction pressedBackwardsAction = new SendControlCommandAction(true, ControlID.BACKWARDS);
+
+	public SendControlCommandAction releasedLeftAction = new SendControlCommandAction(false, ControlID.ROTATE_LEFT);
+	public SendControlCommandAction releasedRightAction = new SendControlCommandAction(false, ControlID.ROTATE_RIGHT);
+	public SendControlCommandAction releasedForwardsAction = new SendControlCommandAction(false, ControlID.FORWARDS);
+	public SendControlCommandAction releasedBackwardsAction = new SendControlCommandAction(false, ControlID.BACKWARDS);
 	
 	public ChangeRobotSpeedAction increaseSpeedAction = new ChangeRobotSpeedAction(true);
 	public ChangeRobotSpeedAction decreaseSpeedAction = new ChangeRobotSpeedAction(false);
+<<<<<<< HEAD
 	
 		public SendControlCommandAction forwardsRightAction = new SendControlCommandAction(ControlID.FORWARDS_RIGHT);
 		public SendControlCommandAction forwardsLeftAction = new SendControlCommandAction(ControlID.FORWARDS_LEFT);
 		public SendControlCommandAction backwardsLeftAction = new SendControlCommandAction(ControlID.BACKWARDS_LEFT);
 		public SendControlCommandAction backwardsRightAction = new SendControlCommandAction(ControlID.BACKWARDS_RIGHT);
+=======
+>>>>>>> 6a72900b8225fb95532893a469a26231917adf10
 
 	public SendControlSettingAction clawAction = new SendControlSettingAction("","",ControlSettingID.CLAW);
 	
@@ -317,22 +329,55 @@ public class ActionHandler {
 	 */
 	private class SendControlCommandAction extends AbstractAction {
 
+		private boolean pressed;
+		
 		private int controlCommand;
 
-		public SendControlCommandAction(int controlCommand) {
+		public SendControlCommandAction(boolean pressed, int controlCommand) {
 			super();
 			
 			this.controlCommand = controlCommand;
+			this.pressed = pressed;
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if(!(robotData.getLastControlCommand() == controlCommand)) {
-				robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommand);
-				serialCOM.sendToRobot(CommunicationID.CONTROL_DATA, controlCommand, robotData.getSpeed());
-			}
+			// send command to robot
+			directionKeysPressed[controlCommand] = pressed;
+			respondToKeyEvent();
 		}
 
+	}
+	
+	protected void respondToKeyEvent() {
+		int controlCommandToSend = ControlID.STOP;
+		
+		if(directionKeysPressed[ControlID.FORWARDS]) {
+			if(directionKeysPressed[ControlID.ROTATE_LEFT]) {
+				controlCommandToSend = ControlID.FORWARDS_LEFT;
+			} else if(directionKeysPressed[ControlID.ROTATE_RIGHT]) {
+				controlCommandToSend = ControlID.FORWARDS_RIGHT;
+			} else {
+				controlCommandToSend = ControlID.FORWARDS;
+			}
+		} else if(directionKeysPressed[ControlID.BACKWARDS]) {
+			if(directionKeysPressed[ControlID.ROTATE_LEFT]) {
+				controlCommandToSend = ControlID.BACKWARDS_LEFT;
+			} else if(directionKeysPressed[ControlID.ROTATE_RIGHT]) {
+				controlCommandToSend = ControlID.BACKWARDS_RIGHT;
+			} else {
+				controlCommandToSend = ControlID.BACKWARDS;
+			}
+		} else if(directionKeysPressed[ControlID.ROTATE_LEFT]) {
+			controlCommandToSend = ControlID.ROTATE_LEFT;
+		} else if(directionKeysPressed[ControlID.ROTATE_RIGHT]) {
+			controlCommandToSend = ControlID.ROTATE_RIGHT;
+		}
+		
+		if(controlCommandToSend != robotData.getLastControlCommand()) {
+			serialCOM.sendToRobot(CommunicationID.CONTROL_DATA, controlCommandToSend, robotData.getSpeed());
+			robotData.update(ControlSettingID.LAST_CONTROL_COMMAND, controlCommandToSend);
+		}
 	}
 
 	/**
@@ -381,9 +426,13 @@ public class ActionHandler {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if(isIncrement) {
-				robotData.update(ControlSettingID.SPEED, robotData.getSpeed() + 10);
+				if(robotData.getSpeed() < 100) {
+					robotData.update(ControlSettingID.SPEED, robotData.getSpeed() + 10);
+				}
 			} else {
-				robotData.update(ControlSettingID.SPEED, robotData.getSpeed() - 10);
+				if(robotData.getSpeed() > 0) {
+					robotData.update(ControlSettingID.SPEED, robotData.getSpeed() - 10);
+				}
 			}
 		}
 	}

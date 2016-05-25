@@ -28,12 +28,15 @@ public class KeyHandler {
 		// get action map and add actions
 		ActionMap actionMap = animator.getRobotStatusPanel().getActionMap();
 		
-		actionMap.put("forwards", actionHandler.forwardsAction);
-		actionMap.put("rotate left", actionHandler.rotateLeftAction);
-		actionMap.put("backwards", actionHandler.backwardsAction);
-		actionMap.put("rotate right", actionHandler.rotateRightAction);
-
-		actionMap.put("stop", actionHandler.stopAction);
+		actionMap.put("forwards", actionHandler.pressedForwardsAction);
+		actionMap.put("rotate left", actionHandler.pressedLeftAction);
+		actionMap.put("backwards", actionHandler.pressedBackwardsAction);
+		actionMap.put("rotate right", actionHandler.pressedRightAction);
+		
+		actionMap.put("released forwards", actionHandler.releasedForwardsAction);
+		actionMap.put("released left", actionHandler.releasedLeftAction);
+		actionMap.put("released backwards", actionHandler.releasedBackwardsAction);
+		actionMap.put("released right", actionHandler.releasedRightAction);
 		
 		actionMap.put("increase speed", actionHandler.increaseSpeedAction);
 		actionMap.put("decrease speed", actionHandler.decreaseSpeedAction);
@@ -67,10 +70,10 @@ public class KeyHandler {
 		inputMap.put(KeyStroke.getKeyStroke('s'), "backwards");
 		inputMap.put(KeyStroke.getKeyStroke('d'), "rotate right");
 		
-		inputMap.put(KeyStroke.getKeyStroke("released W"), "stop");
-		inputMap.put(KeyStroke.getKeyStroke("released A"), "stop");
-		inputMap.put(KeyStroke.getKeyStroke("released S"), "stop");
-		inputMap.put(KeyStroke.getKeyStroke("released D"), "stop");
+		inputMap.put(KeyStroke.getKeyStroke("released W"), "released forwards");
+		inputMap.put(KeyStroke.getKeyStroke("released A"), "released left");
+		inputMap.put(KeyStroke.getKeyStroke("released S"), "released backwards");
+		inputMap.put(KeyStroke.getKeyStroke("released D"), "released right");
 		
 		inputMap.put(KeyStroke.getKeyStroke('x'), "increase speed");
 		inputMap.put(KeyStroke.getKeyStroke('z'), "decrease speed");

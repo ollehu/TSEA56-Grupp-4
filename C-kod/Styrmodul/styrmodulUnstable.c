@@ -56,7 +56,7 @@ int16_t oldForwardSensor;
 
 int8_t angularVelocity;
 
-int16_t convertAngle90 = 990;
+int16_t convertAngle90 = 1050;
 int16_t convertAngle180 = 1980;
 
 int16_t accumulatedAngle;
