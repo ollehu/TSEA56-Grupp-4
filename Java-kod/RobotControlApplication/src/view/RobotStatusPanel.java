@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -47,6 +48,12 @@ public class RobotStatusPanel extends JPanel implements Observer{
 	private ArrayList<RobotStatusLabel> robotStatusLabels;
 	
 	/**
+	 * Internal variables
+	 */
+	int height = 153;
+	int width = 230;
+	
+	/**
 	 * Construcor
 	 */
 	public RobotStatusPanel(ActionHandler actionHandler) {
@@ -54,6 +61,8 @@ public class RobotStatusPanel extends JPanel implements Observer{
 		
 		robotStatusLabels = new ArrayList<>();
 		setLayout(new GridBagLayout());
+		setPreferredSize(new Dimension(width, height));
+		
 		
 		// constraints
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -98,6 +107,7 @@ public class RobotStatusPanel extends JPanel implements Observer{
 			constraints.gridy++;
 			index++;
 		}
+		System.out.println(getPreferredSize());
 	}
 
 	/**
