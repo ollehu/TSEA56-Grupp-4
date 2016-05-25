@@ -122,10 +122,7 @@ public class AdaptiveMapPanel extends JPanel implements Observer{
 				if(value == 241) {
 					
 					elementHolder[lastX][lastY].setCurrent(false);
-					System.out.println("Removed, X: " + lastX + " Y: " + lastY);
-					
 					elementHolder[xCoordinate][yCoordinate].setCurrent(true);
-					System.out.println("Added, X: " + xCoordinate + " Y: " + yCoordinate + "\n");
 
 					lastX = xCoordinate;
 					lastY = yCoordinate;

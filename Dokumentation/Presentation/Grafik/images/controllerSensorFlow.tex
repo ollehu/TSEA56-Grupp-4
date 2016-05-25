@@ -1,0 +1,38 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=4em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+% nodes
+\node[block](sensor){Sensor data};
+
+\node[decision, right of = sensor, node distance = 3cm](type){Last command};
+\node[block, above of = type, node distance = 3cm](forward){Autonomous forward};
+\node[block, right of = type, node distance = 4cm](rotation){Autonomous rotation};
+\node[block, below of = type, node distance = 3cm](adjust){Autonomous adjust};
+
+% arrows
+\draw[->](sensor) -- (type);
+
+\draw[->](type) -- node[right]{forward} (forward);
+\draw[->](type) -- node[above]{rotation} (rotation);
+\draw[->](type) -- node[right]{adjust} (adjust);
+
+	\end{tikzpicture}
+	
+\end{document}

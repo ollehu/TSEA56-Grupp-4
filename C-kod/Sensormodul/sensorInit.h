@@ -120,7 +120,7 @@ void timer2_init()
 	//TCNT2 = 0;
 	
 	// enable overflow interrupt
-	//TIMSK2 |= (1 << OCIE2A);
+	TIMSK2 |= (1 << OCIE2A);
 	
 	// enable global interrupts
 	sei();

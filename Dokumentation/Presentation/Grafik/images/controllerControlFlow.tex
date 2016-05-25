@@ -1,0 +1,43 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=5em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+% nodes
+\node[block](command){Control command};
+
+\node[decision, below of = command, node distance = 3cm](type){Command type};
+\node[block, right of = type, node distance = 4cm](forward){Set command forward};
+\node[decision, below of = type, node distance = 3cm](rotation){Adjustment needed};
+
+\node[block, below of = rotation, node distance = 3cm](setRotation){Set command rotation};
+\node[block, right of = rotation, node distance = 3cm](adjust){Set command adjust};
+
+% arrows
+\draw[->](command) -- (type);
+
+\draw[->](type) -- node[above]{forward} (forward);
+\draw[->](type) -- node[right]{rotation} (rotation);
+
+\draw[->](rotation) -- node[above]{yes} (adjust);
+\draw[->](rotation) -- node[right]{no} (setRotation);
+
+
+	\end{tikzpicture}
+	
+\end{document}
