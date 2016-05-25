@@ -1,3 +1,4 @@
+
 #include "I2C_master.h"
 //#include "constants.h"
 #include <avr/io.h>
@@ -28,6 +29,8 @@ uint8_t status = 0;
 uint8_t closeClaw[3] = {0xFC, 0x0B, 0x00};
 uint8_t stopCommand[3] = {0xFF, 0x00, 0x00};
 
+
+void sendMap();
 /*void btSend(unsigned char data)
 {
 	// Wait for empty transmit buffer
@@ -149,7 +152,8 @@ ISR(INT1_vect){ //Interrupt from controller module
 				status = 2;
 				PORTD &= ~(1<<PORTD6);
 				PORTD |= (1<<PORTD7);
-				Master(3,SLA_styr_W,openClaw);
+				
+				Master(3,SLA_styr_W,rotate180);
 			} else {
 				explore();
 			}
