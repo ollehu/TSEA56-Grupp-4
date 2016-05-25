@@ -1,11 +1,6 @@
 \frametitle{PigBot}\framesubtitle {Grupp 4}
-
-PigBot är upbyggd av moduler, vardera med följande funktion:
+Avslutning \& skryt
   \begin{itemize}
-\pause
-    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
-\pause
-    \item[-] Styrmodul - sköter reglering av roboten och rotation av roboten samt skriver ut sensordata till en LCD-display
-\pause
-    \item[-] Huvudmodul - Upprättar kommunikationen via Bluetooth\textsuperscript{\circledR} för att kommunicera kartdata
+ \pause
+    \item[-] Beror på vad ni andra har tagit upp
   \end{itemize}

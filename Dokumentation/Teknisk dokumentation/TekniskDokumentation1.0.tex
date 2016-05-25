@@ -104,8 +104,6 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerade.
 
 \section{Produkten}
-\textit{En bild på produkten och en beskrivning av hur den fungerar. Beskriv vad den används till.}
-
 Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit har fästen utskrivna med 3D-skrivare använts. En översiktlig bild av produkten återfinns i figur \ref{overview}.
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
@@ -201,12 +199,10 @@ Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet
 \begin{equation*}
 	\Delta v = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
 \end{equation*}
-där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar anväds dock sensorerna på båda sidor för att bestämma  $d^0$ enligt
+där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar används dock sensorerna på båda sidor för att uppdatera  $d^0$ enligt
 \begin{equation*}
 	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
 \end{equation*}
-
-\textcolor{red}{Hur bestäms d\textsuperscript{0} om man bara ha en vägg?}
 
 Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta v = 0$.
 
@@ -244,8 +240,6 @@ På systemnivå är det om målet är funnet och om kortaste väg kan garanterat
 
 \pagebreak
 \section{Modulerna}
-\textit{Innehåller mera detaljerade blockschemor och beskrivningar av varje modul. Tänk på läsbarheten och växla mellan figurer och text.}
-
 Nedan följer detaljerade beskrivningar av respektive modul.
 
 \subsection{Huvudmodulen}
@@ -370,7 +364,7 @@ I sensormodulen ingår följande mjukvara:
 \subsubsection{\texttt{Lidar-Lite v2}, avståndssensor}
 För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ meter uppmätas med en felmarginal på $2,5$ centimeter. Den kan dock ge felaktiga värden när den opererar i en omgivning som labyrinten. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
 
-Kommunikationen av sensordata mellan \verb+Lidar-Lite v2+ och mikroprocessorn sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av \textcolor{red}{lasersensorns} externa avbrottsingångar, se kopplingsschema i Appendix J. 
+Kommunikationen av sensordata mellan \verb+Lidar-Lite v2+ och mikroprocessorn \verb+ATmega1284p+ sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av mikroprocessorns externa avbrottsingångar, se kopplingsschema i Appendix J. 
 
 \subsubsection{\texttt{SFH300}, reflexsensor}
 För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, på ett av hjulen kan tillryggalagt avstånd bestämmas.
@@ -666,16 +660,13 @@ Respektive segment motsvarar följande:
 \end{table}
 
 \pagebreak
-\section{Slutsatser}
-\textit{Vilka förbättringar skulle kunna göras?}
-
-Gruppen känner sig nöjd med uppnått resultat men ser samtidigt utvecklingmöjligheter av produkter inom några områden. 
+\section{Slutsatser}Gruppen känner sig nöjd med uppnått resultat men ser samtidigt utvecklingmöjligheter av produkter inom några områden. 
 
 En av de naturligt följande förbättringarna är att få roboten att kunna navigera i öppna rum, vilket var ett krav av prioritet 2. Nu är roboten begränsad till att operera i en omgivning bestående av ett layrintsystem med vinkelräta svängar. För att utöka dess användningsområde kan även produkten utvecklas så att den kan reglera vid alla typer av svängar, inte bara vinkelräta.
 
 Något som gruppen hade velat utveckla i mån av mer tid är kartläggning i tre dimensioner. Det hade bidragit till en bättre användarupplevelse. I övrigt är gruppen nöjd med robotens funktioner. 
 
-Förbättringspotential finns även i de redan existerande funktionerna. Roboten skulle kunna göras smartare genom att förbättra avsökningsalgoritmen. \textcolor{red}{Den är tillräcklig för att uppfylla kraven i projektet men den kan till exempel inte koppla ihop olika delar av en utforskad labyrint, vilket skulle göra stor skillnad i en stor och komplicerad bana. }
+Förbättringspotential finns även i de redan existerande funktionerna. Roboten skulle till exempel kunna göras smartare genom att förbättra avsökningsalgoritmen som i dagsläget inte är helt optimerad. Det skulle göra stor skillnad i en stor och komplicerad bana. 
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}

@@ -5,40 +5,49 @@
  *  Author: zimin415
  */ 
 
+/************************************************************************/
+/*                            DEFINITIONS                               */
+/************************************************************************/
 
 #define F_CPU 8000000UL
-
-#include <avr/io.h>
-//#include <asf.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
-//#include "sensorInit.h"
-#include "sensorInit.h"
-#include "I2C_slave.h"
-
 #define SCK PORTB7
 #define MISO PORTB6
 #define MOSI PORTB5
 #define SS PORTB4
 
-uint8_t sensorData[15];
-int slaveAddress = 0xCA;
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <util/delay.h>
+#include "sensorInit.h"
+#include "I2C_slave.h"
 
+/************************************************************************/
+/*                            CONTROLLERS                               */
+/************************************************************************/
+
+int slaveAddress = 0xCA;
 volatile const uint8_t adc1 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc2 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(0<<MUX0);
 volatile const uint8_t adc3 = (1<<ADLAR) | (0<<MUX2)|(1<<MUX1)|(1<<MUX0);
 volatile const uint8_t adc4 = (1<<ADLAR) | (1<<MUX2)|(0<<MUX1)|(0<<MUX0);
+volatile const uint8_t adc5 = (1<<ADLAR) | (0<<MUX2)|(0<<MUX1)|(0<<MUX0);
+
+/************************************************************************/
+/*                            VARIABLES	                                */
+/************************************************************************/
 
 int state = 0;
 int ADC_conversion = 0;
-int detected = 0;
+int target_detected = 0;
+int detection = 0;
+int findings = 0;
 int periodscaler = 0;
 volatile unsigned int counter = 0; 
-double total = 0;
 int pwmCount;
-
 volatile uint8_t nextDown = 10;
+uint8_t Timer3counter = 0;
+uint8_t lookingForTarget = 0;
+uint8_t anyEdge = 0;
 
 int SI_IR1;
 int SI_IR2;
@@ -46,21 +55,15 @@ int SI_IR3;
 int SI_IR4;
 
 volatile uint8_t tot_overflow = 2;
+volatile uint8_t currentSampleIndex = 0;
 
 double Distance_1 = 0;
 double Distance_2 = 0;
 double Distance_3 = 0;
 double Distance_4 = 0;
-
-uint8_t SI_IR1_array[5];
-uint8_t SI_IR2_array[5];
-uint8_t SI_IR3_array[5];
-uint8_t SI_IR4_array[5];
-uint16_t SI_LIDAR_array[5];
-
-
-//int angular_velocity = 0;
-int SI_lidar;
+uint8_t wheel_sensor = 0;
+uint8_t lastWheelSensor = 0;
+uint8_t wheel_counter = 0;
 
 uint16_t forwardDistance;
 uint16_t forwardDistanceMED;
@@ -69,25 +72,36 @@ uint8_t forwardDistanceHIGH;
 uint16_t up_value, down_value;
 volatile int count_1 = 0;
 volatile uint8_t lidarCount = 0;
-
 uint8_t answer;
 
-int firstRun = 0;
+/************************************************************************/
+/*                              ARRAYS	                                */
+/************************************************************************/
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
+uint8_t sensorData[19];
+uint8_t SI_IR1_array[5];
+uint8_t SI_IR2_array[5];
+uint8_t SI_IR3_array[5];
+uint8_t SI_IR4_array[5];
+uint16_t SI_LIDAR_array[5];
+
+/************************************************************************/
+/*                              METHODS	                                */
+/************************************************************************/
+
 void SPI_MasterInit(void);
 void initTimer(void);
 void initADC(void);
-int processLidar(double lidarValue);
 uint8_t getMedianIR(uint8_t arr[]);
 uint16_t getMedianLIDAR(uint16_t arr[]);
 uint8_t get8Bit(float in);
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-
 uint8_t adcCounter;
+
+/************************************************************************/
+/*	Interrupt: TWI vector - export data to main module.
+	Transfers sensor data to main module and henceforth to control module.
+																		*/
+/************************************************************************/
 ISR(TWI_vect){
 	TWCR = (1<<TWEA)|(1<<TWEN)|(0<<TWIE);
 	//PORTA = (0<<PORTA0);
@@ -113,7 +127,6 @@ ISR(TWI_vect){
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWIE);
 			break;
 			
-			
 			//SLAVE TRANSMITTER
 		} else if ((TWSR & 0xF8) == 0xA8){
 			//SLA_R received, ACK returned, transmit data
@@ -128,6 +141,7 @@ ISR(TWI_vect){
 		} else if ((TWSR & 0xF8) == 0xC0){
 			//SLA_R, last byte transmitted
 			TWCR |= (1<<TWINT)|(1<<TWEA)|(1<<TWIE);
+			wheel_counter = 0;
 			break;
 		}
 		
@@ -135,6 +149,12 @@ ISR(TWI_vect){
 	}
 }
 
+/************************************************************************/
+/*	Interrupt: LIDAR Lite v2 - Laser Rangefinder.
+	Measures forward distance up to 40 m. Data is transferred through a 
+	PWM-interface.
+																		*/
+/************************************************************************/
 ISR(TIMER1_CAPT_vect){
 	
 	if (TCCR1B & (1<<ICES1)){
@@ -143,7 +163,7 @@ ISR(TIMER1_CAPT_vect){
 		up_value = ICR1;
 		//pwmCount = 0;
 		TCCR1B &= ~(1<<ICES1);
-		PORTB |= (1<<PORTB0);
+		//PORTB |= (1<<PORTB0);
 	} else {
 		//Falling edge
 		down_value = ICR1;
@@ -159,58 +179,129 @@ ISR(TIMER1_CAPT_vect){
 				//Do nothing
 			}
 		}
-		
 		TCCR1B |= (1<<ICES1);
-		PORTB &= ~(1<<PORTB0);
+		//PORTB &= ~(1<<PORTB0);
 	}
-		
-	
-	
-	
 }
 
+/************************************************************************/
+/*	Interrupt: Infrared detector - detection of target.
+	Checks if target is found. Responds to any edge.
+																		*/
+/************************************************************************/
 ISR (INT0_vect)
 {
-	if (firstRun <= 1){
-	if(!(EICRA & (1<<ISC00))) //Om nedflank
-	{
-		TCCR0B |= (0<<CS02)|(1<<CS01)|(0<<CS00);
-		EICRA |= (1<<ISC00);
-		//PORTB |= (1<<PORTB1);
-	}  else if(EICRA & (1<<ISC00)){
-
-		TCCR0B &= ~(1<<CS00);
-		TCCR0B &= ~(1<<CS01);
-		TCCR0B &= ~(1<<CS02);
-		EICRA &= ~(1<<ISC00);
-		//PORTB &= ~(1<<PORTB1);	
-		//counter = 0;
+	if(lookingForTarget == 1) {
+		if(!(EICRA & (1<<ISC00))) //If falling edge
+		{
+			counter = 0;
+			TCCR0B |= (0<<CS02)|(0<<CS01)|(1<<CS00);
+			EICRA |= (1<<ISC00);
+		
+		}  else if(EICRA & (1<<ISC00)){
+			TCCR0B &= ~(1<<CS00);
+			TCCR0B &= ~(1<<CS01);
+			TCCR0B &= ~(1<<CS02);
+			EICRA &= ~(1<<ISC00);
+		
+			if(counter>20 ){
+				anyEdge = 1;
+				detection++;
+			}
+		}
 	}
-	firstRun = firstRun + 1;
-	}
-
 }
 
+/************************************************************************/
+/*	Interrupt: Counter, infrared detector - detection of target.
+	Counts length of falling edge. Necessary in order to assure that
+	target has been found.
+																		*/
+/************************************************************************/
 ISR (TIMER0_COMPA_vect)
 {
 	counter = counter + 1;
 }
 
-ISR(TIMER2_OVF_vect)
-{
-	// keep a track of number of overflows
-	tot_overflow++;
+/***********************************************************************/
+
+ISR (TIMER3_COMPB_vect){
+	
+	/* PORTB ^= (1<<PORTB0);
+	Timer3counter ++;
+	if(Timer3counter == 10){
+		anyEdge = 0;
+		lookingForTarget = 1;
+		PORTB &= ~(1<<PORTB1);
+	}
+	else if(Timer3counter == 11){
+		lookingForTarget = 0;
+		Timer3counter = 0;
+		PORTB |= (1<<PORTB1);
+		if(anyEdge == 0){
+			target_detected=0;
+			detection = 0;
+		}		
+		TCCR0B &= ~(1<<CS00);
+		TCCR0B &= ~(1<<CS01);
+		TCCR0B &= ~(1<<CS02);
+		EICRA &= ~(1<<ISC00);
+	} */
+	
 }
 
+/************************************************************************/
+/*	Interrupt: Overflow counter - will eventually invoke main module
+	Keeps track of number of overflows
+																		*/
+/************************************************************************/
+ISR(TIMER2_COMPA_vect)
+{
+	if(currentSampleIndex == 0) {
+		PORTB &= ~(1<<PORTB1);
+		
+		anyEdge = 0;
+		lookingForTarget = 1;
+		
+	} else if (currentSampleIndex == 2) {
+		lookingForTarget = 0;
+		Timer3counter = 0;	
+		
+		TCCR0B &= ~(1<<CS00);
+		TCCR0B &= ~(1<<CS01);
+		TCCR0B &= ~(1<<CS02);
+		EICRA &= ~(1<<ISC00);
+			
+		PORTB |= (1<<PORTB1);
+		
+		if(detection>=4){
+			target_detected = 1;
+			detection = 0;
+		} else {
+			target_detected = 0;
+			detection = 0;
+		} 
+	}
+	
+	currentSampleIndex++;
+	if(currentSampleIndex == 10) {
+		currentSampleIndex = 0;
+	}
+}
+
+/************************************************************************/
+/*	Interrupt: ADC conversion - Invokes interrupt once conversion is 
+	finished
+	Transforms an analog input from the IR-sensors into digital output.
+																		*/
+/************************************************************************/
 ISR(ADC_vect){ //IR-SENSOR
 	CLKPR = 0x06;
 	
-	
-
 	if(ADMUX == adc1){
 		Distance_1 = ADCH;
-		ADMUX = adc2;
-		
+		ADMUX = adc2;	
+		//PORTB ^= (1<<PORTB0);
 	}
 	else if(ADMUX == adc2){
 		Distance_2 = ADCH;
@@ -220,25 +311,30 @@ ISR(ADC_vect){ //IR-SENSOR
  		Distance_3 = ADCH;
 		ADMUX = adc4;
 	}
-	else{
+	else if(ADMUX == adc4){
 		Distance_4 = ADCH;
+		ADMUX = adc5;	
+	}
+	else{
+		if ((ADCH >= 160) && (lastWheelSensor == 0)){
+			wheel_counter = wheel_counter + 1;
+			lastWheelSensor = 245;
+		}
+		else if ((ADCH <= 60) && (lastWheelSensor == 245)){
+			wheel_counter = wheel_counter + 1;
+			lastWheelSensor = 0;
+		}
+		wheel_sensor = ADCH;
 		ADMUX = adc1;
-		
 	}
 }
 
-int processLidar(double lidarValue)
-{
-	int lidarValueInt = (int) lidarValue;
-	
-	if(lidarValueInt > 245)
-	{
-		return 245;
-	} else {
-		return lidarValueInt;
-	}
-}
-
+/************************************************************************/
+/*	Subprogram: Get median value - picks the median value of five.
+	It is given an array of values from the IR-sensors, returns the
+	median.
+																		*/
+/************************************************************************/
 uint8_t getMedianIR(uint8_t arr[])
 {
 		uint8_t i, j, swap;
@@ -256,7 +352,7 @@ uint8_t getMedianIR(uint8_t arr[])
 			}
 		}
 
-		if(arr[2] > 180){
+		if(arr[2] > 210){
 			arr[2] = 245;		
 		}else if(arr[2] < 40){
 			arr[2] = 0;
@@ -264,6 +360,12 @@ uint8_t getMedianIR(uint8_t arr[])
 		return arr[2];
 }
 
+/************************************************************************/
+/*	Subprogram: Get median value - picks the median value of five.
+	It is given an array of values from LIDAR-Lite, returns the
+	median.
+																		*/
+/************************************************************************/
 uint16_t getMedianLIDAR(uint16_t arr[])
 {
 	uint16_t i, j, swap;
@@ -280,20 +382,27 @@ uint16_t getMedianLIDAR(uint16_t arr[])
 			}
 		}
 	}
-	
 	return arr[2];
-	
 }
 
+/************************************************************************/
+/*	Subprogram: Converts a float to an unsigned 8-bit integer
+																		*/
+/************************************************************************/
 uint8_t get8Bit(float in)
 {
 	if (in > 255){
 		return 255;
 	} else {
-		return (uint8_t) in;
+		return (uint8_t) in;	
 	}
 }
 
+/************************************************************************/
+/*	Subprogram: Puts maximum value from an array to an unsigned 8-bit 
+	integer.
+																		*/
+/************************************************************************/
 uint8_t getMax(uint8_t array[])
 {
 	uint8_t max = 0;
@@ -305,133 +414,92 @@ uint8_t getMax(uint8_t array[])
 			max = array[i];
 		}
 	}
-	
 	return max;
 }
 
-
+/************************************************************************/
+/*                             MAIN PROGRAM                             */
+/************************************************************************/
 int main (void)
 {
 	
 	DDRB |= (1<<PORTB0);
 	DDRB |= (1<<PORTB1);
-	
 	sensorData[0] = 253;
-
+	
+/************************************************************************/
+/*					INITIATION OF INTERRUPTS AND SPI					*/
+/************************************************************************/	
 	TWISetup(slaveAddress);
 	initADC();
 	initTimer();
 	init_counter();
 	timer2_init();
-	
-	sei();// Enables global interrupt
-
 	SPI_MasterInit();
+	sei();
 	
-	
-	while(1) { 
+/************************************************************************/
+/*                        THE GREAT WHILE-LOOP                          */
+/************************************************************************/
+	while(1) {
+		 
 		
 		answer = AR_read();
 		
 		if (answer == 0){
 			answer = 124;
 		}
-		total = total + answer - 1996.5;
 		adcCounter = 1;
 		
-		SI_IR1 =  get8Bit(10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
+		SI_IR1 = get8Bit(10*(-0.000021834*Distance_1*Distance_1*Distance_1+0.0065*Distance_1*Distance_1 -0.7227*Distance_1 + 35.016));
 		SI_IR2 = get8Bit(10*(-0.000027779*Distance_2*Distance_2*Distance_2+0.0077*Distance_2*Distance_2 -0.7956*Distance_2 + 35.8363));
 		SI_IR3 = get8Bit(10*(-0.000025789*Distance_3*Distance_3*Distance_3+0.0077*Distance_3*Distance_3 -0.8293*Distance_3 + 37.8186));
 		SI_IR4 = get8Bit(10*(-0.00002338455*Distance_4*Distance_4*Distance_4+0.0071*Distance_4*Distance_4 -0.786*Distance_4 + 37.0525));
-		
-		
-		if ((counter>=15)&(counter<=19)){
-			detected = 1;
-		} else {
-			detected = 0;
-		}
-		
-				
-			SI_IR1_array[count_1] = SI_IR1;
-			SI_IR2_array[count_1] = SI_IR2;
-			SI_IR3_array[count_1] = SI_IR3;
-			SI_IR4_array[count_1] = SI_IR4;
-			//SI_LIDAR_array[count_1] = forwardDistance;
 			
-			count_1++;
+		SI_IR1_array[count_1] = SI_IR1;
+		SI_IR2_array[count_1] = SI_IR2;
+		SI_IR3_array[count_1] = SI_IR3;
+		SI_IR4_array[count_1] = SI_IR4;
+		count_1++;
 			
-			if (count_1 == 5){
-				count_1 = 0;
+		if (count_1 == 5){
+			count_1 = 0;
+			
+			forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
+			forwardDistanceLOW = (forwardDistanceMED & 0x7F);
+			forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
 			
 		
-				forwardDistanceMED = getMedianLIDAR(SI_LIDAR_array);
-				forwardDistanceLOW = (forwardDistanceMED & 0x7F);
-				forwardDistanceHIGH = ((forwardDistanceMED >> 7) & 0x7F);
-		
-				sensorData[1] = 1; 
-				sensorData[2] = getMedianIR(SI_IR2_array); //Höger fram
-				sensorData[3] = 2; 
-				sensorData[4] = getMedianIR(SI_IR3_array); //Vänster fram
-				sensorData[5] = 3;
-				sensorData[6] = getMedianIR(SI_IR1_array); //Höger bak
-				sensorData[7] = 4;
-				sensorData[8] = getMedianIR(SI_IR4_array); // Vänster bak
-				sensorData[9] = 5;
-				sensorData[10] = forwardDistanceHIGH; // LIDAR
-				sensorData[11] = 6;
-				sensorData[12] = forwardDistanceLOW; // LIDAR
-				sensorData[13] = 7;
-				sensorData[14] = answer;
-				
-				if (getMax(sensorData) > 245){
-					forwardDistanceHIGH = 245;
-					//Test
-				}
-		
+			sensorData[1] = 1; 
+			sensorData[2] = getMedianIR(SI_IR2_array);	// Front right 
+			sensorData[3] = 2; 
+			sensorData[4] = getMedianIR(SI_IR3_array);	// Front left
+			sensorData[5] = 3;
+			sensorData[6] = getMedianIR(SI_IR1_array);	// Back right
+			sensorData[7] = 4;
+			sensorData[8] = getMedianIR(SI_IR4_array);	// Back left
+			sensorData[9] = 5;
+			sensorData[10] = forwardDistanceHIGH;		// LIDAR high
+			sensorData[11] = 6;
+			sensorData[12] = forwardDistanceLOW;		// LIDAR low
+			sensorData[13] = 7;
+			sensorData[14] = answer;					// Angular velocity
+			sensorData[15] = 8;
+			sensorData[16] = target_detected;			// Detection of target
+			sensorData[17] = 9;
+			sensorData[18] = wheel_counter;
+			
+			if(target_detected == 0) {
+				PORTB |= (1<<PORTB0);
+				PORTB &= ~(1<<PORTB0);
 			}
-
-	  if (tot_overflow >= 11)  // NOTE: '>=' is used
-	        {
-		        // check if the timer count reaches 53
-		        if (TCNT2 >= 53) // 47155)
-		        {
-			             // send interrupt
-						 PORTD |= (1<<PORTD7);
-			        TCNT2 = 0;            // reset counter
-			        tot_overflow = 0;     // reset overflow counter
-						PORTD &= ~(1<<PORTD7);
-					
-		        }
-	        }
-	
-
-		
-		//Receive 90*-rotation start signal
-		//answer = AR_read();
-		//total = total + answer - 1996.5;
-		
-		//When 90* rotation -> send stop signal
-		/*if(total < -18300){ //Left
-		stop;
+				
+				
+			if (getMax(sensorData) > 245){
+				forwardDistanceHIGH = 245;
+			}
 		}
-		else if(total > 18300){
-		stop;
-		} */
 		
-		
-		//Receive 180*-rotation start signal
-		//answer = AR_read();
-		//total = total + answer - 1996.5;
-		
-		//When 180* rotation -> send stop signal
-		/*if(total < -36600){ //Left
-		stop;
-		}
-		else if(total > 36600){
-		stop;
-		} */
-
-
 		ADCSRA |= (1<<ADSC);
 	}
 }
