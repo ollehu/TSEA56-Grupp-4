@@ -51,6 +51,23 @@
 \usepackage{textcomp}
 \usepackage[Q=yes]{examplep}
 \usepackage{icomma}
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\lstset{
+    frame=tb, % draw a frame at the top and bottom of the code block
+    tabsize=4, % tab space width
+    showstringspaces=false, % don't mark spaces in strings
+    numbers=left, % display line numbers on the left
+    numberstyle=\tiny\color{black},
+    commentstyle=\color{green!40!black}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red}, % string color
+    basicstyle=\small\ttfamily,
+    breaklines=true,
+    backgroundcolor=\color{black!5}
+}
 \pagestyle{fancy}
 
 \chead{Undsättningsrobot}
