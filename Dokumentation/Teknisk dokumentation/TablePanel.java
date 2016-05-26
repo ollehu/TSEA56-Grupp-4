@@ -54,6 +54,8 @@ public class TablePanel extends JPanel implements Observer{
 
 	/**
 	 * Sensor data observer
+	 * 
+	 * @author Isak Stroemberg
 	 */
 	@Override
 	public void update(Observable o, Object arg) {
