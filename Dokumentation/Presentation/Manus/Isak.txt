@@ -1,0 +1,44 @@
+=========
+Styrmodul
+=========
+- Styrkommando
+	- Sätter senaste styrkommando
+
+- Sensordata
+	- Beroende på senaste styrkommando
+	- Justerar reglering
+
+- Servon
+	- Gripklo
+	- Lidar (används inte)
+
+==========
+Datormodul
+==========
+- MVC
+	- Model: sensordata, robotstatus, karta
+	- View: grafiskt användargränssnitt och användarinmatning
+	- Controller: tangentbordskommando, blåtand, "handler"
+
+- Meny
+	- Funktioner under skalet
+	- Log
+	- Blåtand, med publikt bibliotek jSSC
+	- Debug
+
+- Karta
+	- Adaptiv
+	- Färger
+
+- Tabell
+	- Visar senaste sensorvärdet
+	- Visar reglerkonstanter i debugläget (dessa kan justeras)
+
+- Graf
+	- Visar historiska sensordata (senaste 100) med tidsstämpel
+	- Publikt bibliotek JFreeChart
+
+- Status
+	- Information om robotens status
+	- Knappar för att styra
+	- Ping
