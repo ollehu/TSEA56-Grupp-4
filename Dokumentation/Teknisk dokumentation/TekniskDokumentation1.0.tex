@@ -380,7 +380,7 @@ För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell
 Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet beskrivs av en tredjegradsfunktion. Genom empiriska tester kan funktionen bestämmas tillräckligt bra för att ge värden att reglera på.
 
 \subsubsection{\texttt{MLX90609}, gyro}
-För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten, tillsammans med annan information, kommuniceras till mikroprocessorn och skickas som två separata bytes från den gyroskopa sensorn. För att filtrera vinkelhastighet från övrig information tas de fyra högsta bitarna från den första byten tillsammans med de fyra lägsta bitarna från den andra byten och läggs på en separat 8-bitars heltalsvariabel i modulens huvud-loop. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation.  
+För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten representeras av elva bitar men kapas till åtta innan informationen kommuniceras vidare. Då de tre minst signifikanta bitarna tas bort blir precisionen något sämre men informationen rymms på en byte. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation.  
 
 \subsubsection{\texttt{IRM-8601-S}, IR-detektor}
 Då den nödställde sänder ut en IR-signal krävs identifikation av ett specifikt bitmönster. För detta ändamål används IR-detektorn \verb+IRM-8601-S+. Bitmönstret identifieras genom att ansluta insignalen till en extern avbrottsingång på mikroprocessorn. TIMER0 används därefter för att räkna tiden på de höga bitarna hos insignalen som IR-detektorn identifierar. Stämmer tiden för de höga bitarna överens med det bitmönster som den nödställde ska sända ut är den nödställde funnen.
@@ -670,13 +670,19 @@ Något som gruppen hade velat utveckla i mån av mer tid är kartläggning i tre
 
 Förbättringspotential finns även i de redan existerande funktionerna. Roboten skulle till exempel kunna göras smartare genom att förbättra avsökningsalgoritmen som i dagsläget inte är helt optimerad. Det skulle göra stor skillnad i en stor och komplicerad bana. 
 \pagebreak
+\section{Kodexempel}
+\subsection{Huvudmodul}
+\lstinputlisting[language=c]{searchPath-v20.h}
 
-\lstinputlisting[language=c,firstline=739, lastline=820]{styrmodulUnstable.c}
+\subsection{Sensormodul}
+\lstinputlisting[language=c]{mainStable.c}
 
-\pagebreak
+\subsection{Styrmodul}
+\lstinputlisting[language=c,firstline=739, lastline=823]{styrmodulUnstable.c}
+
+\subsection{Datormodul}
 \lstinputlisting[language=java,firstline=36, lastline=72]{Log.java}
 
-\pagebreak
 \lstinputlisting[language=java,firstline=55, lastline=72]{TablePanel.java}
 
 \lstinputlisting[language=java,firstline=13]{SensorData.java}

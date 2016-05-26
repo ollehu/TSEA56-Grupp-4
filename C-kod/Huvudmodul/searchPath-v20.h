@@ -135,19 +135,10 @@ void btSend(unsigned char data)
 uint8_t * findTarget()
 {
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return rotateRight;
 	} else if(walls[1] == 0){ //One forward
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return oneForward;
 	} else if (walls[2] == 0){ //Rotate 90 degrees to the left
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return rotateLeft;
 	} else { //Rotate 180 degrees (clockwise)
 		return rotate180;
