@@ -1,6 +1,8 @@
 \documentclass[11pt]{article}
 
 \usepackage{extras} % Se extras.sty
+\usepackage{listings}
+\lstset{tabsize = 2}
 
 \begin{document}
 \begin{titlepage}
@@ -667,6 +669,9 @@ En av de naturligt följande förbättringarna är att få roboten att kunna nav
 Något som gruppen hade velat utveckla i mån av mer tid är kartläggning i tre dimensioner. Det hade bidragit till en bättre användarupplevelse. I övrigt är gruppen nöjd med robotens funktioner. 
 
 Förbättringspotential finns även i de redan existerande funktionerna. Roboten skulle till exempel kunna göras smartare genom att förbättra avsökningsalgoritmen som i dagsläget inte är helt optimerad. Det skulle göra stor skillnad i en stor och komplicerad bana. 
+\pagebreak
+
+\lstinputlisting[language=c,firstline=739, lastline=820]{styrmodulUnstable.c}
 
 \pagebreak
 \addcontentsline{toc}{section}{Referenser}
