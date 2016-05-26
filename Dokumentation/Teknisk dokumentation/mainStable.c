@@ -1,8 +1,8 @@
-//************************************************************************/
+//*************************************************************/
 /*	Interrupt: Infrared detector - detection of target.
 	Checks if target is found. Responds to any edge.
-																		*/
-/************************************************************************/
+															*/
+/*************************************************************/
 ISR (INT0_vect)
 {
 	if(lookingForTarget == 1) {
@@ -26,12 +26,12 @@ ISR (INT0_vect)
 	}
 }
 
-/************************************************************************/
+/*************************************************************/
 /*	Interrupt: ADC conversion - Invokes interrupt once conversion is 
 	finished
 	Transforms an analog input from the IR-sensors into digital output.
-																		*/
-/************************************************************************/
+															*/
+/*************************************************************/
 ISR(ADC_vect){ //IR-SENSOR
 	CLKPR = 0x06;
 	
@@ -66,12 +66,12 @@ ISR(ADC_vect){ //IR-SENSOR
 	}
 }
 
-/************************************************************************/
+/*************************************************************/
 /*	Subprogram: Get median value - picks the median value of five.
 	It is given an array of values from LIDAR-Lite, returns the
 	median.
-																		*/
-/************************************************************************/
+															*/
+/*************************************************************/
 uint16_t getMedianLIDAR(uint16_t arr[])
 {
 	uint16_t i, j, swap;
