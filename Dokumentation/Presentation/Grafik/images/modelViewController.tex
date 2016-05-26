@@ -1,0 +1,62 @@
+\documentclass[border=10px]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{shapes.arrows}
+\usepackage{amssymb}
+\usetikzlibrary{calc}
+\usepackage{verbatim}
+
+\pagestyle{empty}
+\begin{document}
+
+\tikzstyle{decision} = [diamond, draw,
+    text width=5em, text badly centered, node distance=3cm, inner sep=0pt]
+    
+\tikzstyle{block} = [rectangle, draw,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+	
+\begin{tikzpicture}[scale=1]
+
+% nodes
+\node[block](controller){Controller};
+\node[right of = controller, node distance = 2.4cm, text width = 3cm](controllerText)
+{\begin{itemize}
+	\item blåtand 
+	\item tangentbord 
+\end{itemize}};
+
+\node[block, right of = controller, below of = controller, node distance = 3cm](model){Model};
+\node[below of = model, node distance = 1.8cm, text width = 3cm](modelText)
+{\begin{itemize}
+	\item robotstatus
+	\item sensordata 
+	\item karta
+\end{itemize}};
+
+    
+\node[block, below of = controller, left of = controller, node distance = 3cm](view){View};
+\node[below of = view, node distance = 1.8 cm, text width = 3cm](viewText)
+{\begin{itemize}
+	\item grafiskt gränssnitt
+	\item användarinmatning
+\end{itemize}};
+
+
+% arrows
+\draw[->](controller) -- (model);
+\draw[->](controller) -- (view);
+
+\draw[->, bend left=10](view) to (model);
+\draw[dashed, ->, bend left=10](model) to (view);
+
+\draw[dashed, ->, to path={|- (\tikztotarget)}]
+  (view) edge (controller);
+
+%\draw[->](rotation) -- node[above]{yes} (adjust);
+%\draw[->](rotation) -- node[right]{no} (setRotation);
+
+
+	\end{tikzpicture}
+	
+\end{document}

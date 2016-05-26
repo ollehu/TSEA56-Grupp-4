@@ -1,114 +1,80 @@
 package view;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.zip.ZipEntry;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.util.Observable;
+import java.util.Observer;
 
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
 
-/**
- * Panel containing all SensorLabels and ControlCoefficientPanels
- * @author isak
- *
- */
-public class TablePanel extends JPanel{
+import control.ActionHandler;
+import resources.OtherConstants;
 
-	private Animator animator;
+public class TablePanel extends JPanel implements Observer{
 
-	private ArrayList<SensorLabel> sensorList;
-
-	private ArrayList<ControlCoefficientPanel> controlList;
+	/**
+	 * Tables
+	 */
+	private JTable sensorTable;
+	private JTable controlTable;
 	
-	private String[] sensorNames = {"IR F/R", "IR F/L", "IR B/R",
-			"IR B/L", "Lidar Lite", "Angular velocity"};
-
-	private String[] sensorUnits = {"mm", "mm", "mm",
-			"mm", "cm", "deg/s"};
-
-	private String[] controlCoefficients = {"P", "D", "K", "Speed", "90", "180"};
-
-	public TablePanel(Animator animator) {
-		this.animator = animator;
-
-		sensorList = new ArrayList<>();
-		controlList = new ArrayList<>();
-
-		setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-		//constraints.insets = new Insets(2, 2, 2, 2);
-		constraints.weightx = 1.0;
-		constraints.weighty = 1.0;
-		constraints.gridx = 0;
-		constraints.anchor = GridBagConstraints.LINE_START;
-
-		// add sensors to sensor list
-		for(int index = 0; index < sensorNames.length; index++) {
-			sensorList.add(new SensorLabel(sensorNames[index], sensorUnits[index]));
-		}
-
-		// add control coefficients to list
-		for(String coeff: controlCoefficients) {
-			controlList.add(new ControlCoefficientPanel(coeff, animator));
-		}
+	/**
+	 * Constructor
+	 */
+	public TablePanel(ActionHandler actionHandler) {
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
-		// add elements in lists to panel
-		int index = 0;
-		for(SensorLabel sensorLabel : sensorList) {
-			constraints.gridy = index;
-			this.add(sensorLabel, constraints);
+		sensorTable = new JTable(OtherConstants.SENSOR_DATA, OtherConstants.SENSOR_COLUMNS);
+		sensorTable.setCellSelectionEnabled(false);
+		add(sensorTable);
+		
+		controlTable = new JTable(OtherConstants.CONTROL_DATA, OtherConstants.CONTROL_COLUMNS) {
+			
+			private static final long serialVersionUID = 1L;
 
-			index++;
-		}
-		for(ControlCoefficientPanel controlPanel : controlList) {
-			constraints.gridy = index;
-			this.add(controlPanel, constraints);
-
-			index++;
-		}
+			public boolean isCellEditable(int row, int column) {
+		            return column == 1;
+			 }
+			
+		};
+		controlTable.getModel().addTableModelListener(actionHandler.controlTableListener);
+		controlTable.addFocusListener(new FocusAdapter() {
+			@Override
+		    public void focusLost(FocusEvent arg0) {
+		       controlTable.clearSelection();
+		    }
+		});
+		add(controlTable);
 	}
 
-	public void setAutonomousMode(boolean isAutonomousModeOn) {
-		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
-			controlCoefficientPanel.setAutonomousMode(isAutonomousModeOn);
-		}
-	}
-
-	public void updateSensorValues(int[] sensorValues) {
-		int index = 0;
-		for(SensorLabel sensor : sensorList) {
-			sensor.setValue(sensorValues[index]);
-			index++;
+	/**
+	 * Sensor data observer
+	 */
+	@Override
+	public void update(Observable o, Object arg) {
+		// check if update is in sensorData
+		if(o instanceof model.SensorData) {
+			if(arg instanceof int[]) {
+				int[] sensorData = (int[]) arg;
+				
+				int index = 0;
+				for(int value : sensorData) {
+					sensorTable.setValueAt(value, index, 1);
+					index++;
+				}
+			}
 		}
 	}
 	
-	public int[] getControllerCoefficients() {
-		int[] controllerCoefficients = new int[3];
-		
-		int index = 0;
-		for(ControlCoefficientPanel controlCoefficientPanel : controlList) {
-			controllerCoefficients[index] = controlCoefficientPanel.getControlValue();
-			index++;
-		}
-		
-		return controllerCoefficients;
-	}
-	
-	public String getLatestSensorValues() {
-		String lastSensorValues = "";
-		
-		for(SensorLabel sensorLabel : sensorList) {
-			lastSensorValues += sensorLabel.getName() + ": " + sensorLabel.getValue() + " ";
-		}
-		
-		return lastSensorValues;
-	}
-	
+	/**
+	 * Sets debug mode
+	 */
 	public void setDebugMode(boolean state) {
-		for(ControlCoefficientPanel coefficientPanel : controlList) {
-			coefficientPanel.setVisible(state);
-		}
+		controlTable.setVisible(state);
 	}
 }
