@@ -10,10 +10,7 @@
 {\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Användarhandledning}
 \begin{figure}[!htbp]
   \begin{center}
-\noindent\resizebox{0.7\linewidth}{!}{
-
-
-  \includegraphics{images/RobotFront2.pdf}}
+    \includegraphics[scale=0.9]{images/RobotFront2.pdf}
   \end{center}
 \end{figure}
 
@@ -46,7 +43,7 @@ Version 1.0
 Status
 \begin{longtable}{|l|l|l|} \hline
 
-Granskad & OHU & 2016-05-23 \\ \hline
+Granskad & OHU & 2016-05-26 \\ \hline
 Godkänd & - & - \\ \hline
  
 \end{longtable}
@@ -102,7 +99,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & 2016-05-23 & Första utkastet & Grupp 4 & OHU \\ \hline
+1.0 & 2016-05-26 & Första utkastet & Grupp 4 & OHU \\ \hline
 \end{tabular}
 \end{table}
 
@@ -133,7 +130,7 @@ Hädanefter numreras dioder och brytare enligt figur \ref{picTop} och nedan föl
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.4]{Images/RobotTopInfo.pdf}
+	\includegraphics[scale=1]{Images/RobotTopInfo.pdf}
 	\caption{\textit{Illustration av PigBots olika tryckknappar och dioder.} \label{picTop}}
 \end{figure}
 
@@ -160,7 +157,7 @@ De dioder som är placerade på robotens övre modul visar båda styrläge och s
   \item[Diod 4 och 5] visar tillsammans statusen för roboten under uppdragets genomförande. Dioderna räknas upp binärt i takt med att ett moment har avklarats. Diod 5 är mest signifikant bit. De möjliga kombinationer som dioderna kan anta och dess beskrivning återfinns nedan.
 
     \hspace{2em}\begin{tabular}{c c p{8cm}}
-	Diod 5 & Diod 6 & Beskrivning \\ \hline
+	Diod 5 & Diod 4 & Beskrivning \\ \hline
 	Av & Av & Väntar på startkommando \\
 	Av & På & Söker efter målet \\
 	På & Av & Har funnit målet och återkommit till startposition. Gripklon inväntar en förnödenhet. \\
@@ -177,13 +174,13 @@ De brytare som finns kopplade på robotens övre modul nollställer robotens mod
       \item[-] Föröver: Autonomt läge
       \item[-] Akteröver: Manuellt läge
     \end{itemize}
-  \item[Brytare 2] nollställer sensormodulen, det understa virkortet.
+  \item[Brytare 2] används inte.
   \item[Brytare 3] nollställer styrmodulen, det översta virkortet.
   \item[Brytare 4] nollställer huvudmodulen, det mellersta kortet.
   \item[Brytare 5] skickar ett startkommando till roboten.
 \end{description}
 
-Den ordning brytarna sitter i är även i den ordning användaren ska nollställa hela roboten, ($1 \rightarrow 2 \rightarrow 3$). Varpå roboten startas ($4$).
+Roboten initieras genom att aktivera brytarna i ordningen ($3 \rightarrow 4 \rightarrow 5$).
 
 Utöver dioder och brytare finns även en LCD-display monterad på det övre kortet. LCD-displayen visar information om måldetektion, främre sensorvärde och tillryggalagd sträcka enligt figur \ref{lcd}.
 
@@ -204,7 +201,7 @@ För att justera kontrasten på LCD-displayen används den potentiometer som syn
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[scale=0.35]{images/RobotLCD.pdf}
+	\includegraphics[scale=1]{images/RobotLCD.pdf}
 	\caption{\textit{LCD-displayen med tillhörande potentiometer} \label{lcdPot}}
 \end{figure}
 
@@ -216,11 +213,11 @@ Roboten används autonomt genom att följa instruktionerna nedan.
     \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
   \item Koppla på ett laddat batteri med spänningsnivå $7.2$ V och slå på batterispänningen.
   \item Slå över brytare 1 till autonomt läge.
-    \renewcommand*\labelenumi{(\theenumi)\vspace{1pt} - }
+    \renewcommand*\labelenumi{\hspace{1pt} (\theenumi)\vspace{1pt} - }
 
   \item Valfritt: Koppla upp mot roboten med en dator.
     \renewcommand*\labelenumi{\theenumi\vspace{1pt} - }
-  \item Nollställ roboten genom att aktivera brytarna 1,2 och 3 i den ordningen. Nu ska endast diod 1 vara aktiv.
+  \item Nollställ roboten genom att aktivera brytarna 3 och 4 i den ordningen. Nu ska endast diod 1 vara aktiv.
   \item Placera roboten vid labyrintens start och aktivera brytare 5. 
   \item När roboten har identifierat målet, återkommit till startposition och öppnat gripklon ska ett objekt placeras däremellan och brytare 5 aktiveras.
   \item Aktivera brytare 5 för att roboten ska navigera till målet och släppa objektet. 
