@@ -26,7 +26,6 @@ ISR (INT0_vect)
 	}
 }
 
-
 /************************************************************************/
 /*	Interrupt: ADC conversion - Invokes interrupt once conversion is 
 	finished
