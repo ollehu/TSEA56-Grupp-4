@@ -12,7 +12,8 @@ public class SensorData extends Observable{
 	
 	/**
 	 * Update sensor values and notify
-	 * @param sensorValues
+	 * 
+	 * @author Isak Stroemberg
 	 */
 	public void update(int[] sensorValues) {
 		int accumulatedRotation = 0;

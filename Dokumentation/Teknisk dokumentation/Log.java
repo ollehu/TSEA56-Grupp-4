@@ -35,6 +35,8 @@ public class Log {
 
 	/**
 	 * Creates a new log with a timestamp
+	 * 
+	 * @author Isak Stroemberg
 	 */
 	public void createNewLog() {
 		logEmpty = true;
