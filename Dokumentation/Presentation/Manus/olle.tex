@@ -1,0 +1,49 @@
+\documentclass[10pt]{article}
+
+\usepackage[swedish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{verbatim}
+\usepackage{amsbsy}
+\usepackage[
+  top    = 3cm,
+  bottom = 3cm,
+  left   = 2.5cm,
+right  = 2.5cm]{geometry}
+\usepackage{url}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\today}
+\rhead{Olle Hynen Ulfsjöö}
+\usepackage{enumitem}
+\renewcommand{\baselinestretch}{1.5}
+\setlength{\parskip}{2em}
+
+\begin{document}
+\begin{center}
+\Huge Presentation
+\end{center}
+
+\section{Sensormodul}
+Sensormodulens uppdrag är att kommunicera med samtliga sensorer. Roboten består totalt av åtta stycken sensorer, fyra stycken IR-sensorer som mäter avståndet till sidoväggar, en lasersensor som mäter avståndet till främre vägg, en reflexsensor som mäter hjulens hastighet, ett gyro som mäter vinkelhastighet och slutligen en IR-sensor som upptäcker målet. 
+
+Alla IR-sensorer och reflexsensorn mäts av analogt via ett lågpassfilter medan resterande via pulsbredd respektive SPI. Avståndssensorer samplas med sådann frekvens att en median på fem stycken värden hinner beräknas innan datat skickas vidare. Detta för att ignorera de sporadiska fel som sensorerna bär med sig. Måldetektorn kopplas in på en avbrottsingång och det bitmönster som IR-fyren sänder ut identifieras med hjälp av en timer. Ett problem som uppstod här var att den främre sensorns laser störde måldetektorn och gav ett oidentifierbart mönster. Detta löstes genom att toggla mellan måldetektion och den främre sensorn. 
+
+En samling av alla sensorvärden skickas i 30 Hz till huvudmodulen där sidosensorerna presenteras i millimeter, främre sensorn i centimeter, reflexsensorn i antal flanker, gyrot i en vinkelhastighet och målet som en binär variabel. 
+
+\section{Huvudmodul}
+Huvudmodulen tar sedan emot sensordatat från sensormodulen via I2C-bussen. I I2C-protokollet är huvudmodulen master och både sensormodulen och styrmodulen slaves. Kommunikationen från slave till master initieras genom att slaven skickar en positiv flank på en utgång som är kopplad till ett avbrott hos huvudmodulen. Därefter initieras kommunikation av huvudmodulen och slaves får skicka hela sitt paket med data på en gång. 
+
+Den interna kommunikationen sker utifrån ett protokoll som alla moduler delar. När data skickas kommer först en identifierare som berättar vilken typ av data som följer, identifieraren får endast anta värden mellan 246 till 255. Därefter följer en byte med kommando och slutligen en byte med data. De sistnämna två får följdvis endast anta värden upp till och med 245. Tack vare intervallen kan moduler alltid synkronisera sig med ett en ny mängd data, och ett kommando kan aldrigs misstolkas som en identifierare. 
+
+Det är även huvudmodulen som ansvarar för avsökning och kartläggning av labyrinten. Avsökning sker efter en algoritm som bygger på både högerföljning och dead-end-filling. Kartläggningen sker modulvis och tre stycken väggar kan identifieras per modul, vänster, rakt fram och höger vägg. När målet har identifierass beräknas kortaste väg med hjälp av A*-algoritmen. Till skillnad från Dijkstras algoritm kan A*-algoritmen utesluta vissa moduler och därmed spara tid. När den kortaste vägen är beräknad styr huvudmodulen roboten till startpositionen för att hämta en förnödenhet. Därefter navigeras roboten till den nödställde via den kortaste vägen för att lämna förnödenheten och återvänder till startpositionen.
+
+Huvudmodulen har även i uppdrag att kommunicera med datormodulen via bluetooth. Kommunikationen sker seriellt via ett FireFly-modem i en takt om ungefär 115 kilobitar per sekund. Till datormodulen vidarebefodras all sensorinformation som anländer från sensormodulen. Från datormodulen fås styrkommandon i det manuella läget eller ett startkommando i det autonoma läget. 
+
+Till styrmodulen så vidarebefodras även all sensordata. De kommandon som fås av datormodulen skickas även vidare. 
+\end{document}
+

@@ -45,7 +45,11 @@ public class RobotStatusLabel extends JLabel{
 				setForeground(Color.BLACK);
 			}
 			
-			setText(name + ": " + states[value]);
+			try {
+				setText(name + ": " + states[value]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else {
 			setForeground(Color.BLACK);
 			

@@ -31,6 +31,8 @@
 *.cpt
 # Spara pdfer?
 *.pdf 
+*.nav
+*.vrb
 
 # Eclipse-filer
 .metadata/

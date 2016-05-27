@@ -166,6 +166,70 @@ Resultat kommunikationsuppgift
 
 
 \begin{frame}{PigBot}{Grupp 4}
+
+% Olles del
+\begin{frame}{Sensormodul}{Grupp 4 - PigBot} 
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[scale=0.6]{images/sensor.pdf}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+	\item[-] Åtta sensorer
+	  \begin{itemize}
+	    \item[-] Fyra sidosensorer (IR)
+	    \item[-] En främre sensor (laser)
+	    \item[-] En reflexsensor (IR)
+	    \item[-] Ett gyroskop (SPI)
+	    \item[-] En måldetektor (IR)
+	  \end{itemize}
+	  \pause
+	\item[-] Beräknar median efter sampling
+	  \pause
+	\item[-] Skickar vidare i $30$ Hz
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Huvudmodul}{Grupp 4 - PigBot}
+  \begin{center}
+    \includegraphics[scale=0.5]{images/communication.pdf} 
+    \pause
+    \begin{longtable}{c c c c c}
+      {Identifierare} & & {Kommando} & & {Data} \\ \hline
+      246-255 & $\rightarrow$ & 0-245 & $\rightarrow$ & 0-245 
+    \end{longtable}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Huvudmodul}{Grupp 4 - PigBot}
+  \begin{itemize}
+    \item[-] Högerföljning och dead-end-filling
+    \item[-] A*
+  \end{itemize}
+  \pause
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/map.pdf}
+    \end{column}
+    \begin{column}{0.1\textwidth}
+      \centering
+      $\rightarrow$
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{images/path.pdf}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+% Isaks del
+\begin{frame}{Styrmodul}{Grupp 4 - PigBot}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\includegraphics[width=0.9\textwidth]{images/controllerControlFlow.pdf}
@@ -177,12 +241,12 @@ Resultat kommunikationsuppgift
   	\end{columns}
 \end{frame}
 
-\begin{frame}{PigBot}{Grupp 4}
+\begin{frame}{Datormodul - designmönster}{Grupp 4 - PigBot}
 \centering
 	\includegraphics[width=0.9\textwidth]{images/modelViewController.pdf}
 \end{frame}
 
-\begin{frame}{PigBot}{Grupp 4}
+\begin{frame}{Datormodul - användargränssnitt}{Grupp 4 - PigBot}
 	\begin{tikzpicture}[scale=0.135]
 		\pgftext{\includegraphics[width=2304pt]{images/computerModule.png}} at (0pt,0pt);
 		\fill<3-6>[black, opacity = 0.7] (-1150 pt, 527pt) rectangle (1150pt , 450pt);
@@ -196,14 +260,22 @@ Resultat kommunikationsuppgift
 % Avslutning och skryt
 \begin{frame}[fragile]{PigBot}{Grupp 4}
 Resultat
-\begin{itemize}
-\item[-] Bild på robot stylad?
-\item[-] Animation?
-\end{itemize}
+  \begin{itemize}
+\pause
+    \item[-] Roboten PigBot
+\pause
+    \item[-] Prestanda
+  \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{PigBot}{Grupp 4}
-Utvecklingspotential hos PigBot
+  \begin{itemize}
+    \item[-] Eventuell animation 
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{PigBot}{Grupp 4}
+Utvecklingspotential 
   \begin{itemize}
  \pause
     \item[-] Optimera avsökningsalgoritm
