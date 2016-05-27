@@ -169,51 +169,44 @@ Relationen med beställaren var god under hela projektet. Under mötena under pr
 Kontakten med handledaren fungerade mycket bra. Förutom att handledaren tillhandahöll material var han även  tillmötesgående och var alltid öppen för att diskutera problem eller alternativa lösningar under hela projektet. På grund av vissa omständigheter var handledaren inte alltid tillgänglig vissa perioder men då togs hjälp av andra handledare. Önskvärt hade kanske varit att endast ha kontakt med en handledare men det löste sig väldigt bra till slut.
 
 \subsection{Tekniska framgångar och problem}
-\textit{Beskriv de 3 besvärligaste problemen som ni har haft under projektet. Rangordna problemen där 1 är mest besvärlig i betydelsen tog längst tid att fixa. Beskriv för varje problem: }
-
-\textit{a. felets typ - ange t.ex.  hårdvarufel, mjukvarufel, systemintegrationsfel }
-
-\textit{b. kort beskrivning av felets symptom }
-
-\textit{c. kort beskrivning av felets orsak t.ex. logiskt fel i programmering, timing-fel, glappkontakt, missförstånd av spec., felaktig design. }
-
-\textit{d. kort beskrivning av hur ni fixade felet. T.ex. hur ni fixade mjukvarubuggen, fick ny hårdvara, virade om, gick runt problemet. }
-
-\textit{e. ungefärlig skattning av hur mycket tid som ni ägnade åt felsökningen (dvs. tid som kunde tjänats in om felet inte hade uppstått)}
-
-Ett problem som uppstod på var när alla moduler skulle integreras med varandra. De fungerade var för sig men vid integreringen störde modulerna varandra vilket gjorde att roboten inte betedde sig som önskat.
-
+De tre mest besvärliga problemen som påträffades under projektets gång var:
 \begin{enumerate}
-  
-  \item Integration av moduler\\
-  a) Systemintegrationsfel\\
-  b) Olika. \\
-  c) Timingfel på sensormodulen, syntes först vid integration. Avsökning beroende av reglering. Reglering beroende av sensordata.\\
-  d) Ändrade tiden mellan avbrott, låg i avbrott hela tiden innan. Mycket tester fixade reglering.\\
-  e) 200 timmar.
-  
-   \item Regleringen (olika hastigheter vid olika tillfällen, räta upp sig innan/efter svängar, olika friktion i olika lokaler, att generellt undvika väggar osv)\\
-  a) Mjukvarufel \\
-  b) Kör in i väggar, rätar inte upp sig på rätt sätt, håller inte rätt avstånd etc.\\
-  c) Logiskt fel i programmering. \\
-  d) Tester, diskutera/fundera vad som kan vara upphov till problemen. Mest konstanter som behövde ändras.\\
-  e) 50-100 timmar.
-  
-  \item Beräkning av kortaste väg\\
-  a) Mjukvarufel, integrationsproblem\\
-  b) Tar felaktiga beslut. Skattningar får ej önskad effekt. \\
-  c) Logiskt fel i programmering, ej optimal reglering.\\
-  d) Tänkte igenom fall som inte hade tagits hänsyn till. Mycket tester.\\
-  e) 50 timmar.
-  
+
+	\item Glapp i en av 16-pinnarskontakterna som användes till I\textsuperscript{2}C-bussen
+	 \begin{enumerate}[label=\alph*)]
+	 	\item Hårdvarufel
+	 	\item Kommunikationen via I\textsuperscript{2}C-bussen mellan huvud- och styrmodulen var väldigt oberäknelig. Ibland fastnade båda processorerna väldigt länge i kommunikationen.
+	 	\item Glappkontakt i ett av kontaktdonen som flatkabeln mellan huvud- och styrmodul satt i.
+	 	\item Efter att ha testat nya kablar och att löda om den felaktiga kontaktet utan någon större framgång bestämde vi oss för att vira på en helt ny kontakt istället för den med glapp.
+	 	\item 100 timmar felsökning plus att projektet försenades ungefär en vecka
+	 \end{enumerate}
+
+	\item Opålitliga mätvärden från lasersensorn
+	 \begin{enumerate}[label=\alph*)]
+	 	\item Hårdvarufel
+	 	\item Lidarn gav inte tillräckligt exakta mätvärden. Dels varierade värdet för ett specifikt avstånd mer än önskat, dels var skillnaden i värde mellan vissa avstånd inkorrekt (40 cm avstånd gav ett värde motsvarande 48 cm, medan 50 cm avstånd gav ett värde motsvarande 52 cm).
+	 	\item Lidarn uppfyller inte tillverkarens specificerade prestanda för alla avstånd.
+	 	\item Vi la till en reflexsensor och använde oss av den i kombination med Lidarn för ökad redundans i avståndsmätningen.
+	 	\item 60-70 timmar
+	 \end{enumerate}
+	
+	 \item Regleringen på raksträcka reagerade felaktigt på inverterade hörn 
+	 \begin{enumerate}[label=\alph*)]
+	 	\item Mjukvarufel
+	 	\item På väg in i vissa korsningar, det vill säga när roboten passerade ett inverterat hörn, ryckte den ibland till och började följa väggen runt hörnet.
+	 	\item Felet berodde på att sidosensorerna ibland mottog reflektioner runt hörnet vilket gjorde att regleringen försökte reglera in mot hörnet.
+	 	\item Vi begränsade avståndssensorernas maxavstånd i reglerloopen.
+	 	\item 40 timmar
+	 \end{enumerate}
+   
 \end{enumerate}
 
 Några tekniska framgångar som är värda att nämnas är:
-\begin{itemize}
-  \item[-] Fästena av IR-sensorerna som skrevs ut med hjälp av 3D-skrivare.
-  \item[-] Regleringen implementerades bra vilket gjorde att roboten var snabb och aldrig behövde stanna upp för att tänka. Det var därmed mycket tillfredställande att se roboten köra. 
-  \item[-] Avsökningsalgoritmen fungerade direkt när den implementerades, vilket fås se som en bedrift med tanke på hur omfattande algoritmen är. 
-\end{itemize} 
+\begin{enumerate}
+  	\item LCD:n fungerade redan efter första veckan (lång före planerat). Detta var väldigt tacksamt de kommande veckorna då det förenklade de kommande veckornas testning avsevärt.
+    	\item Datormodulen färdigställdes också före tidplanen. Dess funktionalitet låg alltid steget före robotens, vilket gjorde att nya funktioner hos roboten snabbt kunde testas via datormodulen.
+  	\item Avsökningsalgoritmen fungerade direkt när den implementerades, vilket fås se som en bedrift med tanke på hur omfattande algoritmen är. 
+\end{enumerate} 
 
 \pagebreak
 
