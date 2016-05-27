@@ -61,6 +61,48 @@ PigBot är upbyggd av moduler, vardera med följande funktion:
   \end{itemize}
 \end{frame}
 
+% Olles del
+\begin{frame}{PigBot}{Grupp 4} 
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[scale=0.6]{images/sensor.pdf}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+
+      Sensormodul
+      \begin{itemize}
+	\item[-] Åtta sensorer
+	  \begin{itemize}
+	    \item[-] Fyra sidosensorer (IR)
+	    \item[-] En främre sensor (laser)
+	    \item[-] En reflexsensor (IR)
+	    \item[-] Ett gyroskop (SPI)
+	    \item[-] En måldetektor (IR)
+	  \end{itemize}
+	  \pause
+	\item[-] Beräknar median efter sampling
+	  \pause
+	\item[-] Skickar vidare i $30$ Hz
+      \end{itemize}
+    \end{column}
+
+  \end{columns}
+\end{frame}
+
+\begin{frame}{PigBot}{Grupp 4}
+  Huvudmodul
+  \begin{center}
+    \includegraphics[scale=0.5]{images/communication.pdf} 
+    \pause
+    \begin{longtable}{c c c c c}
+      {Identifierare} & & {Kommando} & & {Data} \\ \hline
+      246-255 & $\rightarrow$ & 0-245 & $\rightarrow$ & 0-245 
+    \end{longtable}
+  \end{center}
+\end{frame}
+
+% Isaks del
 \begin{frame}{PigBot}{Grupp 4}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
