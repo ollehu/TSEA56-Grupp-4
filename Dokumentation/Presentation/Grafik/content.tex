@@ -14,6 +14,14 @@
   \titlepage
 \end{frame}
 
+\begin{frame}[fragile]{PigBot}{Grupp 4}
+Syfte och uppgift:
+  \begin{itemize}
+    \item[-] Undsättningsrobot på prototypnivå
+    \item[-] Utforska en labyrint autonomt
+    \item[-] Identifiera och undsätta en nödställd
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{PigBot}{Grupp 4}
   \begin{columns}
@@ -27,38 +35,18 @@
 \end{frame}
 
 \begin{frame}[fragile]{PigBot}{Grupp 4}
-Syfte och uppgift:
-\pause
+
+PigBot är upbyggd av moduler, vardera med följande funktion:
   \begin{itemize}
-    \item[-] Undsättningsrobot på prototypnivå
-\pause
-    \item[-] Utforskar autonomt ett simulerat grottsystem
-\pause
-    \item[-] Identifierar och undsätter en nödställd
-\pause
-    \item[-] Kommunicerar kartdata till extern dator via Bluetooth\textsuperscript{\circledR}
-
-
+    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
+    \item[-] Huvudmodul - ansvarar kommunikationen mellan de olika modulerna samt tar navigeringsbeslut
+    \item[-] Styrmodul - sköter reglering av roboten
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{PigBot}{Grupp 4}
 \centering
     \includegraphics[scale=0.7]{images/overview.pdf}
-
-\end{frame}
-
-\begin{frame}[fragile]{PigBot}{Grupp 4}
-
-PigBot är upbyggd av moduler, vardera med följande funktion:
-  \begin{itemize}
-\pause
-    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
-\pause
-    \item[-] Styrmodul - sköter reglering av roboten och rotation av roboten samt skriver ut sensordata till en LCD-display
-\pause
-    \item[-] Huvudmodul - Upprättar kommunikationen via Bluetooth\textsuperscript{\circledR} för att kommunicera kartdata
-  \end{itemize}
 \end{frame}
 
 %Start förstudie
