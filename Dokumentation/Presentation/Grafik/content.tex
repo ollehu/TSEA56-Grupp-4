@@ -14,6 +14,14 @@
   \titlepage
 \end{frame}
 
+\begin{frame}[fragile]{PigBot}{Grupp 4}
+Syfte och uppgift:
+  \begin{itemize}
+    \item[-] Undsättningsrobot på prototypnivå
+    \item[-] Utforska en labyrint autonomt
+    \item[-] Identifiera och undsätta en nödställd
+  \end{itemize}
+\end{frame}
 
 \begin{frame}{PigBot}{Grupp 4}
   \begin{columns}
@@ -27,39 +35,121 @@
 \end{frame}
 
 \begin{frame}[fragile]{PigBot}{Grupp 4}
-Syfte och uppgift:
-\pause
+
+PigBot är upbyggd av moduler, vardera med följande funktion:
   \begin{itemize}
-    \item[-] Undsättningsrobot på prototypnivå
-\pause
-    \item[-] Utforskar autonomt ett simulerat grottsystem
-\pause
-    \item[-] Identifierar och undsätter en nödställd
-\pause
-    \item[-] Kommunicerar kartdata till extern dator via Bluetooth\textsuperscript{\circledR}
-
-
+    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
+    \item[-] Huvudmodul - ansvarar kommunikationen mellan de olika modulerna samt tar navigeringsbeslut
+    \item[-] Styrmodul - sköter reglering av roboten
   \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{PigBot}{Grupp 4}
 \centering
     \includegraphics[scale=0.7]{images/overview.pdf}
-
 \end{frame}
 
-\begin{frame}[fragile]{PigBot}{Grupp 4}
+%Start förstudie
 
-PigBot är upbyggd av moduler, vardera med följande funktion:
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Förstudie
+\pause
   \begin{itemize}
-\pause
-    \item[-] Sensormodul - tar emot och koverterar data från robotens samtliga sensorer
-\pause
-    \item[-] Styrmodul - sköter reglering av roboten och rotation av roboten samt skriver ut sensordata till en LCD-display
-\pause
-    \item[-] Huvudmodul - Upprättar kommunikationen via Bluetooth\textsuperscript{\circledR} för att kommunicera kartdata
+    \item[-] En regleruppgift
+    \item[-] En sensoruppgift 
+    \item[-] En kommunikations/konstruktionsuppgift
   \end{itemize}
 \end{frame}
+
+%%%
+
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Frågeställningar regleruppgift
+  \begin{itemize}
+\pause
+    \item[-] Reglering
+\pause
+\begin{itemize}
+	\item [-] Hur kan man reglera en robot så att den kör rakt i en korridor?
+	\item [-] Hur kan styrning ske i kurvor och under rotationer?
+\end{itemize}
+\pause
+    \item[-] Kartläggning och optimering 
+\begin{itemize}
+	\item [-] Hur kan en robot som enbart har tillgång till sensordata kartlägga en okänd labyrint?
+	\item [-] Vilka kartsökningsalgoritmer ger en effektiv avsökningssekvens av en okänd labyrints korridorer?
+	\item [-] Givet en karta över en labyrint, hur kan då den kortaste vägen mellan två punkter beräknas?
+\end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Resultat regleruppgift
+\pause
+  \begin{itemize}
+    \item[-] Reglering
+\begin{itemize}
+	\item [-] PID-reglering
+\end{itemize}
+
+    \item[-] Kartläggning och vägoptimering
+\begin{itemize}
+	\item [-] Kalmanfilter
+	\item [-] Högerväggföljning
+\end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Frågeställningar sensoruppgift
+\pause
+\begin{itemize}
+    \item[-] Vilka sensorer finns det som stöd för att roboten ska kunna utföra sitt uppdrag? Hur fungerar dessa? Finns det olika typer?
+    \item[-] Vilka sensorer är lämpliga att använda till projektet?
+    \item[-] Hur kan dessa implementeras?
+\end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Resultat sensoruppgift
+  \begin{itemize}
+\pause
+    \item[-] Gav konkreta förslag gällande vilka sensorer som roboten borde använda 
+  \end{itemize}
+\end{frame}
+
+%%
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Frågeställningar kommunikationsuppgift
+\pause
+\begin{itemize}
+	\item[-] Vilken busstyp är lämpligast, SPI eller I\textsuperscript{2}C, och hur ska den konfigureras?
+	\item[-] Vilka för- och nackdelar finns med C repektive Assembler? 
+	\item[-] Hur ska tester designas?
+	\item[-] Vad är viktiga faktorer att ha i åtanke vid design av modulbaserade projekt?
+\end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Förstudie}{Grupp 4 - PigBot}
+Resultat kommunikationsuppgift
+\pause
+\begin{itemize}
+	\item[-] I\textsuperscript{2}C-buss med kommunikationsmodul som masterenhet
+	\item[-] C-koden prioriterades framför assembler
+	\item[-] Genom debugging samt test av hårdvara med hjälp av logikanalysatorn
+	\item[-] Uppdelning av moduler innebär ett flertal fördelar, men tänk på systemet i sin helhet
+\end{itemize}
+\end{frame}
+
+%Slut förstudie
 
 % Olles del
 \begin{frame}{Sensormodul}{Grupp 4 - PigBot} 
@@ -123,7 +213,7 @@ PigBot är upbyggd av moduler, vardera med följande funktion:
 
 
 % Isaks del
-\begin{frame}{Styrmodul}{Grupp 4 - PigBot}
+\begin{frame}{PigBot}{Grupp 4}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\includegraphics[width=0.9\textwidth]{images/controllerControlFlow.pdf}
@@ -135,12 +225,12 @@ PigBot är upbyggd av moduler, vardera med följande funktion:
   	\end{columns}
 \end{frame}
 
-\begin{frame}{Datormodul - designmönster}{Grupp 4 - PigBot}
+\begin{frame}{PigBot}{Grupp 4}
 \centering
 	\includegraphics[width=0.9\textwidth]{images/modelViewController.pdf}
 \end{frame}
 
-\begin{frame}{Datormodul - användargränssnitt}{Grupp 4 - PigBot}
+\begin{frame}{PigBot}{Grupp 4}
 	\begin{tikzpicture}[scale=0.135]
 		\pgftext{\includegraphics[width=2304pt]{images/computerModule.png}} at (0pt,0pt);
 		\fill<3-6>[black, opacity = 0.7] (-1150 pt, 527pt) rectangle (1150pt , 450pt);
@@ -151,35 +241,38 @@ PigBot är upbyggd av moduler, vardera med följande funktion:
 	\end{tikzpicture}
 \end{frame}
 
-% Avslutning och skryt
-\begin{frame}[fragile]{PigBot}{Grupp 4}
-Resultat
+
+\begin{frame}{Resultat}{Grupp 4 - PigBot}
+
   \begin{itemize}
-\pause
     \item[-] Roboten PigBot
-\pause
     \item[-] Prestanda
   \end{itemize}
 \end{frame}
 
-\begin{frame}[fragile]{PigBot}{Grupp 4}
-  \begin{itemize}
-    \item[-] Eventuell animation 
-  \end{itemize}
+
+\begin{frame}{Resultat}{Grupp 4 - PigBot}
+\begin{center}
+ \includemedia[
+    width=8cm,
+    height=8cm,
+    activate=pageopen,
+    addresource=movies/Robot.MP4,
+    flashvars={source=movies/Robot.MP4 &autoPlay=false}
+ ]{}{VPlayer.swf}
+\end {center}
 \end{frame}
 
-\begin{frame}[fragile]{PigBot}{Grupp 4}
-Utvecklingspotential 
+
+\begin{frame}{Utvecklingspotential }{Grupp 4 - PigBot}
+
   \begin{itemize}
- \pause
     \item[-] Optimera avsökningsalgoritm
- \pause
     \item[-] Göra mer verklighetsanpassad
 	\begin{itemize}
 	  \item Öppna ytor
 	  \item Rotation
 	\end{itemize}	
-  \pause
     \item[-] Förbättra användarupplevelsen
      	\begin{itemize}
 	  \item 3D-karta
@@ -224,6 +317,7 @@ Konflikter
   \end{itemize}
 \end{frame}
 
+% Avslutning och skryt
 \begin{frame}[fragile]{PigBot}{Grupp 4}
 Avslutning \& skryt
   \begin{itemize}
