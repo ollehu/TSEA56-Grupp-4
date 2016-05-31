@@ -28,6 +28,8 @@ right  = 2.5cm]{geometry}
 \Huge Presentation
 \end{center}
 
+Som ett resultat av förstudierna valde vi att bygga roboten modulärt i tre delar. Uppdelningen möjliggjorde för en rivstart i projektet där alla kunde arbeta parallellt i par. En uppdelning till modulnivå gjordes med hänsyn till sensorer, kommunikation och styrning, varav namnen Sensormodul, Huvudmodul och Styrmodul. 
+
 \section{Sensormodul}
 Sensormodulens uppdrag är att kommunicera med samtliga sensorer. Roboten består totalt av åtta stycken sensorer, fyra stycken IR-sensorer som mäter avståndet till sidoväggar, en lasersensor som mäter avståndet till främre vägg, en reflexsensor som mäter hjulens hastighet, ett gyro som mäter vinkelhastighet och slutligen en IR-sensor som upptäcker målet. 
 
@@ -42,8 +44,8 @@ Den interna kommunikationen sker utifrån ett protokoll som alla moduler delar. 
 
 Det är även huvudmodulen som ansvarar för avsökning och kartläggning av labyrinten. Avsökning sker efter en algoritm som bygger på både högerföljning och dead-end-filling. Kartläggningen sker modulvis och tre stycken väggar kan identifieras per modul, vänster, rakt fram och höger vägg. När målet har identifierass beräknas kortaste väg med hjälp av A*-algoritmen. Till skillnad från Dijkstras algoritm kan A*-algoritmen utesluta vissa moduler och därmed spara tid. När den kortaste vägen är beräknad styr huvudmodulen roboten till startpositionen för att hämta en förnödenhet. Därefter navigeras roboten till den nödställde via den kortaste vägen för att lämna förnödenheten och återvänder till startpositionen.
 
-Huvudmodulen har även i uppdrag att kommunicera med datormodulen via bluetooth. Kommunikationen sker seriellt via ett FireFly-modem i en takt om ungefär 115 kilobitar per sekund. Till datormodulen vidarebefodras all sensorinformation som anländer från sensormodulen. Från datormodulen fås styrkommandon i det manuella läget eller ett startkommando i det autonoma läget. 
+Huvudmodulen har även i uppdrag att kommunicera med datormodulen via bluetooth. Kommunikationen sker seriellt via ett FireFly-modem i en takt om ungefär 115 kilobitar per sekund. Till datormodulen vidarebefodras all sensorinformation som anländer från sensormodulen. Kartan skickas modulvis under robotens färd, alternativt som ett helt paket ifall datormodulen kopplar upp sig under färden.  Från datormodulen fås styrkommandon i det manuella läget eller ett startkommando i det autonoma läget. 
 
-Till styrmodulen så vidarebefodras även all sensordata. De kommandon som fås av datormodulen skickas även vidare. 
+Vidare till styrmodulen så skickas all sensordata för reglering och styrkommandon som anländer från datormodulen.
 \end{document}
 
