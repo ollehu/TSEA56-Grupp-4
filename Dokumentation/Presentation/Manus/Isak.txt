@@ -12,6 +12,8 @@ Styrmodul
 	- Gripklo
 	- Lidar (används inte)
 
+- LCD
+
 ==========
 Datormodul
 ==========

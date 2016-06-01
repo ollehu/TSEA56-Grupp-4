@@ -23,20 +23,17 @@
 \node[block](start){Start};
 \node[block, below of = start, node distance = 3cm](nyModul){Välj ny modul att utforska};
 \node[block, right of = nyModul, node distance = 5cm](styrning){Skicka styrkommando till styrmodulen};
-\node[block, right of = styrning, node distance = 4.5cm](sensor){Meddela sensormodulen vilken sensordata som önskas till regleringen};
-\node[decision, aspect=1.5,right of = sensor, node distance = 4.5cm](regleringKlar){Är regleringen klar?};
+%\node[block, right of = styrning, node distance = 4.5cm](sensor){Meddela sensormodulen vilken sensordata som önskas till regleringen};
+\node[decision, aspect=1.5,right of = styrning, node distance = 4.5cm](regleringKlar){Är regleringen klar?};
 \node[block, right of=regleringKlar, node distance = 4.5cm] (sensorData) {Skicka sensordata till styrmodul};
 
 \draw[->](start) -- (nyModul);
 \draw[->](nyModul.east) -- (styrning);
-\draw[->](styrning) -- (sensor);
-\draw[->](sensor) -- (regleringKlar);
-\draw[->](regleringKlar.east) -- (sensorData);
+\draw[->](styrning) -- (regleringKlar);
+%\draw[->](sensor) -- (regleringKlar);
+\draw[->](regleringKlar.east) -- node[above]{nej} (sensorData);
 \draw[->](sensorData.north) -| ++(0,1.5) node(lowerright){} -| (regleringKlar.north);
-\draw[->](regleringKlar.south) -| ++(0,-1.5) node(lowerright){} -| (nyModul.south);
-
-\node at (14.5,-4.5){ja};
-\node at (16.5,-3.5){nej};
+\draw[->](regleringKlar.south) -| ++(0,-1.5) node[above right]{ja} -| (nyModul.south);
 
 	\end{tikzpicture}
 	
