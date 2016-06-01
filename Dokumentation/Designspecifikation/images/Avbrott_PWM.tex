@@ -22,8 +22,8 @@
 
 \node[block](start){Start};
 \node[block, below of = start, node distance = 3cm](initTIMSK){Initiera TIMSK};
-\node[block, below of = initTIMSK, node distance = 3cm](TIMER){Initierar TIMER0 med ett värde};
-\node[decision, below of = TIMER, node distance = 3cm](int2){TIMER0 overflow};
+\node[block, below of = initTIMSK, node distance = 3cm](TIMER){Initierar TIMER1};
+\node[decision, below of = TIMER, node distance = 3cm](int2){TIMER1 avbrott};
 \node[block, right of = int2, node distance = 3cm](in_sensor){Omvandlar avstånd till lämplig SI-enhet};
 \node[block, right of = in_sensor, node distance = 3cm](data_sensor){Lägger omvandlat data på separat dataregister};
 %\node[block, right of = data_sensor, node distance = 3cm](in_styr){Initiera kommunikation med styrmodul};
