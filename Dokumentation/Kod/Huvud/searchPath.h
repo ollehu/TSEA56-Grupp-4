@@ -11,15 +11,15 @@
 //TWI
 int SLA_styr_W = 0xCC;
 
-/************************************************************************/
+/*******************************************************/
 /*                       POSITION AND ORIENTATION                       */
-/************************************************************************/
+/*******************************************************/
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
 uint8_t position[2] = {16,1}; //Where the robot is right now (is updated after command is sent)
 	
-/************************************************************************/
+/*******************************************************/
 /*                           INTERNAL MAP                               */
-/************************************************************************/
+/*******************************************************/
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)
 uint8_t dimx = 31;
 uint8_t dimy = 18;
@@ -41,15 +41,15 @@ uint8_t walkingValues = 0xE2;
 uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at an intersection
 
 uint8_t nrOfUnexploredPaths = 0;
-/************************************************************************/
+/*******************************************************/
 /*                              TARGET                                  */
-/************************************************************************/
+/*******************************************************/
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
 uint8_t z[2] = {0xFF,0xFE}; //Estimations of shortest path (optimistic, pessimistic)
 
-/************************************************************************/
+/*******************************************************/
 /*                            CONTROLLER                                */
-/************************************************************************/
+/*******************************************************/
 uint8_t lastCommand[3]; //Last sent controller command
 uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
@@ -67,9 +67,9 @@ uint8_t right = 0x03;
 uint8_t left = 0x04;
 uint8_t claw = 0x0B;
 
-/************************************************************************/
+/*******************************************************/
 /*                            SHORTEST PATH                             */
-/************************************************************************/
+/*******************************************************/
 uint8_t currentCommand[3];
 uint8_t shortestPath[150][2];
 
@@ -85,9 +85,9 @@ uint8_t dist;
 int nrOfCoordinates = 0;
 int returnStart = 0xFF;
 
-/************************************************************************/
+/*******************************************************/
 /*                              HEADER                                  */
-/************************************************************************/
+/*******************************************************/
 void btSend(unsigned char data);
 uint8_t * chooseDirection();
 uint8_t countNrOfExploredPaths();
@@ -125,14 +125,14 @@ void btSend(unsigned char data)
 	UDR0 = data;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	findTarget - Sends a controller command according to search 
 		algorithm
 
 	walls[i] = 	0	open
 				1	wall
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t * findTarget()
 {
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
@@ -155,11 +155,11 @@ uint8_t * findTarget()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	countNrOfUnexploredPaths - counts nr of modules walked on around 
 							   the current position
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t countNrOfExploredPaths()
 {
 	uint8_t count = 0;
@@ -180,13 +180,13 @@ uint8_t countNrOfExploredPaths()
 	return count;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	ruleOutPath - rules out path for easier calculation of shortest 
 		path
 		
 	Sets appropriate coordinate in path to 0xF4
 																		*/
-/************************************************************************/
+/*******************************************************/
 void ruleOutPath()
 {
 	switch(direction){
@@ -205,14 +205,14 @@ void ruleOutPath()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	hasFoundTarget - checks if target has been found
 
 	Returns: 	0 	not found
 				1	target in the module ahead
 				2	target found 
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t hasFoundTarget(void)
 {	
 	//return 0;
@@ -236,13 +236,13 @@ uint8_t hasFoundTarget(void)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	unexploredPaths - checks if there are any unexplored paths
 
 	Returns:	0	No unexplored path
 				1	Unexplored path(s)
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t unexploredPaths()
 {
 	if((map[position[0]+1][position[1]] == initialValue) && (path[position[0]+1][position[1]] != blockedWayValue)){
@@ -258,12 +258,12 @@ uint8_t unexploredPaths()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	readSensors - checks in which directions there are walls
 
 	Updates map and walls accordingly
 																		*/
-/************************************************************************/
+/*******************************************************/
 void readSensors()
 {
 	walls[0] = 0;
@@ -368,9 +368,9 @@ void readSensors()
 	
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	sendPositionInfo - sends position information to the computer			*/
-/************************************************************************/
+/*******************************************************/
 void sendPositionInformation(void)
 {
 	btSend(0xFE);
@@ -379,9 +379,9 @@ void sendPositionInformation(void)
 	btSend(0xF1);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	sendMapCoordinate - sends map information to the computer			*/															
-/************************************************************************/
+/*******************************************************/
 void sendMapCoordinate(uint8_t x, uint8_t y)
 {
 	btSend(0xFE);
@@ -390,12 +390,12 @@ void sendMapCoordinate(uint8_t x, uint8_t y)
 	btSend(map[x][y]);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	searchPathInit - initiate map and path
 
 	Fills map and path with initialValue and sets startPositionValue
 																		*/
-/************************************************************************/
+/*******************************************************/
 void searchPathInit() //Fills map and path, sets initial values 
 {
 	//Fill path with 255, map with 0
@@ -411,14 +411,14 @@ void searchPathInit() //Fills map and path, sets initial values
 	map[16][0] = wallValue;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	newDirection - updates direction in which the robot is positioned.
 
 	rotation:	0x02	180 degrees
 				0x03	right turn
 				0x04	left turn
 																		*/
-/************************************************************************/
+/*******************************************************/
 void newDirection(uint8_t rotation, uint8_t degrees)
 {
 	if(degrees == 0x5A){
@@ -449,11 +449,11 @@ void newDirection(uint8_t rotation, uint8_t degrees)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	deadEndTarget - keeps track of whether or not the target was found 
 		in the current dead end
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t deadEndTarget() //Was the target found in the current dead end?
 {
 	switch(direction){
@@ -490,11 +490,11 @@ uint8_t deadEndTarget() //Was the target found in the current dead end?
 	return 0;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	targetInCorner - calculates whether or not the target is placed in 
 					 a corner
 																		*/
-/************************************************************************/
+/*******************************************************/
 
 uint8_t targetInCorner()
 {
@@ -524,11 +524,11 @@ uint8_t targetInCorner()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	updateCoordinates - updates map, path and position when a move 
 		forward has been made
 																		*/
-/************************************************************************/
+/*******************************************************/
 void updateCoordinates() //Updates map, path and position variables
 {
 	//Cardinal direction: north, east, south, west
@@ -597,14 +597,14 @@ void updateCoordinates() //Updates map, path and position variables
 	sendMapCoordinate(position[0], position[1]);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	findWayBack - decides where to go to get closer to the start
 
 	Follows the numbers in map in descending order
 	
 	Returns controller command
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t * findWayBack()
 {		
 	if((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || 
@@ -706,10 +706,10 @@ uint8_t * findWayBack()
 }
 
 
-/************************************************************************/
+/*******************************************************/
 /*	shortestWayToStart - taking the shortest way to start
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t * shortestWayToStart()
 {
 	uint8_t currentCoordinateValue = 0xF9;
@@ -862,11 +862,11 @@ uint8_t * shortestWayToStart()
 	
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	explore - takes the robot around the labyrinth to find target 
 		and make sure it has found the shortest path to it
 																		*/
-/************************************************************************/
+/*******************************************************/
 void explore(void)
 {
 	
@@ -979,31 +979,31 @@ void explore(void)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	distanceToStart - calculates the Manhattan distance from (x,y) 
 						to start
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t distanceToStart(uint8_t x, uint8_t y)
 {
 	return abs(x-16)+abs(y-1);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	distanceToTarget - calculates the walking distance to target
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t distanceToTarget(uint8_t x, uint8_t y)
 {
 	dist = path[x][y];
 	return dist;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	targetAhead - checks if target is in the module right in front of 
 				  the robot
 																		*/
-/************************************************************************/
+/*******************************************************/
 
 uint8_t targetAhead()
 {
@@ -1043,11 +1043,11 @@ void blockWay(uint8_t x, uint8_t y)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	updateTargetFound - updates map, path and position variables when 
 		target is found
 																		*/
-/************************************************************************/
+/*******************************************************/
 void updateTargetFound()
 {	
 	target[2] = map[position[0]][position[1]];
@@ -1064,12 +1064,12 @@ void updateTargetFound()
 	z[1] = target[2]; //Pessimistic value
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	exploreTargetFound - decides where to go when target is found
 
 	Returns controller command
 																		*/
-/************************************************************************/
+/*******************************************************/
 /*uint8_t * exploreTargetFound()
 { 
 	switch(direction){
@@ -1547,13 +1547,13 @@ uint8_t * exploreTargetFound()
 	
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	chooseDirection - decides where to go to walk the shortest distance 
 		to target
 		
 	Returns controller command
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
@@ -1670,13 +1670,13 @@ uint8_t * chooseDirection()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	newCoordinates - updates position when taking the shortest path
 
 	Adds the new coordinate to array shortestPath to keep track of the 
 	way so it can find the way out.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void newCoordinates()
 {
 	switch(direction){
@@ -1701,13 +1701,13 @@ void newCoordinates()
 	
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	shortestPathToTarget - decides where to go to take the shortest 
 		path to target
 		
 	Updates direction or coordinates
 																		*/
-/************************************************************************/
+/*******************************************************/
 void shortestPathToTarget()
 {
 	uint8_t *temp;
@@ -1742,12 +1742,12 @@ void shortestPathToTarget()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	shortestPathInit - Initiates array shortestPath
 
 	Sets direction to 0 (north) and start position to (16,1)
 																		*/
-/************************************************************************/
+/*******************************************************/
 void shortestPathInit()
 {
 	shortestPath[0][0] = 16;
@@ -1759,13 +1759,13 @@ void shortestPathInit()
 	direction = 0;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	findStart - decides where to go to follow the shortest path 
 		from target to start 
 		
 	Returns controller command
 																		*/
-/************************************************************************/
+/*******************************************************/
 uint8_t * findStart()
 {
 	if ((position[0] == shortestPath[returnStart][0]) && (position[1]-1 == shortestPath[returnStart][1])){
@@ -1836,11 +1836,11 @@ uint8_t * findStart()
 		return falseCommand;
 	}
 }
-/************************************************************************/
+/*******************************************************/
 /*	updateShortestPathEstimation - updates estimation if shorter path 
 									is found
 																		*/
-/************************************************************************/
+/*******************************************************/
 void updateShortestPathEstimation()
 {	
 	if(path[position[0]][position[1]] + map[position[0]][position[1]+1] < z[1]){
@@ -1857,11 +1857,11 @@ void updateShortestPathEstimation()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	returnToStart - takes the robot back to start when object has 
 		been dropped att target
 																		*/
-/************************************************************************/
+/*******************************************************/
 void returnToStart()
 {	
 	uint8_t * temp = findStart();

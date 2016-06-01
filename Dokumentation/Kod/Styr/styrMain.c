@@ -18,9 +18,9 @@
 #include "PWM.h"
 #include "LCD.h"
 
-/************************************************************************/
+/*******************************************************/
 /*                            CONTROLLER                                */
-/************************************************************************/
+/*******************************************************/
 uint8_t autonomousMode = 1;
 volatile uint8_t currControlCommand = stop;
 volatile uint8_t adjustRotationMode = 0; // 0 = no adjust, 1 = adjust after, 2 = adjust before, 3 = compensate
@@ -49,9 +49,9 @@ uint8_t direction = 1;
 uint8_t controlOn = 1;
 
 uint8_t maximumDistanceDifference = 0;
-/************************************************************************/
+/*******************************************************/
 /*                              SENSOR                                  */
-/************************************************************************/
+/*******************************************************/
 uint8_t sideSensors[4];
 uint16_t forwardSensor[5];
 int16_t oldForwardSensor;
@@ -79,15 +79,15 @@ volatile uint8_t accumulatedDistance = 0;
 
 uint8_t targetDetected = 0; 
 
-/************************************************************************/
+/*******************************************************/
 /*                               LCD                                    */
-/************************************************************************/
+/*******************************************************/
 volatile uint8_t madeChange = 0;
 uint8_t debugCount = 0;
 
-/************************************************************************/
+/*******************************************************/
 /*                               DEBUG                                  */
-/************************************************************************/
+/*******************************************************/
 volatile uint8_t called;
 volatile uint8_t received;
 volatile uint8_t debugMode;
@@ -105,9 +105,9 @@ int8_t y_out_old = 0;
 int8_t y_diff = 0;
 int8_t y_diff_max = 0;
 
-/************************************************************************/
+/*******************************************************/
 /*                              HEADER                                  */
-/************************************************************************/
+/*******************************************************/
 char *commandToString(uint8_t command);
 void updateSensorData(uint8_t sensorIndex, uint8_t data);
 void respondToSensorData();
@@ -126,12 +126,12 @@ uint8_t edgesToCentimeter(uint8_t edgeCount);
 uint8_t centimeterToEdges(uint8_t centimeter);
 uint16_t getForwardAverage(void);
 
-/************************************************************************/
+/*******************************************************/
 /*	Interrupt: TWI vector - receive data from main module.
 
 	Get sensor data or control command from main module.
 																		*/
-/************************************************************************/
+/*******************************************************/
 ISR(TWI_vect)
 {
 	
@@ -228,12 +228,12 @@ ISR(TWI_vect)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	commandToString - Convert a command to a string.
 
 	command: Command to translate.
 																		*/
-/************************************************************************/
+/*******************************************************/
 char *commandToString(uint8_t command)
 {
 		switch(command){
@@ -250,7 +250,7 @@ char *commandToString(uint8_t command)
 		return "Error";
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	updateSensorData - update vector containing last received data
 		with argument data.
 
@@ -262,18 +262,18 @@ char *commandToString(uint8_t command)
 				  6 : Front laser sensor (low byte)
 				  7 : Angular velocity
 																		*/
-/************************************************************************/
+/*******************************************************/
 void updateSensorData(uint8_t sensorIndex, uint8_t data)
 {
 	lastReceivedData[sensorIndex - 1] = data;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	respondToSensorData - act on sensor data.
 
 	Fill sideSensors, forwardSensor and angularVelocity.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void respondToSensorData()
 {
 	//IR-sensors
@@ -327,7 +327,7 @@ void respondToSensorData()
 	madeChange = 1;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	respondToControlData - act on control data.
 	
 	autonomousMode = 0:
@@ -349,7 +349,7 @@ void respondToSensorData()
 				  3 : Autonomous rotate clockwise		value : n/a
 				  4 : Autonomous rotate c-clockwise		value : n/a
 																		*/
-/************************************************************************/
+/*******************************************************/
 void respondToControlData(uint8_t command, uint8_t value)
 {
 	if (autonomousMode == 0){
@@ -467,7 +467,7 @@ void respondToControlData(uint8_t command, uint8_t value)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	ConvertAngle - convert integer input to match preferred 
 		accumulated angular velocity.
 
@@ -476,7 +476,7 @@ void respondToControlData(uint8_t command, uint8_t value)
 			-2 : Rotate 180 left
 			 2 : Rotate 180 right
 																		*/
-/************************************************************************/
+/*******************************************************/
 int16_t convertAngle(int8_t value)
 {
 	if (value == -1) {
@@ -492,7 +492,7 @@ int16_t convertAngle(int8_t value)
 	return 0;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	respondToSettingsData - act on settings data.
 
 	identifier = 1 : Set autonomous mode: value = 1 <-> ON
@@ -503,7 +503,7 @@ int16_t convertAngle(int8_t value)
 				 5 : Set preferred speed
 				 6 : Manually call interrupt
 																		*/
-/************************************************************************/
+/*******************************************************/
 void respondToSettingsData(uint8_t identifier, uint8_t value)
 {
 	switch(identifier){
@@ -549,7 +549,7 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	autonomousForward - autonomously drive forward.
 
 	Prefer to follow left wall, if not available follow right wall.
@@ -566,7 +566,7 @@ void respondToSettingsData(uint8_t identifier, uint8_t value)
 		   preferredDistance
 	   ii) Difference in distance between forward and rear sensor
 																		*/
-/************************************************************************/
+/*******************************************************/
 void autonomousForward()
 {
 	uint8_t frontIndex = noWallsIndex;
@@ -772,10 +772,10 @@ void autonomousForward()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	autonomousHalfModule - autonomously moves half a module.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void autonomousHalfModule(void)
 {
 	
@@ -814,7 +814,7 @@ void autonomousHalfModule(void)
 	
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	autonomousRotate - autonomously rotate.
 
 	Rotate autonomously with respect to preferred accumulated angle
@@ -827,7 +827,7 @@ void autonomousHalfModule(void)
 	
 	Note: labs = long abs 
 																		*/
-/************************************************************************/
+/*******************************************************/
 void autonomousRotate()
 {
 	if(abs(accumulatedAngle) > abs(preferredAccumulatedAngle)){
@@ -851,7 +851,7 @@ void autonomousRotate()
 	accumulatedAngle += angularVelocity;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	autonomousAdjust - autonomously adjust angle to wall.
 
 	Autonomously adjust the angle to the wall or compensate the
@@ -863,7 +863,7 @@ void autonomousRotate()
 	Before autonomousAdjust is called, autonomousAdjustMode should
 	be updated.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void autonomousAdjust()
 {
 	lastDistanceDifference = 0;
@@ -903,10 +903,10 @@ void autonomousAdjust()
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	autonomousScan - Scan the corridor ahead to seek the largest 
 		distance.														*/
-/************************************************************************/
+/*******************************************************/
 void autonomousScan(void)
 {
 	if ((currentLidarAngle + lidarIncrement <= lidarMax) &&
@@ -937,18 +937,18 @@ void autonomousScan(void)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	initInterrupt - Initiate interrupt where main module is called.     */
-/************************************************************************/
+/*******************************************************/
 void initInterrupt()
 {
 	DDRB |= (1<<DDB4);
 	PORTB &= ~(1<<PORTB4);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	callMainInterrupt - Call main module for new control command.       */
-/************************************************************************/
+/*******************************************************/
 void callMainInterrupt(void)
 {
 
@@ -964,12 +964,12 @@ void callMainInterrupt(void)
 	accumulatedDistance = 0;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	setAutonomousLED - Set autonomous LED.
 		
 		mode = 1 : On
 			   2 : Off											        */
-/************************************************************************/
+/*******************************************************/
 void setAutonomousLED(uint8_t mode)
 {
 	if (mode == 1){
@@ -979,12 +979,12 @@ void setAutonomousLED(uint8_t mode)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	setDebugLED - Set debug LED.
 		
 		mode = 1 : On
 			   2 : Off											        */
-/************************************************************************/
+/*******************************************************/
 void setDebugLED(uint8_t mode)
 {
 	if (mode == 1){
@@ -994,9 +994,9 @@ void setDebugLED(uint8_t mode)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	initLED - Initiate and set LEDs.								    */
-/************************************************************************/
+/*******************************************************/
 void initLED(void)
 {
 	DDRD |= (1<<DDD6)|(1<<DDD7);
@@ -1005,9 +1005,9 @@ void initLED(void)
 	setDebugLED(debugMode);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	initCommandModule - Initiate Command module.						*/
-/************************************************************************/
+/*******************************************************/
 void initCommandModule(void)
 {
 	TWISetup(mySlaveAdress);
@@ -1027,20 +1027,20 @@ void initCommandModule(void)
 	lidarMin = lidarMid - 60;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	edgedToCentimeter- Convert number of edges to centimeter.
 		edgeCount: Number of edges.										*/
-/************************************************************************/
+/*******************************************************/
 uint8_t edgesToCentimeter(uint8_t edgeCount)
 {
 	return (uint8_t) (wheelDiameter*M_PI*((float) edgeCount)/
 					  wheelNumberOfSections);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	edgedToCentimeter- Convert number of edges to centimeter.
 		edgeCount: Number of edges.										*/
-/************************************************************************/
+/*******************************************************/
 uint8_t centimeterToEdges(uint8_t centimeter)
 {
 	return (uint8_t) ((wheelNumberOfSections)/
@@ -1056,13 +1056,13 @@ uint16_t getForwardAverage(void){
 			forwardSensor[4])/5;
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	main - Main function.
 
 	Initiate PWM, LCD, interrupt and TWI. Print data to LCD when
 	madeChange is set to 1.
 																		*/
-/************************************************************************/
+/*******************************************************/
 int main(void)
 {
 	initCommandModule();
