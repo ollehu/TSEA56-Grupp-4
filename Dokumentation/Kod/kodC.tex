@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+
+\usepackage{extras} % Se extras.sty
+\usepackage{listings}
+\lstset{tabsize = 2}
+
+\begin{document}
+
+\section*{Huvudmodul}
+\lstinputlisting[language=c, title=Huvudmodulens huvudkod]{Huvud/huvudMain.c}
+
+\pagebreak
+\lstinputlisting[language=c, title=I\textsuperscript{2}C-bussens master-kod]{Huvud/I2C_master.h}
+
+\pagebreak
+\lstinputlisting[language=c, title=Avsökning- och kortaste-väg-algoritm]{Huvud/searchPath.h}
+
+\pagebreak
+\section*{Sensormodul}
+\lstinputlisting[language=c, title=Sensormodulens huvudkod]{Sensor/sensorMain.c}
+
+\pagebreak
+\lstinputlisting[language=c, title=I\textsuperscript{2}C-bussens slave-kod]{Styr/I2C_slave.h}
+
+\pagebreak
+\lstinputlisting[language=c, title=Initieringskod för sensormodulen]{Sensor/sensorInit.h}
+
+\pagebreak
+\section*{Styrmodul}
+\lstinputlisting[language=c, title=Styrmodulens huvudkod]{Styr/styrMain.c}
+
+\pagebreak
+\lstinputlisting[language=c, title=Konstanter för styrmodulen]{Styr/constants.h}
+
+\pagebreak
+\lstinputlisting[language=c, title=LCD-paket för styrmodulen]{Styr/LCD.h}
+
+\pagebreak
+\lstinputlisting[language=c, title=PWM-paket för styrmodulen]{Styr/PWM.h}
+
+\end{document}

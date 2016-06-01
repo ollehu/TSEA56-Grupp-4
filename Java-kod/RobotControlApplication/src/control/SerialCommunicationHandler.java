@@ -92,12 +92,17 @@ public class SerialCommunicationHandler {
 //		});
 //		listenerThread.start();
 		
+		serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+		
+		// wait for constructor
 		try {
-			serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
-		} finally {
-			// ping robot
-			sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
+		    Thread.sleep(500);
+		} catch(InterruptedException ex) {
+		    Thread.currentThread().interrupt();
 		}
+		
+		// ping robot
+		sendToRobot(CommunicationID.CONTROL_SETTING, ControlSettingID.PING, 1);
 	}
 
 	/**
