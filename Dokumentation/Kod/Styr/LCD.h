@@ -17,17 +17,17 @@
 #include <avr/interrupt.h>
 #include <string.h>
 
-/************************************************************************/
+/*******************************************************/
 /*                               LCD                                    */
-/************************************************************************/
+/*******************************************************/
 uint8_t counter = 0;
 char *messageTopRow;
 char *messageBottomRow;
 uint8_t activeTempMessage = 0;
 
-/************************************************************************/
+/*******************************************************/
 /*                              HEADER                                  */
-/************************************************************************/
+/*******************************************************/
 void lcdFlipEN(void);
 void lcdCommand(unsigned char command);
 void lcdClear(void);
@@ -40,12 +40,12 @@ void writeTempMessage(char *topRow, char *bottomRow);
 void lcdInitCounter(void);
 void initLCD(void);
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdFlipEN - flip the enable bit.
 
 	Flip the enable bit for LCD to receive data.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdFlipEN(void)
 {
 	lcdControl |= (1<<EN);
@@ -53,12 +53,12 @@ void lcdFlipEN(void)
 	lcdControl &= ~(1<<EN);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdCommand - Send command to LCD.
 
 	Enter command mode, send command and flip the enable bit.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdCommand(unsigned char command)
 {
 	lcdControl &= ~(1<<RS);
@@ -69,19 +69,19 @@ void lcdCommand(unsigned char command)
 	lcdFlipEN();
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdClear - Clear the LCD.
 
 	Send clear command and delay (do not remove delay).
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdClear(void)
 {
 	lcdCommand(0x1);
 	_delay_ms(2);
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdWriteChar - Write a single character to LCD.
 
 	data : Character to put at cursor position.
@@ -89,7 +89,7 @@ void lcdClear(void)
 	Enter write mode, puts character at cursor position and flips
 	the enable bit.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdWriteChar(char data)
 {
 	lcdControl |= (1<<RS);
@@ -98,7 +98,7 @@ void lcdWriteChar(char data)
 	lcdFlipEN();
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdWriteTopRow - Write a string to top row.
 
 	topRow : String to put on top row.
@@ -106,7 +106,7 @@ void lcdWriteChar(char data)
 	Set cursor in order to center message. Loop through string and 
 	put each character (increment of cursor is handled by LCD).
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdWriteTopRow(char *topRow)
 {
 	messageTopRow = topRow;
@@ -121,7 +121,7 @@ void lcdWriteTopRow(char *topRow)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdWriteBottomRow - Write a string to bottom row.
 
 	bottomRow : String to put on bottom row.
@@ -129,7 +129,7 @@ void lcdWriteTopRow(char *topRow)
 	Set cursor in order to center message. Loop through string and 
 	put each character (increment of cursor is handled by LCD).
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdWriteBottomRow(char *bottomRow)
 {
 	messageBottomRow = bottomRow;
@@ -144,13 +144,13 @@ void lcdWriteBottomRow(char *bottomRow)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdClearTopRow - Clear top row.
 
 	Set cursor at beginning of top row and loop through row printing 
 	empty spaces at each position.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdClearTopRow(void)
 {
 	lcdCommand(0x80);
@@ -160,13 +160,13 @@ void lcdClearTopRow(void)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdClearBottomRow - Clear bottom row.
 
 	Set cursor at beginning of bottom row and loop through row printing 
 	empty spaces at each position.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void lcdClearBottomRow(void)
 {
 	lcdCommand(0xC0);
@@ -176,7 +176,7 @@ void lcdClearBottomRow(void)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	writeTempMessage - Write a temporary message, displaying for
 		about ~1 second.
 		
@@ -185,7 +185,7 @@ void lcdClearBottomRow(void)
 
 	Start the counter and put message from arguments.
 																		*/
-/************************************************************************/
+/*******************************************************/
 void writeTempMessage(char *topRow, char *bottomRow)
 {
 	counter = 0;
@@ -209,13 +209,13 @@ void writeTempMessage(char *topRow, char *bottomRow)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	Interrupt: Timer0 Compare A vector - Increment counter.
 
 	Increment counter until counter reaches 100 (approximately 
 	1 second). Reset LCD to old messages, stop and reset counter.
 																		*/
-/************************************************************************/
+/*******************************************************/
 ISR (TIMER0_COMPA_vect)
 {
 	if (counter < 100){
@@ -235,9 +235,9 @@ ISR (TIMER0_COMPA_vect)
 	}
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	lcdInitCounter - Initiate counter.   								*/
-/************************************************************************/
+/*******************************************************/
 void lcdInitCounter(void)
 {
 	//Set output
@@ -260,7 +260,7 @@ void lcdInitCounter(void)
 	sei();
 }
 
-/************************************************************************/
+/*******************************************************/
 /*	initLCD - Initiate LCD.
 
 	Initiate LCD with settings:
@@ -272,7 +272,7 @@ void lcdInitCounter(void)
 		<> Increment on
 		<> Entire shift off
 																		*/
-/************************************************************************/
+/*******************************************************/
 void initLCD(void)
 {
 	//Set output
