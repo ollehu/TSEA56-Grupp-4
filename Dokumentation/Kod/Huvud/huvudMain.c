@@ -1,11 +1,15 @@
-
+/*
+ * huvudMain.c
+ *
+ * Created: 4/28/2016 1:18:29 PM
+ *  Author: eletr654, lovgu777
+ */ 
 #include "I2C_master.h"
-//#include "constants.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #define F_CPU 14745600UL
 #include <util/delay.h>
-#include "searchPath-v18.h"
+#include "searchPath.h"
 
 #include <util/delay.h>
 
@@ -31,13 +35,6 @@ uint8_t stopCommand[3] = {0xFF, 0x00, 0x00};
 
 
 void sendMap();
-/*void btSend(unsigned char data)
-{
-	// Wait for empty transmit buffer
-	while ( !( UCSR0A & (1<<UDRE0)) );
-	// Put data into buffer, sends the data
-	UDR0 = data;
-}*/
 
 void btInit(void){
 	//16Mhz, Baud rate = 115.2kbps
@@ -76,8 +73,6 @@ ISR(USART0_RX_vect){
 
 			} else if (computerMessage[0] == 252 &&
 				computerMessage[1] == 15) {
-				//ISR(INT0_vect);
-				//EIFR |= (1<<INTF0);
 				INT0_vect();
 				
 			} else {
@@ -86,27 +81,7 @@ ISR(USART0_RX_vect){
 			}
 			data = 0;
 		}
-	}
-	
-	//recieved = UDR0;
-	
-	/*if (data == 0){
-		if(((autodrive == 0) && (recieved == 255)) || ((autodrive == 1) && (recieved == 252))){
-			computerMessage[data] = recieved;
-			data = data + 1;
-		}
-	} else {
-		if(((autodrive == 0) & (computerMessage[0] == 255)) | ((autodrive == 1) & (computerMessage[0] == 252))){
-			computerMessage[data] = recieved;
-			
-			if (data < 2){
-				data = data + 1;
-			} else {
-				Master(3,SLA_styr_W,computerMessage);
-				data = 0;
-			}
-		}
-	}*/
+	}	
 }
 
 ISR(INT0_vect){
@@ -139,6 +114,8 @@ ISR(INT0_vect){
 		case 4:
 			//Do nothing...
 			break;
+		default:
+			break;
 	}
 }
 
@@ -154,6 +131,7 @@ ISR(INT1_vect){ //Interrupt from controller module
 				PORTD |= (1<<PORTD7);
 				
 				Master(3,SLA_styr_W,rotate180);
+				updatePath();
 			} else {
 				explore();
 			}
@@ -166,10 +144,6 @@ ISR(INT1_vect){ //Interrupt from controller module
 			//Do nothing...
 			break; 
 		case 4:
-			/*if(lastCommand[1] == claw){
-				returnStart = nrOfCoordinates - 1;
-			}*/
-
 			if (returnStart != 0xFF){
 				if(returnStart == -1){
 					Master(3,SLA_styr_W,stopCommand);
@@ -183,7 +157,6 @@ ISR(INT1_vect){ //Interrupt from controller module
 			
 			break;
 	}
-
 }
 
 ISR(INT2_vect){ //Interrupt from sensor module

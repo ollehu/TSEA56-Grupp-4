@@ -3,7 +3,7 @@
  * searchPath.h
  *
  * Created: 4/28/2016 1:18:29 PM
- *  Author: ollul666
+ *  Author: eletr654, lovgu777
  */ 
 
 #include <stdlib.h>
@@ -11,15 +11,15 @@
 //TWI
 int SLA_styr_W = 0xCC;
 
-/*******************************************************/
+/************************************************************************/
 /*                       POSITION AND ORIENTATION                       */
-/*******************************************************/
+/************************************************************************/
 uint8_t direction = 0;// 0: north, 1: east, 2: south, 3: west
 uint8_t position[2] = {16,1}; //Where the robot is right now (is updated after command is sent)
 	
-/*******************************************************/
+/************************************************************************/
 /*                           INTERNAL MAP                               */
-/*******************************************************/
+/************************************************************************/
 uint8_t walls[3]; //[0] = Right side, [1]: forward, [2]: left side (0 if open, 1 if wall)
 uint8_t dimx = 31;
 uint8_t dimy = 18;
@@ -40,18 +40,18 @@ uint8_t walkingValues = 0xE2;
 
 uint8_t hasFoundWayBack = 0; //Keeps track of whether or not to block a way at an intersection
 
-uint8_t nrOfUnexploredPaths = 0;
-/*******************************************************/
+/************************************************************************/
 /*                              TARGET                                  */
-/*******************************************************/
+/************************************************************************/
 uint8_t target[3] = {0xFF,0xFF,0xFF}; //x-coordinate, y-coordinate, value in map
 uint8_t z[2] = {0xFF,0xFE}; //Estimations of shortest path (optimistic, pessimistic)
 
-/*******************************************************/
+/************************************************************************/
 /*                            CONTROLLER                                */
-/*******************************************************/
+/************************************************************************/
 uint8_t lastCommand[3]; //Last sent controller command
-uint8_t oneForward[3] = {0xFF, 0x01, 0x01};
+uint8_t oneForward[3] = {0xFF, 0x01, 0x02};
+uint8_t oneForwardHalfSpeed[3] = {0xFF, 0x01, 0x01};
 uint8_t rotateRight[3] = {0xFF, 0x03, 0x5A};
 uint8_t rotateLeft[3] = {0xFF, 0x04, 0x5A};
 uint8_t rotate180[3] = {0xFF, 0x02, 0xB4};
@@ -66,10 +66,12 @@ uint8_t oneEighty = 0x02;
 uint8_t right = 0x03;
 uint8_t left = 0x04;
 uint8_t claw = 0x0B;
+uint8_t fullSpeed = 0x02;
+uint8_t halfSpeed = 0x01;
 
-/*******************************************************/
+/************************************************************************/
 /*                            SHORTEST PATH                             */
-/*******************************************************/
+/************************************************************************/
 uint8_t currentCommand[3];
 uint8_t shortestPath[150][2];
 
@@ -85,12 +87,12 @@ uint8_t dist;
 int nrOfCoordinates = 0;
 int returnStart = 0xFF;
 
-/*******************************************************/
+/************************************************************************/
 /*                              HEADER                                  */
-/*******************************************************/
+/************************************************************************/
 void btSend(unsigned char data);
+void checkNeighboursDistance(uint8_t x, uint8_t y)
 uint8_t * chooseDirection();
-uint8_t countNrOfExploredPaths();
 uint8_t deadEndTarget();
 uint8_t distanceToStart(uint8_t x, uint8_t y);
 uint8_t distanceToTarget(uint8_t x, uint8_t y);
@@ -99,7 +101,9 @@ uint8_t * exploreTargetFound();
 uint8_t * findStart();
 uint8_t * findTarget();
 uint8_t * findWayBack();
+uint8_t goHalfSpeed(uint8_t x, uint8_t y);
 uint8_t hasFoundTarget(void);
+uint8_t manhattanDistanceToTarget(uint8_t x, uint8_t y)
 void newCoordinates();
 void newDirection(uint8_t rotation, uint8_t degrees);
 void readSensors();
@@ -113,8 +117,9 @@ uint8_t * shortestWayToStart();
 uint8_t targetAhead();
 uint8_t unexploredPaths();
 void updateCoordinates();
-void updateShortestPathEstimation();
+void updatePath(void);
 void updateTargetFound();
+
 
 
 void btSend(unsigned char data)
@@ -125,68 +130,84 @@ void btSend(unsigned char data)
 	UDR0 = data;
 }
 
-/*******************************************************/
+/************************************************************************/
+/*	goHalfSpeed - Checks if robot will do a 180-turn after entering 
+				  module (x,y)
+																		*/
+/************************************************************************/
+uint8_t goHalfSpeed(uint8_t x, uint8_t y){
+	if((x > dimx) || (x < 0) || (y > dimy) || (y < 0)){
+		return 1;
+	} else if (map[x][y] != initialValue) {
+		switch(direction){
+			case 0:
+				if ((map[position[0]][position[1]] - map[position[0]][position[1]+1] == 1) || 
+					((map[position[0]][position[1]] == targetValue) && (target[2] - map[position[0]][position[1]+1] == 1))) {
+					return 0;
+				}
+				break;
+			case 1:
+				if ((map[position[0]][position[1]] - map[position[0]+1][position[1]] == 1) || 
+					((map[position[0]][position[1]] == targetValue) && (target[2] - map[position[0]+1][position[1]] == 1))){
+					return 0;
+				}
+				break;
+			case 2:
+				if ((map[position[0]][position[1]] - map[position[0]][position[1]-1] == 1) || 
+					((map[position[0]][position[1]] == targetValue) && (target[2] - map[position[0]][position[1]-1] == 1))){
+					return 0;
+				}
+				break;
+			case 3:
+				if ((map[position[0]][position[1]] - map[position[0]-1][position[1]] == 1) || 
+					((map[position[0]][position[1]] == targetValue) && (target[2] - map[position[0]-1][position[1]] == 1))){
+					return 0;
+				}
+				break;
+		}
+		
+		return 1;
+	} else {
+		s = distanceToStart(x,y);
+		t = distanceToTarget(position[0],position[1]) + 2;
+		
+		if((map[x][y] == initialValue) && ( s + t <= z[1])) {
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+}
+
+/************************************************************************/
 /*	findTarget - Sends a controller command according to search 
 		algorithm
 
 	walls[i] = 	0	open
 				1	wall
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t * findTarget()
 {
 	if(walls[0] == 0){ //Rotate 90 degrees to the right
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return rotateRight;
 	} else if(walls[1] == 0){ //One forward
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return oneForward;
 	} else if (walls[2] == 0){ //Rotate 90 degrees to the left
-		if(walls[0]+walls[1]+walls[2]<=1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
 		return rotateLeft;
 	} else { //Rotate 180 degrees (clockwise)
 		return rotate180;
 	}
 }
 
-/*******************************************************/
-/*	countNrOfUnexploredPaths - counts nr of modules walked on around 
-							   the current position
-																		*/
-/*******************************************************/
-uint8_t countNrOfExploredPaths()
-{
-	uint8_t count = 0;
-	
-	if (map[position[0]][position[1]+1] < walkingValues){
-		count = count + 1;	
-	} 
-	if (map[position[0]+1][position[1]] < walkingValues) {
-		count = count + 1;
-	} 
-	if (map[position[0]][position[1]+1] < walkingValues){
-		count = count + 1;
-	}
-	if (map[position[0]-1][position[1]] < walkingValues){
-		count = count + 1;
-	}
-	
-	return count;
-}
 
-/*******************************************************/
+/************************************************************************/
 /*	ruleOutPath - rules out path for easier calculation of shortest 
 		path
 		
 	Sets appropriate coordinate in path to 0xF4
 																		*/
-/*******************************************************/
+/************************************************************************/
 void ruleOutPath()
 {
 	switch(direction){
@@ -205,26 +226,16 @@ void ruleOutPath()
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	hasFoundTarget - checks if target has been found
 
 	Returns: 	0 	not found
 				1	target in the module ahead
 				2	target found 
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t hasFoundTarget(void)
-{	
-	//return 0;
-	
-	/*if((position[0] == 11) && (position[1] == 20) && (direction == 0)){
-		return 1;
-	} else if((target[0] != 0xFF) && (target[1] != 0xFF)){
-		return 2;
-	} else {
-		return 0;
-	}*/
-	
+{
 	straightAhead = sensorData[10]*128 + sensorData[12];
 	
 	if((sensorData[16] == 1) && (straightAhead < oneModuleAhead) && (sensorData[2] < 245) && (sensorData[4] < 245)){
@@ -236,13 +247,13 @@ uint8_t hasFoundTarget(void)
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	unexploredPaths - checks if there are any unexplored paths
 
 	Returns:	0	No unexplored path
 				1	Unexplored path(s)
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t unexploredPaths()
 {
 	if((map[position[0]+1][position[1]] == initialValue) && (path[position[0]+1][position[1]] != blockedWayValue)){
@@ -258,12 +269,12 @@ uint8_t unexploredPaths()
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	readSensors - checks in which directions there are walls
 
 	Updates map and walls accordingly
 																		*/
-/*******************************************************/
+/************************************************************************/
 void readSensors()
 {
 	walls[0] = 0;
@@ -324,9 +335,7 @@ void readSensors()
 		if (sensorData[2] < 245){
 			map[position[0]-1][position[1]] = wallValue;
 			walls[0] = 1;
-		} else if (countNrOfExploredPaths() <= 1){
-			nrOfUnexploredPaths = nrOfUnexploredPaths + 1;
-		}
+		} 
 
 	} else if (direction == 3){
 		//Right, !!east open!!, left, straight ahead
@@ -346,10 +355,6 @@ void readSensors()
 		} 
 	}
 	
-	if ((countNrOfExploredPaths() <= 1) && (walls[0] + walls[1] + walls[2]  <= 1)){
-		nrOfUnexploredPaths = nrOfUnexploredPaths + 3 - walls[0] - walls[1] - walls[2];
-	}
-
 	//Send map
 	
 	if (position[0] + 1 < dimx){
@@ -368,9 +373,9 @@ void readSensors()
 	
 }
 
-/*******************************************************/
-/*	sendPositionInfo - sends position information to the computer			*/
-/*******************************************************/
+/************************************************************************/
+/*	sendPositionInfo - sends position information to the computer		*/
+/************************************************************************/
 void sendPositionInformation(void)
 {
 	btSend(0xFE);
@@ -379,9 +384,9 @@ void sendPositionInformation(void)
 	btSend(0xF1);
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	sendMapCoordinate - sends map information to the computer			*/															
-/*******************************************************/
+/************************************************************************/
 void sendMapCoordinate(uint8_t x, uint8_t y)
 {
 	btSend(0xFE);
@@ -390,13 +395,13 @@ void sendMapCoordinate(uint8_t x, uint8_t y)
 	btSend(map[x][y]);
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	searchPathInit - initiate map and path
 
 	Fills map and path with initialValue and sets startPositionValue
 																		*/
-/*******************************************************/
-void searchPathInit() //Fills map and path, sets initial values 
+/************************************************************************/
+void searchPathInit()  
 {
 	//Fill path with 255, map with 0
 	for(int i = 0;i<dimx;i++){
@@ -411,14 +416,14 @@ void searchPathInit() //Fills map and path, sets initial values
 	map[16][0] = wallValue;
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	newDirection - updates direction in which the robot is positioned.
 
 	rotation:	0x02	180 degrees
 				0x03	right turn
 				0x04	left turn
 																		*/
-/*******************************************************/
+/************************************************************************/
 void newDirection(uint8_t rotation, uint8_t degrees)
 {
 	if(degrees == 0x5A){
@@ -449,12 +454,12 @@ void newDirection(uint8_t rotation, uint8_t degrees)
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	deadEndTarget - keeps track of whether or not the target was found 
 		in the current dead end
 																		*/
-/*******************************************************/
-uint8_t deadEndTarget() //Was the target found in the current dead end?
+/************************************************************************/
+uint8_t deadEndTarget() 
 {
 	switch(direction){
 		case 0:
@@ -490,11 +495,11 @@ uint8_t deadEndTarget() //Was the target found in the current dead end?
 	return 0;
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	targetInCorner - calculates whether or not the target is placed in 
 					 a corner
 																		*/
-/*******************************************************/
+/************************************************************************/
 
 uint8_t targetInCorner()
 {
@@ -524,12 +529,12 @@ uint8_t targetInCorner()
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	updateCoordinates - updates map, path and position when a move 
 		forward has been made
 																		*/
-/*******************************************************/
-void updateCoordinates() //Updates map, path and position variables
+/************************************************************************/
+void updateCoordinates() 
 {
 	//Cardinal direction: north, east, south, west
 	if (direction == 0){
@@ -597,22 +602,20 @@ void updateCoordinates() //Updates map, path and position variables
 	sendMapCoordinate(position[0], position[1]);
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	findWayBack - decides where to go to get closer to the start
 
 	Follows the numbers in map in descending order
 	
 	Returns controller command
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t * findWayBack()
 {		
 	if((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || 
 		(map[position[0]+1][position[1]] == startPositionValue[0]) || 
 		((map[position[0]+1][position[1]] == targetValue) && (target[2] == map[position[0]][position[1]] - 1)) || 
 		((map[position[0]][position[1]] == targetValue) && (map[position[0]+1][position[1]] == target[2] - 1))){
-		//(map[position[0]+1][position[1]] == targetValue)  -> ((map[position[0]+1][position[1]] == targetValue) && (map[position[0]][position[1]] == target[2] - 1))
-		//((map[position[0]][position[1]] == targetValue) && (map[position[0]+1][position[1]] == target[2] - 1))
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0: 
 				//Rotate right
@@ -627,7 +630,6 @@ uint8_t * findWayBack()
 				return rotateLeft;
 				break;
 			case 3:
-				//Should never happen??
 				//Rotate 180 degrees
 				return rotate180;
 				break;
@@ -663,7 +665,6 @@ uint8_t * findWayBack()
 				return rotateLeft;
 				break;
 			case 1:
-				//Should never happen??
 				//Rotate 180 degrees
 				return rotate180;
 				break;
@@ -682,7 +683,6 @@ uint8_t * findWayBack()
 				((map[position[0]][position[1]] == targetValue) && (map[position[0]][position[1]-1] == target[2] - 1))){
 		switch (direction){// 0: north, 1: east, 2: south, 3: west
 			case 0:
-				//Should never happen??
 				//Rotate 180 degrees
 				return rotate180;
 				break;
@@ -706,10 +706,10 @@ uint8_t * findWayBack()
 }
 
 
-/*******************************************************/
+/************************************************************************/
 /*	shortestWayToStart - taking the shortest way to start
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t * shortestWayToStart()
 {
 	uint8_t currentCoordinateValue = 0xF9;
@@ -862,11 +862,11 @@ uint8_t * shortestWayToStart()
 	
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	explore - takes the robot around the labyrinth to find target 
 		and make sure it has found the shortest path to it
 																		*/
-/*******************************************************/
+/************************************************************************/
 void explore(void)
 {
 	
@@ -875,39 +875,47 @@ void explore(void)
 		updateTargetFound(); //Only just when the target has been found
 	}
 	
-	/*if ((sensorData[16] == 1) && (hasFoundTarget() == 0)){
-		readSensors();
-		lastCommand[0] = oneForward [0];
-		lastCommand[1] = oneForward [1];
-		lastCommand[2] = oneForward [2];
-		Master(3,SLA_styr_W,lastCommand);
-	} else*/ 
-	
 	if(((lastCommand[1] == right) || (lastCommand[1] == left) || (lastCommand[1] == oneEighty))) {
-		//straightAhead = sensorData[10]*256 + sensorData[12];
+		lastCommand[1] = forward;
 		
-		lastCommand[1] = 0x01;
+		if (hasFoundTarget()>=1){
+			switch(direction){
+				case 0:
+				if(goHalfSpeed(position[0],position[1]+2) == 1){
+					lastCommand[2] = halfSpeed;
+				} else {
+					lastCommand[2] = fullSpeed;
+				}
+				break;
+				case 1:
+				if(goHalfSpeed(position[0]+2,position[1]) == 1){
+					lastCommand[2] = halfSpeed;
+					} else {
+					lastCommand[2] = fullSpeed;
+				}
+				break;
+				case 2:
+				if(goHalfSpeed(position[0],position[1]-2) == 1){
+					lastCommand[2] = halfSpeed;
+					} else {
+					lastCommand[2] = fullSpeed;
+				}
+				break;
+				case 3:
+				if(goHalfSpeed(position[0]-2,position[1]) == 1){
+					lastCommand[2] = halfSpeed;
+					} else {
+					lastCommand[2] = fullSpeed;
+				}
+				break;
+			}
+		}
 		
 		Master(3,SLA_styr_W,lastCommand);
 		for (int k = 0; k < 3; k++)	{
 			btSend(lastCommand[k]);
 		}
-	} /*else if(z[0] == z[1]){
-		uint8_t * temp;
-		
-		temp = shortestWayToStart();
-		
-		lastCommand[0] = temp[0];
-		lastCommand[1] = temp[1];
-		lastCommand[2] = temp[2];
-		
-		if(lastCommand[1] != 0){
-			Master(3,SLA_styr_W,lastCommand);
-			for (int k = 0; k < 3; k++)	{
-				btSend(lastCommand[k]);
-			}
-		}
-	}*/ else if (unexploredPaths()) {
+	}else if (unexploredPaths()) {
 		
 		if((hasFoundWayBack)){
 			hasFoundWayBack = 0;
@@ -935,12 +943,10 @@ void explore(void)
 		}
 		
 	} else {
-		////////////////////////////////////////////////////////
 		if((hasFoundWayBack)){
 			hasFoundWayBack = 0;
 			ruleOutPath();
 		}
-		////////////////////////////////////////////////////////
 		
 		uint8_t * temp;
 
@@ -973,37 +979,34 @@ void explore(void)
 	} else {
 		updateCoordinates();
 		sendPositionInformation();
-		/*if(hasFoundTarget() >= 1){
-			updateShortestPathEstimation();
-		}*/
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	distanceToStart - calculates the Manhattan distance from (x,y) 
 						to start
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t distanceToStart(uint8_t x, uint8_t y)
 {
 	return abs(x-16)+abs(y-1);
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	distanceToTarget - calculates the walking distance to target
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t distanceToTarget(uint8_t x, uint8_t y)
 {
 	dist = path[x][y];
 	return dist;
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	targetAhead - checks if target is in the module right in front of 
 				  the robot
 																		*/
-/*******************************************************/
+/************************************************************************/
 
 uint8_t targetAhead()
 {
@@ -1019,35 +1022,14 @@ uint8_t targetAhead()
 	} else {
 		return 0;
 	}
-	
-	/*if ((map[position[0]][position[1]+1] == targetValue) && (direction == 0)){
-		return 1;
-	} else if ((map[position[0]+1][position[1]] == targetValue) && (direction == 1)){
-		return 1;
-	} else if ((map[position[0]][position[1]-1] == targetValue) && (direction == 2)){
-		return 1;
-	} else if ((map[position[0]-1][position[1]] == targetValue) && (direction == 3)){
-		return 1;
-	} else {
-		return 0;
-	}*/
 }
 
-void blockWay(uint8_t x, uint8_t y)
-{
-	if((x != target[0]) && (y != target[1])){
-		if((map[x][position[y]] != wallValue) && (map[x][y] != targetValue) && (map[x][y] != startPositionValue[0])){
-			path[x][y] = blockedWayValue;
-			nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-		}
-	}
-}
 
-/*******************************************************/
+/************************************************************************/
 /*	updateTargetFound - updates map, path and position variables when 
 		target is found
 																		*/
-/*******************************************************/
+/************************************************************************/
 void updateTargetFound()
 {	
 	target[2] = map[position[0]][position[1]];
@@ -1064,496 +1046,332 @@ void updateTargetFound()
 	z[1] = target[2]; //Pessimistic value
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	exploreTargetFound - decides where to go when target is found
 
 	Returns controller command
 																		*/
-/*******************************************************/
-/*uint8_t * exploreTargetFound()
-{ 
+/************************************************************************/
+
+uint8_t * exploreTargetFound()
+{
 	switch(direction){
 		case 0:
 			w = distanceToStart(position[0]+1,position[1]);
 			r = distanceToTarget(position[0],position[1]) + 1;
-			
+		
 			u = distanceToStart(position[0],position[1]+1);
 			v = distanceToTarget(position[0],position[1]) + 1;
-			
+		
 			s = distanceToStart(position[0]-1,position[1]);
 			t = distanceToTarget(position[0],position[1]) + 1;
 		
-			if((map[position[0]+1][position[1]] == initialValue) && ( w + r < z[1])) {
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
-				}
+			if((map[position[0]+1][position[1]] == initialValue) && ( w + r <= z[1])) {
 				return rotateRight;
-			} else if((map[position[0]][position[1]+1] == initialValue) && ( u + v < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+			} else if((map[position[0]][position[1]+1] == initialValue) && ( u + v <= z[1])){
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0]+1,position[1]);
-				return oneForward;
-			} else if((map[position[0]-1][position[1]] == initialValue) && ( s + t < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				path[target[0]][target[1]] = targetPathValue;
+			
+				if (goHalfSpeed(position[0],position[1]+2) == 1){
+					return oneForwardHalfSpeed;
+				} else {
+					return oneForward;
 				}
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0],position[1]+1);
+			} else if((map[position[0]-1][position[1]] == initialValue) && ( s + t <= z[1])){
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){				
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]+1);
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateRight;
-			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0]-1,position[1]);
-				return oneForward;
-			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0],position[1]+1);
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
+			
+				if(goHalfSpeed(position[0],position[1]+2) == 1){
+					return oneForwardHalfSpeed;
+				} else {
+					return oneForward;
+				}
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]+1);
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0]-1,position[1]);
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 1:
 			w = distanceToStart(position[0],position[1]-1);
 			r = distanceToTarget(position[0],position[1])+1;
-			
+		
 			u = distanceToStart(position[0]+1,position[1]);
 			v = distanceToTarget(position[0],position[1])+1;
-			
+		
 			s = distanceToStart(position[0],position[1]+1);
 			t = distanceToTarget(position[0],position[1])+1;
+		
+			if((map[position[0]][position[1]-1] == initialValue) && (w + r <= z[1])){
+				return rotateRight;
+			} else if((map[position[0]+1][position[1]] == initialValue) && (u + v <= z[1])){
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 			
-			if((map[position[0]][position[1]-1] == initialValue) && (w + r < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if(goHalfSpeed(position[0]+2,position[1]) == 1){
+					return oneForwardHalfSpeed;
+				} else {
+					return oneForward;
 				}
-				return rotateRight;
-			} else if((map[position[0]+1][position[1]] == initialValue) && (u + v < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+			} else if((map[position[0]][position[1]+1] == initialValue) && (s + t <= z[1])){
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]-1);
-				return oneForward;
-			} else if((map[position[0]][position[1]+1] == initialValue) && (s + t < z[1])){
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]-1);
-				blockWay(position[0]+1,position[1]);
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0],position[1]+1);
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateRight;
-			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0],position[1]+1);
-				blockWay(position[0],position[1]-1);
-				return oneForward;
-			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0],position[1]-1);
-				blockWay(position[0]+1,position[1]);
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
+			
+				if (goHalfSpeed(position[0]+2,position[1]) == 1){
+					return oneForwardHalfSpeed;
+			} else {
+					return oneForward;
+				}
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			} else {
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
 				}
-				
-				blockWay(position[0],position[1]-1);
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0],position[1]+1);
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 2:
 			w = distanceToStart(position[0]-1,position[1]);
 			r = distanceToTarget(position[0],position[1])+1;
-			
+		
 			u = distanceToStart(position[0],position[1]-1);
 			v = distanceToTarget(position[0],position[1])+1;
-			
+		
 			s = distanceToStart(position[0]+1,position[1]);
 			t = distanceToTarget(position[0],position[1])+1;
+		
+			if((map[position[0]-1][position[1]] == initialValue) && (w + r <= z[1])){
+				return rotateRight;
+			} else if((map[position[0]][position[1]-1] == initialValue) && (u + v <= z[1])){
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 			
-			if((map[position[0]-1][position[1]] == initialValue) && (w + r < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if (goHalfSpeed(position[0],position[1]-2) == 1){
+					return oneForwardHalfSpeed;
+				} else {
+					return oneForward;
 				}
-				return rotateRight;
-			} else if((map[position[0]][position[1]-1] == initialValue) && (u + v < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+			} else if((map[position[0]+1][position[1]] == initialValue) && (s + t <= z[1])){
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0]-1,position[1]);
-				return oneForward;
-			} else if((map[position[0]+1][position[1]] == initialValue) && (s + t < z[1])){
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
 				}
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]-1);
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0],position[1]-1);
-				blockWay(position[0]+1,position[1]);
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateRight;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]+1,position[1]);
-				blockWay(position[0]-1,position[1]);
-				return oneForward;
-			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]-1);
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
+				path[position[0]-1][position[1]] = blockedWayValue;
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
+			
+				if (goHalfSpeed(position[0],position[1]-2) == 1){
+					return oneForwardHalfSpeed;
+					} else {
+					return oneForward;
+				}
+			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			}else {
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]-1);
-				blockWay(position[0]+1,position[1]);
+				if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				if(map[position[0]+1][position[1]] == initialValue){
+					path[position[0]+1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
 		case 3:
 			w = distanceToStart(position[0],position[1]+1);
 			r = distanceToTarget(position[0],position[1])+1;
-			
+		
 			u = distanceToStart(position[0]-1,position[1]);
 			v = distanceToTarget(position[0],position[1])+1;
-			
+		
 			s = distanceToStart(position[0],position[1]-1);
 			t = distanceToTarget(position[0],position[1])+1;
+		
+			if((map[position[0]][position[1]+1] == initialValue) && (w + r <= z[1])){
+				return rotateRight;
+			} else if((map[position[0]-1][position[1]] == initialValue) && (u + v <= z[1])){
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 			
-			if((map[position[0]][position[1]+1] == initialValue) && (w + r < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if (goHalfSpeed(position[0]-2,position[1]) == 1){
+					return oneForwardHalfSpeed;
+					} else {
+					return oneForward;
 				}
-				return rotateRight;
-			} else if((map[position[0]-1][position[1]] == initialValue) && (u + v < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+			} else if((map[position[0]][position[1]-1] == initialValue) && (s + t <= z[1])){
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]+1);
-				return oneForward;
-			} else if((map[position[0]][position[1]-1] == initialValue) && (s + t < z[1])){ 
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]+1);
-				blockWay(position[0]-1,position[1]);
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
-			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]-1);
+			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateRight;
-			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0],position[1]+1);
-				blockWay(position[0],position[1]-1);
-				return oneForward;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1)){
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]+1);
+			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
+				}
+					if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
+			
+				if (goHalfSpeed(position[0]-2,position[1]) == 1){
+					return oneForwardHalfSpeed;
+					} else {
+					return oneForward;
+				}
+			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
+				path[position[0]][position[1]+1] = blockedWayValue;
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotateLeft;
 			}else {
-				if(walls[0]+walls[1]+walls[2]<=1){
-					nrOfUnexploredPaths = nrOfUnexploredPaths - 1;
+				if(map[position[0]][position[1]+1] == initialValue){
+					path[position[0]][position[1]+1] = blockedWayValue;
 				}
-				blockWay(position[0],position[1]+1);
-				blockWay(position[0]-1,position[1]);
-				blockWay(position[0],position[1]-1);
+				if (map[position[0]-1][position[1]] == initialValue){
+					path[position[0]-1][position[1]] = blockedWayValue;
+				}
+				if(map[position[0]][position[1]-1] == initialValue){
+					path[position[0]][position[1]-1] = blockedWayValue;
+				}
+				path[target[0]][target[1]] = targetPathValue;
 				return rotate180;
 			}
-	}
-	return falseCommand;
-	
-}
-*/
-uint8_t * exploreTargetFound()
-{
-	switch(direction){
-		case 0:
-		w = distanceToStart(position[0]+1,position[1]);
-		r = distanceToTarget(position[0],position[1]) + 1;
-		
-		u = distanceToStart(position[0],position[1]+1);
-		v = distanceToTarget(position[0],position[1]) + 1;
-		
-		s = distanceToStart(position[0]-1,position[1]);
-		t = distanceToTarget(position[0],position[1]) + 1;
-		
-		if((map[position[0]+1][position[1]] == initialValue) && ( w + r <= z[1])) {
-			return rotateRight;
-		} else if((map[position[0]][position[1]+1] == initialValue) && ( u + v <= z[1])){
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-		} else if((map[position[0]-1][position[1]] == initialValue) && ( s + t <= z[1])){
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-		} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateRight;
-		} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-		} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-		} else {
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotate180;
 		}
-		case 1:
-		w = distanceToStart(position[0],position[1]-1);
-		r = distanceToTarget(position[0],position[1])+1;
-		
-		u = distanceToStart(position[0]+1,position[1]);
-		v = distanceToTarget(position[0],position[1])+1;
-		
-		s = distanceToStart(position[0],position[1]+1);
-		t = distanceToTarget(position[0],position[1])+1;
-		
-		if((map[position[0]][position[1]-1] == initialValue) && (w + r <= z[1])){
-			return rotateRight;
-			} else if((map[position[0]+1][position[1]] == initialValue) && (u + v <= z[1])){
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if((map[position[0]][position[1]+1] == initialValue) && (s + t <= z[1])){
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateRight;
-			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			} else {
-			if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotate180;
-		}
-		case 2:
-		w = distanceToStart(position[0]-1,position[1]);
-		r = distanceToTarget(position[0],position[1])+1;
-		
-		u = distanceToStart(position[0],position[1]-1);
-		v = distanceToTarget(position[0],position[1])+1;
-		
-		s = distanceToStart(position[0]+1,position[1]);
-		t = distanceToTarget(position[0],position[1])+1;
-		
-		if((map[position[0]-1][position[1]] == initialValue) && (w + r <= z[1])){
-			return rotateRight;
-			} else if((map[position[0]][position[1]-1] == initialValue) && (u + v <= z[1])){
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if((map[position[0]+1][position[1]] == initialValue) && (s + t <= z[1])){
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateRight;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
-			path[position[0]-1][position[1]] = blockedWayValue;
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if ((map[position[0]+1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]+1][position[1]] == startPositionValue[0])){
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			}else {
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if(map[position[0]+1][position[1]] == initialValue){
-				path[position[0]+1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotate180;
-		}
-		case 3:
-		w = distanceToStart(position[0],position[1]+1);
-		r = distanceToTarget(position[0],position[1])+1;
-		
-		u = distanceToStart(position[0]-1,position[1]);
-		v = distanceToTarget(position[0],position[1])+1;
-		
-		s = distanceToStart(position[0],position[1]-1);
-		t = distanceToTarget(position[0],position[1])+1;
-		
-		if((map[position[0]][position[1]+1] == initialValue) && (w + r <= z[1])){
-			return rotateRight;
-			} else if((map[position[0]-1][position[1]] == initialValue) && (u + v <= z[1])){
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if((map[position[0]][position[1]-1] == initialValue) && (s + t <= z[1])){
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			} else if ((map[position[0]][position[1]+1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]+1] == startPositionValue[0])){
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateRight;
-			} else if ((map[position[0]-1][position[1]] == map[position[0]][position[1]] - 1) || (map[position[0]-1][position[1]] == startPositionValue[0])){
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-				if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return oneForward;
-			} else if ((map[position[0]][position[1]-1] == map[position[0]][position[1]] - 1) || (map[position[0]][position[1]-1] == startPositionValue[0])){
-			path[position[0]][position[1]+1] = blockedWayValue;
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotateLeft;
-			}else {
-			if(map[position[0]][position[1]+1] == initialValue){
-				path[position[0]][position[1]+1] = blockedWayValue;
-			}
-			if (map[position[0]-1][position[1]] == initialValue){
-				path[position[0]-1][position[1]] = blockedWayValue;
-			}
-			if(map[position[0]][position[1]-1] == initialValue){
-				path[position[0]][position[1]-1] = blockedWayValue;
-			}
-			path[target[0]][target[1]] = targetPathValue;
-			return rotate180;
-		}
-	}
 	return falseCommand;
 	
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	chooseDirection - decides where to go to walk the shortest distance 
 		to target
 		
 	Returns controller command
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t * chooseDirection()
 {
 	uint8_t currentCoordinateValue = 0xF9;
@@ -1564,10 +1382,7 @@ uint8_t * chooseDirection()
 		} else if(lastCommand[1] == halfForward[1]){
 			returnStart = nrOfCoordinates - 1;
 			return openClaw;
-		} /*else if (lastCommand[1] == openClaw[1]) {
-			
-			return halfBackward;
-		} */
+		} 
 	} else {
 		switch(direction){
 			case 0:
@@ -1670,13 +1485,13 @@ uint8_t * chooseDirection()
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	newCoordinates - updates position when taking the shortest path
 
 	Adds the new coordinate to array shortestPath to keep track of the 
 	way so it can find the way out.
 																		*/
-/*******************************************************/
+/************************************************************************/
 void newCoordinates()
 {
 	switch(direction){
@@ -1701,13 +1516,13 @@ void newCoordinates()
 	
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	shortestPathToTarget - decides where to go to take the shortest 
 		path to target
 		
 	Updates direction or coordinates
 																		*/
-/*******************************************************/
+/************************************************************************/
 void shortestPathToTarget()
 {
 	uint8_t *temp;
@@ -1742,12 +1557,12 @@ void shortestPathToTarget()
 	}
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	shortestPathInit - Initiates array shortestPath
 
 	Sets direction to 0 (north) and start position to (16,1)
 																		*/
-/*******************************************************/
+/************************************************************************/
 void shortestPathInit()
 {
 	shortestPath[0][0] = 16;
@@ -1759,13 +1574,13 @@ void shortestPathInit()
 	direction = 0;
 }
 
-/*******************************************************/
+/************************************************************************/
 /*	findStart - decides where to go to follow the shortest path 
 		from target to start 
 		
 	Returns controller command
 																		*/
-/*******************************************************/
+/************************************************************************/
 uint8_t * findStart()
 {
 	if ((position[0] == shortestPath[returnStart][0]) && (position[1]-1 == shortestPath[returnStart][1])){
@@ -1836,32 +1651,12 @@ uint8_t * findStart()
 		return falseCommand;
 	}
 }
-/*******************************************************/
-/*	updateShortestPathEstimation - updates estimation if shorter path 
-									is found
-																		*/
-/*******************************************************/
-void updateShortestPathEstimation()
-{	
-	if(path[position[0]][position[1]] + map[position[0]][position[1]+1] < z[1]){
-		z[1] = path[position[0]][position[1]] + map[position[0]][position[1]+1];
-	}
-	if(path[position[0]][position[1]] + map[position[0]+1][position[1]] < z[1]){
-		z[1] = path[position[0]][position[1]] + map[position[0]+1][position[1]];
-	}
-	if(path[position[0]][position[1]] + map[position[0]][position[1]-1] < z[1]){
-		z[1] = path[position[0]][position[1]] + map[position[0]][position[1]-1];
-	}
-	if(path[position[0]][position[1]] + map[position[0]-1][position[1]] < z[1]){
-		z[1] = path[position[0]][position[1]] + map[position[0]-1][position[1]];
-	}
-}
 
-/*******************************************************/
+/************************************************************************/
 /*	returnToStart - takes the robot back to start when object has 
-		been dropped att target
+		been dropped at target
 																		*/
-/*******************************************************/
+/************************************************************************/
 void returnToStart()
 {	
 	uint8_t * temp = findStart();
@@ -1879,5 +1674,78 @@ void returnToStart()
 	} else if  ((lastCommand[1] != claw) && (lastCommand[1] != halfForward[1]) && (lastCommand[1] != halfBackward[1])){
 		newCoordinates();
 		sendPositionInformation();
+	}
+}
+
+/************************************************************************/
+/*	checkNeighboursDistance - changes values in path if the value is too 
+					large. Recursive
+									*/
+/************************************************************************/
+void checkNeighboursDistance(uint8_t x, uint8_t y) {
+	
+	if(x < 0 || x > dimx || y < 0 || y > dimy) {
+		return;
+	}
+	
+	if(x < dimx) {
+		if(path[x+1][y] > path[x][y] + 1 &&
+		(map[x+1][y] < 225 && path[x+1][y] != blockedWayValue)) {
+			path[x+1][y] = path[x][y] + 1;
+			checkNeighboursDistance(x+1, y);
+		}
+	}
+	if(x > 0) {
+		if(path[x-1][y] > path[x][y] + 1 &&
+		(map[x-1][y] < 225 && path[x-1][y] != blockedWayValue)) {
+			path[x-1][y] = path[x][y] + 1;
+			checkNeighboursDistance(x-1, y);
+		}
+	}
+	
+	if(y < dimy) {
+		if(path[x][y+1] > path[x][y] + 1 &&
+		(map[x][y+1] < 225 && path[x][y+1] != blockedWayValue)) {
+			path[x][y+1] = path[x][y] + 1;
+			checkNeighboursDistance(x, y+1);
+		}
+	}
+	
+	if(y > 0) {
+		if(path[x][y-1] > path[x][y] + 1 &&
+		(map[x][y-1] < 225 && path[x][y-1] != blockedWayValue)) {
+			path[x][y-1] = path[x][y] + 1;
+			checkNeighboursDistance(x, y-1);
+		}
+	}	
+}
+
+/************************************************************************/
+/*	manhattanDistanceToTarget - returns the manhattan distance to target 
+					from position (x,y)
+									*/
+/************************************************************************/
+uint8_t manhattanDistanceToTarget(uint8_t x, uint8_t y) {
+	return abs(target[0] - x) + abs(target[1] - y);
+}
+
+/************************************************************************/
+/*	updatePath - for every manhattan distance to target, update path if 
+			necessary 
+									*/
+/************************************************************************/
+void updatePath(void) {
+	int maxManhattan = dimx + dimy;
+	
+	for(int i = 1; i < maxManhattan; i++) {
+		
+		for(int x = 0; x < dimx; x++) {
+			
+			for(int y = 0; y < dimy; y++) {
+				if(manhattanDistanceToTarget(x, y) == i) {
+					checkNeighboursDistance(x,y);
+				}
+			}
+		}
 	}
 }

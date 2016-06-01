@@ -2,7 +2,7 @@
  * I2C_master.h
  *
  * Created: 4/19/2016 8:46:29 AM
- *  Author: lovgu777
+ *  Author: eletr654, lovgu777
  */ 
 
 #include <avr/io.h>
@@ -70,10 +70,6 @@ void Master(int times, uint8_t SLA, uint8_t * data){
 			TWISendData();
 		} else if ((TWSR & 0xF8) == 0x20){
 			//Not able to connect to slave
-
-			//What happens here?
-			
-			
 			
 		} else if((TWSR & 0xF8) == 0x28){
 			//Data transmitted with ACK, load data or stop
@@ -88,10 +84,7 @@ void Master(int times, uint8_t SLA, uint8_t * data){
 			}
 		} else if ((TWSR & 0xF8) == 0x30){
 			//Data transmitted with NOT ACK
-			
-			//What happens here?
-			
-			
+		
 			//MASTER RECEIVER
 		} else if((TWSR & 0xF8) == 0x40){
 			//SLA_R transmitted with ACK, wait for data
@@ -103,10 +96,7 @@ void Master(int times, uint8_t SLA, uint8_t * data){
 			}
 		} else if((TWSR & 0xF8) == 0x48){
 			//SLA_R transmitted with NOT ACK
-			
-			//What happens here?
-			
-			
+		
 		} else if((TWSR & 0xF8) == 0x50){
 			//Data byte received, ACK returned, wait for data
 			if(times == 1){
@@ -115,10 +105,10 @@ void Master(int times, uint8_t SLA, uint8_t * data){
 				TWCR = (1<<TWINT)|(1<<TWEN);
 			} else {
 				times = times - 1;
-				////////////////////////////////////////////////////
+				
 				sensorData[counter] = TWDR;
 				counter = counter + 1;
-				////////////////////////////////////////////////////
+				
 				TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWEA);
 			}
 		} else if((TWSR & 0xF8) == 0x58){
