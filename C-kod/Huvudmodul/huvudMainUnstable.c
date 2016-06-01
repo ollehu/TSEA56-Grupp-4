@@ -139,6 +139,8 @@ ISR(INT0_vect){
 		case 4:
 			//Do nothing...
 			break;
+		default:
+			break;
 	}
 }
 
@@ -154,6 +156,7 @@ ISR(INT1_vect){ //Interrupt from controller module
 				PORTD |= (1<<PORTD7);
 				
 				Master(3,SLA_styr_W,rotate180);
+				updatePath();
 			} else {
 				explore();
 			}
