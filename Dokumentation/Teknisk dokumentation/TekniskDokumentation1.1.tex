@@ -8,7 +8,7 @@
 \begin{titlepage}
 \begin{center}
 
-{\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Teknisk dokumentation}
+{\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Teknisk dokumentation för PigBot}
 
 \vspace{5em}
 
@@ -93,7 +93,8 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.1 & - &  Första utkastet & Grupp 4 & - \\ \hline
+1.1 & - & Andra utkastet & Grupp 4 & - \\ \hline
+1.0 & - &  Första utkastet & Grupp 4 & - \\ \hline
 \end{tabular}
 \end{table}
 
@@ -138,7 +139,7 @@ I följande avsnitt lyfts teori som är nödvändig för förståelse av impleme
 Nedan beskrivs principer för avsökning och kartläggning av labyrinter.
 
 \subsubsection{Väggföljare}
-Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korriodens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren, vice versa för vänstertyp.
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korridorens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren, vice versa för vänstertyp.
 
 \begin{figure}[htbp]
 	\centering
@@ -162,7 +163,7 @@ Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm fö
 Fördelar med algoritmen är att den är enkel att implementera men avsaknaden av intelligens gör att utforskandet av labyrinten tar lång tid. Algoritmen klarar endast att utforska de allra enklaste typer av labyrinter och ifall labyrinten inte är enkelt sammanhängande kan roboten fastna i en oändlig loop.
 
 \subsubsection{\emph{Dead-end filling}}
-\emph{Dead-end filling} är en djup-först-algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en ny återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd.
+\emph{Dead-end filling} är en djup-först-algoritm som utforskar en väg tills en återvändsgränd upptäcks. Därefter åker roboten tillbaka till den första korsningen som har outforskade utgångar och kartlägger dessa tills en ny återvändsgränd upptäcks. Denna process återupprepas tills hela labyrinten är kartlagd. För en mer ingående beskrivning av denna algoritm se förstudien, appendix G.
 
 \subsection{Beräkning av kortaste väg}
 Nedan beskrivs två algoritmer för att ta fram kortaste väg.
@@ -176,7 +177,7 @@ Vid starten definieras två mängder, en med de avsökta och en med de oavsökta
 	y_i + c_{i,j} < y_j
 \end{displaymath}
 
-gäller, där \begin{math} y_i \end{math} är nodpriset för den nod som söks av, \begin{math} y_j \end{math} är nodpriset för nodgrannen och \begin{math} c_{i,j} \end{math} är kostnaden mellan nod \begin{math} i \end{math} och \begin{math} j \end{math}. Ovanstående görs successivt med ursprung i den nod med billigast nodpris som även tillhör den oavsökta mängden, tills slutnoden har undersökts. Den kortaste vägen kan sedan nästlas upp, förutsatt att den föregående noden som bidrog till den kortaste vägen sparas. 
+gäller, där \begin{math} y_i \end{math} är nodpriset för den nod som söks av, \begin{math} y_j \end{math} är nodpriset för nodgrannen och \begin{math} c_{i,j} \end{math} är kostnaden mellan nod \begin{math} i \end{math} och \begin{math} j \end{math}. Ovanstående görs successivt med ursprung i den nod med billigast nodpris som även tillhör den oavsökta mängden, tills slutnoden har undersökts. Den kortaste vägen kan sedan nästlas upp, förutsatt att den föregående noden som bidrog till den kortaste vägen sparas. För en mer ingående beskrivning av denna algoritm se förstudien, appendix G.
 
 \subsubsection{A*}
 A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste vägen mellan två noder. I grund och botten finns samma maskineri som i Dijkstras algoritm, med skillnaden att noder avsöks i stigande ordning enligt
@@ -185,34 +186,7 @@ A* är ytterligare en bäst-först-algoritm med målet att finna den billigaste 
 \end{equation*}
 där $g(n)$ utgör kostnaden av rutten från startnod till nod $n$ och $h(n)$ en heuristik som estimerar den billigaste vägen från nod $n$ till slutnod. Med andra ord är Dijkstras algoritm ett speciallfall av A* där $h(n) = 0$.
 
-$h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras.
-
-\subsection{Reglering}\label{subsection:reglering}
-Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor. Detta avgör sedan vilken insignal som används i regleringen.
-
-Rotation regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde, varefter rotationen avbryts.
-
-Reglering av rak körning innebär reglering av två utsignaler: robotens avstånd till framförvarande vägg och robotens avstånd till väggen/väggarna i korridoren. Avståndet till framförvarande vägg $s$ regleras i förhållande till det önskade avståndet $s^0$ genom reglering av hastigheten $v$ enligt följande ekvation
-\begin{equation*}
-	v = 
-	\begin{cases}
-		v_{pref} \qquad\qquad \forall \ (s - s^0) > 20 \\
-		0.6 \cdot v_{pref} \qquad \forall \ 20 \geq (s - s^0) > 0 \\
-		0 \qquad\qquad\qquad \forall \ (s - s^0)\leq 0 \\
-	\end{cases}
-\end{equation*}
-där $v_{pref}$ är den användardefinierade maxhastigheten.
-
-Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet mellan höger och vänster hjulpar $\Delta v$ utifrån främre sidosensor $d_1$, bakre sidosensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
-\begin{equation*}
-	\Delta v = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
-\end{equation*}
-där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar används dock sensorerna på båda sidor för att uppdatera  $d^0$ enligt
-\begin{equation*}
-	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
-\end{equation*}
-
-Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta v = 0$.
+Funktionen $h(n)$ kan ses som en straffunktion som avtar nära slutnoden. A* kan alltså, till skillnad från Dijkstras algoritm, se framåt i nätverket och kan därför ta bättre beslut om vilka noder som ska uppdateras. För en mer ingående beskrivning av denna algoritm se förstudien, appendix G.
 
 \pagebreak
 
@@ -420,6 +394,33 @@ Mjukvaran till styrmodulen består av följande filer:
 
 \end{description}
 
+\subsubsection{Reglering}
+Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor. Detta avgör sedan vilken insignal som används i regleringen.
+
+Rotation regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde, varefter rotationen avbryts.
+
+Reglering av rak körning innebär reglering av två utsignaler: robotens avstånd till framförvarande vägg och robotens avstånd till väggen/väggarna i korridoren. Avståndet till framförvarande vägg $s$ regleras i förhållande till det önskade avståndet $s^0$ genom reglering av hastigheten $v$ enligt följande ekvation
+\begin{equation*}
+	v = 
+	\begin{cases}
+		v_{pref}, \qquad\qquad (s -w s^0) > 20 \\
+		0.6 \cdot v_{pref}, \qquad 20 \geq (s - s^0) > 0 \\
+		0, \qquad\qquad\qquad (s - s^0)\leq 0 \\
+	\end{cases}
+\end{equation*}
+där $v_{pref}$ är den användardefinierade maxhastigheten.
+
+Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet (PWM-signal) mellan höger och vänster hjulpar $\Delta y$ utifrån främre sidosensor $d_1$, bakre sidosensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
+\begin{equation*}
+	\Delta y = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
+\end{equation*}
+där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar används dock sensorerna på båda sidor för att uppdatera  $d^0$ enligt
+\begin{equation*}
+	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
+\end{equation*}
+
+Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta y = 0$.
+
 
 \subsubsection{PWM}
 Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284p+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att de delar samma inställningar gällande frekvens och periodtid men styrs med olika arbetscykler. Gripklon och servot för den främre sensorn delar i sin tur även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och därför utnyttjas möjligheten att konfigurera om dem så att enbart de nödvändiga används. Nedan finns konfigurationerna beskrivna mer detaljerat. 
@@ -493,9 +494,9 @@ RobotStatusPanel-klassen visar robotens nuvarande status, det vill säga autonom
 
 \begin{figure}[H]
 \centering
-\noindent\resizebox{.8\linewidth}{!}{
-	\input{images/software}}
-	\caption{Skiss över programvarans grafiska användargränssnitt\label{software}}	
+\noindent\resizebox{1\linewidth}{!}{
+	\includegraphics{images/computerModule.png}}
+	\caption{Programvarans grafiska användargränssnitt\label{software}}	
 \end{figure}
 
 \subsubsection{Controller}
@@ -668,9 +669,11 @@ Respektive segment motsvarar följande:
 \end{table}
 
 \pagebreak
-\section{Slutsatser}Gruppen känner sig nöjd med uppnått resultat men ser samtidigt utvecklingmöjligheter av produkter inom några områden. 
+\section{Slutsatser}
 
-En av de naturligt följande förbättringarna är att få roboten att kunna navigera i öppna rum, vilket var ett krav av prioritet 2. Nu är roboten begränsad till att operera i en omgivning bestående av ett layrintsystem med vinkelräta svängar. För att utöka dess användningsområde kan även produkten utvecklas så att den kan reglera vid alla typer av svängar, inte bara vinkelräta.
+Gruppen känner sig nöjd med uppnått resultat. Produkten uppfyller samtliga förstahandskrav, ett andrahandskrav och färdigställdes i enlighet med uppställd tidsplan. Det finns samtidigt utvecklingmöjligheter av produkter inom några områden. 
+
+En av de naturligt följande förbättringarna är att få roboten att kunna navigera i öppna rum, vilket var ett krav av prioritet 2. Nu är roboten begränsad till att operera i en omgivning bestående av ett labyrintsystem med vinkelräta svängar. För att utöka dess användningsområde kan även produkten utvecklas så att den kan reglera vid alla typer av svängar, inte bara vinkelräta.
 
 Något som gruppen hade velat utveckla i mån av mer tid är kartläggning i tre dimensioner. Det hade bidragit till en bättre användarupplevelse. I övrigt är gruppen nöjd med robotens funktioner. 
 
