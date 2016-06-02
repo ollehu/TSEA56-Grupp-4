@@ -12,7 +12,7 @@
 
 \vspace{5em}
 
-Version 1.0
+Version 1.1
 
 \vspace{5em}
 Grupp 4 \\
@@ -93,7 +93,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{tabular}{|l|l|l|l|l|} \hline
 
 \textbf{Version} & \textbf{Datum} & \textbf{Utförda förändringar} & \textbf{Utförda av} & \textbf{Granskad} \\ \hline
-1.0 & - &  Första utkastet & Grupp 4 & - \\ \hline
+1.1 & - &  Första utkastet & Grupp 4 & - \\ \hline
 \end{tabular}
 \end{table}
 
@@ -106,22 +106,28 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerade.
 
 \section{Produkten}
-Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit har fästen utskrivna med 3D-skrivare använts. En översiktlig bild av produkten återfinns i figur \ref{overview}.
+Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo, se figur \ref{endProduct} för den färdiga produkten. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit har fästen utskrivna med 3D-skrivare använts. En översiktlig bild av hur komponenterna är placerade på roboten återfinns i figur \ref{overview}.
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Robotens uppgift är att söka av en labyrint och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationen lagras för att kunna skickas vidare till datormodulen för uppritning. 
-
+Robotens uppgift är att söka av ett grottsystem och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationen lagras för att kunna skickas vidare till datormodulen för uppritning. 
 
 \begin{figure}[!htbp]
 \centering
-\noindent\resizebox{\linewidth}{!}{
-	\input{images/overview}}
-	\caption{Det totala systemet \label{overview}}	
+\noindent\resizebox{.8\textwidth}{!}{\includegraphics{images/RobotFront.pdf}}
+\caption{Den slutgiltiga produkten \label{endProduct}}
 \end{figure}
 
+\begin{figure}[!htbp]
+\centering
+\noindent\resizebox{\textwidth}{!}{\input{images/overview}}
+\caption{Det totala systemet \label{overview}}
+\end{figure}
+
+
+
 \subsection{Begränsningar}
-Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste bestå av moduler med storlek 40x40 centimeter.
+Roboten är begränsad till att navigera i korridorer och kräver att alla korsningar består av 90-gradersvinklar. Labyrinten måste bestå av kartmoduler med storlek 40x40 centimeter, se banspecifikation i appendix B.
 
 \pagebreak
 
