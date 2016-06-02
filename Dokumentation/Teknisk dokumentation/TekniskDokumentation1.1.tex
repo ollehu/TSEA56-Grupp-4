@@ -104,14 +104,14 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \begin{flushleft}
 \section{Inledning}
 
-Projektets syfte är att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerade.
+Projektets syfte var att konstruera en undsättningsrobot med kartläggning. Detta dokument syftar till att ge en detaljerad teknisk beskrivning av projektet. Innehållet består av beskrivningar av systemets olika delar, dess mjuk- och hårdvarukomponenter samt hur dessa är implementerade.
 
 \section{Produkten}
-Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo, se figur \ref{endProduct} för den färdiga produkten. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. Gripklon kontrolleras av styrmodulen och  det är sensormodulen som tar in data från sensorerna. För att montera sensorerna på chassit har fästen utskrivna med 3D-skrivare använts. En översiktlig bild av hur komponenterna är placerade på roboten återfinns i figur \ref{overview}.
+Produkten som konstruerats är en undsättningsrobot. Den består av ett chassi inklusive ett batteri, en av/på-brytare samt en gripklo, se figur \ref{endProduct} för den färdiga produkten. På chassit är huvudmodulen, sensormodulen och styrmodulen ihopkopplade med en I\textsuperscript{2}C-buss som sköter kommunikationen mellan dem. Roboten kommunicerar med datormodulen via Bluetooth\textsuperscript{\circledR}. En gripklo kontrolleras av styrmodulen och sensormodulen  tar in data från sensorerna som är kopplade till denna. För att montera sensorerna på chassit har fästen utskrivna med 3D-skrivare använts. En översiktlig bild av hur komponenterna är placerade på roboten återfinns i figur \ref{overview}.
 
 Varje modul har en processor och övrig nödvändig hårdvara, som lågpassfilter och brytare, kopplade på ett virkort. Virkorten kan användas som grund för att tillverka kretskort med motsvarande funktion. 
 
-Robotens uppgift är att söka av ett grottsystem och identifiera en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationen lagras för att kunna skickas vidare till datormodulen för uppritning. 
+Robotens utför följande uppgift. Den söker av ett grottsystem och identifierar en nödställd som sänder ut IR-ljus. När målet är identifierat bestäms kortaste vägen mellan labyrintens ingång och målet. Hela labyrinten söks ej av utan en avsökningsalgoritm som går att läsa om  i avsnitt \ref{search} används. Efter det hämtar roboten en förnödenhet vid starten, kör kortaste vägen till den nödställde och lämnar av förnödenheten för att sedan ta sig tillbaka samma väg till starten. Utforskning och intern kartläggning av labyrinten sker simultant. Informationen lagras för att kunna skickas vidare till datormodulen för uppritning. 
 
 \begin{figure}[!htbp]
 \centering
@@ -211,7 +211,7 @@ Under färden sker autonom kartläggning och beräkning av kortaste väg mellan 
 
 När den kortaste vägen är funnen använder roboten denna rutt för att förse den nödställde med en förnödenhet. Förnödenheten transporteras med hjälp av robotens gripklo som kontrolleras av styrmodulen.
 
-På systemnivå är det om målet är funnet och om kortaste väg kan garanterats som avgör robotens beslut, vilket illustreras i figur \ref{blockSystem}.
+Det som avgör vad roboten tar för beslut är om kortaste väg kan garanteras och om målet är funnet, vilket illustreras i figur \ref{blockSystem}.
 
 \begin{figure}[htbp]
 \centering
@@ -545,7 +545,14 @@ Respektive segment motsvarar följande:
 	\item A (1 byte) - Kommunikations-ID, se tabell \ref{kommunikationstab}.
 	\item B (1 byte) - x-koordinat (tillåtna värden: 0-30).
 	\item C (1 byte) - y-koordinat (tillåtna värden: 0-17).
-	\item D (1 byte) - Information om vad som finns i noden, se tabell \ref{tab}.
+	\item D (1 byte) - Information om vad som finns i noden.
+	\begin{itemize}
+		\item 0-225 - Utforskat
+		\item 242 - Startposition
+		\item 243 - Målets position
+		\item 244 - Vägg
+		\item 245 - Upptäckt men ej utforskad
+	\end{itemize}
 \end{itemize}
 
 \subsubsection{Kommunikationsprotokoll - sensordata}
