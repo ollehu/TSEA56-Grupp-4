@@ -110,12 +110,13 @@ Det var svårt att innan projektet hade startat ta ställning till om 230 timmar
 \begin{longtable}{|l|l|l|l|} \hline
 \centering
 \textbf{Typ av aktivitet} & \textbf{Uppskattad tid [h]} & \textbf{Verklig tid [h]} & \textbf{Skillnad [h]} \\ \hline
-Huvudmodul & 360 & - & -\\ \hline
-Sensormodul & 165 & -& -\\ \hline
-Styrmodul & 155 & - & - \\ \hline
-Datormodul & 75 & - & -\\ \hline
-Integration och tester & 80 & - & -\\ \hline
-Övriga aktiviteter & 545 & - & -\\ \hline
+Huvudmodul & 360 & 258 & -102\\ \hline
+Sensormodul & 165 & 184.5 & +19.5\\ \hline
+Styrmodul & 155 & 124 & -31 \\ \hline
+Datormodul & 75 & 26.5 & -48.5\\ \hline
+Integration och tester & 80 & 234 & +154\\ \hline
+Övriga aktiviteter & 545 & 570 & +25\\ \hline
+Totalt & 1380 & 1397 & +17\\ \hline
 \caption{Uppskattad och verklig tid av aktiviteter} \label{tid}
 \end{longtable}
 
@@ -134,15 +135,13 @@ Projektet planerades framtungt, alltså med stor del av tiden i början av proje
     \addplot[blue, mark=*, mark indices={2,3,4,5,6,7,8,9}] table[x index= 0, y index = 1, col sep = comma, mark repeat=1, mark phase = 2] {images/data.txt};
     \addlegendentry{Projekterad tid};
 
-    \addplot[red, mark=square*, mark indices={2,3,4,5,6,7}] table[x index = 2, y index = 3, col sep = comma, mark=*]{images/data.txt};
+    \addplot[red, mark=square*, mark indices={2,3,4,5,6,7,8,9}] table[x index = 2, y index = 3, col sep = comma, mark=*]{images/data.txt};
     \addlegendentry{Rapporterad tid};
 
   \end{axis}
 \end{tikzpicture}
 \caption{Planerad mot rapporterad tid} \label{tidPlot}
 \end{figure}
-
-
 
 \pagebreak
 
@@ -217,7 +216,7 @@ I följande avsnitt beskrivs det huruvida projektets mål har uppnåtts och hur 
 Alla krav av prioritet 1 och ett av krav av prioritet 2 har uppnåtts. Några av de övriga kraven av prioritet 2 har det börjat att arbetas med men inget av dem har blivit uppfyllt.
 
 \subsection{Hur fungerade leveransen?}
-Skrivs efter tävling?
+Leveransen bestod av presentation av projektet och av en tävling mot andra grupper som genomfört samma projekt. Presentationen var lyckad och och vi erhöll fin feedback från både beställare och opponenter. En andraplats vanns på tävlingen och Pigbot var den enda roboten som lyckades uppfylla alla krav på tävlingsdagen.
 
 \subsection{Hur har studiesituationen påverkat projektet?}
 Samtliga i gruppen har läst en kurs parallellt med projektet och några har även haft andra engagemang på skolan. Projektet har dock inte lidit speciellt mycket av detta eftersom projektet oftast har prioriterats högre än övriga aktiviteter. Däremot har projektet påverkat resultatet i den parallella kursen som alla i gruppen hade behövt lägga mer tid på. 
