@@ -35,21 +35,21 @@
 	\draw[thick, draw=black, <-] (3,10.25) --++ (0,.72) node[above] {Gripklo};
 	
 	%Lidar lite
-	\draw[thick, draw=black, <-] 			(1.5,10.25)  		--+ 		  	(135:1) node[above, align=center] {\verb+LIDAR-Lite v2+ \\ med servo};
+	\draw[thick, draw=black, <-] 			(1.5,10.25)  		--+ 		  	(135:1) node[above, align=center, text width= 3cm] {Lasersensor med servo};
 	%Identifierare av nödställd
-	\draw[thick, draw=black, <-]				(4.5,10.25)		--+			(45:1)  node[above] {\verb+IRM-8601-S+};
+	\draw[thick, draw=black, <-]				(4.5,10.25)		--+			(45:1)  node[above] {IR-detektor};
 	
 	%IR sensorer
-	\draw[thick, draw=black, <-]				(-.25, 9.75) 	--+			(135:1) node[above] {\verb+GP2D120+};
-	\draw[thick, draw=black, <-]				(-.25, .25) 		--+			(225:1) node[below] {\verb+GP2D120+};
-	\draw[thick, draw=black, <-]				(6.25, 9.75) 	--+			(45:1) node[above] {\verb+GP2D120+};
-	\draw[thick, draw=black, <-]				(6.25, .25) 		--+			(315:1) node[below] {\verb+GP2D120+};
+	\draw[thick, draw=black, <-]				(-.25, 9.75) 	--+			(135:1) node[above] {IR-avståndssensor};
+	\draw[thick, draw=black, <-]				(-.25, .25) 		--+			(225:1) node[below] {IR-avståndssensor};
+	\draw[thick, draw=black, <-]				(6.25, 9.75) 	--+			(45:1) node[above] {IR-avståndssensor};
+	\draw[thick, draw=black, <-]				(6.25, .25) 		--+			(315:1) node[below] {IR-avståndssensor};
 	\draw[thick, draw=black, <-] (7.25,8.25) --++ (45:1) node[above] {Reflexsensor};
 	
 	\draw[thick, draw=black, fill=white]					(2.5,4.5)		rectangle	(3.5,5.5);
 	
 	%Gyro
-	\draw[thick, draw=black, <-] (3.5,5) --++ (.25,0) node[rotate=270, above] {\verb+MLX90609+};
+	\draw[thick, draw=black, <-] (3.5,5) --++ (.25,0) node[rotate=270, above] {Gyro};
 	
 	%Arrows and text
 	%\draw[thick, ->]  (3,11) node[left, align=center] {\verb+LIDAR-Lite v2+ \\ + detektor av nödställd} -- (3,10.25);

@@ -7,6 +7,7 @@
 \begin{titlepage}
 \begin{center}
 
+
 {\Large\bfseries TSEA56 - Kandidatprojekt i elektronik \\ LIPS Användarhandledning för PigBot}
 
 \begin{figure}[!htbp]
@@ -192,12 +193,14 @@ Utöver dioder och brytare finns även en LCD-display monterad på det övre kor
 \end{figure}
 
 \begin{description}[style=unboxed, leftmargin=0cm]
+
   \item[Target] visar ifall roboten, för tillfället, sett målet framför sig.
+
   \item[Forw] visar det avstånd roboten har rakt föröver till nästa vägg i centimeter.
   \item[Trip] visar den totala tillryggalagda sträckan i meter.
 \end{description}
 
-För att justera kontrasten på LCD-displayen används den potentiometer som syns i figur \ref{lcdPot}. Om LCD-displayen inte visar någon information trots att roboten är aktiv, justera då kontrasten.
+För att justera kontrasten på LCD-displayen används den potentiometer som syns i bild \ref{lcdPot}. Om LCD-displayen inte visar någon information trots att roboten är aktiv, justera då kontrasten.
 
 
 \begin{figure}[htbp]
@@ -234,6 +237,8 @@ För manuell körning krävs det att brytare 1 är inställd rätt och att robot
 	\item[D] - roterar roboten åt vänster (fungerar endast i manuellt läge).
 	\item[C] - öppnar/stänger robotens klo (fungerar endast i manuellt läge).
 \end{description}
+
+För manuell körning krävs det att brytare 1 är inställd rätt och att roboten är uppkopplad mot en datormodul. Följ därefter de kortkommandon som finns i avsnitt \ref{shortcuts}.
 
 
 \section{Datormodul}
@@ -288,9 +293,9 @@ Visar tre grafer med  de senaste 100 mottagna mätvärdena från:
 Innehåller information om robotens olika tillstånd och lägen. Är roboten i autonomt läge visas även en knapp \emph{Start run} som låter användaren starta en körning. Är roboten i \textit{debug}-läge visas även en \emph{Next decision} som aktiverar nästa styrbeslut hos roboten. 
 
 \subsection{Övrigt}
-\label{shortcuts}
 \paragraph{Systemkrav} För att köra programmet krävs Java 1.8 samt en hårdvaruenhet för Bluetooth\textsuperscript{\circledR}-kommunikation.
 \paragraph{Kortkommandon}\label{kortkommandon}
+
 För kortkommandon, se avsnitt \ref{shortcuts}.
 
 \end{document}

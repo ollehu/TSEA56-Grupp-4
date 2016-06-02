@@ -114,13 +114,12 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
-Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
+Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Roboten har även ett manuellt läge för styrning via dator. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
 
 \begin{figure}[!htbp]
 \centering
-\noindent\resizebox{.7\linewidth}{!}{
-	\includegraphics{images/robot.jpg}}
-	\caption{Roboten i en labyrint \label{scene}}	
+\includegraphics[scale=1]{images/map.pdf}
+	\caption{Roboten i dess omgivning\label{scene}}	
 \end{figure}
 
 I figur \ref{scene} befinner sig roboten i en exempelbana där den testats. För att konstruera roboten har hårdvara, till exempel sensorer och mikroprocessorer tillhandahållits av beställare, liksom den nödvändiga programvaran för att utveckla mjukvara.
@@ -134,7 +133,7 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \pagebreak
 
 \section{Problemformulering}
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen att bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40 x 40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
+Det problem som roboten ställs inför består av ett antal grundläggande krav. Det mest basala kravet utgår i navigering av en labyrint och identifiering av en nödställd. Labyrinten ska navigeras autonomnt och roboten ska klara sitt uppdrag utan mänsklig hjälp. När målet väl är funnet ska roboten beräkna den kortaste vägen mellan ingång och mål, för att därefter flytta en förnödenhet längs den optimala rutten.  Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
 
 \subsection{Tillräckligt bra sensorvärden}
 För att roboten skulle ha en uppfattning om sin omgivning behövde sensorerna vara precisa i sina mätningar. Dessa behövde sedan läsas av tillräckligt ofta för att robotens rörelser skulle kunna regleras på ett tillfredställande sätt samtidigt som de inte kunde läsas av obegränsat antal gånger per sekund på grund av hårdvarubegränsningar.
@@ -204,13 +203,13 @@ Huvudmodulen är det delsystem som sköter all kommunikation, både med datormod
 \end{figure}
 
 \subsection{Sensormodulen}
-Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix I. 
+Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. IR-sensorer, två på varje sida, används för att mäta avstånd på höger och vänster sida. För att mäta avstånd framåt används en lasersensor. En reflexsensor används för att kunna mäta hur långt roboten kört framåt. Ett gyroskop mäter rotationshastighet. Sensormodulen har även en IR-detektor som kan upptäcka målet. Val av sensorer baserades på resultet från förstudien i appendix I. 
 
 \subsection{Styrmodulen}
-Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att roboten skulle kunna köra rakt i en korridor och svänga i räta vinklar användes PD-regulatorer i enlighet med resultatet i förstudien i appendix G. Styrbeslut fås från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. 
+Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att roboten skulle kunna köra rakt i en korridor och svänga i räta vinklar används PD-regulatorer i enlighet med resultatet i förstudien i appendix G. Styrbeslut fås från huvudmodulen. Styrmodulen styr hjulen på chassit via pulsbreddsmodulering. Den har även en LCD-display där utvalda data visas under körning. 
 
 \subsection{Datormodulen}
-Datormodulen kan kommunicera styrkommandon till roboten, när roboten körs i manuellt läge, men används främst för att presentera information om roboten som karta och sensordata. 
+Datormodulen kan kommunicera styrkommandon till roboten, när roboten körs i manuellt läge, men används främst för att presentera information om roboten som karta och sensordata. Kartan uppdateras allteftersom roboten utforskar. Är ej datorn uppkopplad från början av en körning får den hela den nuvarande utforskade delen av kartan uppritad på skärmen. För ökad användarvänlighet ritas sensorvärdena upp i grafer, utöver att de finns listade i en tabell. Med det debug-läge som finns implementerat går det även att ändra vissa styrinställningar från datorn
 
 \subsection{Tekniska utmaningar}
 För att lösa problemet med att fästa sensorerna på roboten designades fästen som sedan skrevs ut med en 3D-skrivare. Detta gjorde att sensorerna enkelt och snyggt kunde fästas på roboten. Ett annat problem var att vid höga hastigheter gav hjulen på chassit inte tillräckligt hög friktion mot golvet och gled en del. För att minska effekten av den låga friktionen minskades robotens hastighet inför rotation.
@@ -225,11 +224,19 @@ Roboten har två olika körlägen som används i olika syften. Det körläge som
 
 %Dessa är söka av labyrint och köra kortaste väg och lämna förnödenhet efter att labyrinten är utforskad. 
 
-Roboten kan både köra autonomt och styras manuellt från en dator. I manuellt läge kan styrkommandon skickas genom att använda WASD. Även körningar i autonomt läge kan startas via datorn, istället för att trycka på den monterade knappen. 
+Roboten kan både köra autonomt och styras manuellt från en dator. I manuellt läge kan styrkommandon skickas genom att använda tangenterna W, A, S och D. Även körningar i autonomt läge kan startas via datorn, istället för att trycka på den monterade knappen. 
 
-På uppkopplad dator går utvalda sensorvärden att se i kontinuerligt uppdaterade grafer. När roboten kör autonomt visas även de delar av grottsystemet som är utforskade på datorn, vilket ger en bra bild av omgivningen kring den nödställde.
+På uppkopplad dator går utvalda sensorvärden att se i grafer. När roboten kör autonomt visas även de delar av grottsystemet som är utforskade på datorn, vilket ger en bra bild av omgivningen kring den nödställde. Se figur \ref{software}.
 
 Mer om hur roboten används och felsöks finns att läsa i appendix L.
+
+\begin{figure}[H]
+\centering
+\noindent\resizebox{0.8\linewidth}{!}{
+	\includegraphics{images/computerModule.png}}
+	\caption{Programvarans grafiska användargränssnitt\label{software}}	
+\end{figure}
+
 
 \subsection{Robotens prestanda}
 Roboten kan ta sig fram med en hastighet av ca 1 m/s. Vid autonom körning kör dock roboten i en hastighet motsvarande ungefär 70 \% av dess maxhastighet. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan reglera även vid avvikande utseende av banan. Sensordata processas och skickas i tillräckligt hög takt för att reglering hela tiden sker med uppdaterade sensorvärden. Robotens beslutsfattande sker i storleksordningen hundradelar, vilket gör att det är omöjligt att med blotta ögat se när den stannar för att ``tänka''. %Det är därmed mycket tillfredställande att kolla på roboten i aktion.
