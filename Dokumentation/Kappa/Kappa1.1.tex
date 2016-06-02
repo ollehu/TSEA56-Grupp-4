@@ -116,6 +116,12 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 \section{Inledning}
 Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
 
+\begin{figure}[!htbp]
+\centering
+\includegraphics[scale=1]{images/map.pdf}
+	\caption{Roboten i dess omgivning\label{scene}}	
+\end{figure}
+
 I figur \ref{scene} befinner sig roboten i en exempelbana där den testats. För att konstruera roboten har hårdvara, till exempel sensorer och mikroprocessorer tillhandahållits av beställare, liksom den nödvändiga programvaran för att utveckla mjukvara.
 
 Projektet var komplext och ställde höga krav på samarbetsförmåga och kompetens inom elektroteknik. Det som var mest utmanande var att lyckas med samarbetet och att få ihop alla delar till en fungerande enhet utan att fel uppstod. 
@@ -127,7 +133,7 @@ Detta dokument beskriver projektets genomförande och dess resultat. Bifogat fin
 \pagebreak
 
 \section{Problemformulering}
-För att klara uppgiften behövde roboten uppfylla ett antal grundläggande krav. Förutom att navigera i grottsystemet och identifiera den nödställde var den även tvungen att bestämma kortaste väg mellan ingången och den nödställde. För att kunna göra det delades grottsystemet in i moduler om 40 x 40 cm som var och en hade ett unikt index, baserat på dess x- och y-koordinat. Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
+Det problem som roboten ställs inför består av ett antal grundläggande krav. Det mest basala kravet utgår i navigering av en labyrint och identifiering av en nödställd. Labyrinten ska navigeras autonomnt och roboten ska klara sitt uppdrag utan mänsklig hjälp. När målet väl är funnet ska roboten beräkna den kortaste vägen mellan ingång och mål, för att därefter flytta en förnödenhet längs den optimala rutten.  Även kartritning var ett grundkrav eftersom det var krav på att se en representation av grottsystemets utformning. Nedan följer beskrivning av de övergripande utmaningarna som initialt identifierades. För en fullständig lista över kraven se appendix C.
 
 \subsection{Tillräckligt bra sensorvärden}
 För att roboten skulle ha en uppfattning om sin omgivning behövde sensorerna vara precisa i sina mätningar. Dessa behövde sedan läsas av tillräckligt ofta för att robotens rörelser skulle kunna regleras på ett tillfredställande sätt samtidigt som de inte kunde läsas av obegränsat antal gånger per sekund på grund av hårdvarubegränsningar.
