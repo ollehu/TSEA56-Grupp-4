@@ -114,7 +114,7 @@ tel: 013-28 13 45, e-post: peter.a.johansson@liu.se
 
 \begin{flushleft}
 \section{Inledning}
-Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
+Uppdraget var att konstruera en autonom undsättningsrobot med kartläggning för utforskning av ett okänt grottsystem. I grottsystemet finns en nödställd som roboten ska hitta och leverera en förnödenhet till. Roboten har även ett manuellt läge för styrning via dator. Produkten jämfördes med ett antal liknande robotar i en tävling enligt tävlingsregler i appendix B.
 
 I figur \ref{scene} befinner sig roboten i en exempelbana där den testats. För att konstruera roboten har hårdvara, till exempel sensorer och mikroprocessorer tillhandahållits av beställare, liksom den nödvändiga programvaran för att utveckla mjukvara.
 
@@ -197,13 +197,13 @@ Huvudmodulen är det delsystem som sköter all kommunikation, både med datormod
 \end{figure}
 
 \subsection{Sensormodulen}
-Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. Sensorerna är valda utifrån förstudien i appendix I. 
+Sensormodulen är det delsystem som läser av sensorer och bearbetar informationen från dessa för att kunna utnyttja den vid styrbeslut. Den tar inga egna beslut utifrån informationen. IR-sensorer, två på varje sida, används för att mäta avstånd på höger och vänster sida. För att mäta avstånd framåt används en lasersensor. En reflexsensor används för att kunna mäta hur långt roboten kört framåt. Ett gyroskop mäter rotationshastighet. Sensormodulen har även en IR-detektor som kan upptäcka målet. Val av sensorer baserades på resultet från förstudien i appendix I. 
 
 \subsection{Styrmodulen}
 Delsytem tre är styrmodulen som utför alla reglerberäkningar. För att roboten skulle kunna köra rakt i en korridor och svänga i räta vinklar användes PD-regulatorer i enlighet med resultatet i förstudien i appendix G. Styrbeslut fås från huvudmodulen. Den har även en LCD-display där utvalda data visas under körning. 
 
 \subsection{Datormodulen}
-Datormodulen kan kommunicera styrkommandon till roboten, när roboten körs i manuellt läge, men används främst för att presentera information om roboten som karta och sensordata. 
+Datormodulen kan kommunicera styrkommandon till roboten, när roboten körs i manuellt läge, men används främst för att presentera information om roboten som karta och sensordata. Kartan uppdateras allteftersom roboten utforskar. Är ej datorn uppkopplad från början av en körning får den hela den nuvarande utforskade delen av kartan uppritad på skärmen. För ökad användarvänlighet ritas sensorvärdena upp i grafer, utöver att de finns listade i en tabell. Med det debug-läge som finns implementerat går det även att ändra vissa styrinställningar från datorn
 
 \subsection{Tekniska utmaningar}
 För att lösa problemet med att fästa sensorerna på roboten designades fästen som sedan skrevs ut med en 3D-skrivare. Detta gjorde att sensorerna enkelt och snyggt kunde fästas på roboten. Ett annat problem var att vid höga hastigheter gav hjulen på chassit inte tillräckligt hög friktion mot golvet och gled en del. För att minska effekten av den låga friktionen minskades robotens hastighet inför rotation.
