@@ -133,7 +133,7 @@ I följande avsnitt lyfts teori som är nödvändig för förståelse av impleme
 Nedan beskrivs principer för avsökning och kartläggning av labyrinter.
 
 \subsubsection{Väggföljare}
-Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korriodens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren, vice versa för vänstertyp.
+Ifall labyrinten är enkelt sammanhängande räcker en väggföljar-algoritm för att kartlägga alla korridorer. I en enkelt sammanhängande labyrint är alla väggar kopplade till varandra, se figur \ref{maze} för exempel. En väggföljar-algoritm är antingen av höger- eller vänstertyp och bygger på att en av korridorens sidor alltid följs. Ifall algoritmen är av högertyp följs höger sida av korridoren, vice versa för vänstertyp.
 
 \begin{figure}[htbp]
 	\centering
@@ -397,7 +397,7 @@ Reglering av rak körning innebär reglering av två utsignaler: robotens avstå
 \begin{equation*}
 	v = 
 	\begin{cases}
-		v_{pref}, \qquad\qquad (s - s^0) > 20 \\
+		v_{pref}, \qquad\qquad (s -w s^0) > 20 \\
 		0.6 \cdot v_{pref}, \qquad 20 \geq (s - s^0) > 0 \\
 		0, \qquad\qquad\qquad (s - s^0)\leq 0 \\
 	\end{cases}
