@@ -229,21 +229,21 @@ Huvudmodulen har som uppgift att ta emot och förmedla information mellan de and
 
 \begin{figure}[htbp]
 \noindent\resizebox{.97\textwidth}{!}{
-	\input{images/communication}}
-	\caption{Intermodulär kommunikation \label{communication}}
+\input{images/communication}}
+\caption{Intermodulär kommunikation \label{communication}}
 \end{figure}
 
 Komponenterna som ingår i robotens huvudmodul är 
 \begin{itemize}
-  \item[-] Mikroprocessor \verb+ATmega1284p+
-  \item[-] Kristalloscillator \verb+EXO-3+ på $14.745$ MHz
-  \item[-] Bluetooth\textsuperscript{\circledR}-modul
-  \item[-] Resistorer
-  \item[-] Kondensator
-  \item[-] Studsfri tryckknapp
+\item[-] Mikroprocessor \verb+ATmega1284p+
+\item[-] Kristalloscillator \verb+EXO-3+ på $14.745$ MHz
+\item[-] Bluetooth\textsuperscript{\circledR}-modul
+\item[-] Resistorer
+\item[-] Kondensator
+\item[-] Studsfri tryckknapp
 \end{itemize}
 
-Huvudmodulen är virad på ett virkort enligt kretsschemat i appendix J och är monterat på robotens chassi. 
+Huvudmodulen är virad på ett virkort enligt kretsschemat i figur \ref{kopplingsschema:huvudmodul} och är monterat på robotens chassi. 
 
 Nedan beskrivs huvudmodulens olika uppgifter.
 
@@ -251,27 +251,27 @@ Nedan beskrivs huvudmodulens olika uppgifter.
 I huvudmodulen ingår följande mjukvara:
 
 \begin{description}[style=unboxed, leftmargin=0cm]
-  \item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen. I huvudloopen är det endast styrläget som uppdateras.
-%  \item[bluetooth.h] som är ett paket för Bluetooth\textsuperscript{\circledR}-kommunikationen.
-  \item[I2C\_master.h] som är ett paket för masterenheten på I\textsuperscript{2}C-bussen.
-  \item[searchPath.h] som är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
+\item[huvudMain.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och Bluetooth\textsuperscript{\circledR}-kommunikationen. I huvudloopen är det endast styrläget som uppdateras.
+% \item[bluetooth.h] som är ett paket för Bluetooth\textsuperscript{\circledR}-kommunikationen.
+\item[I2C\_master.h] som är ett paket för masterenheten på I\textsuperscript{2}C-bussen.
+\item[searchPath.h] som är ett paket som hanterar avsökning, kartläggning och beräkning av kortaste väg.
 \end{description}
 
 \subsubsection{Styrläge}
-Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Rent hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken kartmodul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
+Det finns två olika styrlägen för roboten, ett autonomt och ett manuellt läge. Hårdvarumässigt styrs detta med hjälp av en brytare kopplad till huvudmodulen. När det autonoma läget är aktiverat tas körbeslut utifrån en avsökningsalgoritm som i grunden använder sig av väggföljning av högertyp och \emph{dead-end filling}. Beslutet om vilken modul som ska besökas härnäst baseras på datan som skickas från sensormodulen och på den interna kartläggningen. Detta förklaras närmare i avsnitt \ref{search} och \ref{shortestPath}. När beslutet är taget skickas motsvarande kommando till styrmodulen som sedan utför önskad operation. Ett nytt beslut tas när styrmodulen anser sig vara färdig med nuvarande kommando och begär ett nytt genom avbrott. Hela kommunikationsflödet i autonomt läge finns beskrivet i figur \ref{autonomousMode}. I manuellt läge skickas styrkommandon från datormodulen, via Bluetooth\textsuperscript{\circledR}, till huvudmodulen som sedan vidarebefordrar dessa till styrmodulen. Informationen som skickas baseras på vilken piltangent på datormodulen som är nedtryckt enligt flödet i figur \ref{manualMode}.
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{0.9\linewidth}{!}{
-	\input{images/autonomousMode}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}}	
+\input{images/autonomousMode}}
+\cprotect\caption{Flödesschema som beskriver förloppet vid autonom styrning \label{autonomousMode}} 
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{0.9\linewidth}{!}{
-	\input{images/manualMode}}
-	\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}}	
+\input{images/manualMode}}
+\cprotect\caption{Flödesschema som beskriver förloppet vid manuell styrning \label{manualMode}} 
 \end{figure}
 
 \subsubsection{Intern kartläggning} \label{search}
@@ -282,8 +282,8 @@ Den interna kartläggningen sker kontinuerligt allt eftersom roboten utforskar l
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{0.7\linewidth}{!}{
-	\input{images/map}}
-	\caption{Schematisk bild av den interna kartan}	\label{map}
+\input{images/map}}
+\caption{Schematisk bild av den interna kartan} \label{map}
 \end{figure}
 
 \subsubsection{Beräkning av kortaste väg} \label{shortestPath}
@@ -292,12 +292,12 @@ Beräkningen av kortaste vägen till målet sker med utgångspunkt från A\texts
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{0.7\linewidth}{!}{
-	\input{images/path}}
-	\caption{Schematisk bild av kartan för beräkning av kortaste väg}	\label{path}
+\input{images/path}}
+\caption{Schematisk bild av kartan för beräkning av kortaste väg} \label{path}
 \end{figure}
 
 
-Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra enligt figur \ref{path}. De orange- och rödmarkerade kartmodulerna är implementerade med högre siffror än vad roboten skulle kunna köra  enligt tävlingsreglerna, se appendix B.
+Kortaste väg från start till mål fås då genom att, för varje nod, välja den närliggande nod med lägst siffra enligt figur \ref{path}. De orange- och rödmarkerade kartmodulerna är implementerade med högre siffror än vad roboten skulle kunna köra enligt tävlingsreglerna, se appendix B.
 
 \pagebreak
 
@@ -305,48 +305,53 @@ Kortaste väg från start till mål fås då genom att, för varje nod, välja d
 Robotens sensormodul har som uppgift att läsa av sensorerna och kommunicera datan till huvudmodulen. De sensorer som används och placeringar av dessa illustreras i figur \ref{sensors}.
 \newline
 %\begin{description}
-%	\item[Avstånd] \hfill \\
-%	4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
-%	1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
-%	\item[Vinkelhastighet] \hfill \\
-%	1 x Gyro/accelerometer \verb+MLX90609+ 
-%	\item[Identifierare av nödställd] \hfill \\
-%	1 x IR-detektor \verb+IRM-8601-S+
+% \item[Avstånd] \hfill \\
+% 4 x IR-sensor \verb+GP2D120+ (4 cm till 30 cm) \\
+% 1 x Laser-sensor \verb+LIDAR-Lite v2+ (0 till 40 m) \\
+% \item[Vinkelhastighet] \hfill \\
+% 1 x Gyro/accelerometer \verb+MLX90609+ 
+% \item[Identifierare av nödställd] \hfill \\
+% 1 x IR-detektor \verb+IRM-8601-S+
 %\end{description}
 %Figur \ref{sensors} illustrerar placeringen av, de ovan angivna, sensorerna. 
 
 \begin{figure}[htbp]
 \centering
 \noindent\resizebox{.8\textwidth}{!}{
-	\input{images/sensor}	}
-	\caption{Sensorplacering \label{sensors}}
+\input{images/sensor} }
+\caption{Sensorplacering \label{sensors}}
 \end{figure}
 
-De komponenter som utöver sensorerna ingår i robotens sensormodul är följande:
+De komponenter som ingår i robotens sensormodul är följande:
 \begin{itemize}
-  \item[-] Mikroprocessor \verb+ATmega1284p+
-  \item[-] Kristalloscillator \verb+EXO-3+ med $16$ MHz frekvens
-  \item[-] Resistorer
-  \item[-] Kondensator
-  \item[-] Lågpassfilter
-  \item[-] Studsfri tryckknapp
+\item[-] Lasersensor \verb+LIDAR-Lite v2+
+\item[-] IR-sensorer \verb+GP2D120+
+\item[-] Reflexsensor \verb+SFH300+
+\item[-] Gyro \verb+MLX90609+
+\item[-] IR-detektor \verb+IRM-8601-S+
+\item[-] Mikroprocessor \verb+ATmega1284p+
+\item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz 
+\item[-] Resistorer
+\item[-] Kondensator
+\item[-] Lågpassfilter
+\item[-] Studsfri tryckknapp
 \end{itemize}
 
-Sensormodulen är ihopkopplad enligt kopplingsschema i appendix J. Den är sammankopplad på ett separat virkort, som är monterat på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
+Sensormodulen är ihopkopplad enligt kopplingsschema i figur \ref{kopplingsschema:huvudmodul}. Den är sammankopplad på ett separat virkort, som är monterat på robotens chassi. Nedan följer utförligare beskrivningar av sensormodulens hårdvara, mjukvara och gränssnitt.
 
 \subsubsection{Mjukvara}
 I sensormodulen ingår följande mjukvara: 
 
 \begin{description}[style=unboxed, leftmargin=0cm]
-  \item[sensorModule.c] som innehåller modulens \textit{main}-funktion, i vilken omvandling av sensorvärden till SI-enhet sker. Den innehåller dessutom kod för I\textsuperscript{2}C-kommunikation mellan modulerna. I main-funktionens huvudloop läggs de omvandlade sensorenheterna in i ett fält, vilket senare kommuniceras till huvudmodulen.
-  \item[sensorInit.h] som är ett paket som initierar de olika gränssnitten för överföring av sensordata mellan mikroprocessorn och de olika sensorerna.
-  \item[I2C\_slave.h] som är ett paket för slavarna inom I\textsuperscript{2}C-bussen, lämpligt i detta fall då sensormodulen är slav i kommunikationen med huvudmodulen.
+\item[sensorModule.c] som innehåller modulens \textit{main}-funktion, i vilken omvandling av sensorvärden till SI-enhet sker. Den innehåller dessutom kod för I\textsuperscript{2}C-kommunikation mellan modulerna. I main-funktionens huvudloop läggs de omvandlade sensorenheterna in i ett fält, vilket senare kommuniceras till huvudmodulen.
+\item[sensorInit.h] som är ett paket som initierar de olika gränssnitten för överföring av sensordata mellan mikroprocessorn och de olika sensorerna.
+\item[I2C\_slave.h] som är ett paket för slavarna inom I\textsuperscript{2}C-bussen, lämpligt i detta fall då sensormodulen är slav i kommunikationen med huvudmodulen.
 \end{description}
 
 \subsubsection{\texttt{Lidar-Lite v2}, avståndssensor}
 För att mäta avstånd framåt används lasersensorn \verb+Lidar-Lite v2+. Den sänder ut en laserpuls och mäter tiden det tar för denna att reflekterats och återvända. På så sätt kan avstånd upp till $40$ meter uppmätas med en felmarginal på $2,5$ centimeter. Den kan dock ge felaktiga värden när den opererar i en omgivning som labyrinten. Det beror på att det finns en risk att sensorn mäter avstånd till en sidokorridor, när den tror att den mäter avståndet till väggen rakt fram.
 
-Kommunikationen av sensordata mellan \verb+Lidar-Lite v2+ och mikroprocessorn \verb+ATmega1284p+ sker via pulsbreddsmodulering. Längden på pulsbreddens positiva flank är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av mikroprocessorns externa avbrottsingångar, se kopplingsschema i Appendix J. 
+Kommunikationen av sensordata mellan \verb+Lidar-Lite v2+ och mikroprocessorn \verb+ATmega1284p+ sker via pulsbreddsmodulering. Pulsbreddens arbetscykel är proportionell mot sensorns avstånd till närmaste föremål, vilket gör omvandligen till SI-enhet enkel. För att mäta pulsbredden kopplas lasersensorns trigger pin till en av mikroprocessorns externa avbrottsingångar, se kopplingsschema i figur \ref{kopplingsschema:huvudmodul}. 
 
 \subsubsection{\texttt{SFH300}, reflexsensor}
 För att komplettera avståndsmätningen används även en reflexsensor av modell \verb+SFH300+. Sensorn sänder ut ljus och mäter hur mycket av ljuset som reflekteras. Genom att fästa en skiva indelad i 16 lika stora tårtbitar, varannan vit och varannan svart, på ett av hjulen kan tillryggalagt avstånd bestämmas.
@@ -357,10 +362,10 @@ Då utsignalen är analog krävs AD-omvandling, varefter ett digitalt värde mel
 \subsubsection{\texttt{GP2D120}, avståndssensor}
 För att mäta avståndet till sidoväggarna används fyra IR-sensorer av modell \verb+GP2D120+. Avståndet mäts genom att IR-ljus med en viss våglängd skickas ut från sensorn, reflekteras mot väggarna för att sedan detekteras av sensorn. Genom att mäta den vinkel reflektionen sker med kan avståndet till väggen bedömas. Utsignalen är analog i form av spänning och behöver lågpassfiltreras på grund av mängden högfrekvent brus i signalen. Lågpassfiltreringen sker genom att leda signalen genom en RC-krets. 
 
-Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet beskrivs av en tredjegradsfunktion. Genom empiriska tester kan funktionen bestämmas tillräckligt bra för att ge värden att reglera på.
+Portarna A0-A7 på \verb+ATmega1284p+ kan användas som AD-omvandare, vilket utnyttjas för att generera ett digitalt värde. Det digitala värdet är inte linjärt beroende av avståndet utan sambandet är mer komplext. För att hitta sambandet genomförs tester för att mäta vilket avstånd som motsvarar vilket digitalt värde. Därefter kan funktionen bestämmas med hjälp av lämligt dataprogram.
 
 \subsubsection{\texttt{MLX90609}, gyro}
-För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten representeras av elva bitar men kapas till åtta innan informationen kommuniceras vidare. Då de tre minst signifikanta bitarna tas bort blir precisionen något sämre men informationen rymms på en byte. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation.  
+För att kunna utföra lagom stor rotation vid svängar används gyrot \verb+MLX90609+ som mäter den momentana vinkelhastigheten. Att bestämma hur många grader roboten roterar görs genom att summera värdet på vinkelhastigheten med tillräckligt hög samplingsfrekvens, vilket motsvarar integrering av vinkelhastigheten. Kommunikation av informationen mellan sensorn och mikroprocessorn sker via ett SPI-gränssnitt, där mikroprocessorn fungerar som SPI-master. Vinkelhastigheten representeras av elva bitar men kapas till åtta innan informationen kommuniceras vidare. Då de tre minst signifikanta bitarna tas bort blir precisionen något sämre men informationen rymms på en byte. Tester kan sedan genomföras för att bestämma vilket värde som motsvarar en grads rotation. 
 
 \subsubsection{\texttt{IRM-8601-S}, IR-detektor}
 Då den nödställde sänder ut en IR-signal krävs identifikation av ett specifikt bitmönster. För detta ändamål används IR-detektorn \verb+IRM-8601-S+. Bitmönstret identifieras genom att ansluta insignalen till en extern avbrottsingång på mikroprocessorn. TIMER0 används därefter för att räkna tiden på de höga bitarna hos insignalen som IR-detektorn identifierar. Stämmer tiden för de höga bitarna överens med det bitmönster som den nödställde ska sända ut är den nödställde funnen.
@@ -371,59 +376,32 @@ Styrmodulen är den del av roboten som tar emot och verkställer styrkommandon o
 
 De komponenter som ingår i styrmodulen är
 \begin{itemize}
-  \item[-] Mikroprocessor \verb+ATmega1284p+
-  \item[-] LCD-display \verb+JM162A+
-  \item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz
-  \item[-] LED-dioder
-  \item[-] Resistorer
-  \item[-] Kondensator
-  \item[-] Potentiometer
-  \item[-] Studsfri tryckknapp
+\item[-] Mikroprocessor \verb+ATmega1284p+
+\item[-] LCD-display \verb+JM162A+
+\item[-] Kristalloscillator \verb+EXO-3+ på $16$ MHz
+\item[-] LED-dioder
+\item[-] Resistorer
+\item[-] Kondensator
+\item[-] Potentiometer
+\item[-] Studsfri tryckknapp
 \end{itemize}
 
-Styrmodulen kopplas enligt kretsschemat i appendix J. Kopplingen sker på ett virkort som sedan monteras på robotens chassi. Härefter följer detaljerade beskrivningar av styrmodulens olika delar.
+Styrmodulen kopplas enligt kretsschemat i figur \ref{kopplingsschema:huvudmodul}. Kopplingen sker på ett virkort som sedan monteras på robotens chassi. Härefter följer detaljerade beskrivningar av styrmodulens olika delar.
 
 \subsubsection{Mjukvara}
 Mjukvaran till styrmodulen består av följande filer:
 \begin{description}[style=unboxed, leftmargin=0cm]
-  \item[controlModule.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och regleringen. I huvudloopen är den endast LCD-displayen och LED-dioderna som uppdateras.
-  \item[PWM.h] som är ett paket för pulsbreddsmodulering.
-  \item[LCD.h] som är ett paket för LCD-displayen.
-  \item[constants.h] som är ett paket med definitioner av konstanter till controlModule.c.
-  \item[I2C\_slave.h] som är ett paket för slavar inom I\textsuperscript{2}C-bussen.
+\item[controlModule.c] som innehåller \textit{main}-funktionen, I\textsuperscript{2}C-kommunikationen och regleringen. I huvudloopen är den endast LCD-displayen och LED-dioderna som uppdateras.
+\item[PWM.h] som är ett paket för pulsbreddsmodulering.
+\item[LCD.h] som är ett paket för LCD-displayen.
+\item[constants.h] som är ett paket med definitioner av konstanter till controlModule.c.
+\item[I2C\_slave.h] som är ett paket för slavar inom I\textsuperscript{2}C-bussen.
 
 \end{description}
 
-\subsubsection{Reglering}
-Roboten har två olika reglermoder: reglering av rotation och reglering av rak körning. Regleringen av rak körning har i sin tur fyra olika lägen: inga väggar, vägg på vänster sida, vägg på höger sida och vägg på båda sidor. Detta avgör sedan vilken insignal som används i regleringen.
-
-Rotation regleras genom öppen reglering. Robotens gyro ger en vinkelhastighet som sedan integreras (summeras) tills summan nått ett förutbestämt värde, varefter rotationen avbryts.
-
-Reglering av rak körning innebär reglering av två utsignaler: robotens avstånd till framförvarande vägg och robotens avstånd till väggen/väggarna i korridoren. Avståndet till framförvarande vägg $s$ regleras i förhållande till det önskade avståndet $s^0$ genom reglering av hastigheten $v$ enligt följande ekvation
-\begin{equation*}
-	v = 
-	\begin{cases}
-		v_{pref}, \qquad\qquad (s -w s^0) > 20 \\
-		0.6 \cdot v_{pref}, \qquad 20 \geq (s - s^0) > 0 \\
-		0, \qquad\qquad\qquad (s - s^0)\leq 0 \\
-	\end{cases}
-\end{equation*}
-där $v_{pref}$ är den användardefinierade maxhastigheten.
-
-Avståndet till väggen regleras genom att beräkna önskad skillnad i hastighet (PWM-signal) mellan höger och vänster hjulpar $\Delta y$ utifrån främre sidosensor $d_1$, bakre sidosensorn $d_2$ och det önskade avståndet $d^0$ enligt följande ekvation
-\begin{equation*}
-	\Delta y = K \Bigg( P \Big( \frac {d_1 + d_2} {2} - d^0 \Big) + D (d_1 - d_2) \Bigg)
-\end{equation*}
-där $K, P, D > 0$ är konstanter som används för att justera regleringen. Beroende på vilka väggar som finns inom sensorernas räckvidd används avståndssensorerna på antingen vänster eller höger sida som insignal. Vid vänster vägg eller dubbla väggar används vänster och vid höger vägg används höger. Vid dubbla väggar används dock sensorerna på båda sidor för att uppdatera  $d^0$ enligt
-\begin{equation*}
-	d^0 = \frac {d_{1,v} + d_{2,v} + d_{1,h} + d_{2,h}} {4}
-\end{equation*}
-
-Känner avståndssensorerna inte av väggar på någon sida kan inte avståndet till väggarna regleras och $\Delta y = 0$.
-
 
 \subsubsection{PWM}
-Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284p+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att de delar samma inställningar gällande frekvens och periodtid men styrs med olika arbetscykler. Gripklon och servot för den främre sensorn delar i sin tur även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och därför utnyttjas möjligheten att konfigurera om dem så att enbart de nödvändiga används. Nedan finns konfigurationerna beskrivna mer detaljerat. 
+Pulsbreddsmodulering används för att styra respektive hjulpar, gripklon och servot för den främre sensorn. På \verb+ATMega1284p+ har varje timer två utgångar, utgång A och B. En timer kopplas således till båda hjulparen så att de delar samma inställningar gällande frekvens och periodtid men styrs med olika arbetscykler. Gripklon och servot för den främre sensorn delar i sin tur även samma egenskaper och tilldelas en gemensam timer. Samtliga timers som används är av 16-bitarstyp, men alla bitar behövs inte och därför utnyttjas möjligheten att konfigurera om dem så att enbart de nödvändiga används. Nedan finns konfigurationerna beskrivna mer detaljerat, där ICR är ett register som kan sättas till önskat värde.
 
 \begin{center}
 \begin{tabular}{l l l l l}
@@ -475,7 +453,7 @@ När ett styrkommando skickas till styrmodulen i manuellt läge tolkas den tredj
   \end{description}
 
 \subsection{Datormodulen}
-Datormodulen är skriven i Java och följer desingmönstret model-view-controller. Modulen har två huvudsakliga syften. Det ena är att skicka data till roboten, för att kunna styra den manuellt och på ett enkelt sätt ändra olika inställningar hos roboten. Det andra är att ta emot data från roboten för att presentera robotens omgivning i form av sensorvärden och kartdata. Nedan följer en beskrivning av programmets tre delar. Utöver dessa delar finns en del stödklasser, bland annat för hantering av konstanter och text.%Förklara m-v-c?
+Datormodulen är skriven i Java och följer desingmönstret model-view-controller. Modulen har två huvudsakliga syften. Det ena är att skicka data till roboten, för att kunna styra den manuellt och på ett enkelt sätt ändra olika inställningar hos roboten. Det andra är att ta emot data från roboten för att presentera robotens omgivning i form av sensorvärden och kartdata. Nedan följer en beskrivning av programmets tre delar. Utöver dessa delar finns en del stödklasser, bland annat för hantering av konstanter och text. Användargränssnittet visas i figur \ref{software}.
 
 \subsubsection{Model}
 ``Model''-delen av programet består av fyra huvudsakliga klasser: Log, RobotData, SensorData och MapData. 
@@ -512,7 +490,7 @@ SerialCommunicationsHandler-klassen sköter kommunikationen med roboten. Det inn
 I denna del förklaras hur kommunikationen mellan robotens olika moduler fungerar.
 
 \subsection{Informationsflöde}
-Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Vad varje ID innebär visas i tabell \ref{kommunikationstab}. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 250. Denna uppdelning har gjorts för att underlätta felsökning.
+Eftersom flera olika typer av data skickas mellan de olika modulerna inleds kommunikationen med ett ID som betecknar vilken typ av data som skickas. Dessa ID:n har värden mellan 251-255, för att kunna skiljas från alla andra värden som skickas. Vad varje ID innebär visas i tabell \ref{kommunikationstab}. Andra värden än kommunikations-ID får alltså \emph{inte} anta värden större än 245. Denna uppdelning har gjorts för att underlätta felsökning.
 
 \begin{longtable}[c]{| l | l |} \hline
   \centering
