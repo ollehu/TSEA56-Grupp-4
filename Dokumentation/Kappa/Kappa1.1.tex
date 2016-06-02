@@ -218,11 +218,19 @@ Roboten har två olika körlägen som används i olika syften. Det körläge som
 
 %Dessa är söka av labyrint och köra kortaste väg och lämna förnödenhet efter att labyrinten är utforskad. 
 
-Roboten kan både köra autonomt och styras manuellt från en dator. I manuellt läge kan styrkommandon skickas genom att använda WASD. Även körningar i autonomt läge kan startas via datorn, istället för att trycka på den monterade knappen. 
+Roboten kan både köra autonomt och styras manuellt från en dator. I manuellt läge kan styrkommandon skickas genom att använda tangenterna W, A, S och D. Även körningar i autonomt läge kan startas via datorn, istället för att trycka på den monterade knappen. 
 
-På uppkopplad dator går utvalda sensorvärden att se i kontinuerligt uppdaterade grafer. När roboten kör autonomt visas även de delar av grottsystemet som är utforskade på datorn, vilket ger en bra bild av omgivningen kring den nödställde.
+På uppkopplad dator går utvalda sensorvärden att se i grafer. När roboten kör autonomt visas även de delar av grottsystemet som är utforskade på datorn, vilket ger en bra bild av omgivningen kring den nödställde. Se figur \ref{software}.
 
 Mer om hur roboten används och felsöks finns att läsa i appendix L.
+
+\begin{figure}[H]
+\centering
+\noindent\resizebox{0.8\linewidth}{!}{
+	\includegraphics{images/computerModule.png}}
+	\caption{Programvarans grafiska användargränssnitt\label{software}}	
+\end{figure}
+
 
 \subsection{Robotens prestanda}
 Roboten kan ta sig fram med en hastighet av ca 1 m/s. Vid autonom körning kör dock roboten i en hastighet motsvarande ungefär 70 \% av dess maxhastighet. Regleringen vid körning är inte beroende av att korridorerna är exakt raka utan roboten kan reglera även vid avvikande utseende av banan. Sensordata processas och skickas i tillräckligt hög takt för att reglering hela tiden sker med uppdaterade sensorvärden. Robotens beslutsfattande sker i storleksordningen hundradelar, vilket gör att det är omöjligt att med blotta ögat se när den stannar för att ``tänka''. %Det är därmed mycket tillfredställande att kolla på roboten i aktion.
